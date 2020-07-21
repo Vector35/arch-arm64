@@ -1,0 +1,3 @@
+[submodule "arm64_disassembler"]
+	path = arm64_disassembler
+	url = git@github.com:Vector35/arm64_disassembler.git
