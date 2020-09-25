@@ -697,6 +697,11 @@ public:
 	{
 	}
 
+	bool CanAssemble()
+	{
+		return true;
+	}
+
 	bool Assemble(const string& code, uint64_t addr, DataBuffer& result, string& errors) override
 	{
 		(void)addr;
