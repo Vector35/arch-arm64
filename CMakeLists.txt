@@ -15,8 +15,8 @@ endif()
 file(GLOB SOURCES
 	*.cpp
 	*.h
-	arm64_disassembler/*.c
-	arm64_disassembler/*.h)
+	disassembler/*.c
+	disassembler/*.h)
 
 if(DEMO)
 	add_library(arch_arm64 STATIC ${SOURCES})
@@ -26,7 +26,7 @@ endif()
 
 target_include_directories(arch_arm64
 	PRIVATE ${PROJECT_SOURCE_DIR}
-	PRIVATE ${PROJECT_SOURCE_DIR}/arm64_disassembler)
+	PRIVATE ${PROJECT_SOURCE_DIR}/disassembler)
 
 target_link_libraries(arch_arm64 binaryninjaapi)
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "binaryninjaapi.h"
-#include "arm64_disassembler/arm64dis.h"
+#include "disassembler/arm64dis.h"
 
 #define IL_FLAG_N 0
 #define IL_FLAG_Z 2
