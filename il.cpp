@@ -990,7 +990,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_ROR:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-			il.RotateRight(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
+					il.RotateRight(REGSZ(operand2),
+						ILREG(operand2),
+						ReadILOperand(il, operand3, REGSZ(operand2)))));
 		break;
 	case ARM64_SBFX:
 	case ARM64_SBFM:
