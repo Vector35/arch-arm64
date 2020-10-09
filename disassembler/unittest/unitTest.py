@@ -119,7 +119,7 @@ def areEqual(binja, capstone):
         del celms[-1]
 
     if len(belms) != len(celms):
-        return False;
+        return False
     for b,c in zip(belms, celms):
         if b == c:
             continue
@@ -130,7 +130,7 @@ def areEqual(binja, capstone):
             if bend in ("cs", "hs") and cend in ("cs", "hs"):
                 return True
             if bend in ("cc", "lo") and cend in ("cc", "lo"):
-                return True;
+                return True
             return False
 
         #normalize and compare integers
@@ -192,7 +192,7 @@ def main():
         return
 
     instructions = []
-    verbose = 0;
+    verbose = 0
     if sys.argv[1] == "-v":
         verbose = 1
         sys.argv = sys.argv[1:]
