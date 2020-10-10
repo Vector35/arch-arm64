@@ -817,43 +817,46 @@ public:
 		return true;
 	}
 
-	virtual string GetIntrinsicName(uint32_t intrinsic) override {
-		switch (intrinsic) {
-			case ARM64_INTRIN_ISB:
-				return "__isb";
-			default:
-				LogError("missing intrinsic name: %x\n", intrinsic);
-				return "";
+
+	virtual string GetIntrinsicName(uint32_t intrinsic) override
+	{
+		switch (intrinsic)
+		{
+		case ARM64_INTRIN_ISB:
+			return "__isb";
+		default:
+			return "";
 		}
 	}
 
-	virtual vector<uint32_t> GetAllIntrinsics() override {
-		vector<uint32_t> intrins = {};
 
-		intrins.push_back(ARM64_INTRIN_ISB);
-
-		return intrins;
+	virtual vector<uint32_t> GetAllIntrinsics() override
+	{
+		return vector<uint32_t> {ARM64_INTRIN_ISB};
 	}
 
-	virtual vector<NameAndType> GetIntrinsicInputs(uint32_t intrinsic) override {
-		switch (intrinsic) {
-			case ARM64_INTRIN_ISB:
-				return {};
-			default:
-				LogError("missing intrinsic inputs: %x\n", intrinsic);
-				return {};
+
+	virtual vector<NameAndType> GetIntrinsicInputs(uint32_t intrinsic) override
+	{
+		switch (intrinsic)
+		{
+		case ARM64_INTRIN_ISB:
+		default:
+			return vector<NameAndType>();
 		}
 	}
 
-	virtual vector<Confidence<Ref<Type>>> GetIntrinsicOutputs(uint32_t intrinsic) override {
-		 switch (intrinsic) {
-			case ARM64_INTRIN_ISB:
-				return {};
-			default:
-				LogError("missing intrinsic outputs: %x\n", intrinsic);
-				return {};
+
+	virtual vector<Confidence<Ref<Type>>> GetIntrinsicOutputs(uint32_t intrinsic) override
+	{
+		switch (intrinsic)
+		{
+		case ARM64_INTRIN_ISB:
+		default:
+			return vector<Confidence<Ref<Type>>>();
 		}
 	}
+
 
 	virtual bool IsNeverBranchPatchAvailable(const uint8_t* data, uint64_t addr, size_t len) override
 	{
