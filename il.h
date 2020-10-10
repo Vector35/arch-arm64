@@ -11,6 +11,11 @@
 #define IL_FLAGWRITE_NONE       0
 #define IL_FLAGWRITE_ALL        1
 
+enum Arm64Intrinsic : uint32_t
+{
+	ARM64_INTRIN_ISB = 0,
+};
+
 bool GetLowLevelILForInstruction(
 		BinaryNinja::Architecture* arch,
 		uint64_t addr,

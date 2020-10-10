@@ -817,6 +817,43 @@ public:
 		return true;
 	}
 
+	virtual string GetIntrinsicName(uint32_t intrinsic) override {
+		switch (intrinsic) {
+			case ARM64_INTRIN_ISB:
+				return "__isb";
+			default:
+				LogError("missing intrinsic name: %x\n", intrinsic);
+				return "";
+		}
+	}
+
+	virtual vector<uint32_t> GetAllIntrinsics() override {
+		vector<uint32_t> intrins = {};
+
+		intrins.push_back(ARM64_INTRIN_ISB);
+
+		return intrins;
+	}
+
+	virtual vector<NameAndType> GetIntrinsicInputs(uint32_t intrinsic) override {
+		switch (intrinsic) {
+			case ARM64_INTRIN_ISB:
+				return {};
+			default:
+				LogError("missing intrinsic inputs: %x\n", intrinsic);
+				return {};
+		}
+	}
+
+	virtual vector<Confidence<Ref<Type>>> GetIntrinsicOutputs(uint32_t intrinsic) override {
+		 switch (intrinsic) {
+			case ARM64_INTRIN_ISB:
+				return {};
+			default:
+				LogError("missing intrinsic outputs: %x\n", intrinsic);
+				return {};
+		}
+	}
 
 	virtual bool IsNeverBranchPatchAvailable(const uint8_t* data, uint64_t addr, size_t len) override
 	{
