@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include "lowlevelilinstruction.h"
 #include "il.h"
 
 using namespace BinaryNinja;
@@ -862,6 +863,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.Xor(REGSZ(operand1),
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)))));
+		break;
+	case ARM64_ISB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
 	case ARM64_LDAR:
 	case ARM64_LDAXR:
