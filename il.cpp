@@ -1192,7 +1192,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_CSDB, {}));
 			break;
 		default:
-			if ((IMM(operand1) & ~0b100110) == 0b100000)
+			if ((IMM(operand1) & ~0b110) == 0b100000)
 				il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_BTI, {}));
 			else
 				LogWarn("unknown hint operand: %x\n", IMM(operand1));
