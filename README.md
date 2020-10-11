@@ -51,22 +51,22 @@ updates do not automatically uninstall your custom build.**
 ## Build Example
 
 ### acquire repositories
-
+```
 mkdir ~/repos/vector35
 cd ~/repos/vector35
 git clone git@github.com:Vector35/binaryninja-api.git
 git clone git@github.com:Vector35/arch-arm64.git
-
+```
 ### environment variables
 
-export BN_API_PATH=~/repos/vector35/binaryninja-api
+`export BN_API_PATH=~/repos/vector35/binaryninja-api`
 
 ### cmake, make
-
+```
 cd arch-arm64
 cmake -DBN_INSTALL_DIR=/Applications/Binary\ Ninja\ DEV.app/ .
 make
-
+```
 ## Build Troubleshooting
 
 ### example
