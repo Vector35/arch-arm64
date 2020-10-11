@@ -824,10 +824,10 @@ public:
 		{
 		case ARM64_INTRIN_ISB:
 			return "__isb";
-        case ARM64_INTRIN_WFE:
-            return "__wfe";
-        case ARM64_INTRIN_WFI:
-            return "__wfi";
+		case ARM64_INTRIN_WFE:
+			return "__wfe";
+		case ARM64_INTRIN_WFI:
+			return "__wfi";
 		default:
 			return "";
 		}
@@ -836,9 +836,7 @@ public:
 
 	virtual vector<uint32_t> GetAllIntrinsics() override
 	{
-		return vector<uint32_t> {ARM64_INTRIN_ISB};
-        return vector<uint32_t> {ARM64_INTRIN_WFE};
-        return vector<uint32_t> {ARM64_INTRIN_WFI};
+		return vector<uint32_t> {ARM64_INTRIN_ISB, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI};
 	}
 
 
@@ -847,8 +845,8 @@ public:
 		switch (intrinsic)
 		{
 		case ARM64_INTRIN_ISB:
-        case ARM64_INTRIN_WFE:
-        case ARM64_INTRIN_WFI:
+		case ARM64_INTRIN_WFE:
+		case ARM64_INTRIN_WFI:
 		default:
 			return vector<NameAndType>();
 		}
@@ -860,8 +858,8 @@ public:
 		switch (intrinsic)
 		{
 		case ARM64_INTRIN_ISB:
-        case ARM64_INTRIN_WFE:
-        case ARM64_INTRIN_WFI:
+		case ARM64_INTRIN_WFE:
+		case ARM64_INTRIN_WFI:
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}
