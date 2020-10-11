@@ -824,6 +824,10 @@ public:
 		{
 		case ARM64_INTRIN_ISB:
 			return "__isb";
+		case ARM64_INTRIN_MSR:
+			return "_WriteStatusReg";
+		case ARM64_INTRIN_MRS:
+			return "_ReadStatusReg";
 		default:
 			return "";
 		}
@@ -832,7 +836,7 @@ public:
 
 	virtual vector<uint32_t> GetAllIntrinsics() override
 	{
-		return vector<uint32_t> {ARM64_INTRIN_ISB};
+		return vector<uint32_t> {ARM64_INTRIN_ISB, ARM64_INTRIN_MSR, ARM64_INTRIN_MRS};
 	}
 
 
@@ -840,6 +844,10 @@ public:
 	{
 		switch (intrinsic)
 		{
+		case ARM64_INTRIN_MSR:
+			return {NameAndType(Type::IntegerType(8, false))};
+		case ARM64_INTRIN_MRS:
+			return {NameAndType(Type::IntegerType(4, false))};
 		case ARM64_INTRIN_ISB:
 		default:
 			return vector<NameAndType>();
@@ -851,6 +859,10 @@ public:
 	{
 		switch (intrinsic)
 		{
+		case ARM64_INTRIN_MSR:
+			return {Type::IntegerType(4, false)};
+		case ARM64_INTRIN_MRS:
+			return {Type::IntegerType(8, false)};
 		case ARM64_INTRIN_ISB:
 		default:
 			return vector<Confidence<Ref<Type>>>();
@@ -1098,7 +1110,7 @@ public:
 
 	virtual vector<uint32_t> GetAllRegisters() override
 	{
-		return vector<uint32_t>{
+		vector<uint32_t> r = {
 			REG_W0,  REG_W1,  REG_W2,  REG_W3,  REG_W4,  REG_W5,  REG_W6,  REG_W7,
 			REG_W8,  REG_W9,  REG_W10, REG_W11, REG_W12, REG_W13, REG_W14, REG_W15,
 			REG_W16, REG_W17, REG_W18, REG_W19, REG_W20, REG_W21, REG_W22, REG_W23,
@@ -1132,6 +1144,13 @@ public:
 			REG_Q16, REG_Q17, REG_Q18, REG_Q19, REG_Q20, REG_Q21, REG_Q22, REG_Q23,
 			REG_Q24, REG_Q25, REG_Q26, REG_Q27, REG_Q28, REG_Q29, REG_Q30, REG_Q31
 		};
+
+		// this could also be inlined, but the odds of more status registers being added
+		// seems high, and updatingthem multiple places would be a pain
+		for (uint32_t ii = SYSREG_NONE + 1; ii < SYSREG_END; ++ii)
+			r.push_back(ii);
+
+		return r;
 	}
 
 
@@ -1422,6 +1441,10 @@ public:
 			case REG_Q31:
 				return RegisterInfo(reg, 0, 16);
 		}
+
+		if (reg > SYSREG_NONE && reg < SYSREG_END)
+			return RegisterInfo(reg, 0, 4);
+
 		return RegisterInfo(0, 0, 0);
 	}
 
@@ -1433,6 +1456,16 @@ public:
 	virtual uint32_t GetLinkRegister() override
 	{
 		return REG_X30;
+	}
+
+	virtual vector<uint32_t> GetSystemRegisters() override {
+		vector<uint32_t> system_regs = {};
+
+		for (uint32_t ii = SYSREG_NONE + 1; ii < SYSREG_END; ++ii) {
+			system_regs.push_back(ii);
+		}
+
+		return system_regs;
 	}
 };
 

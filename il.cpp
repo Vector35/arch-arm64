@@ -968,9 +968,31 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Add(REGSZ(operand1), ILREG(operand4), il.Mult(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
 		break;
+	case ARM64_MRS:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
+					ARM64_INTRIN_MRS,
+					{ILREG(operand2)}));
+		break;
 	case ARM64_MSUB:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Sub(REGSZ(operand1), ILREG(operand4), il.Mult(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
+	case ARM64_MSR:
+		switch (operand2.operandClass) {
+		case IMM32:
+			il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
+						ARM64_INTRIN_MSR,
+						{il.Const(4, IMM(operand2))}));
+			break;
+		case REG:
+			il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
+						ARM64_INTRIN_MSR,
+						{ILREG(operand2)}));
+			break;
+		default:
+			LogError("unknown MSR operand class: %x\n", operand2.operandClass);
+			break;
+		}
 		break;
 	case ARM64_NEG:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),

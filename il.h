@@ -14,6 +14,8 @@
 enum Arm64Intrinsic : uint32_t
 {
 	ARM64_INTRIN_ISB = 0,
+	ARM64_INTRIN_MSR = 1,
+	ARM64_INTRIN_MRS = 2,
 };
 
 bool GetLowLevelILForInstruction(
