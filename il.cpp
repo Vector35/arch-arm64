@@ -1125,6 +1125,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					ExtractRegister(il, operand2, 0, 2, false, REGSZ(operand1))));
 		break;
+    case ARM64_WFE:
+        il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFE, {}));
+        break;
+    case ARM64_WFI:
+        il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFI, {}));
+        break;
 	case ARM64_BRK:
 		il.AddInstruction(il.Trap(IMM(operand1))); // FIXME Breakpoint may need a parameter (IMM(operand1)));
 		return false;
