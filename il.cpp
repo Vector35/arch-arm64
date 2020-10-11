@@ -1060,6 +1060,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.DivSigned(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
 		break;
+	case ARM64_SEV:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEV, {}));
+		break;
 	case ARM64_STP:
 		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
 			il.AddInstruction(il.Unimplemented());

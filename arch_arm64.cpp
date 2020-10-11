@@ -856,6 +856,8 @@ public:
 			return "SystemHintOp_CSDB";
 		case ARM64_INTRIN_HINT_BTI:
 			return "SystemHintOp_BTI";
+		case ARM64_INTRIN_SEV:
+			return "__sev";
 		default:
 			return "";
 		}
@@ -868,7 +870,7 @@ public:
 			ARM64_INTRIN_MSR, ARM64_INTRIN_MRS, ARM64_INTRIN_HINT_NOP, ARM64_INTRIN_HINT_YIELD,
 			ARM64_INTRIN_HINT_WFE, ARM64_INTRIN_HINT_WFI, ARM64_INTRIN_HINT_SEV, ARM64_INTRIN_HINT_SEVL,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_ESB, ARM64_INTRIN_HINT_PSB, ARM64_INTRIN_HINT_TSB,
-			ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_BTI};
+			ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV};
 	}
 
 
@@ -895,6 +897,7 @@ public:
 		case ARM64_INTRIN_HINT_TSB:
 		case ARM64_INTRIN_HINT_CSDB:
 		case ARM64_INTRIN_HINT_BTI:
+		case ARM64_INTRIN_SEV:
 		default:
 			return vector<NameAndType>();
 		}
@@ -924,6 +927,7 @@ public:
 		case ARM64_INTRIN_HINT_TSB:
 		case ARM64_INTRIN_HINT_CSDB:
 		case ARM64_INTRIN_HINT_BTI:
+		case ARM64_INTRIN_SEV:
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}

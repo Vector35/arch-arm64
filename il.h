@@ -30,6 +30,7 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_HINT_TSB,
 	ARM64_INTRIN_HINT_CSDB,
 	ARM64_INTRIN_HINT_BTI,
+	ARM64_INTRIN_SEV,
 };
 
 bool GetLowLevelILForInstruction(
