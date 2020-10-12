@@ -875,6 +875,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
+	case ARM64_DMB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_DMB, {}));
+		break;
+	case ARM64_DSB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_DSB, {}));
+		break;
 	case ARM64_EON:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Xor(REGSZ(operand1),
