@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 
 test_cases = [
+	(b'\x1f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_NOP,LLIL_CALL_PARAM([]))'), # hint 0x0
+	(b'\x3f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_YIELD,LLIL_CALL_PARAM([]))'), # hint 0x1
+	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFE,LLIL_CALL_PARAM([]))'), # hint 0x2
+	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFI,LLIL_CALL_PARAM([]))'), # hint 0x3
+	(b'\x9f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEV,LLIL_CALL_PARAM([]))'), # hint 0x4
+	(b'\xbf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEVL,LLIL_CALL_PARAM([]))'), # hint 0x5
+	(b'\xdf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_DGH,LLIL_CALL_PARAM([]))'), # hint 0x6
+	(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,LLIL_CALL_PARAM([]))'), # hint 0x10
+	(b'\x3f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_PSB,LLIL_CALL_PARAM([]))'), # hint 0x11
+	(b'\x5f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_TSB,LLIL_CALL_PARAM([]))'), # hint 0x12
+	(b'\x9f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_CSDB,LLIL_CALL_PARAM([]))'), # hint 0x14
+	(b'\x5f\x24\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_BTI,LLIL_CALL_PARAM([]))'), # hint 0x22
 	(b'\x00\xc0\x1e\xd5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([<il: x0>]))'), # msr vbar_el3, x0
 	(b'\x00\x10\x1e\xd5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([<il: x0>]))'), # msr sctlr_el3, x0
 	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([<il: 4>]))'), # msr daifclr, #0x4
