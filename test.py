@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 
 test_cases = [
+	(b'\xbf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb sy (data memory barrier, system)
+	(b'\xbf\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb st (data memory barrier, stores)
+	(b'\xbf\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb ishst (data memory barrier, inner shareable domain)
+	(b'\x9f\x3f\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb sy (data synchronization barrier, system)
+	(b'\x9f\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb st (data synchronization barrier, stores)
+	(b'\x9f\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb ishst (data synchronization barrier, inner shareable domain)
+	(b'\xdf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__isb,LLIL_CALL_PARAM([]))'), # isb (instruction synchronization barrier, implied system)
 	(b'\x1f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_NOP,LLIL_CALL_PARAM([]))'), # hint 0x0
 	(b'\x3f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_YIELD,LLIL_CALL_PARAM([]))'), # hint 0x1
 	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFE,LLIL_CALL_PARAM([]))'), # hint 0x2
 	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFI,LLIL_CALL_PARAM([]))'), # hint 0x3
-	(b'\x9f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEV,LLIL_CALL_PARAM([]))'), # hint 0x4
+	(b'\x9f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEV,LLIL_CALL_PARAM([]))'), # "hint 0x4" or "sev"
 	(b'\xbf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEVL,LLIL_CALL_PARAM([]))'), # hint 0x5
 	(b'\xdf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_DGH,LLIL_CALL_PARAM([]))'), # hint 0x6
 	(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,LLIL_CALL_PARAM([]))'), # hint 0x10
@@ -17,9 +24,8 @@ test_cases = [
 	(b'\x00\x10\x1e\xd5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([<il: x0>]))'), # msr sctlr_el3, x0
 	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([<il: 4>]))'), # msr daifclr, #0x4
 	(b'\x00\x10\x3e\xd5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([<il: sctlr_el3>]))'), # mrs x0, sctlr_el3
-	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfi,LLIL_CALL_PARAM([]))'), # WFI
-	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfe,LLIL_CALL_PARAM([]))'), # WFE
-	(b'\xdf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__isb,LLIL_CALL_PARAM([]))'), # ISB
+	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfi,LLIL_CALL_PARAM([]))'), # wfi (wait for interrupt)
+	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfe,LLIL_CALL_PARAM([]))'), # wfe (wait for event)
 
 #	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG(n),1,3); LLIL_SUB(LLIL_REG(w6),LLIL_CONST(18)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(1)); LLIL_GOTO(8)'), # ccmp w6, #18, #1, mi
 #
