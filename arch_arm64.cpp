@@ -1161,11 +1161,18 @@ public:
 
 	virtual string GetRegisterName(uint32_t reg) override
 	{
-		if (reg == REG_NONE)
+		switch (reg) {
+		case REG_NONE:
 			return "";
+		case FAKEREG_SYSCALL_IMM:
+			return "syscall_imm";
+		}
+
 		const char* regName = get_register_name((enum Register)reg);
+
 		if (!regName)
 			return "";
+
 		return regName;
 	}
 
@@ -1225,6 +1232,9 @@ public:
 		// this could also be inlined, but the odds of more status registers being added
 		// seems high, and updatingthem multiple places would be a pain
 		for (uint32_t ii = SYSREG_NONE + 1; ii < SYSREG_END; ++ii)
+			r.push_back(ii);
+
+		for (uint32_t ii = FAKEREG_NONE + 1; ii < FAKEREG_END; ++ii)
 			r.push_back(ii);
 
 		return r;
@@ -1517,6 +1527,8 @@ public:
 			case REG_Q30:
 			case REG_Q31:
 				return RegisterInfo(reg, 0, 16);
+			case FAKEREG_SYSCALL_IMM:
+				return RegisterInfo(reg, 0, 2);
 		}
 
 		if (reg > SYSREG_NONE && reg < SYSREG_END)
@@ -1882,6 +1894,38 @@ public:
 	}
 };
 
+class WindowsArm64SystemCallConvention: public CallingConvention
+{
+public:
+	WindowsArm64SystemCallConvention(Architecture* arch): CallingConvention(arch, "windows-syscall")
+	{
+	}
+
+
+	virtual vector<uint32_t> GetIntegerArgumentRegisters() override
+	{
+		return { FAKEREG_SYSCALL_IMM };
+	}
+
+
+	virtual vector<uint32_t> GetCallerSavedRegisters() override
+	{
+		return vector<uint32_t>{ REG_X0 };
+	}
+
+
+	virtual vector<uint32_t> GetCalleeSavedRegisters() override
+	{
+		return {};
+	}
+
+
+	virtual uint32_t GetIntegerReturnValueRegister() override
+	{
+		return REG_X0;
+	}
+};
+
 
 class Arm64MachoRelocationHandler: public RelocationHandler
 {
@@ -2233,6 +2277,9 @@ extern "C"
 		arm64->SetStdcallCallingConvention(conv);
 
 		conv = new LinuxArm64SystemCallConvention(arm64);
+		arm64->RegisterCallingConvention(conv);
+
+		conv = new WindowsArm64SystemCallConvention(arm64);
 		arm64->RegisterCallingConvention(conv);
 
 		// Register ARM64 specific PLT trampoline recognizer

@@ -1103,10 +1103,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					instr.operation == ARM64_SUBS ? IL_FLAGWRITE_ALL : 0)));
 		break;
 	case ARM64_SVC:
-		if (instr.operands[0].immediate == 0)
-			il.AddInstruction(il.SystemCall());
-		else
-			il.AddInstruction(il.Unimplemented());
+		il.AddInstruction(il.SetRegister(2, FAKEREG_SYSCALL_IMM, il.Const(2, IMM(operand1))));
+		il.AddInstruction(il.SystemCall());
 		break;
 	case ARM64_SXTB:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
