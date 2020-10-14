@@ -35,6 +35,13 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_DSB,
 };
 
+enum Arm64FakeRegister: uint32_t
+{
+	FAKEREG_NONE = arm64::SYSREG_END + 1,
+	FAKEREG_SYSCALL_IMM,
+	FAKEREG_END,
+};
+
 bool GetLowLevelILForInstruction(
 		BinaryNinja::Architecture* arch,
 		uint64_t addr,
