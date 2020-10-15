@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
+RET = b'\xc0\x03\x5f\xd6'
+
 test_cases = [
+	(b'\x01\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(0)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
+	(b'\x21\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(1)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
+	(b'\x41\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(2)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
+	(b'\x61\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(3)); LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
 	(b'\xbf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb sy (data memory barrier, system)
 	(b'\xbf\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb st (data memory barrier, stores)
 	(b'\xbf\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb ishst (data memory barrier, inner shareable domain)
