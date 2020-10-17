@@ -14,15 +14,15 @@ test_cases = [
 	(b'\x9f\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb st (data synchronization barrier, stores)
 	(b'\x9f\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb ishst (data synchronization barrier, inner shareable domain)
 	(b'\xdf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__isb,LLIL_CALL_PARAM([]))'), # isb (instruction synchronization barrier, implied system)
-	(b'\x1f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_NOP,LLIL_CALL_PARAM([]))'), # hint 0x0
-	(b'\x3f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_YIELD,LLIL_CALL_PARAM([]))'), # hint 0x1
-	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFE,LLIL_CALL_PARAM([]))'), # hint 0x2
-	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_WFI,LLIL_CALL_PARAM([]))'), # hint 0x3
-	(b'\x9f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEV,LLIL_CALL_PARAM([]))'), # "hint 0x4" or "sev"
-	(b'\xbf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEVL,LLIL_CALL_PARAM([]))'), # hint 0x5
+	#(b'\x1f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_NOP,LLIL_CALL_PARAM([]))'), # hint 0x0
+	#(b'\x3f\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_YIELD,LLIL_CALL_PARAM([]))'), # hint 0x1
+	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfe,LLIL_CALL_PARAM([]))'), # hint 0x2
+	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfi,LLIL_CALL_PARAM([]))'), # hint 0x3
+	(b'\x9f\x20\x03\xd5', 'LLIL_INTRINSIC([],__sev,LLIL_CALL_PARAM([]))'), # "hint 0x4" or "sev"
+	#(b'\xbf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_SEVL,LLIL_CALL_PARAM([]))'), # hint 0x5
 	(b'\xdf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_DGH,LLIL_CALL_PARAM([]))'), # hint 0x6
-	(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,LLIL_CALL_PARAM([]))'), # hint 0x10
-	(b'\x3f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_PSB,LLIL_CALL_PARAM([]))'), # hint 0x11
+	#(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,LLIL_CALL_PARAM([]))'), # hint 0x10
+	#(b'\x3f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_PSB,LLIL_CALL_PARAM([]))'), # hint 0x11
 	(b'\x5f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_TSB,LLIL_CALL_PARAM([]))'), # hint 0x12
 	(b'\x9f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_CSDB,LLIL_CALL_PARAM([]))'), # hint 0x14
 	(b'\x5f\x24\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_BTI,LLIL_CALL_PARAM([]))'), # hint 0x22
@@ -82,7 +82,7 @@ def instr_to_il(data):
 
 	return result
 
-if __name__ == '__main__':
+def test_all():
 	for (test_i, (data, expected)) in enumerate(test_cases):
 		actual = instr_to_il(data)
 		if actual != expected:
@@ -90,7 +90,17 @@ if __name__ == '__main__':
 			print('\t   input: %s' % data.hex())
 			print('\texpected: %s' % expected)
 			print('\t  actual: %s' % actual)
-			sys.exit(-1)
+			return False
 
-	print('success!')
-	sys.exit(0)
+	return True
+
+if __name__ == '__main__':
+	if test_all():
+		print('success!')
+		sys.exit(0)
+	else:
+		sys.exit(-1)
+
+if __name__ == 'arm64test':
+	if test_all():
+		print('success!')

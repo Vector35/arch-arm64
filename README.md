@@ -9,8 +9,19 @@ This is the Aarch64 plugin that ships with Binary Ninja.
 
 ## Testing
 
-`./test.py` currently implements a very basic "lift to string and compare" set of unit tests
+`./arm64test.py` currently implements a very basic "lift to string and compare" set of unit tests
 `./disassembler/test.py` implements a very basic "disassemble to string and compare" set of unit tests
+
+Personal Binary Ninja users can test via the built in console:
+```
+>>> sys.path.append('C:/users/x/documents/binja/arch-arm64') # Path directory containing arm64test.py
+>>> from importlib import reload
+>>> import arm64test
+success!
+>>> # Add or fix any testcases
+>>> reload(arm64test)
+success!
+```
 
 And, of course, you can open a test binary in Binary Ninja with this architecture built and activated to see if results are as expected.
 
