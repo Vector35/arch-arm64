@@ -1230,7 +1230,7 @@ public:
 		};
 
 		// this could also be inlined, but the odds of more status registers being added
-		// seems high, and updatingthem multiple places would be a pain
+		// seems high, and updating them multiple places would be a pain
 		for (uint32_t ii = SYSREG_NONE + 1; ii < SYSREG_END; ++ii)
 			r.push_back(ii);
 

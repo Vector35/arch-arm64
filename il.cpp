@@ -1146,6 +1146,22 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
 		break;
+	case ARM64_SMULL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+		break;
+	case ARM64_UMULH:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.LogicalShiftRight(16,
+				il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)),
+				il.Const(1, 8))));
+		break;
+	case ARM64_SMULH:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.LogicalShiftRight(16,
+				il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)),
+				il.Const(1, 8))));
+		break;
 	case ARM64_UDIV:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.DivUnsigned(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
