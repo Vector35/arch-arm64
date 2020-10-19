@@ -697,7 +697,7 @@ public:
 	{
 	}
 
-	bool CanAssemble()
+	bool CanAssemble() override
 	{
 		return true;
 	}

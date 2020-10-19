@@ -1054,10 +1054,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_SBC:
 	case ARM64_SBCS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-					il.Add(REGSZ(operand1),
-						il.Sub(REGSZ(operand1),
-							ILREG(operand2),
-							ReadILOperand(il, instr.operands[2], REGSZ(operand1))),
+					il.SubBorrow(REGSZ(operand1),
+						ILREG(operand2),
+						ReadILOperand(il, operand3, REGSZ(operand1)),
 						il.Flag(IL_FLAG_C),
 						instr.operation == ARM64_SBCS ? IL_FLAGWRITE_ALL : 0)));
 		break;
