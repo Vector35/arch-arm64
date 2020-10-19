@@ -1143,9 +1143,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
 		break;
 	case ARM64_UMULL:
-	    il.AddInstruction(il.SetRegister(
-					8, ILREG(operand1), il.Mult(8, ILREG(operand2), ILREG(operand3))));
-        break;
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+		break;
 	case ARM64_UDIV:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.DivUnsigned(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
@@ -1165,12 +1165,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					ExtractRegister(il, operand2, 0, 2, false, REGSZ(operand1))));
 		break;
-    case ARM64_WFE:
-        il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFE, {}));
-        break;
-    case ARM64_WFI:
-        il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFI, {}));
-        break;
+	case ARM64_WFE:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFE, {}));
+		break;
+	case ARM64_WFI:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFI, {}));
+		break;
 	case ARM64_BRK:
 		il.AddInstruction(il.Trap(IMM(operand1))); // FIXME Breakpoint may need a parameter (IMM(operand1)));
 		return false;

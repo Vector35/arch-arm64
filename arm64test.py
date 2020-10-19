@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x41\x7c\xa3\x9b', 'LLIL_SET_REG(x1,LLIL_MULU_DP(LLIL_REG(w2),LLIL_REG(w3)))'), # umull x1, w2, w3
 	(b'\x41\x00\x03\x8b', 'LLIL_SET_REG(x1,LLIL_ADD(LLIL_REG(x2),LLIL_REG(x3)))'), # add x1,x2,x3
 	(b'\x41\x00\x03\xab', 'LLIL_SET_REG(x1,LLIL_ADD(LLIL_REG(x2),LLIL_REG(x3)))'), # adds x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x41\x00\x03\x8a', 'LLIL_SET_REG(x1,LLIL_AND(LLIL_REG(x2),LLIL_REG(x3)))'), # and x1,x2,x3
