@@ -3,6 +3,12 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x41\x00\x03\x8b', 'LLIL_SET_REG(x1,LLIL_ADD(LLIL_REG(x2),LLIL_REG(x3)))'), # add x1,x2,x3
+	(b'\x41\x00\x03\xab', 'LLIL_SET_REG(x1,LLIL_ADD(LLIL_REG(x2),LLIL_REG(x3)))'), # adds x1,x2,x3 with IL_FLAGWRITE_ALL
+	(b'\x41\x00\x03\x8a', 'LLIL_SET_REG(x1,LLIL_AND(LLIL_REG(x2),LLIL_REG(x3)))'), # and x1,x2,x3
+	(b'\x41\x00\x03\xea', 'LLIL_SET_REG(x1,LLIL_AND(LLIL_REG(x2),LLIL_REG(x3)))'), # ands x1,x2,x3 with IL_FLAGWRITE_ALL
+	(b'\x41\x00\x03\xda', 'LLIL_SET_REG(x1,LLIL_SBB(LLIL_REG(x2),LLIL_REG(x3),LLIL_FLAG(c)))'), # sbc x1,x2,x3
+	(b'\x41\x00\x03\xfa', 'LLIL_SET_REG(x1,LLIL_SBB(LLIL_REG(x2),LLIL_REG(x3),LLIL_FLAG(c)))'), # sbcs x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x01\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(0)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
 	(b'\x21\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(1)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
 	(b'\x41\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(2)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
