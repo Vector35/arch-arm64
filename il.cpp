@@ -1135,6 +1135,10 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand1),
 						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
 		break;
+	case ARM64_UMULL:
+	    il.AddInstruction(il.SetRegister(
+					8, ILREG(operand1), il.Mult(8, ILREG(operand2), ILREG(operand3))));
+        break;
 	case ARM64_UDIV:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.DivUnsigned(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
