@@ -681,22 +681,20 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	switch (instr.operation)
 	{
 	case ARM64_ADD:
+	case ARM64_ADDS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Add(REGSZ(operand1),
 						ILREG(operand2),
-						ReadILOperand(il, operand3, REGSZ(operand1)))));
+						ReadILOperand(il, operand3, REGSZ(operand1)),
+						instr.operation == ARM64_ADDS ? IL_FLAGWRITE_ALL : 0)));
 		break;
 	case ARM64_AND:
-		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-					il.And(REGSZ(operand1),
-						ILREG(operand2),
-						ReadILOperand(il, operand3, REGSZ(operand1)))));
-		break;
 	case ARM64_ANDS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.And(REGSZ(operand1),
 						ILREG(operand2),
-						ReadILOperand(il, operand3, REGSZ(operand1)), IL_FLAGWRITE_ALL)));
+						ReadILOperand(il, operand3, REGSZ(operand1)),
+						instr.operation == ARM64_ANDS ? IL_FLAGWRITE_ALL : 0)));
 		break;
 	case ARM64_ADR:
 	case ARM64_ADRP:
@@ -1052,6 +1050,16 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.RotateRight(REGSZ(operand2),
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand2)))));
+		break;
+	case ARM64_SBC:
+	case ARM64_SBCS:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Add(REGSZ(operand1),
+						il.Sub(REGSZ(operand1),
+							ILREG(operand2),
+							ReadILOperand(il, instr.operands[2], REGSZ(operand1))),
+						il.Flag(IL_FLAG_C),
+						instr.operation == ARM64_SBCS ? IL_FLAGWRITE_ALL : 0)));
 		break;
 	case ARM64_SBFX:
 	case ARM64_SBFM:
