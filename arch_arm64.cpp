@@ -1926,6 +1926,38 @@ public:
 	}
 };
 
+class MacosArm64SystemCallConvention: public CallingConvention
+{
+public:
+	MacosArm64SystemCallConvention(Architecture* arch): CallingConvention(arch, "macos-syscall")
+	{
+	}
+
+
+	virtual vector<uint32_t> GetIntegerArgumentRegisters() override
+	{
+		return vector<uint32_t>{ REG_X16, REG_X0, REG_X1, REG_X2, REG_X3, REG_X4, REG_X5 };
+	}
+
+
+	virtual vector<uint32_t> GetCallerSavedRegisters() override
+	{
+		return vector<uint32_t>{ REG_X0 };
+	}
+
+
+	virtual vector<uint32_t> GetCalleeSavedRegisters() override
+	{
+		return vector<uint32_t>{ REG_X19, REG_X20, REG_X21, REG_X22, REG_X23, REG_X24, REG_X25,
+			REG_X26, REG_X27, REG_X28, REG_X29 };
+	}
+
+
+	virtual uint32_t GetIntegerReturnValueRegister() override
+	{
+		return REG_X0;
+	}
+};
 
 class Arm64MachoRelocationHandler: public RelocationHandler
 {
