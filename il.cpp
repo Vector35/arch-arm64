@@ -891,6 +891,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)))));
 		break;
+	case ARM64_ESB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
+		break;
 	case ARM64_ISB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
@@ -1040,6 +1043,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)), IL_FLAGWRITE_ALL)));
 		break;
+	case ARM64_PSBCSYNC:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
+		break;
 	case ARM64_RET:
 	case ARM64_RETAA:
 	case ARM64_RETAB:
@@ -1075,6 +1081,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_SEV:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEV, {}));
+		break;
+	case ARM64_SEVL:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEVL, {}));
 		break;
 	case ARM64_STP:
 		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
@@ -1193,31 +1202,39 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_HINT:
 		switch (IMM(operand1)) {
 		case 0:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_NOP, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_NOP
+			il.AddInstruction(il.Nop());
 			break;
 		case 1:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_YIELD, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_YIELD
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
 			break;
 		case 2:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_WFE, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_WFE
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFE, {}));
 			break;
 		case 3:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_WFI, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_WFI
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFI, {}));
 			break;
 		case 4:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_SEV, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_SEV
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEV, {}));
 			break;
 		case 5:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_SEVL, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_SEVL
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEVL, {}));
 			break;
 		case 6:
 			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_DGH, {}));
 			break;
 		case 0x10:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_ESB, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_ESB
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 			break;
 		case 0x11:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_PSB, {}));
+			// this case should be impossible, as the instruction should be decoded as ARM64_PSBCSYNC
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
 			break;
 		case 0x12:
 			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_TSB, {}));
@@ -1238,6 +1255,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Trap(IMM(operand1)));
 		return false;
 
+	case ARM64_YIELD:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
+		break;
 	default:
 		il.AddInstruction(il.Unimplemented());
 		break;

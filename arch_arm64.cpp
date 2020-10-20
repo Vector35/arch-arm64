@@ -837,23 +837,11 @@ public:
 			return "_WriteStatusReg";
 		case ARM64_INTRIN_MRS:
 			return "_ReadStatusReg";
-		case ARM64_INTRIN_HINT_NOP:
-			return "SystemHintOp_NOP";
-		case ARM64_INTRIN_HINT_YIELD:
-			return "SystemHintOp_YIELD";
-		case ARM64_INTRIN_HINT_WFE:
-			return "SystemHintOp_WFE";
-		case ARM64_INTRIN_HINT_WFI:
-			return "SystemHintOp_WFI";
-		case ARM64_INTRIN_HINT_SEV:
-			return "SystemHintOp_SEV";
-		case ARM64_INTRIN_HINT_SEVL:
-			return "SystemHintOp_SEVL";
 		case ARM64_INTRIN_HINT_DGH:
 			return "SystemHintOp_DGH";
-		case ARM64_INTRIN_HINT_ESB:
+		case ARM64_INTRIN_ESB:
 			return "SystemHintOp_ESB";
-		case ARM64_INTRIN_HINT_PSB:
+		case ARM64_INTRIN_PSBCSYNC:
 			return "SystemHintOp_PSB";
 		case ARM64_INTRIN_HINT_TSB:
 			return "SystemHintOp_TSB";
@@ -863,10 +851,14 @@ public:
 			return "SystemHintOp_BTI";
 		case ARM64_INTRIN_SEV:
 			return "__sev";
+		case ARM64_INTRIN_SEVL:
+			return "__sevl";
 		case ARM64_INTRIN_DMB:
 			return "__dmb";
 		case ARM64_INTRIN_DSB:
 			return "__dsb";
+		case ARM64_INTRIN_YIELD:
+			return "__yield";
 		default:
 			return "";
 		}
@@ -876,10 +868,10 @@ public:
 	virtual vector<uint32_t> GetAllIntrinsics() override
 	{
 		return vector<uint32_t> {ARM64_INTRIN_ISB, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI,
-			ARM64_INTRIN_MSR, ARM64_INTRIN_MRS, ARM64_INTRIN_HINT_NOP, ARM64_INTRIN_HINT_YIELD,
-			ARM64_INTRIN_HINT_WFE, ARM64_INTRIN_HINT_WFI, ARM64_INTRIN_HINT_SEV, ARM64_INTRIN_HINT_SEVL,
-			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_ESB, ARM64_INTRIN_HINT_PSB, ARM64_INTRIN_HINT_TSB,
-			ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV, ARM64_INTRIN_DMB, ARM64_INTRIN_DSB};
+			ARM64_INTRIN_MSR, ARM64_INTRIN_MRS, ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_ESB,
+			ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_HINT_CSDB,
+			ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_DMB,
+			ARM64_INTRIN_DSB, ARM64_INTRIN_YIELD};
 	}
 
 
@@ -894,21 +886,17 @@ public:
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:
-		case ARM64_INTRIN_HINT_NOP:
-		case ARM64_INTRIN_HINT_YIELD:
-		case ARM64_INTRIN_HINT_WFE:
-		case ARM64_INTRIN_HINT_WFI:
-		case ARM64_INTRIN_HINT_SEV:
-		case ARM64_INTRIN_HINT_SEVL:
 		case ARM64_INTRIN_HINT_DGH:
-		case ARM64_INTRIN_HINT_ESB:
-		case ARM64_INTRIN_HINT_PSB:
+		case ARM64_INTRIN_ESB:
+		case ARM64_INTRIN_PSBCSYNC:
 		case ARM64_INTRIN_HINT_TSB:
 		case ARM64_INTRIN_HINT_CSDB:
 		case ARM64_INTRIN_HINT_BTI:
 		case ARM64_INTRIN_SEV:
+		case ARM64_INTRIN_SEVL:
 		case ARM64_INTRIN_DMB:
 		case ARM64_INTRIN_DSB:
+		case ARM64_INTRIN_YIELD:
 		default:
 			return vector<NameAndType>();
 		}
@@ -926,21 +914,17 @@ public:
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:
-		case ARM64_INTRIN_HINT_NOP:
-		case ARM64_INTRIN_HINT_YIELD:
-		case ARM64_INTRIN_HINT_WFE:
-		case ARM64_INTRIN_HINT_WFI:
-		case ARM64_INTRIN_HINT_SEV:
-		case ARM64_INTRIN_HINT_SEVL:
 		case ARM64_INTRIN_HINT_DGH:
-		case ARM64_INTRIN_HINT_ESB:
-		case ARM64_INTRIN_HINT_PSB:
+		case ARM64_INTRIN_ESB:
+		case ARM64_INTRIN_PSBCSYNC:
 		case ARM64_INTRIN_HINT_TSB:
 		case ARM64_INTRIN_HINT_CSDB:
 		case ARM64_INTRIN_HINT_BTI:
 		case ARM64_INTRIN_SEV:
+		case ARM64_INTRIN_SEVL:
 		case ARM64_INTRIN_DMB:
 		case ARM64_INTRIN_DSB:
+		case ARM64_INTRIN_YIELD:
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}
