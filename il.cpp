@@ -1027,6 +1027,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
 		break;
+	case ARM64_PRFUM:
 	case ARM64_PRFM:
 		// TODO use the PRFM types when we have a better option than defining 18 different intrinsics to account for:
 		// - 3 types {PLD, PLI, PST}

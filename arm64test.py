@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x21\xf0\x9f\xf8', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([<il: [x1 - 1].q>]))'), # prfum   pldl1strm, [x1, #-0x1]
 	(b'\x21\x00\x80\xf9', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([<il: [x1].q>]))'), # prfm    pldl1strm, [x1]
 	(b'\x41\x7c\xc3\x9b', 'LLIL_SET_REG(x1,LLIL_LSR(LLIL_MULU_DP(LLIL_REG(x2),LLIL_REG(x3)),LLIL_CONST(8)))'), # umulh x1, x2, x3
 	(b'\x41\x7c\x43\x9b', 'LLIL_SET_REG(x1,LLIL_LSR(LLIL_MULS_DP(LLIL_REG(x2),LLIL_REG(x3)),LLIL_CONST(8)))'), # smulh x1, x2, x3
