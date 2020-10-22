@@ -867,6 +867,8 @@ public:
 			return "__dmb";
 		case ARM64_INTRIN_DSB:
 			return "__dsb";
+		case ARM64_INTRIN_PRFM:
+			return "__prefetch";
 		default:
 			return "";
 		}
@@ -879,7 +881,8 @@ public:
 			ARM64_INTRIN_MSR, ARM64_INTRIN_MRS, ARM64_INTRIN_HINT_NOP, ARM64_INTRIN_HINT_YIELD,
 			ARM64_INTRIN_HINT_WFE, ARM64_INTRIN_HINT_WFI, ARM64_INTRIN_HINT_SEV, ARM64_INTRIN_HINT_SEVL,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_ESB, ARM64_INTRIN_HINT_PSB, ARM64_INTRIN_HINT_TSB,
-			ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV, ARM64_INTRIN_DMB, ARM64_INTRIN_DSB};
+			ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV, ARM64_INTRIN_DMB, ARM64_INTRIN_DSB,
+			ARM64_INTRIN_PRFM};
 	}
 
 
@@ -891,6 +894,8 @@ public:
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_MRS:
 			return {NameAndType(Type::IntegerType(4, false))};
+		case ARM64_INTRIN_PRFM:
+			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:
@@ -941,6 +946,7 @@ public:
 		case ARM64_INTRIN_SEV:
 		case ARM64_INTRIN_DMB:
 		case ARM64_INTRIN_DSB:
+		case ARM64_INTRIN_PRFM:
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}

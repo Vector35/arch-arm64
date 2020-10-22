@@ -33,6 +33,7 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_SEV,
 	ARM64_INTRIN_DMB,
 	ARM64_INTRIN_DSB,
+	ARM64_INTRIN_PRFM,
 };
 
 enum Arm64FakeRegister: uint32_t
