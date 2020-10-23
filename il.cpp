@@ -800,6 +800,29 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					ILREG(operand1),
 					ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
 		break;
+	case ARM64_CCMN:
+		{
+			LowLevelILLabel trueCode, falseCode, done;
+
+			il.AddInstruction(il.If(GetCondition(il, (Condition)REG(operand4)), trueCode, falseCode));
+
+			il.MarkLabel(trueCode);
+			il.AddInstruction(il.Add(REGSZ(operand1),
+						ILREG(operand1),
+						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+			il.AddInstruction(il.Goto(done));
+
+			il.MarkLabel(falseCode);
+			il.AddInstruction(il.SetFlag(IL_FLAG_N, il.Const(0, (IMM(operand3) >> 3) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_Z, il.Const(0, (IMM(operand3) >> 2) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_C, il.Const(0, (IMM(operand3) >> 1) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_V, il.Const(0, (IMM(operand3) >> 0) & 1)));
+
+			il.AddInstruction(il.Goto(done));
+
+			il.MarkLabel(done);
+		}
+		break;
 	case ARM64_CMP:
 		il.AddInstruction(il.Sub(REGSZ(operand1),
 					ILREG(operand1),

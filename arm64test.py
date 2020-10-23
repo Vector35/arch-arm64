@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x24\x98\x41\xba', 'LLIL_IF(LLIL_OR(LLIL_FLAG(z),LLIL_FLAG(c)),1,3); LLIL_ADD(LLIL_REG(x1),LLIL_CONST(1)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(1)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmn x1, #0x1, #0x4, ls
 	(b'\x41\x7c\xc3\x9b', 'LLIL_SET_REG(x1,LLIL_LSR(LLIL_MULU_DP(LLIL_REG(x2),LLIL_REG(x3)),LLIL_CONST(8)))'), # umulh x1, x2, x3
 	(b'\x41\x7c\x43\x9b', 'LLIL_SET_REG(x1,LLIL_LSR(LLIL_MULS_DP(LLIL_REG(x2),LLIL_REG(x3)),LLIL_CONST(8)))'), # smulh x1, x2, x3
 	(b'\x41\x7c\x23\x9b', 'LLIL_SET_REG(x1,LLIL_MULS_DP(LLIL_REG(w2),LLIL_REG(w3)))'), # smull x1, w2, w3
