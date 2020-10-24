@@ -16,10 +16,10 @@ test_cases = [
 	(b'\x41\x00\x03\xea', 'LLIL_SET_REG(x1,LLIL_AND(LLIL_REG(x2),LLIL_REG(x3)))'), # ands x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x41\x00\x03\xda', 'LLIL_SET_REG(x1,LLIL_SBB(LLIL_REG(x2),LLIL_REG(x3),LLIL_FLAG(c)))'), # sbc x1,x2,x3
 	(b'\x41\x00\x03\xfa', 'LLIL_SET_REG(x1,LLIL_SBB(LLIL_REG(x2),LLIL_REG(x3),LLIL_FLAG(c)))'), # sbcs x1,x2,x3 with IL_FLAGWRITE_ALL
-	(b'\x01\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(0)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
-	(b'\x21\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(1)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
-	(b'\x41\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(2)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
-	(b'\x61\x00\x00\xd4'+RET, 'LLIL_SET_REG(syscall_imm,LLIL_CONST(3)); LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
+	(b'\x01\x00\x00\xd4', 'LLIL_SET_REG(syscall_imm,LLIL_CONST(0)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
+	(b'\x21\x00\x00\xd4', 'LLIL_SET_REG(syscall_imm,LLIL_CONST(1)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
+	(b'\x41\x00\x00\xd4', 'LLIL_SET_REG(syscall_imm,LLIL_CONST(2)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
+	(b'\x61\x00\x00\xd4', 'LLIL_SET_REG(syscall_imm,LLIL_CONST(3)); LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
 	(b'\xbf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb sy (data memory barrier, system)
 	(b'\xbf\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb st (data memory barrier, stores)
 	(b'\xbf\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb ishst (data memory barrier, inner shareable domain)
@@ -27,7 +27,6 @@ test_cases = [
 	(b'\x9f\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb st (data synchronization barrier, stores)
 	(b'\x9f\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb ishst (data synchronization barrier, inner shareable domain)
 	(b'\xdf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__isb,LLIL_CALL_PARAM([]))'), # isb (instruction synchronization barrier, implied system)
-	(b'\x1f\x20\x03\xd5', ''), # "hint 0x0" or "nop"
 	(b'\x3f\x20\x03\xd5', 'LLIL_INTRINSIC([],__yield,LLIL_CALL_PARAM([]))'), # "yield" or "hint 0x1"
 	(b'\x5f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfe,LLIL_CALL_PARAM([]))'), # "wfe" or "hint 0x2"
 	(b'\x7f\x20\x03\xd5', 'LLIL_INTRINSIC([],__wfi,LLIL_CALL_PARAM([]))'), # "wfi" or "hint 0x3"
@@ -39,21 +38,19 @@ test_cases = [
 	(b'\x5f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_TSB,LLIL_CALL_PARAM([]))'), # hint 0x12
 	(b'\x9f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_CSDB,LLIL_CALL_PARAM([]))'), # hint 0x14
 	(b'\x5f\x24\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_BTI,LLIL_CALL_PARAM([]))'), # hint 0x22
-	(b'\x00\xc0\x1e\xd5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([<il: x0>]))'), # msr vbar_el3, x0
-	(b'\x00\x10\x1e\xd5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([<il: x0>]))'), # msr sctlr_el3, x0
-	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([<il: 4>]))'), # msr daifclr, #0x4
-	(b'\x00\x10\x3e\xd5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([<il: sctlr_el3>]))'), # mrs x0, sctlr_el3
-
-#	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG(n),1,3); LLIL_SUB(LLIL_REG(w6),LLIL_CONST(18)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(1)); LLIL_GOTO(8)'), # ccmp w6, #18, #1, mi
-#
+	(b'\x00\xc0\x1e\xd5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG(x0)]))'), # msr vbar_el3, x0
+	(b'\x00\x10\x1e\xd5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG(x0)]))'), # msr sctlr_el3, x0
+	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_CONST(4)]))'), # msr daifclr, #0x4
+	(b'\x00\x10\x3e\xd5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(sctlr_el3)]))'), # mrs x0, sctlr_el3
+	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG(n),1,3); LLIL_SUB(LLIL_REG(w6),LLIL_CONST(18)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(1)); LLIL_GOTO(8)'), # ccmp w6, #18, #1, mi
 #	# this is funky: LLIL_SUB() is optmized away, and we needed it for the IL_FLAGWRITE_ALL, did it have effect?
-#	(b'\x62\x08\x40\x7A', 'LLIL_IF(LLIL_FLAG(z),1,3); LLIL_REG(w3); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(1)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w3, #0, #2, eq
-#	(b'\x43\xBA\x59\x7A', 'foo'), # ccmp w18, #25, #3, lt
-#	(b'\xC4\x29\x5B\x7A', 'foo'), # ccmp w14, #27, #4, hs
-#	(b'\x24\x08\x5B\x7A', 'foo'), # ccmp w1, #27, #4, eq
-#	(b'\x22\x6A\x41\x7A', 'foo'), # ccmp w17, #1, #2, vs
-#	(b'\xA8\xA8\x41\x7A', 'foo'), # ccmp w5, #1, #8, ge
-#	(b'\x08\x49\x5E\x7A', 'foo'), # ccmp w8, #30, #8, mi
+	(b'\x62\x08\x40\x7A', 'LLIL_IF(LLIL_FLAG(z),1,3); LLIL_REG(w3); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(1)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w3, #0, #2, eq
+	(b'\x43\xBA\x59\x7A', 'LLIL_IF(LLIL_CMP_NE(LLIL_FLAG(n),LLIL_FLAG(v)),1,3); LLIL_SUB(LLIL_REG(w18),LLIL_CONST(25)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(1)); LLIL_SET_FLAG(v,LLIL_CONST(1)); LLIL_GOTO(8)'), # ccmp w18, #25, #3, lt
+	(b'\xC4\x29\x5B\x7A', 'LLIL_IF(LLIL_NOT(LLIL_FLAG(c)),1,3); LLIL_SUB(LLIL_REG(w14),LLIL_CONST(27)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(1)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w14, #27, #4, hs
+	(b'\x24\x08\x5B\x7A', 'LLIL_IF(LLIL_FLAG(z),1,3); LLIL_SUB(LLIL_REG(w1),LLIL_CONST(27)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(1)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w1, #27, #4, eq
+	(b'\x22\x6A\x41\x7A', 'LLIL_IF(LLIL_FLAG(v),1,3); LLIL_SUB(LLIL_REG(w17),LLIL_CONST(1)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(1)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w17, #1, #2, vs
+	(b'\xA8\xA8\x41\x7A', 'LLIL_IF(LLIL_CMP_E(LLIL_FLAG(n),LLIL_FLAG(v)),1,3); LLIL_SUB(LLIL_REG(w5),LLIL_CONST(1)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(1)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w5, #1, #8, ge
+	(b'\x08\x49\x5E\x7A', 'LLIL_IF(LLIL_FLAG(n),1,3); LLIL_SUB(LLIL_REG(w8),LLIL_CONST(30)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(1)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w8, #30, #8, mi
 	(b'\x0a\x00\x80\x52', 'LLIL_SET_REG(w10,LLIL_CONST(0))'), # mov 10, #0
 	(b'\x1f\x20\x03\xd5', ''), # nop, gets optimized from function
 ]
