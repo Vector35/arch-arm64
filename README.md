@@ -1,18 +1,23 @@
 # arch-arm64
+
 This is the Aarch64 plugin that ships with Binary Ninja.
 
 ## What's What
 
-`./arch_arm64.cpp` - implementation of the Architecture class
-`./il.cpp` - lifter
-`./disassembler/` - disassembler
+1. ./arch_arm64.cpp implements the Architecture class
+
+2. ./il.cpp contains the lifter, the translator from disassembly to intermediate language
+
+3. ./disassembler/* is the disassembler
 
 ## Testing
 
 `./arm64test.py` currently implements a very basic "lift to string and compare" set of unit tests
+
 `./disassembler/test.py` implements a very basic "disassemble to string and compare" set of unit tests
 
 Personal Binary Ninja users can test via the built in console:
+
 ```
 >>> sys.path.append('C:/users/x/documents/binja/arch-arm64') # Path directory containing arm64test.py
 >>> from importlib import reload
@@ -62,22 +67,26 @@ updates do not automatically uninstall your custom build.**
 ## Build Example
 
 ### acquire repositories
+
 ```
 mkdir ~/repos/vector35
 cd ~/repos/vector35
 git clone git@github.com:Vector35/binaryninja-api.git
 git clone git@github.com:Vector35/arch-arm64.git
 ```
+
 ### environment variables
 
 `export BN_API_PATH=~/repos/vector35/binaryninja-api`
 
 ### cmake, make
+
 ```
 cd arch-arm64
 cmake -DBN_INSTALL_DIR=/Applications/Binary\ Ninja\ DEV.app/ .
 make
 ```
+
 ## Build Troubleshooting
 
 ### example
@@ -110,4 +119,3 @@ make
     resolution:
     ensure that your api repo is on the same channel and at the same commit as the libbinaryninjacore you're linking against
     eg: binaryninja is on dev update channel and is up-to-date and binaryninja-api repo is on branch dev with latest pulled
-
