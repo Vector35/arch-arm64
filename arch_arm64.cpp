@@ -859,6 +859,8 @@ public:
 			return "__dsb";
 		case ARM64_INTRIN_YIELD:
 			return "__yield";
+		case ARM64_INTRIN_PRFM:
+			return "__prefetch";
 		default:
 			return "";
 		}
@@ -867,11 +869,12 @@ public:
 
 	virtual vector<uint32_t> GetAllIntrinsics() override
 	{
-		return vector<uint32_t> {ARM64_INTRIN_ISB, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI,
-			ARM64_INTRIN_MSR, ARM64_INTRIN_MRS, ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_ESB,
-			ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_HINT_CSDB,
-			ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_DMB,
-			ARM64_INTRIN_DSB, ARM64_INTRIN_YIELD};
+		return vector<uint32_t> {
+			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
+			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
+			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
+			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD
+		};
 	}
 
 
@@ -883,6 +886,8 @@ public:
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_MRS:
 			return {NameAndType(Type::IntegerType(4, false))};
+		case ARM64_INTRIN_PRFM:
+			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:
@@ -925,6 +930,7 @@ public:
 		case ARM64_INTRIN_DMB:
 		case ARM64_INTRIN_DSB:
 		case ARM64_INTRIN_YIELD:
+		case ARM64_INTRIN_PRFM:
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}

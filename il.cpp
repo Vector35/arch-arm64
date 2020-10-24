@@ -184,7 +184,6 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 			return il.Const(resultSize, operand.immediate);
 	case LABEL:
 		return il.ConstPointer(8, operand.immediate);
-	//case FIMM32:
 	case REG:
 		if (operand.reg[0] == REG_WZR || operand.reg[0] == REG_XZR)
 			return il.Const(resultSize, 0);
@@ -1030,6 +1029,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
+		break;
+	case ARM64_PRFUM:
+	case ARM64_PRFM:
+		// TODO use the PRFM types when we have a better option than defining 18 different intrinsics to account for:
+		// - 3 types {PLD, PLI, PST}
+		// - 3 targets {L1, L2, L3}
+		// - 2 policies {KEEP, STM}
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PRFM, {ReadILOperand(il, operand2, 8)}));
 		break;
 	case ARM64_ORN:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
