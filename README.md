@@ -4,17 +4,14 @@ This is the Aarch64 plugin that ships with Binary Ninja.
 
 ## What's What
 
-1. ./arch_arm64.cpp implements the Architecture class
-
-2. ./il.cpp contains the lifter, the translator from disassembly to intermediate language
-
-3. ./disassembler/* is the disassembler
+- [arch_arm64.cpp](./arch_arm64.cpp) implements the Architecture class
+- [il.cpp](./il.cpp) contains the lifter, the translator from disassembly to intermediate language
+- [disassembler/*](./disassembler/) is the disassembler
 
 ## Testing
 
-`./arm64test.py` currently implements a very basic "lift to string and compare" set of unit tests
-
-`./disassembler/test.py` implements a very basic "disassemble to string and compare" set of unit tests
+- [arm64test.py](./arm64test.py) currently implements a very basic "lift to string and compare" set of unit tests
+- [disassembler/test.py](./disassembler/test.py) implements a very basic "disassemble to string and compare" set of unit tests
 
 Personal Binary Ninja users can test via the built in console:
 
@@ -34,9 +31,12 @@ And, of course, you can open a test binary in Binary Ninja with this architectur
 
 Please follow whatever formatting conventions are present in the file you edit. Pay attention to curly brackets, spacing, tabs vs. spaces, etc.
 
-If you're making an architecture or lifter change, add a test case atop ./test.py that failed before your change, and succeeds after your change, if applicable.
+If you're making an architecture or lifter change, add a test case to [arm64test.py](./arm64test.py) that fails before your change and succeeds after your change.
 
-If you're making a disassembler change, add a test case atop ./disassembler/test.py that fails before your change, and succeeds after your change.
+If you're making a disassembler change, add a test case to [disassembler/test.py](./disassembler/test.py) that fails before your change and succeeds after your change.
+
+When you submit your first PR to one of Vector 35's repositories, you'll receive a notice from [CLA Assistant](https://cla-assistant.io/) that allows you to sign our [Contribution License Agreement](https://binary.ninja/cla.pdf) online. 
+
 
 ## Building
 
@@ -48,7 +48,7 @@ Binary Ninja API source tree.
 
 Run `cmake`. This can be done either from a separate build directory or from the source
 directory. If your app is installed in a non-default location, set BN_INSTALL_DIR in your
-cmake invocation, like `cmake -DBN_INSTALL_DIR=/Applications/Binary\ Ninja\ DEV.app/'.
+cmake invocation, like `cmake -DBN_INSTALL_DIR=/Applications/Binary\ Ninja\ DEV.app/`.
 Once that is complete, run `make` in the build directory to compile the plugin.
 
 The plugin can be found in the root of the build directory as `libarch_arm64.so`,
