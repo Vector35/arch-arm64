@@ -1065,6 +1065,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						il.Flag(IL_FLAG_C),
 						instr.operation == ARM64_SBCS ? IL_FLAGWRITE_ALL : 0)));
 		break;
+	case ARM64_SBFIZ:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+						il.ArithShiftRight(REGSZ(operand1),
+							il.ShiftLeft(REGSZ(operand1),
+								Extract(il, operand2, IMM(operand4), 0),
+								il.Const(1, (REGSZ(operand1)*8)-IMM(operand4))),
+							il.Const(1, (REGSZ(operand1)*8)-IMM(operand3)-IMM(operand4)))));
+		break;
 	case ARM64_SBFX:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 						il.ArithShiftRight(REGSZ(operand1),
