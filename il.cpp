@@ -1,5 +1,4 @@
 #include <stdarg.h>
-#include <cassert>
 #include "lowlevelilinstruction.h"
 #include "il.h"
 
@@ -676,10 +675,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	InstructionOperand& operand2 = instr.operands[1];
 	InstructionOperand& operand3 = instr.operands[2];
 	InstructionOperand& operand4 = instr.operands[3];
-
-	// these opcodes can't occur once aarch64_decompose() has been called
-	assert(instr.operation != ARM64_UBFM);
-	assert(instr.operation != ARM64_SBFM);
 
 	LowLevelILLabel trueLabel, falseLabel;
 	switch (instr.operation)
