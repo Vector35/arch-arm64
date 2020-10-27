@@ -3551,7 +3551,7 @@ uint32_t aarch64_decompose_load_store_exclusive(uint32_t instructionValue, Instr
 		}
 		instruction->operands[i].operandClass = REG;
 		instruction->operands[i++].reg[0]= REG(REGSET_ZR, regBase[base_idx], decode.Rt);
-		if(opcode==2 || opcode==3)
+		if( opcode==2 || opcode==3 )
 		{
 			instruction->operands[i].operandClass = REG;
 			instruction->operands[i++].reg[0]= REG(REGSET_ZR, regBase[base_idx], (decode.Rt+1)%32);
