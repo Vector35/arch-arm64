@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <cassert>
 #include "lowlevelilinstruction.h"
 #include "il.h"
 
@@ -676,6 +677,10 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	InstructionOperand& operand3 = instr.operands[2];
 	InstructionOperand& operand4 = instr.operands[3];
 
+	// these opcodes can't occur once aarch64_decompose() has been called
+	assert(instr.operation != ARM64_UBFM);
+	assert(instr.operation != ARM64_SBFM);
+
 	LowLevelILLabel trueLabel, falseLabel;
 	switch (instr.operation)
 	{
@@ -1097,7 +1102,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						instr.operation == ARM64_SBCS ? IL_FLAGWRITE_ALL : 0)));
 		break;
 	case ARM64_SBFX:
-	case ARM64_SBFM:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 						il.ArithShiftRight(REGSZ(operand1),
 							il.ShiftLeft(REGSZ(operand1),
@@ -1205,8 +1209,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.DivUnsigned(REGSZ(operand2), ILREG(operand2), ILREG(operand3))));
 		break;
+	case ARM64_UBFIZ:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.ZeroExtend(REGSZ(operand1), il.ShiftLeft(REGSZ(operand2),
+				il.And(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), (1LL << IMM(operand4)) - 1)),
+					il.Const(1, IMM(operand3))))));
+		break;
 	case ARM64_UBFX:
-	case ARM64_UBFM:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
 				il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
