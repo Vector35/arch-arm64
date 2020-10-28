@@ -92,13 +92,13 @@ test_cases = [
 	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
 	#(b'\x1F\x23\x03\xD5', 'LLIL_NOP'), # paciaz
 	# PACIA_64P_dp_1src 1101101011000001000000xxxxxxxxxx
-	#(b'\x4A\x02\xC1\xDA', 'LLIL_NOP'), # pacia x10, x18
-	#(b'\xAA\x00\xC1\xDA', 'LLIL_NOP'), # pacia x10, x5
+	(b'\x4A\x02\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(x18)]))'), # pacia x10, x18
+	(b'\xAA\x00\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'), # pacia x10, x5
 	# PACIB1716_HI_hints 110101010000001100100001xxxxxxxx
 	#(b'\x5F\x21\x03\xD5', 'LLIL_NOP'), # pacib1716
 	# PACIBSP_HI_hints 110101010000001100100011xxxxxxxx
 	# writes x30 (after PAC computation), reads sp for modifier
-	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # pacibsp
+	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # pacibsp
 	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
 	#(b'\x5F\x23\x03\xD5', 'LLIL_NOP'), # pacibz
 	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx

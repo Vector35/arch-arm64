@@ -841,8 +841,10 @@ public:
 			return "SystemHintOp_DGH";
 		case ARM64_INTRIN_ESB:
 			return "SystemHintOp_ESB";
+		case ARM64_INTRIN_PACIA:
+			return "__pacia";
 		case ARM64_INTRIN_PACIBSP:
-			return "pacibsp";
+			return "__pacibsp";
 		case ARM64_INTRIN_PSBCSYNC:
 			return "SystemHintOp_PSB";
 		case ARM64_INTRIN_HINT_TSB:
@@ -874,8 +876,8 @@ public:
 		return vector<uint32_t> {
 			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
-			ARM64_INTRIN_PACIBSP, ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL,
-			ARM64_INTRIN_WFE, ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD
+			ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIBSP, ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV,
+			ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD
 		};
 	}
 
@@ -888,10 +890,11 @@ public:
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_MRS:
 			return {NameAndType(Type::IntegerType(4, false))};
+		case ARM64_INTRIN_PACIA: // reads <Xn>
 		case ARM64_INTRIN_PRFM:
 			return {NameAndType(Type::IntegerType(8, false))};
-		case ARM64_INTRIN_PACIBSP:
-			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))}; // reads x30, sp
+		case ARM64_INTRIN_PACIBSP: // reads x30, sp
+			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:
@@ -919,9 +922,9 @@ public:
 		case ARM64_INTRIN_MSR:
 			return {Type::IntegerType(4, false)};
 		case ARM64_INTRIN_MRS:
+		case ARM64_INTRIN_PACIA: // writes <Xd>
+		case ARM64_INTRIN_PACIBSP: // writes x30
 			return {Type::IntegerType(8, false)};
-		case ARM64_INTRIN_PACIBSP:
-			return {Type::IntegerType(8, false)}; // writes x30
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
 		case ARM64_INTRIN_WFI:

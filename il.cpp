@@ -1053,6 +1053,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
 		break;
+	case ARM64_PACIA:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
+					ARM64_INTRIN_PACIBSP,
+					{ILREG(operand2)}));
+		break;
 	case ARM64_PACIBSP:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 					ARM64_INTRIN_PACIBSP,
