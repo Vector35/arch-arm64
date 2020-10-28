@@ -1053,6 +1053,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
 		break;
+	case ARM64_PACIBSP:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
+					ARM64_INTRIN_PACIBSP,
+					{il.Register(8, REG_SP)}));
+		break;
 	case ARM64_PRFUM:
 	case ARM64_PRFM:
 		// TODO use the PRFM types when we have a better option than defining 18 different intrinsics to account for:
