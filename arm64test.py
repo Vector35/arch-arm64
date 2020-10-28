@@ -105,8 +105,8 @@ test_cases = [
 	#(b'\x84\x06\xC1\xDA', 'LLIL_NOP'), # pacib x4, x20
 	#(b'\x61\x06\xC1\xDA', 'LLIL_NOP'), # pacib x1, x19
 	# PACIZA_64Z_dp_1src 110110101100000100100xxxxxxxxxxx
-	#(b'\xE3\x23\xC1\xDA', 'LLIL_NOP'), # paciza x3
-	#(b'\xFE\x23\xC1\xDA', 'LLIL_NOP'), # paciza x30
+	(b'\xE3\x23\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacibsp,LLIL_CALL_PARAM([]))'), # paciza x3
+	(b'\xFE\x23\xC1\xDA', 'LLIL_INTRINSIC([x30],__pacibsp,LLIL_CALL_PARAM([]))'), # paciza x30
 	# PACIZB_64Z_dp_1src 11011010110000010010xxxxxxxxxxxx
 	#(b'\xE3\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x3
 	#(b'\xE7\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x7
