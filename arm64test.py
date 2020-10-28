@@ -3,6 +3,123 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	# pointer auth instructions
+	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
+	#(b'\x04\x18\xC1\xDA', 'LLIL_NOP'), # autda x4, x0
+	#(b'\xF4\x18\xC1\xDA', 'LLIL_NOP'), # autda x20, x7
+	# AUTDB_64P_dp_1src 110110101100000100xxxxxxxxxxxxxx
+	#(b'\x94\x1C\xC1\xDA', 'LLIL_NOP'), # autdb x20, x4
+	#(b'\xCB\x1E\xC1\xDA', 'LLIL_NOP'), # autdb x11, x22
+	# AUTDZA_64Z_dp_1src 110110101100000100111xxxxxxxxxxx
+	#(b'\xF3\x3B\xC1\xDA', 'LLIL_NOP'), # autdza x19
+	#(b'\xF4\x3B\xC1\xDA', 'LLIL_NOP'), # autdza x20
+	# AUTDZB_64Z_dp_1src 11011010110000010xxxxxxxxxxxxxxx
+	#(b'\xFE\x3F\xC1\xDA', 'LLIL_NOP'), # autdzb x30
+	#(b'\xEE\x3F\xC1\xDA', 'LLIL_NOP'), # autdzb x14
+	# AUTIA_64P_dp_1src 1101101011000001000100xxxxxxxxxx
+	#(b'\x83\x11\xC1\xDA', 'LLIL_NOP'), # autia x3, x12
+	#(b'\xD5\x13\xC1\xDA', 'LLIL_NOP'), # autia x21, x30
+	# AUTIB1716_HI_hints 1101010100000011001000xxxxxxxxxx
+	#(b'\xDF\x21\x03\xD5', 'LLIL_NOP'), # autib1716
+	# AUTIBSP_HI_hints 110101010000001100100xxxxxxxxxxx
+	#(b'\xFF\x23\x03\xD5', 'LLIL_NOP'), # autibsp
+	# AUTIBZ_HI_hints 11010101000000110010001111xxxxxx
+	#(b'\xDF\x23\x03\xD5', 'LLIL_NOP'), # autibz
+	# AUTIB_64P_dp_1src 1101101011000001000101xxxxxxxxxx
+	#(b'\x7C\x16\xC1\xDA', 'LLIL_NOP'), # autib x28, x19
+	#(b'\xCB\x16\xC1\xDA', 'LLIL_NOP'), # autib x11, x22
+	# AUTIZA_64Z_dp_1src 110110101100000100110xxxxxxxxxxx
+	#(b'\xEF\x33\xC1\xDA', 'LLIL_NOP'), # autiza x15
+	#(b'\xF5\x33\xC1\xDA', 'LLIL_NOP'), # autiza x21
+	# AUTIZB_64Z_dp_1src 11011010110000010011xxxxxxxxxxxx
+	#(b'\xE4\x37\xC1\xDA', 'LLIL_NOP'), # autizb x4
+	#(b'\xF4\x37\xC1\xDA', 'LLIL_NOP'), # autizb x20
+	# BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
+	#(b'\xDF\x09\x3F\xD6', 'LLIL_NOP'), # blraaz x14
+	#(b'\xDF\x08\x3F\xD6', 'LLIL_NOP'), # blraaz x6
+	# BLRAA_64P_branch_reg 1101011100111111000010xxxxxxxxxx
+	#(b'\x14\x0B\x3F\xD7', 'LLIL_NOP'), # blraa x24, x20
+	#(b'\xFD\x0A\x3F\xD7', 'LLIL_NOP'), # blraa x23, x29
+	# BLRABZ_64_branch_reg 1101011000111111000011xxxxx11111
+	#(b'\x3F\x0E\x3F\xD6', 'LLIL_NOP'), # blrabz x17
+	#(b'\x3F\x0F\x3F\xD6', 'LLIL_NOP'), # blrabz x25
+	# BLRAB_64P_branch_reg 1101011100111111000011xxxxxxxxxx
+	#(b'\xBA\x0C\x3F\xD7', 'LLIL_NOP'), # blrab x5, x26
+	#(b'\xC2\x0E\x3F\xD7', 'LLIL_NOP'), # blrab x22, x2
+	# BRAAZ_64_branch_reg 1101011000011111000010xxxxx11111
+	#(b'\x5F\x08\x1F\xD6', 'LLIL_NOP'), # braaz x2
+	#(b'\x5F\x0A\x1F\xD6', 'LLIL_NOP'), # braaz x18
+	# BRAA_64P_branch_reg 1101011100011111000010xxxxxxxxxx
+	#(b'\x81\x08\x1F\xD7', 'LLIL_NOP'), # braa x4, x1
+	#(b'\x4C\x09\x1F\xD7', 'LLIL_NOP'), # braa x10, x12
+	# BRABZ_64_branch_reg 1101011000011111000011xxxxx11111
+	#(b'\x3F\x0C\x1F\xD6', 'LLIL_NOP'), # brabz x1
+	#(b'\xBF\x0E\x1F\xD6', 'LLIL_NOP'), # brabz x21
+	# BRAB_64P_branch_reg 1101011100011111000011xxxxxxxxxx
+	#(b'\x39\x0F\x1F\xD7', 'LLIL_NOP'), # brab x25, x25
+	#(b'\xA3\x0E\x1F\xD7', 'LLIL_NOP'), # brab x21, x3
+	# LDRAA_64W_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
+	#(b'\xAE\x1D\x25\xF8', 'LLIL_NOP'), # ldraa x14, [x13, #648]!
+	#(b'\x63\x6E\x62\xF8', 'LLIL_NOP'), # ldraa x3, [x19, #-3792]!
+	# LDRAA_64_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
+	#(b'\x90\x15\x62\xF8', 'LLIL_NOP'), # ldraa x16, [x12, #-3832]
+	#(b'\x52\x26\x73\xF8', 'LLIL_NOP'), # ldraa x18, [x18, #-1648]
+	# LDRAB_64W_ldst_pac 111110001x1xxxxxxxxx11xxxxxxxxxx
+	#(b'\x68\xDE\xB8\xF8', 'LLIL_NOP'), # ldrab x8, [x19, #3176]!
+	#(b'\x8D\x0D\xFF\xF8', 'LLIL_NOP'), # ldrab x13, [x12, #-128]!
+	# LDRAB_64_ldst_pac 111110001x1xxxxxxxxxxxxxxxxxxxxx
+	#(b'\x94\xF5\xA1\xF8', 'LLIL_NOP'), # ldrab x20, [x12, #248]
+	#(b'\x2B\x35\xAA\xF8', 'LLIL_NOP'), # ldrab x11, [x9, #1304]
+	# PACDA_64P_dp_1src 1101101011000001000010xxxxxxxxxx
+	#(b'\xAC\x0B\xC1\xDA', 'LLIL_NOP'), # pacda x12, x29
+	#(b'\xD2\x09\xC1\xDA', 'LLIL_NOP'), # pacda x18, x14
+	# PACDB_64P_dp_1src 1101101011000001000011xxxxxxxxxx
+	#(b'\xF9\x0E\xC1\xDA', 'LLIL_NOP'), # pacdb x25, x23
+	#(b'\xBA\x0C\xC1\xDA', 'LLIL_NOP'), # pacdb x26, x5
+	# PACDZA_64Z_dp_1src 110110101100000100101xxxxxxxxxxx
+	#(b'\xE7\x2B\xC1\xDA', 'LLIL_NOP'), # pacdza x7
+	#(b'\xF7\x2B\xC1\xDA', 'LLIL_NOP'), # pacdza x23
+	# PACDZB_64Z_dp_1src 1101101011000001001xxxxxxxxxxxxx
+	#(b'\xE6\x2F\xC1\xDA', 'LLIL_NOP'), # pacdzb x6
+	#(b'\xE0\x2F\xC1\xDA', 'LLIL_NOP'), # pacdzb x0
+	# PACGA_64P_dp_2src 10011010110xxxxx001100xxxxxxxxxx
+	#(b'\x22\x30\xCD\x9A', 'LLIL_NOP'), # pacga x2, x1, x13
+	#(b'\x99\x32\xD3\x9A', 'LLIL_NOP'), # pacga x25, x20, x19
+	# PACIA1716_HI_hints 1101010100000011001000010xxxxxxx
+	#(b'\x1F\x21\x03\xD5', 'LLIL_NOP'), # pacia1716
+	# PACIASP_HI_hints 1101010100000011001000110xxxxxxx
+	#(b'\x3F\x23\x03\xD5', 'LLIL_NOP'), # paciasp
+	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
+	#(b'\x1F\x23\x03\xD5', 'LLIL_NOP'), # paciaz
+	# PACIA_64P_dp_1src 1101101011000001000000xxxxxxxxxx
+	#(b'\x4A\x02\xC1\xDA', 'LLIL_NOP'), # pacia x10, x18
+	#(b'\xAA\x00\xC1\xDA', 'LLIL_NOP'), # pacia x10, x5
+	# PACIB1716_HI_hints 110101010000001100100001xxxxxxxx
+	#(b'\x5F\x21\x03\xD5', 'LLIL_NOP'), # pacib1716
+	# PACIBSP_HI_hints 110101010000001100100011xxxxxxxx
+	# writes x30 (after PAC computation), reads sp for modifier
+	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # pacibsp
+	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
+	#(b'\x5F\x23\x03\xD5', 'LLIL_NOP'), # pacibz
+	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx
+	#(b'\x84\x06\xC1\xDA', 'LLIL_NOP'), # pacib x4, x20
+	#(b'\x61\x06\xC1\xDA', 'LLIL_NOP'), # pacib x1, x19
+	# PACIZA_64Z_dp_1src 110110101100000100100xxxxxxxxxxx
+	#(b'\xE3\x23\xC1\xDA', 'LLIL_NOP'), # paciza x3
+	#(b'\xFE\x23\xC1\xDA', 'LLIL_NOP'), # paciza x30
+	# PACIZB_64Z_dp_1src 11011010110000010010xxxxxxxxxxxx
+	#(b'\xE3\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x3
+	#(b'\xE7\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x7
+	# RETAA_64E_branch_reg 11010110010111110000101111111111
+	#(b'\xFF\x0B\x5F\xD6', 'LLIL_NOP'), # retaa
+	# RETAB_64E_branch_reg 11010110010111110000111111111111
+	#(b'\xFF\x0F\x5F\xD6', 'LLIL_NOP'), # retab
+	# XPACD_64Z_dp_1src 110110101100000101000111111xxxxx
+	#(b'\xF8\x47\xC1\xDA', 'LLIL_NOP'), # xpacd x24
+	#(b'\xED\x47\xC1\xDA', 'LLIL_NOP'), # xpacd x13
+	# XPACI_64Z_dp_1src 110110101100000101000xxxxxxxxxxx
+	#(b'\xE2\x43\xC1\xDA', 'LLIL_NOP'), # xpaci x2
+	#(b'\xE7\x43\xC1\xDA', 'LLIL_NOP'), # xpaci x7
 	# signed bitfield insert zeros, lsb is position in DESTINATION register (position 0 in source)
 	# strategy: LSL extracted field to the most significant end, then ASR it back
 	(b'\x20\x00\x40\x93', 'LLIL_SET_REG.q(x0,LLIL_ASR.q(LLIL_LSL.q(LLIL_AND.q(LLIL_REG.q(x1),LLIL_CONST.q(1)),LLIL_CONST.b(63)),LLIL_CONST.b(63)))'), # sbfiz x0, x1, #0, #1
