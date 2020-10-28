@@ -311,6 +311,7 @@ static const char* OperationString[] = {
 	"pacdb", //Added for 8.3
 	"pacdza", //Added for 8.3
 	"pacdzb", //Added for 8.3
+	"pacga", //Added for 8.3
 	"pacia", //Added for 8.3
 	"pacia1716", //Added for 8.3
 	"paciasp", //Added for 8.3
@@ -2669,6 +2670,7 @@ uint32_t aarch64_decompose_data_processing_2(uint32_t instructionValue, Instruct
 	 * CRC32CH <Wd>, <Wn>, <Wm>
 	 * CRC32CW <Wd>, <Wn>, <Wm>
 	 * CRC32CX <Wd>, <Wn>, <Xm>
+	 * PACGA <Xd>, <Xn>, <Xm|SP>
 	 * SUBP <Xd>, <Xn|SP>, <Xm|SP>
 	 * SUBPS <Xd>, <Xn|SP>, <Xm|SP>
 	 */
@@ -2686,7 +2688,7 @@ uint32_t aarch64_decompose_data_processing_2(uint32_t instructionValue, Instruct
 			ARM64_SUBP,      ARM64_UNDEFINED, ARM64_UDIV,      ARM64_SDIV,
 			ARM64_IRG,       ARM64_GMI,       ARM64_UNDEFINED, ARM64_UNDEFINED,
 			ARM64_LSL,       ARM64_LSR,       ARM64_ASR,       ARM64_ROR,
-			ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED,
+			ARM64_PACGA,     ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED,
 			ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_CRC32X,
 			ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_CRC32CX,
 			ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED, ARM64_UNDEFINED,

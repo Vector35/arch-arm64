@@ -326,6 +326,7 @@ namespace arm64
 		ARM64_PACDB, //Added for 8.3
 		ARM64_PACDZA, //Added for 8.3
 		ARM64_PACDZB, //Added for 8.3
+		ARM64_PACGA, //Added for 8.3
 		ARM64_PACIA, //Added for 8.3
 		ARM64_PACIA1716, //Added for 8.3
 		ARM64_PACIASP, //Added for 8.3

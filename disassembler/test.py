@@ -6,6 +6,184 @@
 # (bytes, expected_disassembly, options)
 test_cases = (
 	(b'\x1F\x20\x03\xD5', 'nop', {}),
+	# pointer authentication instructions (ARMv8.3-PAuth, HavePACExt())
+	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
+	(b'\x06\x18\xC1\xDA', 'autda x6, x0', {}),
+	(b'\xFA\x1A\xC1\xDA', 'autda x26, x23', {}),
+	(b'\x55\x1A\xC1\xDA', 'autda x21, x18', {}),
+	(b'\x40\x18\xC1\xDA', 'autda x0, x2', {}),
+	# AUTDB_64P_dp_1src 110110101100000100xxxxxxxxxxxxxx
+	(b'\xE6\x1E\xC1\xDA', 'autdb x6, x23', {}),
+	(b'\x13\x1D\xC1\xDA', 'autdb x19, x8', {}),
+	(b'\xAE\x1D\xC1\xDA', 'autdb x14, x13', {}),
+	(b'\xE5\x1E\xC1\xDA', 'autdb x5, x23', {}),
+	# AUTDZA_64Z_dp_1src 110110101100000100111xxxxxxxxxxx
+	(b'\xE2\x3B\xC1\xDA', 'autdza x2', {}),
+	(b'\xED\x3B\xC1\xDA', 'autdza x13', {}),
+	(b'\xF7\x3B\xC1\xDA', 'autdza x23', {}),
+	(b'\xE4\x3B\xC1\xDA', 'autdza x4', {}),
+	# AUTDZB_64Z_dp_1src 11011010110000010xxxxxxxxxxxxxxx
+	(b'\xFE\x3F\xC1\xDA', 'autdzb x30', {}),
+	(b'\xF9\x3F\xC1\xDA', 'autdzb x25', {}),
+	(b'\xEE\x3F\xC1\xDA', 'autdzb x14', {}),
+	(b'\xF1\x3F\xC1\xDA', 'autdzb x17', {}),
+	# AUTIA_64P_dp_1src 1101101011000001000100xxxxxxxxxx
+	(b'\xAA\x12\xC1\xDA', 'autia x10, x21', {}),
+	(b'\x34\x10\xC1\xDA', 'autia x20, x1', {}),
+	(b'\xF5\x10\xC1\xDA', 'autia x21, x7', {}),
+	(b'\xD9\x13\xC1\xDA', 'autia x25, x30', {}),
+	# AUTIB1716_HI_hints 1101010100000011001000xxxxxxxxxx
+	(b'\xDF\x21\x03\xD5', 'autib1716', {}),
+	# AUTIBSP_HI_hints 110101010000001100100xxxxxxxxxxx
+	(b'\xFF\x23\x03\xD5', 'autibsp', {}),
+	# AUTIBZ_HI_hints 11010101000000110010001111xxxxxx
+	(b'\xDF\x23\x03\xD5', 'autibz', {}),
+	# AUTIB_64P_dp_1src 1101101011000001000101xxxxxxxxxx
+	(b'\x45\x17\xC1\xDA', 'autib x5, x26', {}),
+	(b'\x5E\x14\xC1\xDA', 'autib x30, x2', {}),
+	(b'\x4D\x17\xC1\xDA', 'autib x13, x26', {}),
+	(b'\x8D\x16\xC1\xDA', 'autib x13, x20', {}),
+	# AUTIZA_64Z_dp_1src 110110101100000100110xxxxxxxxxxx
+	(b'\xF4\x33\xC1\xDA', 'autiza x20', {}),
+	(b'\xEC\x33\xC1\xDA', 'autiza x12', {}),
+	(b'\xFB\x33\xC1\xDA', 'autiza x27', {}),
+	(b'\xE8\x33\xC1\xDA', 'autiza x8', {}),
+	# AUTIZB_64Z_dp_1src 11011010110000010011xxxxxxxxxxxx
+	(b'\xF2\x37\xC1\xDA', 'autizb x18', {}),
+	(b'\xF7\x37\xC1\xDA', 'autizb x23', {}),
+	(b'\xE6\x37\xC1\xDA', 'autizb x6', {}),
+	(b'\xE3\x37\xC1\xDA', 'autizb x3', {}),
+	# BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
+	(b'\x1F\x08\x3F\xD6', 'blraaz x0', {}),
+	(b'\x9F\x08\x3F\xD6', 'blraaz x4', {}),
+	(b'\x3F\x0A\x3F\xD6', 'blraaz x17', {}),
+	(b'\xDF\x0A\x3F\xD6', 'blraaz x22', {}),
+	# BLRAA_64P_branch_reg 1101011100111111000010xxxxxxxxxx
+	(b'\x72\x09\x3F\xD7', 'blraa x11, x18', {}),
+	(b'\x68\x09\x3F\xD7', 'blraa x11, x8', {}),
+	(b'\x80\x09\x3F\xD7', 'blraa x12, x0', {}),
+	(b'\x81\x0A\x3F\xD7', 'blraa x20, x1', {}),
+	# BLRABZ_64_branch_reg 1101011000111111000011xxxxx11111
+	(b'\x9F\x0C\x3F\xD6', 'blrabz x4', {}),
+	(b'\xFF\x0D\x3F\xD6', 'blrabz x15', {}),
+	(b'\xDF\x0F\x3F\xD6', 'blrabz x30', {}),
+	(b'\x1F\x0E\x3F\xD6', 'blrabz x16', {}),
+	# BLRAB_64P_branch_reg 1101011100111111000011xxxxxxxxxx
+	(b'\x65\x0C\x3F\xD7', 'blrab x3, x5', {}),
+	(b'\x43\x0C\x3F\xD7', 'blrab x2, x3', {}),
+	(b'\x0A\x0C\x3F\xD7', 'blrab x0, x10', {}),
+	(b'\xB3\x0D\x3F\xD7', 'blrab x13, x19', {}),
+	# BRAAZ_64_branch_reg 1101011000011111000010xxxxx11111
+	(b'\xFF\x0A\x1F\xD6', 'braaz x23', {}),
+	(b'\xDF\x08\x1F\xD6', 'braaz x6', {}),
+	(b'\x5F\x09\x1F\xD6', 'braaz x10', {}),
+	(b'\x9F\x08\x1F\xD6', 'braaz x4', {}),
+	# BRAA_64P_branch_reg 1101011100011111000010xxxxxxxxxx
+	(b'\xAB\x0A\x1F\xD7', 'braa x21, x11', {}),
+	(b'\x00\x0B\x1F\xD7', 'braa x24, x0', {}),
+	(b'\x37\x09\x1F\xD7', 'braa x9, x23', {}),
+	(b'\x4A\x09\x1F\xD7', 'braa x10, x10', {}),
+	# BRABZ_64_branch_reg 1101011000011111000011xxxxx11111
+	(b'\xBF\x0D\x1F\xD6', 'brabz x13', {}),
+	(b'\x5F\x0D\x1F\xD6', 'brabz x10', {}),
+	(b'\x7F\x0C\x1F\xD6', 'brabz x3', {}),
+	(b'\x1F\x0D\x1F\xD6', 'brabz x8', {}),
+	# BRAB_64P_branch_reg 1101011100011111000011xxxxxxxxxx
+	(b'\x79\x0F\x1F\xD7', 'brab x27, x25', {}),
+	(b'\xA4\x0C\x1F\xD7', 'brab x5, x4', {}),
+	(b'\x79\x0E\x1F\xD7', 'brab x19, x25', {}),
+	(b'\x34\x0D\x1F\xD7', 'brab x9, x20', {}),
+	# LDRAA_64W_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
+	(b'\xC0\x7E\x73\xF8', 'ldraa x0, [x22, #0xfffffffffffff9b8]!', {}),
+	(b'\x73\xDD\x76\xF8', 'ldraa x19, [x11, #0xfffffffffffffb68]!', {}),
+	(b'\x20\x8D\x29\xF8', 'ldraa x0, [x9, #0x4c0]!', {}),
+	(b'\xC7\x2E\x73\xF8', 'ldraa x7, [x22, #0xfffffffffffff990]!', {}),
+	# LDRAA_64_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
+	(b'\x4A\xC7\x7E\xF8', 'ldraa x10, [x26, #0xffffffffffffff60]', {}),
+	(b'\x60\x96\x63\xF8', 'ldraa x0, [x19, #0xfffffffffffff1c8]', {}),
+	(b'\x9C\x66\x71\xF8', 'ldraa x28, [x20, #0xfffffffffffff8b0]', {}),
+	(b'\x1F\xD5\x2C\xF8', 'ldraa xzr, [x8, #0x668]', {}),
+	# LDRAB_64W_ldst_pac 111110001x1xxxxxxxxx11xxxxxxxxxx
+	(b'\x8B\xDF\xFF\xF8', 'ldrab x11, [x28, #0xffffffffffffffe8]!', {}),
+	(b'\xA5\xBE\xF8\xF8', 'ldrab x5, [x21, #0xfffffffffffffc58]!', {}),
+	(b'\x94\x6D\xF7\xF8', 'ldrab x20, [x12, #0xfffffffffffffbb0]!', {}),
+	(b'\x74\x4E\xE3\xF8', 'ldrab x20, [x19, #0xfffffffffffff1a0]!', {}),
+	# LDRAB_64_ldst_pac 111110001x1xxxxxxxxxxxxxxxxxxxxx
+	(b'\x83\xC4\xF6\xF8', 'ldrab x3, [x4, #0xfffffffffffffb60]', {}),
+	(b'\x0B\xE6\xE4\xF8', 'ldrab x11, [x16, #0xfffffffffffff270]', {}),
+	(b'\x53\x96\xFC\xF8', 'ldrab x19, [x18, #0xfffffffffffffe48]', {}),
+	(b'\xFD\x95\xE7\xF8', 'ldrab x29, [x15, #0xfffffffffffff3c8]', {}),
+	# PACDA_64P_dp_1src 1101101011000001000010xxxxxxxxxx
+	(b'\xD4\x0A\xC1\xDA', 'pacda x20, x22', {}),
+	(b'\x2E\x0B\xC1\xDA', 'pacda x14, x25', {}),
+	(b'\x5E\x08\xC1\xDA', 'pacda x30, x2', {}),
+	(b'\xDB\x08\xC1\xDA', 'pacda x27, x6', {}),
+	# PACDB_64P_dp_1src 1101101011000001000011xxxxxxxxxx
+	(b'\xCD\x0E\xC1\xDA', 'pacdb x13, x22', {}),
+	(b'\x90\x0E\xC1\xDA', 'pacdb x16, x20', {}),
+	(b'\x03\x0C\xC1\xDA', 'pacdb x3, x0', {}),
+	(b'\x2E\x0F\xC1\xDA', 'pacdb x14, x25', {}),
+	# PACDZA_64Z_dp_1src 110110101100000100101xxxxxxxxxxx
+	(b'\xEC\x2B\xC1\xDA', 'pacdza x12', {}),
+	(b'\xFE\x2B\xC1\xDA', 'pacdza x30', {}),
+	(b'\xF6\x2B\xC1\xDA', 'pacdza x22', {}),
+	(b'\xE5\x2B\xC1\xDA', 'pacdza x5', {}),
+	# PACDZB_64Z_dp_1src 1101101011000001001xxxxxxxxxxxxx
+	(b'\xEE\x2F\xC1\xDA', 'pacdzb x14', {}),
+	(b'\xF4\x2F\xC1\xDA', 'pacdzb x20', {}),
+	(b'\xE5\x2F\xC1\xDA', 'pacdzb x5', {}),
+	(b'\xE8\x2F\xC1\xDA', 'pacdzb x8', {}),
+	# PACGA_64P_dp_2src 10011010110xxxxx001100xxxxxxxxxx
+	(b'\x0B\x30\xCB\x9A', 'pacga x11, x0, x11', {}),
+	(b'\x5B\x31\xDE\x9A', 'pacga x27, x10, x30', {}),
+	(b'\xD4\x32\xC6\x9A', 'pacga x20, x22, x6', {}),
+	(b'\xCF\x31\xDD\x9A', 'pacga x15, x14, x29', {}),
+	# PACIA1716_HI_hints 1101010100000011001000010xxxxxxx
+	(b'\x1F\x21\x03\xD5', 'pacia1716', {}),
+	# PACIASP_HI_hints 1101010100000011001000110xxxxxxx
+	(b'\x3F\x23\x03\xD5', 'paciasp', {}),
+	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
+	(b'\x1F\x23\x03\xD5', 'paciaz', {}),
+	# PACIA_64P_dp_1src 1101101011000001000000xxxxxxxxxx
+	(b'\x34\x03\xC1\xDA', 'pacia x20, x25', {}),
+	(b'\x7E\x03\xC1\xDA', 'pacia x30, x27', {}),
+	(b'\xB8\x03\xC1\xDA', 'pacia x24, x29', {}),
+	(b'\x31\x01\xC1\xDA', 'pacia x17, x9', {}),
+	# PACIB1716_HI_hints 110101010000001100100001xxxxxxxx
+	(b'\x5F\x21\x03\xD5', 'pacib1716', {}),
+	# PACIBSP_HI_hints 110101010000001100100011xxxxxxxx
+	(b'\x7F\x23\x03\xD5', 'pacibsp', {}),
+	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
+	(b'\x5F\x23\x03\xD5', 'pacibz', {}),
+	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx
+	(b'\x27\x05\xC1\xDA', 'pacib x7, x9', {}),
+	(b'\x92\x05\xC1\xDA', 'pacib x18, x12', {}),
+	(b'\xD3\x05\xC1\xDA', 'pacib x19, x14', {}),
+	(b'\xA3\x04\xC1\xDA', 'pacib x3, x5', {}),
+	# PACIZA_64Z_dp_1src 110110101100000100100xxxxxxxxxxx
+	(b'\xE3\x23\xC1\xDA', 'paciza x3', {}),
+	(b'\xF2\x23\xC1\xDA', 'paciza x18', {}),
+	(b'\xEB\x23\xC1\xDA', 'paciza x11', {}),
+	(b'\xF4\x23\xC1\xDA', 'paciza x20', {}),
+	# PACIZB_64Z_dp_1src 11011010110000010010xxxxxxxxxxxx
+	(b'\xFF\x27\xC1\xDA', 'pacizb xzr', {}),
+	(b'\xF0\x27\xC1\xDA', 'pacizb x16', {}),
+	(b'\xE2\x27\xC1\xDA', 'pacizb x2', {}),
+	(b'\xEA\x27\xC1\xDA', 'pacizb x10', {}),
+	# RETAA_64E_branch_reg 11010110010111110000101111111111
+	(b'\xFF\x0B\x5F\xD6', 'retaa', {}),
+	# RETAB_64E_branch_reg 11010110010111110000111111111111
+	(b'\xFF\x0F\x5F\xD6', 'retab', {}),
+	# XPACD_64Z_dp_1src 110110101100000101000111111xxxxx
+	(b'\xF5\x47\xC1\xDA', 'xpacd x21', {}),
+	(b'\xE8\x47\xC1\xDA', 'xpacd x8', {}),
+	(b'\xFD\x47\xC1\xDA', 'xpacd x29', {}),
+	(b'\xE0\x47\xC1\xDA', 'xpacd x0', {}),
+	# XPACI_64Z_dp_1src 110110101100000101000xxxxxxxxxxx
+	(b'\xF4\x43\xC1\xDA', 'xpaci x20', {}),
+	(b'\xF5\x43\xC1\xDA', 'xpaci x21', {}),
+	(b'\xF1\x43\xC1\xDA', 'xpaci x17', {}),
+	(b'\xE3\x43\xC1\xDA', 'xpaci x3', {}),
 	# compare and swap (cas)-like instructions
 	# CASAB_C32_ldstexcl 00001000111xxxxx011111xxxxxxxxxx
 	(b'\x16\x7C\xE6\x08', 'casab w6, w22, [x0]', {}),
