@@ -20,11 +20,11 @@ test_cases = [
 	(b'\x83\x11\xC1\xDA', 'LLIL_INTRINSIC([x3],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x12)]))'), # autia x3, x12
 	(b'\xD5\x13\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x30)]))'), # autia x21, x30
 	# AUTIB1716_HI_hints 1101010100000011001000xxxxxxxxxx
-	#(b'\xDF\x21\x03\xD5', 'LLIL_NOP'), # autib1716
+	(b'\xDF\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__autib1716,LLIL_CALL_PARAM([LLIL_REG.q(x16)]))'), # autib1716
 	# AUTIBSP_HI_hints 110101010000001100100xxxxxxxxxxx
-	#(b'\xFF\x23\x03\xD5', 'LLIL_NOP'), # autibsp
+	(b'\xFF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autibsp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # autibsp
 	# AUTIBZ_HI_hints 11010101000000110010001111xxxxxx
-	#(b'\xDF\x23\x03\xD5', 'LLIL_NOP'), # autibz
+	(b'\xDF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autibz,LLIL_CALL_PARAM([]))'), # autibz
 	# AUTIB_64P_dp_1src 1101101011000001000101xxxxxxxxxx
 	(b'\x7C\x16\xC1\xDA', 'LLIL_INTRINSIC([x28],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x19)]))'), # autib x28, x19
 	(b'\xCB\x16\xC1\xDA', 'LLIL_INTRINSIC([x11],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x22)]))'), # autib x11, x22
@@ -102,8 +102,8 @@ test_cases = [
 	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
 	(b'\x5F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacibz,LLIL_CALL_PARAM([]))'), # pacibz
 	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx
-	#(b'\x84\x06\xC1\xDA', 'LLIL_NOP'), # pacib x4, x20
-	#(b'\x61\x06\xC1\xDA', 'LLIL_NOP'), # pacib x1, x19
+	(b'\x84\x06\xC1\xDA', 'LLIL_INTRINSIC([x4],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x20)]))'), # pacib x4, x20
+	(b'\x61\x06\xC1\xDA', 'LLIL_INTRINSIC([x1],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x19)]))'), # pacib x1, x19
 	# PACIZA_64Z_dp_1src 110110101100000100100xxxxxxxxxxx
 	(b'\xE3\x23\xC1\xDA', 'LLIL_INTRINSIC([x3],__paciza,LLIL_CALL_PARAM([]))'), # paciza x3
 	(b'\xFE\x23\xC1\xDA', 'LLIL_INTRINSIC([x30],__paciza,LLIL_CALL_PARAM([]))'), # paciza x30

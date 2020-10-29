@@ -676,6 +676,9 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 		case ARM64_AUTDB: return ARM64_INTRIN_AUTDB;
 		case ARM64_AUTIA: return ARM64_INTRIN_AUTIA;
 		case ARM64_AUTIB: return ARM64_INTRIN_AUTIB;
+		case ARM64_AUTIB1716: return ARM64_INTRIN_AUTIB1716;
+		case ARM64_AUTIBSP: return ARM64_INTRIN_AUTIBSP;
+		case ARM64_AUTIBZ: return ARM64_INTRIN_AUTIBZ;
 		case ARM64_AUTDZA: return ARM64_INTRIN_AUTDZA;
 		case ARM64_AUTDZB: return ARM64_INTRIN_AUTDZB;
 		case ARM64_AUTIZA: return ARM64_INTRIN_AUTIZA;
@@ -684,12 +687,12 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 		case ARM64_PACDB: return ARM64_INTRIN_PACDB;
 		case ARM64_PACDZA: return ARM64_INTRIN_PACDZA;
 		case ARM64_PACDZB: return ARM64_INTRIN_PACDZB;
-		case ARM64_PACIA1716: return ARM64_INTRIN_PACIA1716;
 		case ARM64_PACIA: return ARM64_INTRIN_PACIA;
+		case ARM64_PACIA1716: return ARM64_INTRIN_PACIA1716;
 		case ARM64_PACIASP: return ARM64_INTRIN_PACIASP;
 		case ARM64_PACIAZ: return ARM64_INTRIN_PACIAZ;
-		case ARM64_PACIB1716: return ARM64_INTRIN_PACIB1716;
 		case ARM64_PACIB: return ARM64_INTRIN_PACIB;
+		case ARM64_PACIB1716: return ARM64_INTRIN_PACIB1716;
 		case ARM64_PACIBSP: return ARM64_INTRIN_PACIBSP;
 		case ARM64_PACIBZ: return ARM64_INTRIN_PACIBZ;
 		case ARM64_PACIZA: return ARM64_INTRIN_PACIZA;
@@ -1093,13 +1096,15 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_PACDB:
 	case ARM64_PACIA:
 	case ARM64_PACIB:
-		// MNEM <Xd>, <Xn|SP>
+		// <Xd> is address, <Xn> is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
 					operation_to_intrinsic(instr.operation),
 					{ILREG(operand2)}));
 		break;
+	case ARM64_AUTIB1716:
 	case ARM64_PACIA1716:
 	case ARM64_PACIB1716:
+		// x17 is address, x16 is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X17)},
 					operation_to_intrinsic(instr.operation),
 					{il.Register(8, REG_X16)}));
@@ -1112,20 +1117,23 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_PACDZB:
 	case ARM64_PACIZA:
 	case ARM64_PACIZB:
-		// MNEM <Xd>
+		// <Xd> is address, modifier 0
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
 					operation_to_intrinsic(instr.operation),
 					{}));
 		break;
+	case ARM64_AUTIBZ:
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
-		// MNEM x30
+		// x30 is address, modifier 0
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 					operation_to_intrinsic(instr.operation),
 					{}));
 		break;
+	case ARM64_AUTIBSP:
 	case ARM64_PACIASP:
 	case ARM64_PACIBSP:
+		// x30 is address, sp is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 					operation_to_intrinsic(instr.operation),
 					{il.Register(8, REG_SP)}));
