@@ -34,42 +34,42 @@ test_cases = [
 	# AUTIZB_64Z_dp_1src 11011010110000010011xxxxxxxxxxxx
 	(b'\xE4\x37\xC1\xDA', 'LLIL_INTRINSIC([x4],__autizb,LLIL_CALL_PARAM([]))'), # autizb x4
 	(b'\xF4\x37\xC1\xDA', 'LLIL_INTRINSIC([x20],__autizb,LLIL_CALL_PARAM([]))'), # autizb x20
-	# BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
-	#(b'\xDF\x09\x3F\xD6', 'LLIL_NOP'), # blraaz x14
-	#(b'\xDF\x08\x3F\xD6', 'LLIL_NOP'), # blraaz x6
 	# BLRAA_64P_branch_reg 1101011100111111000010xxxxxxxxxx
-	#(b'\x14\x0B\x3F\xD7', 'LLIL_NOP'), # blraa x24, x20
-	#(b'\xFD\x0A\x3F\xD7', 'LLIL_NOP'), # blraa x23, x29
-	# BLRABZ_64_branch_reg 1101011000111111000011xxxxx11111
-	#(b'\x3F\x0E\x3F\xD6', 'LLIL_NOP'), # blrabz x17
-	#(b'\x3F\x0F\x3F\xD6', 'LLIL_NOP'), # blrabz x25
+	(b'\x14\x0B\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x24))'), # blraa x24, x20
+	(b'\xFD\x0A\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x23))'), # blraa x23, x29
+	# BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
+	(b'\xDF\x09\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x14))'), # blraaz x14
+	(b'\xDF\x08\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x6))'), # blraaz x6
 	# BLRAB_64P_branch_reg 1101011100111111000011xxxxxxxxxx
-	#(b'\xBA\x0C\x3F\xD7', 'LLIL_NOP'), # blrab x5, x26
-	#(b'\xC2\x0E\x3F\xD7', 'LLIL_NOP'), # blrab x22, x2
+	(b'\xBA\x0C\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x5))'), # blrab x5, x26
+	(b'\xC2\x0E\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x22))'), # blrab x22, x2
+	# BLRABZ_64_branch_reg 1101011000111111000011xxxxx11111
+	(b'\x3F\x0E\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x17))'), # blrabz x17
+	(b'\x3F\x0F\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x25))'), # blrabz x25
 	# BRAAZ_64_branch_reg 1101011000011111000010xxxxx11111
-	#(b'\x5F\x08\x1F\xD6', 'LLIL_NOP'), # braaz x2
-	#(b'\x5F\x0A\x1F\xD6', 'LLIL_NOP'), # braaz x18
+	(b'\x5F\x08\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x2))'), # braaz x2
+	(b'\x5F\x0A\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x18))'), # braaz x18
 	# BRAA_64P_branch_reg 1101011100011111000010xxxxxxxxxx
-	#(b'\x81\x08\x1F\xD7', 'LLIL_NOP'), # braa x4, x1
-	#(b'\x4C\x09\x1F\xD7', 'LLIL_NOP'), # braa x10, x12
+	(b'\x81\x08\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x4))'), # braa x4, x1
+	(b'\x4C\x09\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x10))'), # braa x10, x12
 	# BRABZ_64_branch_reg 1101011000011111000011xxxxx11111
-	#(b'\x3F\x0C\x1F\xD6', 'LLIL_NOP'), # brabz x1
-	#(b'\xBF\x0E\x1F\xD6', 'LLIL_NOP'), # brabz x21
+	(b'\x3F\x0C\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x1))'), # brabz x1
+	(b'\xBF\x0E\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x21))'), # brabz x21
 	# BRAB_64P_branch_reg 1101011100011111000011xxxxxxxxxx
-	#(b'\x39\x0F\x1F\xD7', 'LLIL_NOP'), # brab x25, x25
-	#(b'\xA3\x0E\x1F\xD7', 'LLIL_NOP'), # brab x21, x3
+	(b'\x39\x0F\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x25))'), # brab x25, x25
+	(b'\xA3\x0E\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x21))'), # brab x21, x3
 	# LDRAA_64W_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
-	#(b'\xAE\x1D\x25\xF8', 'LLIL_NOP'), # ldraa x14, [x13, #648]!
-	#(b'\x63\x6E\x62\xF8', 'LLIL_NOP'), # ldraa x3, [x19, #-3792]!
+	(b'\xAE\x1D\x25\xF8', 'LLIL_SET_REG.q(x13,LLIL_ADD.q(LLIL_REG.q(x13),LLIL_CONST.q(648))); LLIL_SET_REG.q(x14,LLIL_LOAD.q(LLIL_REG.q(x13)))'), # ldraa x14, [x13, #648]!
+	(b'\x63\x6E\x62\xF8', 'LLIL_SET_REG.q(x19,LLIL_ADD.q(LLIL_REG.q(x19),LLIL_CONST.q(-3792))); LLIL_SET_REG.q(x3,LLIL_LOAD.q(LLIL_REG.q(x19)))'), # ldraa x3, [x19, #-3792]!
 	# LDRAA_64_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
-	#(b'\x90\x15\x62\xF8', 'LLIL_NOP'), # ldraa x16, [x12, #-3832]
-	#(b'\x52\x26\x73\xF8', 'LLIL_NOP'), # ldraa x18, [x18, #-1648]
+	(b'\x90\x15\x62\xF8', 'LLIL_SET_REG.q(x16,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(-3832))))'), # ldraa x16, [x12, #-3832]
+	(b'\x52\x26\x73\xF8', 'LLIL_SET_REG.q(x18,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x18),LLIL_CONST.q(-1648))))'), # ldraa x18, [x18, #-1648]
 	# LDRAB_64W_ldst_pac 111110001x1xxxxxxxxx11xxxxxxxxxx
-	#(b'\x68\xDE\xB8\xF8', 'LLIL_NOP'), # ldrab x8, [x19, #3176]!
-	#(b'\x8D\x0D\xFF\xF8', 'LLIL_NOP'), # ldrab x13, [x12, #-128]!
+	(b'\x68\xDE\xB8\xF8', 'LLIL_SET_REG.q(x19,LLIL_ADD.q(LLIL_REG.q(x19),LLIL_CONST.q(3176))); LLIL_SET_REG.q(x8,LLIL_LOAD.q(LLIL_REG.q(x19)))'), # ldrab x8, [x19, #3176]!
+	(b'\x8D\x0D\xFF\xF8', 'LLIL_SET_REG.q(x12,LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(-128))); LLIL_SET_REG.q(x13,LLIL_LOAD.q(LLIL_REG.q(x12)))'), # ldrab x13, [x12, #-128]!
 	# LDRAB_64_ldst_pac 111110001x1xxxxxxxxxxxxxxxxxxxxx
-	#(b'\x94\xF5\xA1\xF8', 'LLIL_NOP'), # ldrab x20, [x12, #248]
-	#(b'\x2B\x35\xAA\xF8', 'LLIL_NOP'), # ldrab x11, [x9, #1304]
+	(b'\x94\xF5\xA1\xF8', 'LLIL_SET_REG.q(x20,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(248))))'), # ldrab x20, [x12, #248]
+	(b'\x2B\x35\xAA\xF8', 'LLIL_SET_REG.q(x11,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_CONST.q(1304))))'), # ldrab x11, [x9, #1304]
 	# PACDA_64P_dp_1src 1101101011000001000010xxxxxxxxxx
 	(b'\xAC\x0B\xC1\xDA', 'LLIL_INTRINSIC([x12],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x29)]))'), # pacda x12, x29
 	(b'\xD2\x09\xC1\xDA', 'LLIL_INTRINSIC([x18],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'), # pacda x18, x14
@@ -287,9 +287,8 @@ def instr_to_il(data):
 		for il in block:
 			result.append(il2str(il))
 	result = '; '.join(result)
-	assert result.endswith('LLIL_RET(LLIL_REG.q(x30))'), \
-			'%s didnt lift to function ending in ret, got: %s' % (data.hex(), result)
-	result = result[0:result.index('LLIL_RET(LLIL_REG.q(x30))')]
+	if result.endswith('LLIL_RET(LLIL_REG.q(x30))'):
+		result = result[0:result.index('LLIL_RET(LLIL_REG.q(x30))')]
 	if result.endswith('; '):
 		result = result[0:-2]
 
