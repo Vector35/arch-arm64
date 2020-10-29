@@ -1566,8 +1566,8 @@ const char* get_register_name(Register reg)
 {
 	if (reg < REG_END && reg > REG_NONE)
 		return RegisterString[reg];
-	if (reg < SYSREG_END && reg > SYSREG_NONE)
-		return get_system_register_name((enum SystemReg)reg);
+	if ((SystemReg)reg < SYSREG_END && (SystemReg)reg > SYSREG_NONE)
+		return get_system_register_name((SystemReg)reg);
 	return NULL;
 }
 

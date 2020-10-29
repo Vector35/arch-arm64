@@ -24,6 +24,10 @@ else()
 	add_library(arch_arm64 SHARED ${SOURCES})
 endif()
 
+if(NOT WIN32)
+	set_source_files_properties(disassembler/arm64dis.c PROPERTIES COMPILE_FLAGS -fno-strict-aliasing)
+endif()
+
 target_include_directories(arch_arm64
 	PRIVATE ${PROJECT_SOURCE_DIR}
 	PRIVATE ${PROJECT_SOURCE_DIR}/disassembler)
