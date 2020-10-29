@@ -5,17 +5,17 @@ RET = b'\xc0\x03\x5f\xd6'
 test_cases = [
 	# pointer auth instructions
 	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
-	#(b'\x04\x18\xC1\xDA', 'LLIL_NOP'), # autda x4, x0
-	#(b'\xF4\x18\xC1\xDA', 'LLIL_NOP'), # autda x20, x7
+	(b'\x04\x18\xC1\xDA', 'LLIL_INTRINSIC([x4],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # autda x4, x0
+	(b'\xF4\x18\xC1\xDA', 'LLIL_INTRINSIC([x20],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'), # autda x20, x7
 	# AUTDB_64P_dp_1src 110110101100000100xxxxxxxxxxxxxx
-	#(b'\x94\x1C\xC1\xDA', 'LLIL_NOP'), # autdb x20, x4
-	#(b'\xCB\x1E\xC1\xDA', 'LLIL_NOP'), # autdb x11, x22
+	(b'\x94\x1C\xC1\xDA', 'LLIL_INTRINSIC([x20],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x4)]))'), # autdb x20, x4
+	(b'\xCB\x1E\xC1\xDA', 'LLIL_INTRINSIC([x11],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x22)]))'), # autdb x11, x22
 	# AUTDZA_64Z_dp_1src 110110101100000100111xxxxxxxxxxx
-	#(b'\xF3\x3B\xC1\xDA', 'LLIL_NOP'), # autdza x19
-	#(b'\xF4\x3B\xC1\xDA', 'LLIL_NOP'), # autdza x20
+	(b'\xF3\x3B\xC1\xDA', 'LLIL_INTRINSIC([x19],__autdza,LLIL_CALL_PARAM([]))'), # autdza x19
+	(b'\xF4\x3B\xC1\xDA', 'LLIL_INTRINSIC([x20],__autdza,LLIL_CALL_PARAM([]))'), # autdza x20
 	# AUTDZB_64Z_dp_1src 11011010110000010xxxxxxxxxxxxxxx
-	#(b'\xFE\x3F\xC1\xDA', 'LLIL_NOP'), # autdzb x30
-	#(b'\xEE\x3F\xC1\xDA', 'LLIL_NOP'), # autdzb x14
+	(b'\xFE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x30],__autdzb,LLIL_CALL_PARAM([]))'), # autdzb x30
+	(b'\xEE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x14],__autdzb,LLIL_CALL_PARAM([]))'), # autdzb x14
 	# AUTIA_64P_dp_1src 1101101011000001000100xxxxxxxxxx
 	#(b'\x83\x11\xC1\xDA', 'LLIL_NOP'), # autia x3, x12
 	#(b'\xD5\x13\xC1\xDA', 'LLIL_NOP'), # autia x21, x30

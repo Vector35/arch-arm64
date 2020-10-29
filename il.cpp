@@ -672,6 +672,10 @@ static void ConditionalJump(Architecture* arch, LowLevelILFunction& il, size_t c
 enum Arm64Intrinsic operation_to_intrinsic(int operation)
 {
 	switch(operation) {
+		case ARM64_AUTDA: return ARM64_INTRIN_AUTDA;
+		case ARM64_AUTDB: return ARM64_INTRIN_AUTDB;
+		case ARM64_AUTDZA: return ARM64_INTRIN_AUTDZA;
+		case ARM64_AUTDZB: return ARM64_INTRIN_AUTDZB;
 		case ARM64_PACDA: return ARM64_INTRIN_PACDA;
 		case ARM64_PACDB: return ARM64_INTRIN_PACDB;
 		case ARM64_PACDZA: return ARM64_INTRIN_PACDZA;
@@ -1077,10 +1081,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Nop());
 		break;
 
+	case ARM64_AUTDA:
+	case ARM64_AUTDB:
 	case ARM64_PACDA:
 	case ARM64_PACDB:
 	case ARM64_PACIA:
 	case ARM64_PACIB:
+		// MNEM <Xd>, <Xn|SP>
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
 					operation_to_intrinsic(instr.operation),
 					{ILREG(operand2)}));
@@ -1091,10 +1098,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					operation_to_intrinsic(instr.operation),
 					{il.Register(8, REG_X16)}));
 		break;
+	case ARM64_AUTDZA:
+	case ARM64_AUTDZB:
 	case ARM64_PACDZA:
 	case ARM64_PACDZB:
 	case ARM64_PACIZA:
 	case ARM64_PACIZB:
+		// MNEM <Xd>
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
 					operation_to_intrinsic(instr.operation),
 					{}));
