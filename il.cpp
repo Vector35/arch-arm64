@@ -687,6 +687,7 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 		case ARM64_PACDB: return ARM64_INTRIN_PACDB;
 		case ARM64_PACDZA: return ARM64_INTRIN_PACDZA;
 		case ARM64_PACDZB: return ARM64_INTRIN_PACDZB;
+		case ARM64_PACGA: return ARM64_INTRIN_PACGA;
 		case ARM64_PACIA: return ARM64_INTRIN_PACIA;
 		case ARM64_PACIA1716: return ARM64_INTRIN_PACIA1716;
 		case ARM64_PACIASP: return ARM64_INTRIN_PACIASP;
@@ -697,6 +698,9 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 		case ARM64_PACIBZ: return ARM64_INTRIN_PACIBZ;
 		case ARM64_PACIZA: return ARM64_INTRIN_PACIZA;
 		case ARM64_PACIZB: return ARM64_INTRIN_PACIZB;
+		case ARM64_XPACD: return ARM64_INTRIN_XPACD;
+		case ARM64_XPACI: return ARM64_INTRIN_XPACI;
+		case ARM64_XPACLRI: return ARM64_INTRIN_XPACLRI;
 		default:
 			return ARM64_INTRIN_INVALID;
 	}
@@ -1101,6 +1105,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					operation_to_intrinsic(instr.operation),
 					{ILREG(operand2)}));
 		break;
+	case ARM64_PACGA:
+		// <Xd> is address, <Xn>, <Xm> are modifiers, keys
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
+					operation_to_intrinsic(instr.operation),
+					{ILREG(operand2), ILREG(operand3)}));
+		break;
 	case ARM64_AUTIB1716:
 	case ARM64_PACIA1716:
 	case ARM64_PACIB1716:
@@ -1117,7 +1127,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_PACDZB:
 	case ARM64_PACIZA:
 	case ARM64_PACIZB:
-		// <Xd> is address, modifier 0
+	case ARM64_XPACI:
+	case ARM64_XPACD:
+		// <Xd> is address, modifier is omitted or 0
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
 					operation_to_intrinsic(instr.operation),
 					{}));
@@ -1125,7 +1137,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_AUTIBZ:
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
-		// x30 is address, modifier 0
+	case ARM64_XPACLRI:
+		// x30 is address, modifier is omitted or 0
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 					operation_to_intrinsic(instr.operation),
 					{}));

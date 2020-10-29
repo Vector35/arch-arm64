@@ -74,8 +74,8 @@ test_cases = [
 	(b'\xAC\x0B\xC1\xDA', 'LLIL_INTRINSIC([x12],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x29)]))'), # pacda x12, x29
 	(b'\xD2\x09\xC1\xDA', 'LLIL_INTRINSIC([x18],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'), # pacda x18, x14
 	# PACDB_64P_dp_1src 1101101011000001000011xxxxxxxxxx
-	#(b'\xF9\x0E\xC1\xDA', 'LLIL_NOP'), # pacdb x25, x23
-	#(b'\xBA\x0C\xC1\xDA', 'LLIL_NOP'), # pacdb x26, x5
+	(b'\xF9\x0E\xC1\xDA', 'LLIL_INTRINSIC([x25],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x23)]))'), # pacdb x25, x23
+	(b'\xBA\x0C\xC1\xDA', 'LLIL_INTRINSIC([x26],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'), # pacdb x26, x5
 	# PACDZA_64Z_dp_1src 110110101100000100101xxxxxxxxxxx
 	(b'\xE7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacdza,LLIL_CALL_PARAM([]))'), # pacdza x7
 	(b'\xF7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x23],__pacdza,LLIL_CALL_PARAM([]))'), # pacdza x23
@@ -83,8 +83,8 @@ test_cases = [
 	(b'\xE6\x2F\xC1\xDA', 'LLIL_INTRINSIC([x6],__pacdzb,LLIL_CALL_PARAM([]))'), # pacdzb x6
 	(b'\xE0\x2F\xC1\xDA', 'LLIL_INTRINSIC([x0],__pacdzb,LLIL_CALL_PARAM([]))'), # pacdzb x0
 	# PACGA_64P_dp_2src 10011010110xxxxx001100xxxxxxxxxx
-	#(b'\x22\x30\xCD\x9A', 'LLIL_NOP'), # pacga x2, x1, x13
-	#(b'\x99\x32\xD3\x9A', 'LLIL_NOP'), # pacga x25, x20, x19
+	(b'\x22\x30\xCD\x9A', 'LLIL_INTRINSIC([x2],__pacga,LLIL_CALL_PARAM([LLIL_REG.q(x1),LLIL_REG.q(x13)]))'), # pacga x2, x1, x13
+	(b'\x99\x32\xD3\x9A', 'LLIL_INTRINSIC([x25],__pacga,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_REG.q(x19)]))'), # pacga x25, x20, x19
 	# PACIA1716_HI_hints 1101010100000011001000010xxxxxxx
 	(b'\x1F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacia1716,LLIL_CALL_PARAM([LLIL_REG.q(x16)]))'), # pacia1716
 	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
@@ -111,15 +111,18 @@ test_cases = [
 	(b'\xE3\x27\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacizb,LLIL_CALL_PARAM([]))'), # pacizb x3
 	(b'\xE7\x27\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacizb,LLIL_CALL_PARAM([]))'), # pacizb x7
 	# RETAA_64E_branch_reg 11010110010111110000101111111111
-	#(b'\xFF\x0B\x5F\xD6', 'LLIL_NOP'), # retaa
+	# (just a return, so function is optimized to nothing)
+	(b'\xFF\x0B\x5F\xD6', ''), # retaa
 	# RETAB_64E_branch_reg 11010110010111110000111111111111
-	#(b'\xFF\x0F\x5F\xD6', 'LLIL_NOP'), # retab
+	(b'\xFF\x0F\x5F\xD6', ''), # retab
 	# XPACD_64Z_dp_1src 110110101100000101000111111xxxxx
-	#(b'\xF8\x47\xC1\xDA', 'LLIL_NOP'), # xpacd x24
-	#(b'\xED\x47\xC1\xDA', 'LLIL_NOP'), # xpacd x13
+	(b'\xF8\x47\xC1\xDA', 'LLIL_INTRINSIC([x24],__xpacd,LLIL_CALL_PARAM([]))'), # xpacd x24
+	(b'\xED\x47\xC1\xDA', 'LLIL_INTRINSIC([x13],__xpacd,LLIL_CALL_PARAM([]))'), # xpacd x13
 	# XPACI_64Z_dp_1src 110110101100000101000xxxxxxxxxxx
-	#(b'\xE2\x43\xC1\xDA', 'LLIL_NOP'), # xpaci x2
-	#(b'\xE7\x43\xC1\xDA', 'LLIL_NOP'), # xpaci x7
+	(b'\xE2\x43\xC1\xDA', 'LLIL_INTRINSIC([x2],__xpaci,LLIL_CALL_PARAM([]))'), # xpaci x2
+	(b'\xE7\x43\xC1\xDA', 'LLIL_INTRINSIC([x7],__xpaci,LLIL_CALL_PARAM([]))'), # xpaci x7
+	# XPACLRI_HI_hints 11010101000000110010000xxxxxxxxx
+	(b'\xFF\x20\x03\xD5', 'LLIL_INTRINSIC([x30],__xpaclri,LLIL_CALL_PARAM([]))'), # xpaclri
 	# signed bitfield insert zeros, lsb is position in DESTINATION register (position 0 in source)
 	# strategy: LSL extracted field to the most significant end, then ASR it back
 	(b'\x20\x00\x40\x93', 'LLIL_SET_REG.q(x0,LLIL_ASR.q(LLIL_LSL.q(LLIL_AND.q(LLIL_REG.q(x1),LLIL_CONST.q(1)),LLIL_CONST.b(63)),LLIL_CONST.b(63)))'), # sbfiz x0, x1, #0, #1

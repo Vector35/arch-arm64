@@ -871,6 +871,8 @@ public:
 			return "__pacdza";
 		case ARM64_INTRIN_PACDZB:
 			return "__pacdzb";
+		case ARM64_INTRIN_PACGA:
+			return "__pacga";
 		case ARM64_INTRIN_PACIA:
 			return "__pacia";
 		case ARM64_INTRIN_PACIA1716:
@@ -911,6 +913,12 @@ public:
 			return "__yield";
 		case ARM64_INTRIN_PRFM:
 			return "__prefetch";
+		case ARM64_INTRIN_XPACD:
+			return "__xpacd";
+		case ARM64_INTRIN_XPACI:
+			return "__xpaci";
+		case ARM64_INTRIN_XPACLRI:
+			return "__xpaclri";
 		default:
 			return "";
 		}
@@ -926,12 +934,13 @@ public:
 			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
 			ARM64_INTRIN_PACDA, ARM64_INTRIN_PACDB, ARM64_INTRIN_PACDZA, ARM64_INTRIN_PACDZB,
-			ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIA1716, ARM64_INTRIN_PACIASP,
+			ARM64_INTRIN_PACGA, ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIA1716, ARM64_INTRIN_PACIASP,
 			ARM64_INTRIN_PACIAZ, ARM64_INTRIN_PACIZA,
 			ARM64_INTRIN_PACIB, ARM64_INTRIN_PACIB1716, ARM64_INTRIN_PACIBSP,
 			ARM64_INTRIN_PACIBZ, ARM64_INTRIN_PACIZB,
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
-			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD
+			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
+			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI
 		};
 	}
 
@@ -951,11 +960,13 @@ public:
 		case ARM64_INTRIN_PACDA: // reads <Xn>
 		case ARM64_INTRIN_PACDB: // reads <Xn>
 		case ARM64_INTRIN_PACIA: // reads <Xn>
+		case ARM64_INTRIN_PACIA1716: // reads x16
 		case ARM64_INTRIN_PACIB: // reads <Xn>
 		case ARM64_INTRIN_PACIB1716: // reads x16
 		case ARM64_INTRIN_PRFM:
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AUTIBSP: // reads x30, sp
+		case ARM64_INTRIN_PACGA: // reads <Xn>, <Xm|SP>
 		case ARM64_INTRIN_PACIASP: // reads x30, sp
 		case ARM64_INTRIN_PACIBSP: // reads x30, sp
 			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))};
@@ -987,8 +998,9 @@ public:
 		case ARM64_INTRIN_PACDB: // writes <Xd>
 		case ARM64_INTRIN_PACDZA: // writes <Xd>
 		case ARM64_INTRIN_PACDZB: // writes <Xd>
-		case ARM64_INTRIN_PACIA1716: // writes x17
 		case ARM64_INTRIN_PACIA: // writes <Xd>
+		case ARM64_INTRIN_PACGA: // writres <Xd>
+		case ARM64_INTRIN_PACIA1716: // writes x17
 		case ARM64_INTRIN_PACIASP: // writes x30
 		case ARM64_INTRIN_PACIAZ: // writes x30
 		case ARM64_INTRIN_PACIB1716: // writes x17
@@ -997,6 +1009,9 @@ public:
 		case ARM64_INTRIN_PACIBZ: // writes x30
 		case ARM64_INTRIN_PACIZA: // writes <Xd>
 		case ARM64_INTRIN_PACIZB: // writes <Xd>
+		case ARM64_INTRIN_XPACD: // writes <Xd>
+		case ARM64_INTRIN_XPACI: // writes <Xd>
+		case ARM64_INTRIN_XPACLRI: // writes x30
 			return {Type::IntegerType(8, false)};
 		default:
 			return vector<Confidence<Ref<Type>>>();
