@@ -1054,18 +1054,27 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Nop());
 		break;
 	case ARM64_PACIA:
+	case ARM64_PACIB:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
-					ARM64_INTRIN_PACIA,
+					instr.operation == ARM64_PACIA ? ARM64_INTRIN_PACIA : ARM64_INTRIN_PACIB,
 					{ILREG(operand2)}));
 		break;
+	case ARM64_PACIA1716:
+	case ARM64_PACIB1716:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X17)},
+					instr.operation == ARM64_PACIA1716 ? ARM64_INTRIN_PACIA1716 : ARM64_INTRIN_PACIB1716,
+					{il.Register(8, REG_X16)}));
+		break;
 	case ARM64_PACIZA:
+	case ARM64_PACIZB:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
-					ARM64_INTRIN_PACIZA,
+					instr.operation == ARM64_PACIZA ? ARM64_INTRIN_PACIZA : ARM64_INTRIN_PACIZB,
 					{}));
 		break;
 	case ARM64_PACIAZ:
+	case ARM64_PACIBZ:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
-					ARM64_INTRIN_PACIAZ,
+					instr.operation == ARM64_PACIAZ ? ARM64_INTRIN_PACIAZ : ARM64_INTRIN_PACIBZ,
 					{}));
 		break;
 	case ARM64_PACIASP:

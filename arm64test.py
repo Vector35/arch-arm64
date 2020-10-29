@@ -86,21 +86,21 @@ test_cases = [
 	#(b'\x22\x30\xCD\x9A', 'LLIL_NOP'), # pacga x2, x1, x13
 	#(b'\x99\x32\xD3\x9A', 'LLIL_NOP'), # pacga x25, x20, x19
 	# PACIA1716_HI_hints 1101010100000011001000010xxxxxxx
-	#(b'\x1F\x21\x03\xD5', 'LLIL_NOP'), # pacia1716
+	(b'\x1F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacia1716,LLIL_CALL_PARAM([LLIL_REG.q(x16)]))'), # pacia1716
 	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
 	(b'\x1F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__paciaz,LLIL_CALL_PARAM([]))'), # paciaz
 	# PACIA_64P_dp_1src 1101101011000001000000xxxxxxxxxx
 	(b'\x4A\x02\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x18)]))'), # pacia x10, x18
 	(b'\xAA\x00\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'), # pacia x10, x5
 	# PACIB1716_HI_hints 110101010000001100100001xxxxxxxx
-	#(b'\x5F\x21\x03\xD5', 'LLIL_NOP'), # pacib1716
+	(b'\x5F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacib1716,LLIL_CALL_PARAM([LLIL_REG.q(x16)]))'), # pacib1716
 	# PACIASP_HI_hints 1101010100000011001000110xxxxxxx
 	# writes x30 (after PAC computation), reads sp for modifier
 	(b'\x3F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__paciasp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # paciasp
 	# PACIBSP_HI_hints 110101010000001100100011xxxxxxxx
 	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacibsp,LLIL_CALL_PARAM([LLIL_REG.q(sp)]))'), # pacibsp
 	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
-	#(b'\x5F\x23\x03\xD5', 'LLIL_NOP'), # pacibz
+	(b'\x5F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacibz,LLIL_CALL_PARAM([]))'), # pacibz
 	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx
 	#(b'\x84\x06\xC1\xDA', 'LLIL_NOP'), # pacib x4, x20
 	#(b'\x61\x06\xC1\xDA', 'LLIL_NOP'), # pacib x1, x19
@@ -108,8 +108,8 @@ test_cases = [
 	(b'\xE3\x23\xC1\xDA', 'LLIL_INTRINSIC([x3],__paciza,LLIL_CALL_PARAM([]))'), # paciza x3
 	(b'\xFE\x23\xC1\xDA', 'LLIL_INTRINSIC([x30],__paciza,LLIL_CALL_PARAM([]))'), # paciza x30
 	# PACIZB_64Z_dp_1src 11011010110000010010xxxxxxxxxxxx
-	#(b'\xE3\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x3
-	#(b'\xE7\x27\xC1\xDA', 'LLIL_NOP'), # pacizb x7
+	(b'\xE3\x27\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacizb,LLIL_CALL_PARAM([]))'), # pacizb x3
+	(b'\xE7\x27\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacizb,LLIL_CALL_PARAM([]))'), # pacizb x7
 	# RETAA_64E_branch_reg 11010110010111110000101111111111
 	#(b'\xFF\x0B\x5F\xD6', 'LLIL_NOP'), # retaa
 	# RETAB_64E_branch_reg 11010110010111110000111111111111
