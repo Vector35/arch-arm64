@@ -669,6 +669,29 @@ static void ConditionalJump(Architecture* arch, LowLevelILFunction& il, size_t c
 }
 
 
+enum Arm64Intrinsic operation_to_intrinsic(int operation)
+{
+	switch(operation) {
+		case ARM64_PACDA: return ARM64_INTRIN_PACDA;
+		case ARM64_PACDB: return ARM64_INTRIN_PACDB;
+		case ARM64_PACDZA: return ARM64_INTRIN_PACDZA;
+		case ARM64_PACDZB: return ARM64_INTRIN_PACDZB;
+		case ARM64_PACIA1716: return ARM64_INTRIN_PACIA1716;
+		case ARM64_PACIA: return ARM64_INTRIN_PACIA;
+		case ARM64_PACIASP: return ARM64_INTRIN_PACIASP;
+		case ARM64_PACIAZ: return ARM64_INTRIN_PACIAZ;
+		case ARM64_PACIB1716: return ARM64_INTRIN_PACIB1716;
+		case ARM64_PACIB: return ARM64_INTRIN_PACIB;
+		case ARM64_PACIBSP: return ARM64_INTRIN_PACIBSP;
+		case ARM64_PACIBZ: return ARM64_INTRIN_PACIBZ;
+		case ARM64_PACIZA: return ARM64_INTRIN_PACIZA;
+		case ARM64_PACIZB: return ARM64_INTRIN_PACIZB;
+		default:
+			return ARM64_INTRIN_INVALID;
+	}
+}
+
+
 bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize)
 {
 	InstructionOperand& operand1 = instr.operands[0];
@@ -1053,34 +1076,39 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
 		break;
+
+	case ARM64_PACDA:
+	case ARM64_PACDB:
 	case ARM64_PACIA:
 	case ARM64_PACIB:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
-					instr.operation == ARM64_PACIA ? ARM64_INTRIN_PACIA : ARM64_INTRIN_PACIB,
+					operation_to_intrinsic(instr.operation),
 					{ILREG(operand2)}));
 		break;
 	case ARM64_PACIA1716:
 	case ARM64_PACIB1716:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X17)},
-					instr.operation == ARM64_PACIA1716 ? ARM64_INTRIN_PACIA1716 : ARM64_INTRIN_PACIB1716,
+					operation_to_intrinsic(instr.operation),
 					{il.Register(8, REG_X16)}));
 		break;
+	case ARM64_PACDZA:
+	case ARM64_PACDZB:
 	case ARM64_PACIZA:
 	case ARM64_PACIZB:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
-					instr.operation == ARM64_PACIZA ? ARM64_INTRIN_PACIZA : ARM64_INTRIN_PACIZB,
+					operation_to_intrinsic(instr.operation),
 					{}));
 		break;
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
-					instr.operation == ARM64_PACIAZ ? ARM64_INTRIN_PACIAZ : ARM64_INTRIN_PACIBZ,
+					operation_to_intrinsic(instr.operation),
 					{}));
 		break;
 	case ARM64_PACIASP:
 	case ARM64_PACIBSP:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
-					instr.operation == ARM64_PACIASP ? ARM64_INTRIN_PACIASP : ARM64_INTRIN_PACIBSP,
+					operation_to_intrinsic(instr.operation),
 					{il.Register(8, REG_SP)}));
 		break;
 	case ARM64_PRFUM:

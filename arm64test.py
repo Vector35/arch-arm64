@@ -71,17 +71,17 @@ test_cases = [
 	#(b'\x94\xF5\xA1\xF8', 'LLIL_NOP'), # ldrab x20, [x12, #248]
 	#(b'\x2B\x35\xAA\xF8', 'LLIL_NOP'), # ldrab x11, [x9, #1304]
 	# PACDA_64P_dp_1src 1101101011000001000010xxxxxxxxxx
-	#(b'\xAC\x0B\xC1\xDA', 'LLIL_NOP'), # pacda x12, x29
-	#(b'\xD2\x09\xC1\xDA', 'LLIL_NOP'), # pacda x18, x14
+	(b'\xAC\x0B\xC1\xDA', 'LLIL_INTRINSIC([x12],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x29)]))'), # pacda x12, x29
+	(b'\xD2\x09\xC1\xDA', 'LLIL_INTRINSIC([x18],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'), # pacda x18, x14
 	# PACDB_64P_dp_1src 1101101011000001000011xxxxxxxxxx
 	#(b'\xF9\x0E\xC1\xDA', 'LLIL_NOP'), # pacdb x25, x23
 	#(b'\xBA\x0C\xC1\xDA', 'LLIL_NOP'), # pacdb x26, x5
 	# PACDZA_64Z_dp_1src 110110101100000100101xxxxxxxxxxx
-	#(b'\xE7\x2B\xC1\xDA', 'LLIL_NOP'), # pacdza x7
-	#(b'\xF7\x2B\xC1\xDA', 'LLIL_NOP'), # pacdza x23
+	(b'\xE7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacdza,LLIL_CALL_PARAM([]))'), # pacdza x7
+	(b'\xF7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x23],__pacdza,LLIL_CALL_PARAM([]))'), # pacdza x23
 	# PACDZB_64Z_dp_1src 1101101011000001001xxxxxxxxxxxxx
-	#(b'\xE6\x2F\xC1\xDA', 'LLIL_NOP'), # pacdzb x6
-	#(b'\xE0\x2F\xC1\xDA', 'LLIL_NOP'), # pacdzb x0
+	(b'\xE6\x2F\xC1\xDA', 'LLIL_INTRINSIC([x6],__pacdzb,LLIL_CALL_PARAM([]))'), # pacdzb x6
+	(b'\xE0\x2F\xC1\xDA', 'LLIL_INTRINSIC([x0],__pacdzb,LLIL_CALL_PARAM([]))'), # pacdzb x0
 	# PACGA_64P_dp_2src 10011010110xxxxx001100xxxxxxxxxx
 	#(b'\x22\x30\xCD\x9A', 'LLIL_NOP'), # pacga x2, x1, x13
 	#(b'\x99\x32\xD3\x9A', 'LLIL_NOP'), # pacga x25, x20, x19

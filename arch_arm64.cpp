@@ -841,6 +841,14 @@ public:
 			return "SystemHintOp_DGH";
 		case ARM64_INTRIN_ESB:
 			return "SystemHintOp_ESB";
+		case ARM64_INTRIN_PACDA:
+			return "__pacda";
+		case ARM64_INTRIN_PACDB:
+			return "__pacdb";
+		case ARM64_INTRIN_PACDZA:
+			return "__pacdza";
+		case ARM64_INTRIN_PACDZB:
+			return "__pacdzb";
 		case ARM64_INTRIN_PACIA:
 			return "__pacia";
 		case ARM64_INTRIN_PACIA1716:
@@ -892,6 +900,7 @@ public:
 		return vector<uint32_t> {
 			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
+			ARM64_INTRIN_PACDA, ARM64_INTRIN_PACDB, ARM64_INTRIN_PACDZA, ARM64_INTRIN_PACDZB,
 			ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIA1716, ARM64_INTRIN_PACIASP,
 			ARM64_INTRIN_PACIAZ, ARM64_INTRIN_PACIZA,
 			ARM64_INTRIN_PACIB, ARM64_INTRIN_PACIB1716, ARM64_INTRIN_PACIBSP,
@@ -910,6 +919,8 @@ public:
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_MRS:
 			return {NameAndType(Type::IntegerType(4, false))};
+		case ARM64_INTRIN_PACDA: // reads <Xn>
+		case ARM64_INTRIN_PACDB: // reads <Xn>
 		case ARM64_INTRIN_PACIA: // reads <Xn>
 		case ARM64_INTRIN_PACIB: // reads <Xn>
 		case ARM64_INTRIN_PACIA1716: // reads x16
@@ -927,6 +938,8 @@ public:
 		case ARM64_INTRIN_HINT_DGH:
 		case ARM64_INTRIN_HINT_TSB:
 		case ARM64_INTRIN_ISB:
+		case ARM64_INTRIN_PACDZA: // modifier is 0
+		case ARM64_INTRIN_PACDZB: // modifier is 0
 		case ARM64_INTRIN_PACIAZ: // modifier is 0
 		case ARM64_INTRIN_PACIBZ: // modifier is 0
 		case ARM64_INTRIN_PACIZA: // modifier is 0
@@ -950,16 +963,20 @@ public:
 		case ARM64_INTRIN_MSR:
 			return {Type::IntegerType(4, false)};
 		case ARM64_INTRIN_MRS:
-		case ARM64_INTRIN_PACIA: // writes <Xd>
-		case ARM64_INTRIN_PACIB: // writes <Xd>
+		case ARM64_INTRIN_PACDA: // writes <Xd>
+		case ARM64_INTRIN_PACDB: // writes <Xd>
+		case ARM64_INTRIN_PACDZA: // writes <Xd>
+		case ARM64_INTRIN_PACDZB: // writes <Xd>
 		case ARM64_INTRIN_PACIA1716: // writes x17
-		case ARM64_INTRIN_PACIB1716: // writes x17
+		case ARM64_INTRIN_PACIA: // writes <Xd>
+		case ARM64_INTRIN_PACIASP: // writes x30
 		case ARM64_INTRIN_PACIAZ: // writes x30
+		case ARM64_INTRIN_PACIB1716: // writes x17
+		case ARM64_INTRIN_PACIB: // writes <Xd>
+		case ARM64_INTRIN_PACIBSP: // writes x30
 		case ARM64_INTRIN_PACIBZ: // writes x30
 		case ARM64_INTRIN_PACIZA: // writes <Xd>
 		case ARM64_INTRIN_PACIZB: // writes <Xd>
-		case ARM64_INTRIN_PACIASP: // writes x30
-		case ARM64_INTRIN_PACIBSP: // writes x30
 			return {Type::IntegerType(8, false)};
 		case ARM64_INTRIN_ISB:
 		case ARM64_INTRIN_WFE:
