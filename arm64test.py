@@ -17,8 +17,8 @@ test_cases = [
 	(b'\xFE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x30],__autdzb,LLIL_CALL_PARAM([]))'), # autdzb x30
 	(b'\xEE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x14],__autdzb,LLIL_CALL_PARAM([]))'), # autdzb x14
 	# AUTIA_64P_dp_1src 1101101011000001000100xxxxxxxxxx
-	#(b'\x83\x11\xC1\xDA', 'LLIL_NOP'), # autia x3, x12
-	#(b'\xD5\x13\xC1\xDA', 'LLIL_NOP'), # autia x21, x30
+	(b'\x83\x11\xC1\xDA', 'LLIL_INTRINSIC([x3],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x12)]))'), # autia x3, x12
+	(b'\xD5\x13\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x30)]))'), # autia x21, x30
 	# AUTIB1716_HI_hints 1101010100000011001000xxxxxxxxxx
 	#(b'\xDF\x21\x03\xD5', 'LLIL_NOP'), # autib1716
 	# AUTIBSP_HI_hints 110101010000001100100xxxxxxxxxxx
@@ -26,14 +26,14 @@ test_cases = [
 	# AUTIBZ_HI_hints 11010101000000110010001111xxxxxx
 	#(b'\xDF\x23\x03\xD5', 'LLIL_NOP'), # autibz
 	# AUTIB_64P_dp_1src 1101101011000001000101xxxxxxxxxx
-	#(b'\x7C\x16\xC1\xDA', 'LLIL_NOP'), # autib x28, x19
-	#(b'\xCB\x16\xC1\xDA', 'LLIL_NOP'), # autib x11, x22
+	(b'\x7C\x16\xC1\xDA', 'LLIL_INTRINSIC([x28],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x19)]))'), # autib x28, x19
+	(b'\xCB\x16\xC1\xDA', 'LLIL_INTRINSIC([x11],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x22)]))'), # autib x11, x22
 	# AUTIZA_64Z_dp_1src 110110101100000100110xxxxxxxxxxx
-	#(b'\xEF\x33\xC1\xDA', 'LLIL_NOP'), # autiza x15
-	#(b'\xF5\x33\xC1\xDA', 'LLIL_NOP'), # autiza x21
+	(b'\xEF\x33\xC1\xDA', 'LLIL_INTRINSIC([x15],__autiza,LLIL_CALL_PARAM([]))'), # autiza x15
+	(b'\xF5\x33\xC1\xDA', 'LLIL_INTRINSIC([x21],__autiza,LLIL_CALL_PARAM([]))'), # autiza x21
 	# AUTIZB_64Z_dp_1src 11011010110000010011xxxxxxxxxxxx
-	#(b'\xE4\x37\xC1\xDA', 'LLIL_NOP'), # autizb x4
-	#(b'\xF4\x37\xC1\xDA', 'LLIL_NOP'), # autizb x20
+	(b'\xE4\x37\xC1\xDA', 'LLIL_INTRINSIC([x4],__autizb,LLIL_CALL_PARAM([]))'), # autizb x4
+	(b'\xF4\x37\xC1\xDA', 'LLIL_INTRINSIC([x20],__autizb,LLIL_CALL_PARAM([]))'), # autizb x20
 	# BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
 	#(b'\xDF\x09\x3F\xD6', 'LLIL_NOP'), # blraaz x14
 	#(b'\xDF\x08\x3F\xD6', 'LLIL_NOP'), # blraaz x6

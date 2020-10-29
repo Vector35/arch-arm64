@@ -674,8 +674,12 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 	switch(operation) {
 		case ARM64_AUTDA: return ARM64_INTRIN_AUTDA;
 		case ARM64_AUTDB: return ARM64_INTRIN_AUTDB;
+		case ARM64_AUTIA: return ARM64_INTRIN_AUTIA;
+		case ARM64_AUTIB: return ARM64_INTRIN_AUTIB;
 		case ARM64_AUTDZA: return ARM64_INTRIN_AUTDZA;
 		case ARM64_AUTDZB: return ARM64_INTRIN_AUTDZB;
+		case ARM64_AUTIZA: return ARM64_INTRIN_AUTIZA;
+		case ARM64_AUTIZB: return ARM64_INTRIN_AUTIZB;
 		case ARM64_PACDA: return ARM64_INTRIN_PACDA;
 		case ARM64_PACDB: return ARM64_INTRIN_PACDB;
 		case ARM64_PACDZA: return ARM64_INTRIN_PACDZA;
@@ -1083,6 +1087,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 
 	case ARM64_AUTDA:
 	case ARM64_AUTDB:
+	case ARM64_AUTIA:
+	case ARM64_AUTIB:
 	case ARM64_PACDA:
 	case ARM64_PACDB:
 	case ARM64_PACIA:
@@ -1100,6 +1106,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_AUTDZA:
 	case ARM64_AUTDZB:
+	case ARM64_AUTIZA:
+	case ARM64_AUTIZB:
 	case ARM64_PACDZA:
 	case ARM64_PACDZB:
 	case ARM64_PACIZA:
@@ -1111,6 +1119,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
+		// MNEM x30
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 					operation_to_intrinsic(instr.operation),
 					{}));

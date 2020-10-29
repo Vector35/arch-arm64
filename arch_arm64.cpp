@@ -831,10 +831,18 @@ public:
 			return "__autda";
 		case ARM64_INTRIN_AUTDB:
 			return "__autdb";
+		case ARM64_INTRIN_AUTIA:
+			return "__autia";
+		case ARM64_INTRIN_AUTIB:
+			return "__autib";
 		case ARM64_INTRIN_AUTDZA:
 			return "__autdza";
 		case ARM64_INTRIN_AUTDZB:
 			return "__autdzb";
+		case ARM64_INTRIN_AUTIZA:
+			return "__autiza";
+		case ARM64_INTRIN_AUTIZB:
+			return "__autizb";
 		case ARM64_INTRIN_ISB:
 			return "__isb";
 		case ARM64_INTRIN_WFE:
@@ -907,6 +915,7 @@ public:
 	{
 		return vector<uint32_t> {
 			ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTDZA, ARM64_INTRIN_AUTDZB,
+			ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB, ARM64_INTRIN_AUTIZA, ARM64_INTRIN_AUTIZB,
 			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
 			ARM64_INTRIN_PACDA, ARM64_INTRIN_PACDB, ARM64_INTRIN_PACDZA, ARM64_INTRIN_PACDZB,
@@ -928,6 +937,8 @@ public:
 			return {NameAndType(Type::IntegerType(4, false))};
 		case ARM64_INTRIN_AUTDA: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTDB: // reads <Xn|SP>
+		case ARM64_INTRIN_AUTIA: // reads <Xn|SP>
+		case ARM64_INTRIN_AUTIB: // reads <Xn|SP>
 		case ARM64_INTRIN_MSR:
 		case ARM64_INTRIN_PACDA: // reads <Xn>
 		case ARM64_INTRIN_PACDB: // reads <Xn>
@@ -954,8 +965,12 @@ public:
 			return {Type::IntegerType(4, false)};
 		case ARM64_INTRIN_AUTDA: // writes <Xd>
 		case ARM64_INTRIN_AUTDB: // writes <Xd>
+		case ARM64_INTRIN_AUTIA: // writes <Xd>
+		case ARM64_INTRIN_AUTIB: // writes <Xd>
 		case ARM64_INTRIN_AUTDZA: // writes <Xd>
 		case ARM64_INTRIN_AUTDZB: // writes <Xd>
+		case ARM64_INTRIN_AUTIZA: // writes <Xd>
+		case ARM64_INTRIN_AUTIZB: // writes <Xd>
 		case ARM64_INTRIN_MRS:
 		case ARM64_INTRIN_PACDA: // writes <Xd>
 		case ARM64_INTRIN_PACDB: // writes <Xd>
