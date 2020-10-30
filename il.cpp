@@ -807,11 +807,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), ~(((1LL << IMM(operand4)) - 1) << IMM(operand3))),
+					il.Const(REGSZ(operand1), ~(((1ULL << IMM(operand4)) - 1) << IMM(operand3))),
 					ILREG(operand1)),
-				il.ZeroExtend(REGSZ(operand1), il.ShiftLeft(REGSZ(operand2),
-					il.And(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), (1LL << IMM(operand4)) - 1)),
-						il.Const(1, IMM(operand3)))))));
+				il.And(REGSZ(operand1),
+					il.Const(REGSZ(operand1), (1ULL << IMM(operand4)) - 1),
+					ILREG(operand2)))));
 		break;
 	case ARM64_BFXIL:
 	{
