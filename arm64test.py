@@ -3,6 +3,17 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	# bfi/bfc aliases of bfm
+	# BFC_BFM_32M_bitfield 0011001100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\xF5\x27\x1F\x33', 'LLIL_SET_REG.d(w21,LLIL_AND.d(LLIL_CONST.d(-2047),LLIL_REG.d(w21)))'), # bfc w21, #1, #10 (-2047 is 0xFFFFF801)
+	(b'\xFF\x37\x16\x33', 'LLIL_SET_REG.d(wzr,LLIL_CONST.d(0))'), # bfc wzr, #10, #14 (optimized: any BFC on WZR yields 0)
+	(b'\xF0\x2B\x17\x33', 'LLIL_SET_REG.d(w16,LLIL_AND.d(LLIL_CONST.d(-1048065),LLIL_REG.d(w16)))'), # bfc w16, #9, #11
+	(b'\xEE\x5F\x1E\x33', 'LLIL_SET_REG.d(w14,LLIL_AND.d(LLIL_CONST.d(-67108861),LLIL_REG.d(w14)))'), # bfc w14, #2, #24
+	# BFC_BFM_64M_bitfield 1011001101xxxxxxxxxxxxxxxxxxxxxx
+	(b'\xF8\x5B\x74\xB3', 'LLIL_SET_REG.q(x24,LLIL_AND.q(LLIL_CONST.q(-34359734273),LLIL_REG.q(x24)))'), # bfc x24, #12, #23
+	(b'\xF4\x67\x77\xB3', 'LLIL_SET_REG.q(x20,LLIL_AND.q(LLIL_CONST.q(-34359737857),LLIL_REG.q(x20)))'), # bfc x20, #9, #26
+	(b'\xFF\x5F\x6B\xB3', 'LLIL_SET_REG.q(xzr,LLIL_CONST.q(0))'), # bfc xzr, #21, #24
+	(b'\xE0\x17\x5D\xB3', 'LLIL_SET_REG.q(x0,LLIL_AND.q(LLIL_CONST.q(-2164663517185),LLIL_REG.q(x0)))'), # bfc x0, #35, #6
 	# str instructions
 	# STR_32_ldst_immpost 10111000000xxxxxxxxx01xxxxxxxxxx
 	(b'\xC4\xA5\x15\xB8', 'LLIL_STORE.d(LLIL_REG.q(x14),LLIL_REG.d(w4)); LLIL_SET_REG.q(x14,LLIL_ADD.q(LLIL_REG.q(x14),LLIL_CONST.q(-166)))'), # str w4, [x14], #-166

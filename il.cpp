@@ -795,6 +795,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_BLRABZ:
 		il.AddInstruction(il.Call(ILREG(operand1)));
 		break;
+	case ARM64_BFC:
+	{
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.And(REGSZ(operand1),
+				il.Const(REGSZ(operand1), ~(((1ULL << (IMM(operand3)))-1) << IMM(operand2))),
+				ILREG(operand1))));
+		break;
+	}
 	case ARM64_BFI:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
