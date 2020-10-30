@@ -6,6 +6,16 @@
 # (bytes, expected_disassembly, options)
 test_cases = (
 	(b'\x1F\x20\x03\xD5', 'nop', {}),
+	# BFC_BFM_32M_bitfield 0011001100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\xF7\x1F\x15\x33', 'bfc w23, #0xb, #0x8', {}),
+	(b'\xF0\x0F\x1C\x33', 'bfc w16, #0x4, #0x4', {}),
+	(b'\xED\x03\x08\x33', 'bfc w13, #0x18, #0x1', {}),
+	(b'\xE1\x2B\x15\x33', 'bfc w1, #0xb, #0xb', {}),
+	# BFC_BFM_64M_bitfield 1011001101xxxxxxxxxxxxxxxxxxxxxx
+	(b'\xF6\x0F\x51\xB3', 'bfc x22, #0x2f, #0x4', {}),
+	(b'\xEE\x5B\x64\xB3', 'bfc x14, #0x1c, #0x17', {}),
+	(b'\xFE\x97\x6C\xB3', 'bfc x30, #0x14, #0x26', {}),
+	(b'\xF8\xAF\x72\xB3', 'bfc x24, #0xe, #0x2c', {}),
 	# BFI_BFM_32M_bitfield 00110011000xxxxx0xxxxxxxxxxxxxxx
 	(b'\xEA\x10\x0B\x33', 'bfi w10, w7, #0x15, #0x5', {}),
 	(b'\x7D\x03\x11\x33', 'bfi w29, w27, #0xf, #0x1', {}),

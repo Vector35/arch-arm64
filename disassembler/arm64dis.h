@@ -72,6 +72,7 @@ namespace arm64
 		ARM64_B_CC,
 		ARM64_B_CS,
 		ARM64_B_EQ,
+		ARM64_BFC,
 		ARM64_BFI,
 		ARM64_BFM,
 		ARM64_BFXIL,

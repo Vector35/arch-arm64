@@ -57,6 +57,7 @@ static const char* OperationString[] = {
 	"b.cc",
 	"b.cs",
 	"b.eq",
+	"bfc",
 	"bfi",
 	"bfm",
 	"bfxil",
@@ -2143,6 +2144,8 @@ uint32_t aarch64_decompose_bitfield(uint32_t instructionValue, Instruction* rest
 	 * SBFM <Xd>, <Xn>, #0, #15 -> SXTH <Xd>, <Wn>
 	 * SBFM <Xd>, <Xn>, #0, #31 -> SXTW <Xd>, <Wn>
 	 *
+	 * BFM <Wd>, WZR, #(-<lsb> MOD 32), #(<width>-1) -> BFC <Wd>, <Wn>, #<lsb>, #<width>
+	 * BFM <Wd>, WZR, #(-<lsb> MOD 64), #(<width>-1) -> BFC <Wd>, <Wn>, #<lsb>, #<width>
 	 * BFM <Wd>, <Wn>, #(-<lsb> MOD 32), #(<width>-1) -> BFI <Wd>, <Wn>, #<lsb>, #<width>
 	 * BFM <Xd>, <Xn>, #(-<lsb> MOD 64), #(<width>-1) -> BFI <Xd>, <Xn>, #<lsb>, #<width>
 	 * BFM <Wd>, <Wn>, #<lsb>, #(<lsb>+<width>-1) -> BFXIL <Wd>, <Wn>, #<lsb>, #<width>
@@ -2229,6 +2232,14 @@ uint32_t aarch64_decompose_bitfield(uint32_t instructionValue, Instruction* rest
 			instruction->operands[2].immediate = dataSize[decode.sf] - decode.immr;
 			instruction->operands[3].operandClass = IMM32;
 			instruction->operands[3].immediate++;
+
+			if (instruction->operands[1].reg[0] == REG_WZR || instruction->operands[1].reg[0] == REG_XZR)
+			{
+				instruction->operation = ARM64_BFC;
+				instruction->operands[1] = instruction->operands[2];
+				instruction->operands[2] = instruction->operands[3];
+				instruction->operands[3].operandClass = NONE;
+			}
 		}
 		else
 		{
