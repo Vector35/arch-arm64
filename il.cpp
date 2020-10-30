@@ -774,8 +774,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), ~(((1LL << IMM(operand4)) - 1) << IMM(operand3))),
-					ILREG(operand1)),
+					il.Const(REGSZ(operand1), ~(mask << IMM(operand3))), ILREG(operand1)),
 				il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
 					il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
 						il.Const(REGSZ(operand2), mask))))));
