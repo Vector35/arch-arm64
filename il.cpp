@@ -819,26 +819,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), ~(((1ULL << IMM(operand4)) - 1) << IMM(operand3))),
-					ILREG(operand1)),
-				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), (1ULL << IMM(operand4)) - 1),
-					ILREG(operand2)))));
+					ILREG(operand1),
+					il.Const(REGSZ(operand1), ~((1ULL << IMM(operand4)) - 1))),
+				il.LogicalShiftRight(REGSZ(operand1),
+					il.And(REGSZ(operand1),
+						ILREG(operand2),
+						il.Const(REGSZ(operand1), ((1ULL << IMM(operand4))-1) << IMM(operand3))),
+					il.Const(0, IMM(operand3))))));
 		break;
-
-
-	{
-		// prevent shifting by 64 bits which is UB
-		uint64_t mask = IMM(operand4) == 64 ? (uint64_t)-1 : ((1LL << IMM(operand4)) - 1);
-		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-			il.Or(REGSZ(operand1),
-				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), ~(mask << IMM(operand3))), ILREG(operand1)),
-				il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
-					il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
-						il.Const(REGSZ(operand2), mask))))));
-		break;
-	}
 	case ARM64_BR:
 	case ARM64_BRAA:
 	case ARM64_BRAAZ:
