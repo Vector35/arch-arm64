@@ -6,6 +6,12 @@
 # (bytes, expected_disassembly, options)
 test_cases = (
 	(b'\x1F\x20\x03\xD5', 'nop', {}),
+	# BFI_BFM_32M_bitfield 00110011000xxxxx0xxxxxxxxxxxxxxx
+	(b'\xEA\x10\x0B\x33', 'bfi w10, w7, #0x15, #0x5', {}),
+	(b'\x7D\x03\x11\x33', 'bfi w29, w27, #0xf, #0x1', {}),
+	# BFI_BFM_64M_bitfield 1011001101xxxxxxxxxxxxxxxxxxxxxx
+	(b'\x66\x40\x75\xB3', 'bfi x6, x3, #0xb, #0x11', {}),
+	(b'\x26\xAE\x76\xB3', 'bfi x6, x17, #0xa, #0x2c', {}),
 	# pointer authentication instructions (ARMv8.3-PAuth, HavePACExt())
 	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
 	(b'\x06\x18\xC1\xDA', 'autda x6, x0', {}),
