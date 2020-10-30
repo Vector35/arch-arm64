@@ -795,6 +795,29 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_BLRABZ:
 		il.AddInstruction(il.Call(ILREG(operand1)));
 		break;
+	case ARM64_BFI:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.Or(REGSZ(operand1),
+				il.And(REGSZ(operand1),
+					il.Const(REGSZ(operand1), ~(((1LL << IMM(operand4)) - 1) << IMM(operand3))),
+					ILREG(operand1)),
+				il.ZeroExtend(REGSZ(operand1), il.ShiftLeft(REGSZ(operand2),
+					il.And(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), (1LL << IMM(operand4)) - 1)),
+						il.Const(1, IMM(operand3)))))));
+		break;
+	case ARM64_BFXIL:
+	{
+		// prevent shifting by 64 bits which is UB
+		uint64_t mask = IMM(operand4) == 64 ? (uint64_t)-1 : ((1LL << IMM(operand4)) - 1);
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.Or(REGSZ(operand1),
+				il.And(REGSZ(operand1),
+					il.Const(REGSZ(operand1), ~(mask << IMM(operand3))), ILREG(operand1)),
+				il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
+					il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
+						il.Const(REGSZ(operand2), mask))))));
+		break;
+	}
 	case ARM64_BR:
 	case ARM64_BRAA:
 	case ARM64_BRAAZ:
