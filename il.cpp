@@ -809,11 +809,24 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 				il.And(REGSZ(operand1),
 					il.Const(REGSZ(operand1), ~(((1ULL << IMM(operand4)) - 1) << IMM(operand3))),
 					ILREG(operand1)),
+				il.ShiftLeft(REGSZ(operand1),
+					il.And(REGSZ(operand1),
+						il.Const(REGSZ(operand1), (1ULL << IMM(operand4)) - 1),
+						ILREG(operand2)),
+					il.Const(0, IMM(operand3))))));
+		break;
+	case ARM64_BFXIL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+			il.Or(REGSZ(operand1),
+				il.And(REGSZ(operand1),
+					il.Const(REGSZ(operand1), ~(((1ULL << IMM(operand4)) - 1) << IMM(operand3))),
+					ILREG(operand1)),
 				il.And(REGSZ(operand1),
 					il.Const(REGSZ(operand1), (1ULL << IMM(operand4)) - 1),
 					ILREG(operand2)))));
 		break;
-	case ARM64_BFXIL:
+
+
 	{
 		// prevent shifting by 64 bits which is UB
 		uint64_t mask = IMM(operand4) == 64 ? (uint64_t)-1 : ((1LL << IMM(operand4)) - 1);
