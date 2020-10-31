@@ -816,17 +816,20 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.Const(0, IMM(operand3))))));
 		break;
 	case ARM64_BFXIL:
+	{
+		uint64_t mask = IMM(operand4) == 64 ? (uint64_t)-1 : ((1UL << IMM(operand4)) - 1);
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
 					ILREG(operand1),
-					il.Const(REGSZ(operand1), ~((1ULL << IMM(operand4)) - 1))),
+					il.Const(REGSZ(operand1), ~mask)),
 				il.LogicalShiftRight(REGSZ(operand1),
 					il.And(REGSZ(operand1),
 						ILREG(operand2),
-						il.Const(REGSZ(operand1), ((1ULL << IMM(operand4))-1) << IMM(operand3))),
+						il.Const(REGSZ(operand1), mask << IMM(operand3))),
 					il.Const(0, IMM(operand3))))));
 		break;
+	}
 	case ARM64_BR:
 	case ARM64_BRAA:
 	case ARM64_BRAAZ:
