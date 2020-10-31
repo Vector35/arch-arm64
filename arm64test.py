@@ -5,7 +5,7 @@ RET = b'\xc0\x03\x5f\xd6'
 test_cases = [
 	# bfi/bfc/bfxil aliases of bfm
 	# BFC_BFM_32M_bitfield 0011001100xxxxxxxxxxxxxxxxxxxxxx
-	(b'\xF5\x27\x1F\x33', 'LLIL_SET_REG.d(w21,LLIL_AND.d(LLIL_CONST.d(0xFFFFF801),LLIL_REG.d(w21)))'), # bfc w21, #1, #10 (-2047 is 0xFFFFF801)
+	(b'\xF5\x27\x1F\x33', 'LLIL_SET_REG.d(w21,LLIL_AND.d(LLIL_CONST.d(0xFFFFF801),LLIL_REG.d(w21)))'), # bfc w21, #1, #10
 	(b'\xFF\x37\x16\x33', 'LLIL_SET_REG.d(wzr,LLIL_CONST.d(0x0))'), # bfc wzr, #10, #14 (optimized: any BFC on WZR yields 0)
 	(b'\xF0\x2B\x17\x33', 'LLIL_SET_REG.d(w16,LLIL_AND.d(LLIL_CONST.d(0xFFF001FF),LLIL_REG.d(w16)))'), # bfc w16, #9, #11
 	(b'\xEE\x5F\x1E\x33', 'LLIL_SET_REG.d(w14,LLIL_AND.d(LLIL_CONST.d(0xFC000003),LLIL_REG.d(w14)))'), # bfc w14, #2, #24

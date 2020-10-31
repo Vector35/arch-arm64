@@ -15,6 +15,7 @@ using namespace arm64;
 #define ADDREGREG(R1,R2) il.Add(REGSZ(R1), ILREG(R1), ILREG(R2))
 #define LOADVAL(R1, O) il.Load(REGSZ(R1), O)
 #define LOADREG(R1) il.Load(REGSZ(R1), ILREG(R1))
+#define ONES(N) (-1ULL >> (64-N))
 
 static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 {
@@ -796,40 +797,35 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Call(ILREG(operand1)));
 		break;
 	case ARM64_BFC:
-	{
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.And(REGSZ(operand1),
-				il.Const(REGSZ(operand1), ~(((1ULL << (IMM(operand3)))-1) << IMM(operand2))),
+				il.Const(REGSZ(operand1), ~(ONES(IMM(operand3)) << IMM(operand2))),
 				ILREG(operand1))));
 		break;
-	}
 	case ARM64_BFI:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
-					il.Const(REGSZ(operand1), ~(((1ULL << IMM(operand4)) - 1) << IMM(operand3))),
+					il.Const(REGSZ(operand1), ~(ONES(IMM(operand4)) << IMM(operand3))),
 					ILREG(operand1)),
 				il.ShiftLeft(REGSZ(operand1),
 					il.And(REGSZ(operand1),
-						il.Const(REGSZ(operand1), (1ULL << IMM(operand4)) - 1),
+						il.Const(REGSZ(operand1), ONES(IMM(operand4))),
 						ILREG(operand2)),
 					il.Const(0, IMM(operand3))))));
 		break;
 	case ARM64_BFXIL:
-	{
-		uint64_t mask = IMM(operand4) == 64 ? (uint64_t)-1 : ((1UL << IMM(operand4)) - 1);
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 			il.Or(REGSZ(operand1),
 				il.And(REGSZ(operand1),
 					ILREG(operand1),
-					il.Const(REGSZ(operand1), ~mask)),
+					il.Const(REGSZ(operand1), ~ONES(IMM(operand4)))),
 				il.LogicalShiftRight(REGSZ(operand1),
 					il.And(REGSZ(operand1),
 						ILREG(operand2),
-						il.Const(REGSZ(operand1), mask << IMM(operand3))),
+						il.Const(REGSZ(operand1), ONES(IMM(operand4)) << IMM(operand3))),
 					il.Const(0, IMM(operand3))))));
 		break;
-	}
 	case ARM64_BR:
 	case ARM64_BRAA:
 	case ARM64_BRAAZ:
