@@ -125,13 +125,17 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 	switch (operand.shiftType)
 	{
 		case SHIFT_NONE:
+		case SHIFT_ASR:
+			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
+			if (operand.shiftValue)
+				res = il.ArithShiftRight(resultSize, res,
+						il.Const(0, operand.shiftValue));
+			return res;
 		case SHIFT_LSR:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
-
 			if (operand.shiftType == SHIFT_LSR && operand.shiftValue)
 				res = il.LogicalShiftRight(resultSize, res,
 						il.Const(1, operand.shiftValue));
-
 			return res;
 		case SHIFT_LSL:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);

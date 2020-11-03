@@ -3,6 +3,11 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	# compare with asr
+	(b'\x5f\x0d\x88\xeb', 'LLIL_SUB.q(LLIL_REG.q(x10),LLIL_ASR.q(LLIL_REG.q(x8),LLIL_CONST(3)))'), # cmp x10, x8, asr #0x3
+	(b'\x1f\x0c\x81\xeb', 'LLIL_SUB.q(LLIL_REG.q(x0),LLIL_ASR.q(LLIL_REG.q(x1),LLIL_CONST(3)))'), # cmp x0, x1, asr #0x3
+	(b'\x1f\x04\x81\x6b', 'LLIL_SUB.d(LLIL_REG.d(w0),LLIL_ASR.d(LLIL_REG.d(w1),LLIL_CONST(1)))'), # cmp w0, w1, asr #0x1
+	(b'\x3f\x14\x82\x6b', 'LLIL_SUB.d(LLIL_REG.d(w1),LLIL_ASR.d(LLIL_REG.d(w2),LLIL_CONST(5)))'), # cmp w1, w2, asr #0x5
 	# bfi/bfc/bfxil aliases of bfm
 	# BFC_BFM_32M_bitfield 0011001100xxxxxxxxxxxxxxxxxxxxxx
 	(b'\xF5\x27\x1F\x33', 'LLIL_SET_REG.d(w21,LLIL_AND.d(LLIL_CONST.d(0xFFFFF801),LLIL_REG.d(w21)))'), # bfc w21, #1, #10
