@@ -79,7 +79,7 @@ static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOpera
 			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate));
 		else if (operand.shiftType == SHIFT_LSL)
 			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
-					il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(addrSize, operand.shiftValue)));
+					il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
 		break;
 	default:
 		il.AddInstruction(il.Unimplemented());
@@ -1263,10 +1263,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_STR:
 	case ARM64_STUR:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperand(il, false, instr.operands[0], instr.operands[1]);
+		LoadStoreOperand(il, false, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_STRB:
 	case ARM64_STURB:

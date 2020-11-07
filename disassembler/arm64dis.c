@@ -1260,7 +1260,8 @@ uint8_t dataSize[] = {32, 64};
 uint32_t get_register_size(Register reg)
 {
 	//Comparison done in order of likelyhood to occur
-	if (reg >= REG_X0 && reg <= REG_SP)
+	if ((reg >= REG_X0 && reg <= REG_SP) ||
+			(reg >= REG_D0 && reg <= REG_D31))
 		return 8;
 	else if ((reg >= REG_W0 && reg <= REG_WSP) ||
 			(reg >= REG_S0 && reg <= REG_S31))

@@ -82,121 +82,81 @@ test_cases = [
 	(b'\xA2\x58\x25\xF8', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x5),LLIL_LSL.q(LLIL_ZX.q(LLIL_REG.d(w5)),LLIL_CONST.b(0x3))),LLIL_REG.q(x2))'), # str x2, [x5, w5, uxtw #3]
 	(b'\xF4\xFA\x3A\xF8', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x23),LLIL_LSL.q(LLIL_REG.q(x26),LLIL_CONST.b(0x3))),LLIL_REG.q(x20))'), # str x20, [x23, x26, sxtx #3]
 	(b'\xEE\xF9\x34\xF8', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x15),LLIL_LSL.q(LLIL_REG.q(x20),LLIL_CONST.b(0x3))),LLIL_REG.q(x14))'), # str x14, [x15, x20, sxtx #3]
-	# STR_BL_ldst_regoff 00111100001xxxxx011x10xxxxxxxxxx
-	(b'\xCC\x7B\x27\x3C', 'LLIL_UNIMPL()'), # str b12, [x30, x7, lsl #0]
-	(b'\x1F\x79\x3A\x3C', 'LLIL_UNIMPL()'), # str b31, [x8, x26, lsl #0]
-	(b'\x77\x6A\x3F\x3C', 'LLIL_UNIMPL()'), # str b23, [x19, xzr]
-	(b'\xC8\x7B\x31\x3C', 'LLIL_UNIMPL()'), # str b8, [x30, x17, lsl #0]
-	# STR_B_ldst_immpost 00111100000xxxxxxxxx01xxxxxxxxxx
-	(b'\xB6\x57\x07\x3C', 'LLIL_UNIMPL()'), # str b22, [x29], #117
-	(b'\x0F\xE7\x0C\x3C', 'LLIL_UNIMPL()'), # str b15, [x24], #206
-	(b'\x0F\xD4\x11\x3C', 'LLIL_UNIMPL()'), # str b15, [x0], #-227
-	(b'\x0A\x17\x17\x3C', 'LLIL_UNIMPL()'), # str b10, [x24], #-143
-	# STR_B_ldst_immpre 00111100000xxxxxxxxx11xxxxxxxxxx
-	(b'\x26\xBF\x00\x3C', 'LLIL_UNIMPL()'), # str b6, [x25, #11]!
-	(b'\x8A\xED\x0E\x3C', 'LLIL_UNIMPL()'), # str b10, [x12, #238]!
-	(b'\x70\x3F\x1A\x3C', 'LLIL_UNIMPL()'), # str b16, [x27, #-93]!
-	(b'\xBA\x3D\x19\x3C', 'LLIL_UNIMPL()'), # str b26, [x13, #-109]!
-	# STR_B_ldst_pos 0011110100xxxxxxxxxxxxxxxxxxxxxx
-	(b'\x0B\xB2\x30\x3D', 'LLIL_UNIMPL()'), # str b11, [x16, #3116]
-	(b'\x5B\xEE\x27\x3D', 'LLIL_UNIMPL()'), # str b27, [x18, #2555]
-	(b'\xB4\xD7\x34\x3D', 'LLIL_UNIMPL()'), # str b20, [x29, #3381]
-	(b'\x37\x70\x0A\x3D', 'LLIL_UNIMPL()'), # str b23, [x1, #668]
+	# IFORM: STR_reg_fpsimd
 	# STR_B_ldst_regoff 00111100001xxxxxx1xx10xxxxxxxxxx
-	(b'\xFD\xD8\x27\x3C', 'LLIL_UNIMPL()'), # str b29, [x7, w7, sxtw #0]
-	(b'\x20\xDA\x30\x3C', 'LLIL_UNIMPL()'), # str b0, [x17, w16, sxtw #0]
-	(b'\x68\xE8\x39\x3C', 'LLIL_UNIMPL()'), # str b8, [x3, x25, sxtx]
-	(b'\x9C\x49\x2E\x3C', 'LLIL_UNIMPL()'), # str b28, [x12, w14, uxtw]
-	# STR_D_ldst_immpost 11111100000xxxxxxxxx01xxxxxxxxxx
-	(b'\xAD\xE4\x1F\xFC', 'LLIL_UNIMPL()'), # str d13, [x5], #-2
-	(b'\xE3\x64\x15\xFC', 'LLIL_UNIMPL()'), # str d3, [x7], #-170
-	(b'\xB5\x14\x01\xFC', 'LLIL_UNIMPL()'), # str d21, [x5], #17
-	(b'\x1F\x85\x1D\xFC', 'LLIL_UNIMPL()'), # str d31, [x8], #-40
-	# STR_D_ldst_immpre 11111100000xxxxxxxxx11xxxxxxxxxx
-	(b'\x04\xEF\x1B\xFC', 'LLIL_UNIMPL()'), # str d4, [x24, #-66]!
-	(b'\x71\x6F\x1A\xFC', 'LLIL_UNIMPL()'), # str d17, [x27, #-90]!
-	(b'\x09\x4D\x1A\xFC', 'LLIL_UNIMPL()'), # str d9, [x8, #-92]!
-	(b'\x71\x9C\x19\xFC', 'LLIL_UNIMPL()'), # str d17, [x3, #-103]!
-	# STR_D_ldst_pos 1111110100xxxxxxxxxxxxxxxxxxxxxx
-	(b'\xF0\xC8\x34\xFD', 'LLIL_UNIMPL()'), # str d16, [x7, #27024]
-	(b'\xBF\x6F\x17\xFD', 'LLIL_UNIMPL()'), # str d31, [x29, #11992]
-	(b'\x51\x53\x2D\xFD', 'LLIL_UNIMPL()'), # str d17, [x26, #23200]
-	(b'\x33\x6D\x25\xFD', 'LLIL_UNIMPL()'), # str d19, [x9, #19160]
-	# STR_D_ldst_regoff 11111100001xxxxxx1xx10xxxxxxxxxx
-	(b'\x07\xCB\x3E\xFC', 'LLIL_UNIMPL()'), # str d7, [x24, w30, sxtw]
-	(b'\xAB\x6A\x35\xFC', 'LLIL_UNIMPL()'), # str d11, [x21, x21]
-	(b'\x2C\x59\x22\xFC', 'LLIL_UNIMPL()'), # str d12, [x9, w2, uxtw #3]
-	(b'\x25\xD9\x22\xFC', 'LLIL_UNIMPL()'), # str d5, [x9, w2, sxtw #3]
-	# STR_H_ldst_immpost 01111100000xxxxxxxxx01xxxxxxxxxx
-	(b'\x56\xC6\x01\x7C', 'LLIL_UNIMPL()'), # str h22, [x18], #28
-	(b'\x93\xD7\x07\x7C', 'LLIL_UNIMPL()'), # str h19, [x28], #125
-	(b'\x76\x54\x08\x7C', 'LLIL_UNIMPL()'), # str h22, [x3], #133
-	(b'\xB8\x44\x0C\x7C', 'LLIL_UNIMPL()'), # str h24, [x5], #196
-	# STR_H_ldst_immpre 01111100000xxxxxxxxx11xxxxxxxxxx
-	(b'\xFA\xBC\x03\x7C', 'LLIL_UNIMPL()'), # str h26, [x7, #59]!
-	(b'\xBE\x3E\x1E\x7C', 'LLIL_UNIMPL()'), # str h30, [x21, #-29]!
-	(b'\x1E\xEE\x0B\x7C', 'LLIL_UNIMPL()'), # str h30, [x16, #190]!
-	(b'\x33\x6F\x05\x7C', 'LLIL_UNIMPL()'), # str h19, [x25, #86]!
-	# STR_H_ldst_pos 0111110100xxxxxxxxxxxxxxxxxxxxxx
-	(b'\x28\x61\x39\x7D', 'LLIL_UNIMPL()'), # str h8, [x9, #7344]
-	(b'\x85\x98\x0C\x7D', 'LLIL_UNIMPL()'), # str h5, [x4, #1612]
-	(b'\x2C\xCE\x16\x7D', 'LLIL_UNIMPL()'), # str h12, [x17, #2918]
-	(b'\xCE\xA3\x06\x7D', 'LLIL_UNIMPL()'), # str h14, [x30, #848]
+	(b'\xFD\xD8\x27\x3C', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x7),LLIL_SX.q(LLIL_REG.d(w7))),LLIL_REG.b(b29))'), # str b29, [x7, w7, sxtw #0]
+	(b'\x20\xDA\x30\x3C', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_SX.q(LLIL_REG.d(w16))),LLIL_REG.b(b0))'), # str b0, [x17, w16, sxtw #0]
+	# STR_BL_ldst_regoff 00111100001xxxxx011x10xxxxxxxxxx
+	(b'\xCC\x7B\x27\x3C', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x30),LLIL_REG.q(x7)),LLIL_REG.b(b12))'), # str b12, [x30, x7, lsl #0]
+	(b'\x1F\x79\x3A\x3C', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x8),LLIL_REG.q(x26)),LLIL_REG.b(b31))'), # str b31, [x8, x26, lsl #0]
 	# STR_H_ldst_regoff 01111100001xxxxxx1xx10xxxxxxxxxx
-	(b'\xCE\xD9\x36\x7C', 'LLIL_UNIMPL()'), # str h14, [x14, w22, sxtw #1]
-	(b'\x39\xCB\x2D\x7C', 'LLIL_UNIMPL()'), # str h25, [x25, w13, sxtw]
-	(b'\x36\x5B\x2A\x7C', 'LLIL_UNIMPL()'), # str h22, [x25, w10, uxtw #1]
-	(b'\xDF\x58\x2A\x7C', 'LLIL_UNIMPL()'), # str h31, [x6, w10, uxtw #1]
-	# STR_Q_ldst_immpost 00111100100xxxxxxxxx01xxxxxxxxxx
-	(b'\xAD\xA5\x9A\x3C', 'LLIL_UNIMPL()'), # str q13, [x13], #-86
-	(b'\x6C\x15\x8B\x3C', 'LLIL_UNIMPL()'), # str q12, [x11], #177
-	(b'\xA5\x55\x98\x3C', 'LLIL_UNIMPL()'), # str q5, [x13], #-123
-	(b'\xE8\xD4\x9B\x3C', 'LLIL_UNIMPL()'), # str q8, [x7], #-67
-	# STR_Q_ldst_immpre 00111100100xxxxxxxxx11xxxxxxxxxx
-	(b'\x8B\x8D\x93\x3C', 'LLIL_UNIMPL()'), # str q11, [x12, #-200]!
-	(b'\x89\xBC\x80\x3C', 'LLIL_UNIMPL()'), # str q9, [x4, #11]!
-	(b'\x16\x6C\x94\x3C', 'LLIL_UNIMPL()'), # str q22, [x0, #-186]!
-	(b'\x49\x6E\x9E\x3C', 'LLIL_UNIMPL()'), # str q9, [x18, #-26]!
-	# STR_Q_ldst_pos 0011110110xxxxxxxxxxxxxxxxxxxxxx
-	(b'\x70\x26\x93\x3D', 'LLIL_UNIMPL()'), # str q16, [x19, #19600]
-	(b'\xE8\xB0\x88\x3D', 'LLIL_UNIMPL()'), # str q8, [x7, #8896]
-	(b'\xE3\x0A\xA6\x3D', 'LLIL_UNIMPL()'), # str q3, [x23, #38944]
-	(b'\x16\xD9\x9F\x3D', 'LLIL_UNIMPL()'), # str q22, [x8, #32608]
-	# STR_Q_ldst_regoff 00111100101xxxxxx1xx10xxxxxxxxxx
-	(b'\xBF\x49\xBC\x3C', 'LLIL_UNIMPL()'), # str q31, [x13, w28, uxtw]
-	(b'\xA2\xFB\xB4\x3C', 'LLIL_UNIMPL()'), # str q2, [x29, x20, sxtx #4]
-	(b'\x0B\xCB\xA1\x3C', 'LLIL_UNIMPL()'), # str q11, [x24, w1, sxtw]
-	(b'\x8E\xCB\xBD\x3C', 'LLIL_UNIMPL()'), # str q14, [x28, w29, sxtw]
-	# STR_S_ldst_immpost 10111100000xxxxxxxxx01xxxxxxxxxx
-	(b'\x9E\x06\x13\xBC', 'LLIL_UNIMPL()'), # str s30, [x20], #-208
-	(b'\xA9\x07\x07\xBC', 'LLIL_UNIMPL()'), # str s9, [x29], #112
-	(b'\x37\xC6\x1F\xBC', 'LLIL_UNIMPL()'), # str s23, [x17], #-4
-	(b'\x75\xE6\x1F\xBC', 'LLIL_UNIMPL()'), # str s21, [x19], #-2
-	# STR_S_ldst_immpre 10111100000xxxxxxxxx11xxxxxxxxxx
-	(b'\xD6\x4E\x13\xBC', 'LLIL_UNIMPL()'), # str s22, [x22, #-204]!
-	(b'\xDC\xFF\x09\xBC', 'LLIL_UNIMPL()'), # str s28, [x30, #159]!
-	(b'\x25\x9C\x00\xBC', 'LLIL_UNIMPL()'), # str s5, [x1, #9]!
-	(b'\x64\xDC\x06\xBC', 'LLIL_UNIMPL()'), # str s4, [x3, #109]!
-	# STR_S_ldst_pos 1011110100xxxxxxxxxxxxxxxxxxxxxx
-	(b'\x92\xAE\x15\xBD', 'LLIL_UNIMPL()'), # str s18, [x20, #5548]
-	(b'\xBF\xD7\x08\xBD', 'LLIL_UNIMPL()'), # str s31, [x29, #2260]
-	(b'\x86\x05\x07\xBD', 'LLIL_UNIMPL()'), # str s6, [x12, #1796]
-	(b'\x18\xB4\x19\xBD', 'LLIL_UNIMPL()'), # str s24, [x0, #6580]
+	(b'\xCE\xD9\x36\x7C', 'LLIL_STORE.w(LLIL_ADD.q(LLIL_REG.q(x14),LLIL_LSL.q(LLIL_SX.q(LLIL_REG.d(w22)),LLIL_CONST.b(0x1))),LLIL_REG.w(h14))'), # str h14, [x14, w22, sxtw #1]
+	(b'\x39\xCB\x2D\x7C', 'LLIL_STORE.w(LLIL_ADD.q(LLIL_REG.q(x25),LLIL_SX.q(LLIL_REG.d(w13))),LLIL_REG.w(h25))'), # str h25, [x25, w13, sxtw]
 	# STR_S_ldst_regoff 10111100001xxxxxx1xx10xxxxxxxxxx
-	(b'\xB5\x79\x3F\xBC', 'LLIL_UNIMPL()'), # str s21, [x13, xzr, lsl #2]
-	(b'\x8B\x7B\x2C\xBC', 'LLIL_UNIMPL()'), # str s11, [x28, x12, lsl #2]
-	(b'\x56\x6A\x20\xBC', 'LLIL_UNIMPL()'), # str s22, [x18, x0]
-	(b'\xF3\x5B\x33\xBC', 'LLIL_UNIMPL()'), # str s19, [sp, w19, uxtw #2]
+	(b'\xB5\x79\x3F\xBC', 'LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x13),LLIL_LSL.q(LLIL_CONST.q(0x0),LLIL_CONST.b(0x2))),LLIL_REG.d(s21))'), # str s21, [x13, xzr, lsl #2]
+	(b'\x8B\x7B\x2C\xBC', 'LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x28),LLIL_LSL.q(LLIL_REG.q(x12),LLIL_CONST.b(0x2))),LLIL_REG.d(s11))'), # str s11, [x28, x12, lsl #2]
+	# STR_D_ldst_regoff 11111100001xxxxxx1xx10xxxxxxxxxx
+	(b'\x2C\x59\x22\xFC', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_LSL.q(LLIL_ZX.q(LLIL_REG.d(w2)),LLIL_CONST.b(0x3))),LLIL_REG.q(d12))'), # str d12, [x9, w2, uxtw #3]
+	(b'\x25\xD9\x22\xFC', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_LSL.q(LLIL_SX.q(LLIL_REG.d(w2)),LLIL_CONST.b(0x3))),LLIL_REG.q(d5))'), # str d5, [x9, w2, sxtw #3]
+	# STR_Q_ldst_regoff 00111100101xxxxxx1xx10xxxxxxxxxx
+	(b'\x0B\xCB\xA1\x3C', 'LLIL_STORE.128(LLIL_ADD.q(LLIL_REG.q(x24),LLIL_SX.q(LLIL_REG.d(w1))),LLIL_REG.128(q11))'), # str q11, [x24, w1, sxtw]
+	(b'\x8E\xCB\xBD\x3C', 'LLIL_STORE.128(LLIL_ADD.q(LLIL_REG.q(x28),LLIL_SX.q(LLIL_REG.d(w29))),LLIL_REG.128(q14))'), # str q14, [x28, w29, sxtw]
+	# IFORM: STR_imm_fpsimd (class post_indexed)
+	# STR_B_ldst_immpost 00111100000xxxxxxxxx01xxxxxxxxxx
+	(b'\xB6\x57\x07\x3C', 'LLIL_STORE.b(LLIL_REG.q(x29),LLIL_REG.b(b22)); LLIL_SET_REG.q(x29,LLIL_ADD.q(LLIL_REG.q(x29),LLIL_CONST.q(0x75)))'), # str b22, [x29], #117
+	(b'\x0F\xE7\x0C\x3C', 'LLIL_STORE.b(LLIL_REG.q(x24),LLIL_REG.b(b15)); LLIL_SET_REG.q(x24,LLIL_ADD.q(LLIL_REG.q(x24),LLIL_CONST.q(0xCE)))'), # str b15, [x24], #206
+	# STR_H_ldst_immpost 01111100000xxxxxxxxx01xxxxxxxxxx
+	(b'\x56\xC6\x01\x7C', 'LLIL_STORE.w(LLIL_REG.q(x18),LLIL_REG.w(h22)); LLIL_SET_REG.q(x18,LLIL_ADD.q(LLIL_REG.q(x18),LLIL_CONST.q(0x1C)))'), # str h22, [x18], #28
+	(b'\x93\xD7\x07\x7C', 'LLIL_STORE.w(LLIL_REG.q(x28),LLIL_REG.w(h19)); LLIL_SET_REG.q(x28,LLIL_ADD.q(LLIL_REG.q(x28),LLIL_CONST.q(0x7D)))'), # str h19, [x28], #125
+	# STR_S_ldst_immpost 10111100000xxxxxxxxx01xxxxxxxxxx
+	(b'\x9E\x06\x13\xBC', 'LLIL_STORE.d(LLIL_REG.q(x20),LLIL_REG.d(s30)); LLIL_SET_REG.q(x20,LLIL_ADD.q(LLIL_REG.q(x20),LLIL_CONST.q(0xFFFFFFFFFFFFFF30)))'), # str s30, [x20], #-208
+	(b'\xA9\x07\x07\xBC', 'LLIL_STORE.d(LLIL_REG.q(x29),LLIL_REG.d(s9)); LLIL_SET_REG.q(x29,LLIL_ADD.q(LLIL_REG.q(x29),LLIL_CONST.q(0x70)))'), # str s9, [x29], #112
+	# STR_D_ldst_immpost 11111100000xxxxxxxxx01xxxxxxxxxx
+	(b'\xAD\xE4\x1F\xFC', 'LLIL_STORE.q(LLIL_REG.q(x5),LLIL_REG.q(d13)); LLIL_SET_REG.q(x5,LLIL_ADD.q(LLIL_REG.q(x5),LLIL_CONST.q(0xFFFFFFFFFFFFFFFE)))'), # str d13, [x5], #-2
+	(b'\xE3\x64\x15\xFC', 'LLIL_STORE.q(LLIL_REG.q(x7),LLIL_REG.q(d3)); LLIL_SET_REG.q(x7,LLIL_ADD.q(LLIL_REG.q(x7),LLIL_CONST.q(0xFFFFFFFFFFFFFF56)))'), # str d3, [x7], #-170
+	# STR_Q_ldst_immpost 00111100100xxxxxxxxx01xxxxxxxxxx
+	(b'\xAD\xA5\x9A\x3C', 'LLIL_STORE.128(LLIL_REG.q(x13),LLIL_REG.128(q13)); LLIL_SET_REG.q(x13,LLIL_ADD.q(LLIL_REG.q(x13),LLIL_CONST.q(0xFFFFFFFFFFFFFFAA)))'), # str q13, [x13], #-86
+	(b'\x6C\x15\x8B\x3C', 'LLIL_STORE.128(LLIL_REG.q(x11),LLIL_REG.128(q12)); LLIL_SET_REG.q(x11,LLIL_ADD.q(LLIL_REG.q(x11),LLIL_CONST.q(0xB1)))'), # str q12, [x11], #177
+	# IFORM: STR_imm_fpsimd (class pre_indexed)
+	# STR_B_ldst_immpre 00111100000xxxxxxxxx11xxxxxxxxxx
+	(b'\x26\xBF\x00\x3C', 'LLIL_SET_REG.q(x25,LLIL_ADD.q(LLIL_REG.q(x25),LLIL_CONST.q(0xB))); LLIL_STORE.b(LLIL_REG.q(x25),LLIL_REG.b(b6))'), # str b6, [x25, #11]!
+	(b'\x8A\xED\x0E\x3C', 'LLIL_SET_REG.q(x12,LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xEE))); LLIL_STORE.b(LLIL_REG.q(x12),LLIL_REG.b(b10))'), # str b10, [x12, #238]!
+	# STR_H_ldst_immpre 01111100000xxxxxxxxx11xxxxxxxxxx
+	(b'\xFA\xBC\x03\x7C', 'LLIL_SET_REG.q(x7,LLIL_ADD.q(LLIL_REG.q(x7),LLIL_CONST.q(0x3B))); LLIL_STORE.w(LLIL_REG.q(x7),LLIL_REG.w(h26))'), # str h26, [x7, #59]!
+	(b'\xBE\x3E\x1E\x7C', 'LLIL_SET_REG.q(x21,LLIL_ADD.q(LLIL_REG.q(x21),LLIL_CONST.q(0xFFFFFFFFFFFFFFE3))); LLIL_STORE.w(LLIL_REG.q(x21),LLIL_REG.w(h30))'), # str h30, [x21, #-29]!
+	# STR_S_ldst_immpre 10111100000xxxxxxxxx11xxxxxxxxxx
+	(b'\xD6\x4E\x13\xBC', 'LLIL_SET_REG.q(x22,LLIL_ADD.q(LLIL_REG.q(x22),LLIL_CONST.q(0xFFFFFFFFFFFFFF34))); LLIL_STORE.d(LLIL_REG.q(x22),LLIL_REG.d(s22))'), # str s22, [x22, #-204]!
+	(b'\xDC\xFF\x09\xBC', 'LLIL_SET_REG.q(x30,LLIL_ADD.q(LLIL_REG.q(x30),LLIL_CONST.q(0x9F))); LLIL_STORE.d(LLIL_REG.q(x30),LLIL_REG.d(s28))'), # str s28, [x30, #159]!
+	# STR_D_ldst_immpre 11111100000xxxxxxxxx11xxxxxxxxxx
+	(b'\x04\xEF\x1B\xFC', 'LLIL_SET_REG.q(x24,LLIL_ADD.q(LLIL_REG.q(x24),LLIL_CONST.q(0xFFFFFFFFFFFFFFBE))); LLIL_STORE.q(LLIL_REG.q(x24),LLIL_REG.q(d4))'), # str d4, [x24, #-66]!
+	(b'\x71\x6F\x1A\xFC', 'LLIL_SET_REG.q(x27,LLIL_ADD.q(LLIL_REG.q(x27),LLIL_CONST.q(0xFFFFFFFFFFFFFFA6))); LLIL_STORE.q(LLIL_REG.q(x27),LLIL_REG.q(d17))'), # str d17, [x27, #-90]!
+	# STR_Q_ldst_immpre 00111100100xxxxxxxxx11xxxxxxxxxx
+	(b'\x8B\x8D\x93\x3C', 'LLIL_SET_REG.q(x12,LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xFFFFFFFFFFFFFF38))); LLIL_STORE.128(LLIL_REG.q(x12),LLIL_REG.128(q11))'), # str q11, [x12, #-200]!
+	(b'\x89\xBC\x80\x3C', 'LLIL_SET_REG.q(x4,LLIL_ADD.q(LLIL_REG.q(x4),LLIL_CONST.q(0xB))); LLIL_STORE.128(LLIL_REG.q(x4),LLIL_REG.128(q9))'), # str q9, [x4, #11]!
+	# IFORM: STR_imm_fpsimd (class unsigned_scaled_offset)
+	# STR_B_ldst_pos 0011110100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\x0B\xB2\x30\x3D', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x16),LLIL_CONST.q(0xC2C)),LLIL_REG.b(b11))'), # str b11, [x16, #3116]
+	(b'\x5B\xEE\x27\x3D', 'LLIL_STORE.b(LLIL_ADD.q(LLIL_REG.q(x18),LLIL_CONST.q(0x9FB)),LLIL_REG.b(b27))'), # str b27, [x18, #2555]
+	# STR_H_ldst_pos 0111110100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\x28\x61\x39\x7D', 'LLIL_STORE.w(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_CONST.q(0x1CB0)),LLIL_REG.w(h8))'), # str h8, [x9, #7344]
+	(b'\x85\x98\x0C\x7D', 'LLIL_STORE.w(LLIL_ADD.q(LLIL_REG.q(x4),LLIL_CONST.q(0x64C)),LLIL_REG.w(h5))'), # str h5, [x4, #1612]
+	# STR_S_ldst_pos 1011110100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\x92\xAE\x15\xBD', 'LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x20),LLIL_CONST.q(0x15AC)),LLIL_REG.d(s18))'), # str s18, [x20, #5548]
+	(b'\xBF\xD7\x08\xBD', 'LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x29),LLIL_CONST.q(0x8D4)),LLIL_REG.d(s31))'), # str s31, [x29, #2260]
+	# STR_D_ldst_pos 1111110100xxxxxxxxxxxxxxxxxxxxxx
+	(b'\xF0\xC8\x34\xFD', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x7),LLIL_CONST.q(0x6990)),LLIL_REG.q(d16))'), # str d16, [x7, #27024]
+	(b'\xBF\x6F\x17\xFD', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(x29),LLIL_CONST.q(0x2ED8)),LLIL_REG.q(d31))'), # str d31, [x29, #11992]
+	# STR_Q_ldst_pos 0011110110xxxxxxxxxxxxxxxxxxxxxx
+	(b'\x70\x26\x93\x3D', 'LLIL_STORE.128(LLIL_ADD.q(LLIL_REG.q(x19),LLIL_CONST.q(0x4C90)),LLIL_REG.128(q16))'), # str q16, [x19, #19600]
+	(b'\xE8\xB0\x88\x3D', 'LLIL_STORE.128(LLIL_ADD.q(LLIL_REG.q(x7),LLIL_CONST.q(0x22C0)),LLIL_REG.128(q8))'), # str q8, [x7, #8896]
+	# IFORM: str_p_bi
 	# str_p_bi_ 1110010110xxxxxx000xxxxxxxx0xxxx
 	(b'\xA6\x12\xB0\xE5', 'LLIL_UNDEF()'), # str p6, [x21, #-124, mul vl]
 	(b'\x0F\x12\x84\xE5', 'LLIL_UNDEF()'), # str p15, [x16, #36, mul vl]
-	(b'\x63\x06\x92\xE5', 'LLIL_UNDEF()'), # str p3, [x19, #145, mul vl]
-	(b'\x49\x06\xB5\xE5', 'LLIL_UNDEF()'), # str p9, [x18, #-87, mul vl]
+	# IFORM: str_z_bi
 	# str_z_bi_ 1110010110xxxxxx01xxxxxxxxxxxxxx
 	(b'\x11\x55\x89\xE5', 'LLIL_UNDEF()'), # str z17, [x8, #77, mul vl]
 	(b'\x4E\x43\x9B\xE5', 'LLIL_UNDEF()'), # str z14, [x26, #216, mul vl]
-	(b'\xAA\x52\x8C\xE5', 'LLIL_UNDEF()'), # str z10, [x21, #100, mul vl]
-	(b'\x1A\x46\xA7\xE5', 'LLIL_UNDEF()'), # str z26, [x16, #-199, mul vl]
 	# pointer auth instructions
 	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
 	(b'\x04\x18\xC1\xDA', 'LLIL_INTRINSIC([x4],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # autda x4, x0
