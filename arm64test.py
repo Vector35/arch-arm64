@@ -3,6 +3,8 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	# adrp
+	(b'\x80\x00\x00\xb0', 'LLIL_SET_REG.q(x0,LLIL_CONST.q(0x11000))'), # adrp x0, 0x11000
 	# compare with asr
 	(b'\x5f\x0d\x88\xeb', 'LLIL_SUB.q(LLIL_REG.q(x10),LLIL_ASR.q(LLIL_REG.q(x8),LLIL_CONST(3)))'), # cmp x10, x8, asr #0x3
 	(b'\x1f\x0c\x81\xeb', 'LLIL_SUB.q(LLIL_REG.q(x0),LLIL_ASR.q(LLIL_REG.q(x1),LLIL_CONST(3)))'), # cmp x0, x1, asr #0x3
@@ -422,7 +424,7 @@ def il2str(il):
 	if isinstance(il, lowlevelil.LowLevelILInstruction):
 		size_suffix = sz_lookup.get(il.size, '?') if il.size else ''
 		# print size-specified IL constants in hex
-		if il.operation == LowLevelILOperation.LLIL_CONST and il.size:
+		if il.operation in [LowLevelILOperation.LLIL_CONST, LowLevelILOperation.LLIL_CONST_PTR] and il.size:
 			tmp = il.operands[0]
 			if tmp < 0: tmp = (1<<(il.size*8))+tmp
 			tmp = '0x%X' % tmp if il.size else '%d' % il.size
