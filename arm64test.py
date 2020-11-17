@@ -3,6 +3,8 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x69\x01\x08\x4a', 'LLIL_SET_REG.d(w9,LLIL_XOR.d(LLIL_REG.d(w11),LLIL_REG.d(w8)))'), # eor w9, w11, w8
+	(b'\x2c\x09\xd5\x4a', 'LLIL_SET_REG.d(w12,LLIL_XOR.d(LLIL_REG.d(w9),LLIL_ROR.d(LLIL_REG.d(w21),LLIL_CONST.b(0x2))))'), # eor w12, w9, w21, ror #0x2
 	# adrp
 	(b'\x80\x00\x00\xb0', 'LLIL_SET_REG.q(x0,LLIL_CONST.q(0x11000))'), # adrp x0, 0x11000
 	# compare with asr
