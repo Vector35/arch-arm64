@@ -7,7 +7,7 @@
 #include "sysregs.h"
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 #include "pcode.h"
 
 void print_decoded_struct(Instruction *dec)

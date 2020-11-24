@@ -180,9 +180,6 @@ def main():
 			actual = disassemble(insnum)
 			expected = line[9:].rstrip()
 			if compare_disassembly(actual, expected):
-				print('0x%08X' % insnum)
-				print('actual:', actual)
-				print('expected:', expected)
 				if actual=='dgh' and expected.startswith('hint'): continue
 				if actual=='cfinv' and expected.startswith('msr'): continue
 				if actual.startswith('mov') and expected.startswith('dupm'): continue # spec is screwed up here
@@ -196,6 +193,9 @@ def main():
 				if actual.startswith('msr ssbs') and expected.startswith('msr s0_'): continue
 				if actual.startswith('msr pan') and expected.startswith('msr s0_'): continue
 				if actual.startswith('axflag'): continue
+				print('0x%08X' % insnum)
+				print('actual:', actual)
+				print('expected:', expected)
 				print('line %d/%d (%.2f%%)' % (i, len(lines), i/len(lines)*100))
 				sys.exit(-1)
 

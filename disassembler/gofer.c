@@ -6,7 +6,7 @@
 
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 
 void disassemble(uint32_t addr, uint8_t *data, int len, char *result, bool verbose)
 {

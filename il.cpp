@@ -75,9 +75,9 @@ static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOpera
 		addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate));
 		break;
 	case MEM_EXTENDED:
-		if	(operand.shiftType == SHIFT_NONE)
+		if	(operand.shiftType == ShiftType_NONE)
 			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate));
-		else if (operand.shiftType == SHIFT_LSL)
+		else if (operand.shiftType == ShiftType_LSL)
 			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
 					il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
 		break;
@@ -125,22 +125,22 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 	// peel off the variants that return early
 	switch (operand.shiftType)
 	{
-		case SHIFT_NONE:
+		case ShiftType_NONE:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
 			return res;
-		case SHIFT_ASR:
+		case ShiftType_ASR:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
 			if (operand.shiftValue)
 				res = il.ArithShiftRight(resultSize, res,
 						il.Const(0, operand.shiftValue));
 			return res;
-		case SHIFT_LSR:
+		case ShiftType_LSR:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
 			if (operand.shiftValue)
 				res = il.LogicalShiftRight(resultSize, res,
 						il.Const(1, operand.shiftValue));
 			return res;
-		case SHIFT_ROR:
+		case ShiftType_ROR:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
 			if (operand.shiftValue)
 				res = il.RotateRight(resultSize, res,
@@ -153,31 +153,31 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 	// everything else falls through to maybe be left shifted
 	switch (operand.shiftType)
 	{
-		case SHIFT_LSL:
+		case ShiftType_LSL:
 			res = ExtractRegister(il, operand, regNum, REGSZ(operand), false, resultSize);
 			break;
-		case SHIFT_SXTB:
+		case ShiftType_SXTB:
 			res = ExtractRegister(il, operand, regNum, 1, true, resultSize);
 			break;
-		case SHIFT_SXTH:
+		case ShiftType_SXTH:
 			res = ExtractRegister(il, operand, regNum, 2, true, resultSize);
 			break;
-		case SHIFT_SXTW:
+		case ShiftType_SXTW:
 			res = ExtractRegister(il, operand, regNum, 4, true, resultSize);
 			break;
-		case SHIFT_SXTX:
+		case ShiftType_SXTX:
 			res = ExtractRegister(il, operand, regNum, 8, true, resultSize);
 			break;
-		case SHIFT_UXTB:
+		case ShiftType_UXTB:
 			res = ExtractRegister(il, operand, regNum, 1, false, resultSize);
 			break;
-		case SHIFT_UXTH:
+		case ShiftType_UXTH:
 			res = ExtractRegister(il, operand, regNum, 2, false, resultSize);
 			break;
-		case SHIFT_UXTW:
+		case ShiftType_UXTW:
 			res = ExtractRegister(il, operand, regNum, 4, false, resultSize);
 			break;
-		case SHIFT_UXTX:
+		case ShiftType_UXTX:
 			res = ExtractRegister(il, operand, regNum, 8, false, resultSize);
 			break;
 		default:
@@ -199,7 +199,7 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 	{
 	case IMM32:
 	case IMM64:
-		if (operand.shiftType != SHIFT_NONE && operand.shiftValue)
+		if (operand.shiftType != ShiftType_NONE && operand.shiftValue)
 			return il.Const(resultSize, operand.immediate << operand.shiftValue);
 		else
 			return il.Const(resultSize, operand.immediate);

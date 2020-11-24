@@ -9,11 +9,13 @@
 
 #include "binaryninjaapi.h"
 #include "lowlevelilinstruction.h"
-#include "il.h"
+#include "operations.h"
+#include "encodings.h"
+#include "sysregs.h"
 #include "arm64dis.h"
+#include "il.h"
 
 using namespace BinaryNinja;
-using namespace arm64;
 using namespace std;
 
 #if defined(_MSC_VER)
@@ -407,7 +409,7 @@ protected:
 	uint32_t tokenize_shift(const InstructionOperand* __restrict instructionOperand, vector<InstructionTextToken>& result)
 	{
 		char operand[64] = {0};
-		if (instructionOperand->shiftType != SHIFT_NONE)
+		if (instructionOperand->shiftType != ShiftType_NONE)
 		{
 			const char* shiftStr = get_shift(instructionOperand->shiftType);
 			if (shiftStr == NULL)
@@ -483,8 +485,8 @@ protected:
 		uint32_t registerNumber,
 		vector<InstructionTextToken>& result)
 	{
-		const char* reg = get_register_name((enum Register)instructionOperand->reg[registerNumber]);
-		if (reg == NULL)
+		char reg[64];
+		if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
 			return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		result.emplace_back(RegisterToken, reg);
@@ -510,14 +512,17 @@ protected:
 		else if (instructionOperand->operandClass != REG && instructionOperand->operandClass != MULTI_REG)
 			return OPERAND_IS_NOT_REGISTER;
 
-		if (instructionOperand->shiftType != SHIFT_NONE)
+		if (instructionOperand->shiftType != ShiftType_NONE)
 		{
 			return tokenize_shifted_register(instructionOperand, registerNumber, result);
 		}
 		else if (instructionOperand->elementSize == 0)
 		{
-			enum Register r = (enum Register)(instructionOperand->reg[registerNumber]);
-			snprintf(operand, sizeof(operand), "%s", get_register_name(r));
+			char reg[64];
+			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+				return FAILED_TO_DISASSEMBLE_REGISTER;
+
+			snprintf(operand, sizeof(operand), "%s", reg);
 			result.emplace_back(RegisterToken, operand);
 			return DISASM_SUCCESS;
 		}
@@ -544,7 +549,12 @@ protected:
 			{
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 			}
-			snprintf(operand, sizeof(operand), "%s", get_register_name((enum Register)instructionOperand->reg[registerNumber]));
+
+			char reg[64];
+			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+				return FAILED_TO_DISASSEMBLE_REGISTER;
+
+			snprintf(operand, sizeof(operand), "%s", reg);
 			result.emplace_back(RegisterToken, operand);
 			snprintf(operand, sizeof(operand), ".%u%c", instructionOperand->dataSize, elementSize);
 			result.emplace_back(TextToken, operand);
@@ -554,7 +564,11 @@ protected:
 			if (registerNumber > 3)
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
-			snprintf(operand, sizeof(operand), "%s", get_register_name((enum Register)instructionOperand->reg[registerNumber]));
+			char reg[64];
+			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+				return FAILED_TO_DISASSEMBLE_REGISTER;
+
+			snprintf(operand, sizeof(operand), "%s", reg);
 			result.emplace_back(RegisterToken, operand);
 			snprintf(operand,sizeof(operand), ".%c", elementSize);
 			result.emplace_back(TextToken, operand);
@@ -569,8 +583,9 @@ protected:
 	{
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
-		const char* reg1 = get_register_name((enum Register)instructionOperand->reg[0]);
-		const char* reg2 = get_register_name((enum Register)instructionOperand->reg[1]);
+		char reg1[64] = {0}, reg2[64] = {0};
+		get_register_name((enum Register)instructionOperand->reg[0], reg1);
+		get_register_name((enum Register)instructionOperand->reg[1], reg2);
 
 		const char* sign = "";
 		int64_t imm = instructionOperand->immediate;
@@ -594,7 +609,7 @@ protected:
 			break;
 		case MEM_POST_IDX: // [<reg>], <reg|imm>
 			endToken = NULL;
-			if (reg2 != NULL)
+			if (reg2[0] != '\0')
 			{
 				result.emplace_back(EndMemoryOperandToken, "], ");
 				result.emplace_back(RegisterToken, reg2);
@@ -615,7 +630,7 @@ protected:
 			}
 			break;
 		case MEM_EXTENDED: // [<reg>, <reg> optional(shift optional(imm))]
-			if (reg2 == NULL)
+			if (reg2[0] == '\0')
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			result.emplace_back(TextToken, ", ");
@@ -1240,9 +1255,8 @@ public:
 			return "syscall_imm";
 		}
 
-		const char* regName = get_register_name((enum Register)reg);
-
-		if (!regName)
+		char regName[64];
+		if(get_register_name((enum Register)reg, regName))
 			return "";
 
 		return regName;
@@ -1267,6 +1281,7 @@ public:
 	virtual vector<uint32_t> GetAllRegisters() override
 	{
 		vector<uint32_t> r = {
+			/* regular registers */
 			REG_W0,  REG_W1,  REG_W2,  REG_W3,  REG_W4,  REG_W5,  REG_W6,  REG_W7,
 			REG_W8,  REG_W9,  REG_W10, REG_W11, REG_W12, REG_W13, REG_W14, REG_W15,
 			REG_W16, REG_W17, REG_W18, REG_W19, REG_W20, REG_W21, REG_W22, REG_W23,
@@ -1298,15 +1313,14 @@ public:
 			REG_Q0,  REG_Q1,  REG_Q2,  REG_Q3,  REG_Q4,  REG_Q5,  REG_Q6,  REG_Q7,
 			REG_Q8,  REG_Q9,  REG_Q10, REG_Q11, REG_Q12, REG_Q13, REG_Q14, REG_Q15,
 			REG_Q16, REG_Q17, REG_Q18, REG_Q19, REG_Q20, REG_Q21, REG_Q22, REG_Q23,
-			REG_Q24, REG_Q25, REG_Q26, REG_Q27, REG_Q28, REG_Q29, REG_Q30, REG_Q31
+			REG_Q24, REG_Q25, REG_Q26, REG_Q27, REG_Q28, REG_Q29, REG_Q30, REG_Q31,
+			/* fake registers */
+			FAKEREG_SYSCALL_IMM
 		};
 
 		// this could also be inlined, but the odds of more status registers being added
 		// seems high, and updating them multiple places would be a pain
 		for (uint32_t ii = SYSREG_NONE + 1; ii < SYSREG_END; ++ii)
-			r.push_back(ii);
-
-		for (uint32_t ii = FAKEREG_NONE + 1; ii < FAKEREG_END; ++ii)
 			r.push_back(ii);
 
 		return r;
@@ -1599,6 +1613,7 @@ public:
 			case REG_Q30:
 			case REG_Q31:
 				return RegisterInfo(reg, 0, 16);
+
 			case FAKEREG_SYSCALL_IMM:
 				return RegisterInfo(reg, 0, 2);
 		}

@@ -1,4 +1,10 @@
+#pragma once
+
 #include <stdint.h>
+
+#ifdef __cplusplus
+#define restrict __restrict
+#endif
 
 //-----------------------------------------------------------------------------
 // registers (non-system)
@@ -629,7 +635,7 @@ int get_register_name(Register reg, char *result);
 //const char *get_system_register_name(SystemReg reg);
 
 //Get the text value of a given shift type
-//const char *get_shift(ShiftType shift);
+const char *get_shift(ShiftType shift);
 
 const char *get_condition(Condition cond);
 

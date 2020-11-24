@@ -1,4 +1,5 @@
 enum SystemReg {
+	SYSREG_NONE=32769,
 	REG_OSDTRRX_EL1=32770,
 	REG_DBGBVR0_EL1=32772,
 	REG_DBGBCR0_EL1=32773,
@@ -648,6 +649,7 @@ enum SystemReg {
 	REG_CNTPS_TVAL_EL1=65296,
 	REG_CNTPS_CTL_EL1=65297,
 	REG_CNTPS_CVAL_EL1=65298,
+	SYSREG_END=65299,
 };
 
 const char *get_system_register_name(enum SystemReg);

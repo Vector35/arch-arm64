@@ -11,7 +11,7 @@
 
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 
 int disassemble(uint64_t address, uint32_t insword, char *result)
 {

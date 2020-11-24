@@ -1,6 +1,8 @@
 #pragma once
 
 #include "binaryninjaapi.h"
+#include "disassembler/operations.h"
+#include "disassembler/encodings.h"
 #include "disassembler/arm64dis.h"
 
 #define IL_FLAG_N 0
@@ -64,14 +66,12 @@ enum Arm64Intrinsic : uint32_t
 
 enum Arm64FakeRegister: uint32_t
 {
-	FAKEREG_NONE = arm64::SYSREG_END + 1,
-	FAKEREG_SYSCALL_IMM,
-	FAKEREG_END,
+	FAKEREG_SYSCALL_IMM = 0xF4CE2366,
 };
 
 bool GetLowLevelILForInstruction(
 		BinaryNinja::Architecture* arch,
 		uint64_t addr,
 		BinaryNinja::LowLevelILFunction& il,
-		arm64::Instruction& instr,
+		Instruction& instr,
 		size_t addrSize);

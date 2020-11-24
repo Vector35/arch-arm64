@@ -1,3 +1,5 @@
+#pragma once
+
 enum Operation {
 ARM64_ERROR=0,
 ARM64_ABS=1,
