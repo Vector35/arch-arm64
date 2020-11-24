@@ -4,7 +4,7 @@
 
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 #include "decode2.h"
 #include "pcode.h"
 #include "decode_fields32.h"

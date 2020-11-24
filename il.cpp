@@ -1,9 +1,9 @@
 #include <stdarg.h>
+#include <inttypes.h>
 #include "lowlevelilinstruction.h"
 #include "il.h"
 
 using namespace BinaryNinja;
-using namespace arm64;
 
 #define IMM(X) X.immediate
 #define REG(X) X.reg[0]
@@ -1222,7 +1222,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)), IL_FLAGWRITE_ALL)));
 		break;
-	case ARM64_PSBCSYNC:
+	case ARM64_PSB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
 		break;
 	case ARM64_RET:
@@ -1434,7 +1434,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			if ((IMM(operand1) & ~0b110) == 0b100000)
 				il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_BTI, {}));
 			else
-				LogWarn("unknown hint operand: %" PRIx64 "\n", IMM(operand1));
+				LogWarn("unknown hint operand: 0x%" PRIx64 "\n", IMM(operand1));
 			break;
 		}
 

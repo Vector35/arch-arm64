@@ -500,6 +500,9 @@ protected:
 			uint32_t registerNumber,
 			vector<InstructionTextToken>& result)
 	{
+		unsigned dsize = REG_DSIZE(instructionOperand->reg[registerNumber]);
+		unsigned esize = REG_ESIZE(instructionOperand->reg[registerNumber]);
+
 		char operand[32] = {0};
 		if (instructionOperand->operandClass == SYS_REG)
 		{
@@ -516,7 +519,7 @@ protected:
 		{
 			return tokenize_shifted_register(instructionOperand, registerNumber, result);
 		}
-		else if (instructionOperand->elementSize == 0)
+		else if (dsize == 0)
 		{
 			char reg[64];
 			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
@@ -526,8 +529,9 @@ protected:
 			result.emplace_back(RegisterToken, operand);
 			return DISASM_SUCCESS;
 		}
+
 		char elementSize;
-		switch (instructionOperand->elementSize)
+		switch (esize)
 		{
 			case 1: elementSize = 'b'; break;
 			case 2: elementSize = 'h'; break;
@@ -538,14 +542,14 @@ protected:
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 		}
 
-		if (instructionOperand->dataSize != 0)
+		if (dsize != 0)
 		{
 			if (registerNumber > 3 ||
-				(instructionOperand->dataSize != 1 &&
-				instructionOperand->dataSize != 2 &&
-				instructionOperand->dataSize != 4 &&
-				instructionOperand->dataSize != 8 &&
-				instructionOperand->dataSize != 16))
+				(dsize != 1 &&
+				dsize != 2 &&
+				dsize != 4 &&
+				dsize != 8 &&
+				dsize != 16))
 			{
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 			}
@@ -556,7 +560,7 @@ protected:
 
 			snprintf(operand, sizeof(operand), "%s", reg);
 			result.emplace_back(RegisterToken, operand);
-			snprintf(operand, sizeof(operand), ".%u%c", instructionOperand->dataSize, elementSize);
+			snprintf(operand, sizeof(operand), ".%u%c", dsize, elementSize);
 			result.emplace_back(TextToken, operand);
 		}
 		else
@@ -712,7 +716,7 @@ public:
 	{
 	}
 
-	bool CanAssemble() override
+	bool CanAssemble()
 	{
 		return true;
 	}
@@ -2116,6 +2120,42 @@ public:
 	}
 };
 
+/* structs used in relocation handling */
+struct PC_REL_ADDRESSING {
+	uint32_t Rd:5;
+	int32_t immhi:19;
+	uint32_t group1:5;
+	uint32_t immlo:2;
+	uint32_t op:1;
+};
+
+struct ADD_SUB_IMM {
+	uint32_t Rd:5;
+	uint32_t Rn:5;
+	uint32_t imm:12;
+	uint32_t shift:2;
+	uint32_t group1:5;
+	uint32_t S:1;
+	uint32_t op:1;
+	uint32_t sf:1;
+};
+
+struct UNCONDITIONAL_BRANCH{
+	int32_t imm:26;
+	uint32_t opcode:5;
+	uint32_t op:1;
+};
+
+struct LDST_REG_UNSIGNED_IMM{
+	uint32_t Rt:5;
+	uint32_t Rn:5;
+	uint32_t imm:12;
+	uint32_t opc:2;
+	uint32_t group1:2;
+	uint32_t V:1;
+	uint32_t group2:3;
+	uint32_t size:2;
+};
 
 class Arm64ElfRelocationHandler: public RelocationHandler
 {
@@ -2150,7 +2190,6 @@ public:
 		case R_AARCH64_ADR_PREL_PG_HI21:
 		{
 			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
-			aarch64_decompose(dest32[0], &inst, reloc->GetAddress());
 			uint32_t imm = PAGE(info.addend + target) - PAGE(reloc->GetAddress());
 			decode->immhi = imm >> 2;
 			decode->immlo = imm & 3;
@@ -2227,7 +2266,6 @@ public:
 		case R_AARCH64_ADR_GOT_PAGE:
 		{
 			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
-			aarch64_decompose(dest32[0], &inst, reloc->GetAddress());
 			uint32_t imm = PAGE(info.addend + target) - PAGE(reloc->GetAddress());
 			decode->immhi = imm >> 2;
 			decode->immlo = imm & 3;

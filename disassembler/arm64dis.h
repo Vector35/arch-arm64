@@ -631,9 +631,6 @@ const char *get_operation(const Instruction *instruction);
 // includes data size and element size
 int get_register_name(Register reg, char *result);
 
-//Get the text value of a given system register
-//const char *get_system_register_name(SystemReg reg);
-
 //Get the text value of a given shift type
 const char *get_shift(ShiftType shift);
 

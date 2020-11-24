@@ -4,7 +4,7 @@
 
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 #include "pcode.h"
 
 int BitCount(uint32_t x)

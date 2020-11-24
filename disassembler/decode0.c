@@ -3,7 +3,7 @@
 
 #include "operations.h"
 #include "encodings.h"
-#include "disassembler.h"
+#include "arm64dis.h"
 #include "decode1.h"
 #include "pcode.h"
 

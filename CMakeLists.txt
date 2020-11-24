@@ -15,7 +15,16 @@ endif()
 file(GLOB SOURCES
 	*.cpp
 	*.h
-	disassembler/*.c
+	disassembler/arm64dis.c
+	disassembler/sysregs.c
+	disassembler/encodings.c
+	disassembler/operations.c
+	disassembler/pcode.c
+	disassembler/decode0.c
+	disassembler/decode1.c
+	disassembler/decode2.c
+	disassembler/decode_fields32.c
+	disassembler/decode_scratchpad.c
 	disassembler/*.h)
 
 if(DEMO)
