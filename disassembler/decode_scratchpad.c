@@ -3364,9 +3364,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USQADD_ASIMDMISC_R:
 		case ENC_SUQADD_ASIMDMISC_R:
 		{
-			printf("SIZE: %llu\n", dec->size);
-			printf("   Q: %llu\n", dec->Q);
-			printf(" WTF: %llu\n", (dec->size<<1)|dec->Q);
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);

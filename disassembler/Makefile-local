@@ -1,3 +1,4 @@
+# $ make -f Makefile-local
 
 LIB_OBJS = disassembler.o pcode.o decode0.o decode1.o decode_fields32.o decode_scratchpad.o decode2.o operations.o encodings.o sysregs.o
 
