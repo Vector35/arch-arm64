@@ -196,6 +196,7 @@ def main():
 			insnum = int(line[0:8], 16)
 			actual = disassemble(insnum)
 			expected = line[9:].rstrip()
+			print('%08X: -%s- vs -%s-' % (insnum, actual, expected))
 			if compare_disassembly(actual, expected):
 				if excusable_difference(actual, expected):
 					continue

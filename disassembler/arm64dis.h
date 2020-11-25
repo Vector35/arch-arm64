@@ -59,13 +59,14 @@ enum Register {
 	REG_END
 };
 
-/* ddddeeeennnnnnnnnn
-	data_sz is 4 bits
-	elem_sz is 4 bits
+/* ddddddeeeeeennnnnnnnnn
+	data_sz is 6 bits
+	elem_sz is 6 bits
 	enum    is 10 bits */
 #define REG_ENUM(x) ((enum Register)((x) & 0x3FF))
 #define REG_ESIZE(x) (((x)>>10) & 0x3F)
 #define REG_DSIZE(x) (((x)>>16) & 0x3F)
+#define REG_ARRSPEC(x) (((x)>>10) & 0xFFF)
 #define REG_CONSTRUCT(DSIZE, ESIZE, ENUM_ID) ((DSIZE<<16) | (ESIZE<<10) | (ENUM_ID))
 
 //-----------------------------------------------------------------------------
@@ -629,7 +630,9 @@ const char *get_operation(const Instruction *instruction);
 
 // get the text value of a given register enumeration (including prefetch registers)
 // includes data size and element size
-int get_register_name(Register reg, char *result);
+const char *get_register_name(uint32_t reg);
+const char *get_register_arrspec(uint32_t reg);
+int get_register_full(uint32_t reg, char *result);
 
 //Get the text value of a given shift type
 const char *get_shift(ShiftType shift);
