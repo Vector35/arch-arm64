@@ -563,10 +563,8 @@ protected:
 	{
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
-		const char *reg1 = get_register_name(instructionOperand->reg[0]);
-		if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
-		const char *reg2 = get_register_name(instructionOperand->reg[1]);
-		if(EMPTY(reg2)) return FAILED_TO_DISASSEMBLE_REGISTER;
+		const char *reg1, *reg0 = get_register_name(instructionOperand->reg[0]);
+		if(EMPTY(reg0)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		const char* sign = "";
 		int64_t imm = instructionOperand->immediate;
@@ -575,10 +573,10 @@ protected:
 			sign = "-";
 			imm = -imm;
 		}
-		const char* startToken = "[";
-		const char* endToken =	 "]";
+		const char *startToken = "[";
+		const char *endToken = "]";
 		result.emplace_back(BeginMemoryOperandToken, startToken);
-		result.emplace_back(RegisterToken, reg1);
+		result.emplace_back(RegisterToken, reg0);
 		switch (instructionOperand->operandClass)
 		{
 		case MEM_REG: break;
@@ -590,16 +588,18 @@ protected:
 			break;
 		case MEM_POST_IDX: // [<reg>], <reg|imm>
 			endToken = NULL;
-			if (reg2[0] != '\0')
-			{
-				result.emplace_back(EndMemoryOperandToken, "], ");
-				result.emplace_back(RegisterToken, reg2);
-			}
-			else
+			if(instructionOperand->reg[1] == REG_NONE)
 			{
 				snprintf(paramBuff, sizeof(paramBuff), "%s%#" PRIx64, sign, (uint64_t)imm);
 				result.emplace_back(EndMemoryOperandToken, "], #");
 				result.emplace_back(IntegerToken, paramBuff, instructionOperand->immediate);
+			}
+			else
+			{
+				reg1 = get_register_name(instructionOperand->reg[1]);
+				if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
+				result.emplace_back(EndMemoryOperandToken, "], ");
+				result.emplace_back(RegisterToken, reg1);
 			}
 			break;
 		case MEM_OFFSET: // [<reg> optional(imm)]
@@ -611,11 +611,10 @@ protected:
 			}
 			break;
 		case MEM_EXTENDED: // [<reg>, <reg> optional(shift optional(imm))]
-			if (reg2[0] == '\0')
-				return FAILED_TO_DISASSEMBLE_OPERAND;
-
+			reg1 = get_register_name(instructionOperand->reg[1]);
+			if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
 			result.emplace_back(TextToken, ", ");
-			result.emplace_back(RegisterToken, reg2);
+			result.emplace_back(RegisterToken, reg1);
 			tokenize_shift(instructionOperand, result);
 			break;
 		default:
