@@ -93,16 +93,6 @@ static const char *RegisterString[] =
 	"END"
 };
 
-static const char* DataSizeString[32] = {
-	"", "1", "2", "", "4", "", "", "", "8", "", "", "", "", "", "", "",
-	"16", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-};
-
-static const char* ElementSizeString[32] = {
-	"", "b", "h", "", "s", "", "", "", "d", "", "", "", "", "", "", "",
-	"q", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-};
-
 const char *get_register_name(uint32_t reg)
 {
 	Register r = REG_ENUM(reg);
@@ -116,36 +106,36 @@ const char *get_register_name(uint32_t reg)
 const char *get_register_arrspec(uint32_t reg)
 {
 	switch(REG_ARRSPEC(reg)) {
-		case 0b000000000001: return ".b";
-		case 0b000000000010: return ".h";
-		case 0b000000000100: return ".s";
-		case 0b000000001000: return ".d";
-		case 0b000000010000: return ".q";
-		case 0b000010000001: return ".1b";
-		case 0b000100000001: return ".2b";
-		case 0b001000000001: return ".4b";
-		case 0b010000000001: return ".8b";
-		case 0b100000000001: return ".16b";
-		case 0b000010000010: return ".1h";
-		case 0b000100000010: return ".2h";
-		case 0b001000000010: return ".4h";
-		case 0b010000000010: return ".8h";
-		case 0b100000000010: return ".16h";
-		case 0b000010000100: return ".1s";
-		case 0b000100000100: return ".2s";
-		case 0b001000000100: return ".4s";
-		case 0b010000000100: return ".8s";
-		case 0b100000000100: return ".16s";
-		case 0b000010001000: return ".1d";
-		case 0b000100001000: return ".2d";
-		case 0b001000001000: return ".4d";
-		case 0b010000001000: return ".8d";
-		case 0b100000001000: return ".16d";
-		case 0b000010010000: return ".1q";
-		case 0b000100010000: return ".2q";
-		case 0b001000010000: return ".4q";
-		case 0b010000010000: return ".8q";
-		case 0b100000010000: return ".16q";
+		case 0b00000000001: return ".b";
+		case 0b00000000010: return ".h";
+		case 0b00000000100: return ".s";
+		case 0b00000001000: return ".d";
+		case 0b00000010000: return ".q";
+		case 0b00001000001: return ".1b";
+		case 0b00010000001: return ".2b";
+		case 0b00100000001: return ".4b";
+		case 0b01000000001: return ".8b";
+		case 0b10000000001: return ".16b";
+		case 0b00001000010: return ".1h";
+		case 0b00010000010: return ".2h";
+		case 0b00100000010: return ".4h";
+		case 0b01000000010: return ".8h";
+		case 0b10000000010: return ".16h";
+		case 0b00001000100: return ".1s";
+		case 0b00010000100: return ".2s";
+		case 0b00100000100: return ".4s";
+		case 0b01000000100: return ".8s";
+		case 0b10000000100: return ".16s";
+		case 0b00001001000: return ".1d";
+		case 0b00010001000: return ".2d";
+		case 0b00100001000: return ".4d";
+		case 0b01000001000: return ".8d";
+		case 0b10000001000: return ".16d";
+		case 0b00001010000: return ".1q";
+		case 0b00010010000: return ".2q";
+		case 0b00100010000: return ".4q";
+		case 0b01000010000: return ".8q";
+		case 0b10000010000: return ".16q";
 		default:
 			return "";
 	}
@@ -247,7 +237,7 @@ static inline uint32_t get_shifted_register(
 	char immBuff[32] = {0};
 	char shiftBuff[64] = {0};
 
-	char *reg;
+	char reg[16];
 	if(get_register_full((Register)instructionOperand->reg[registerNumber], reg))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 

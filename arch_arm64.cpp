@@ -22,6 +22,8 @@ using namespace std;
 #define snprintf _snprintf
 #endif
 
+#define EMPTY(S) (S[0]=='\0')
+
 enum MachoArm64RelocationType : uint32_t
 {
 	ARM64_RELOC_UNSIGNED            = 0,
@@ -251,6 +253,7 @@ static const char* GetRelocationString(ElfArm64RelocationType rel)
 
 	if (relocMap.count(rel))
 		return relocMap.at(rel);
+
 	return "Unknown Aarch64 relocation";
 }
 
@@ -485,98 +488,71 @@ protected:
 		uint32_t registerNumber,
 		vector<InstructionTextToken>& result)
 	{
-		char reg[64];
-		if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
-			return FAILED_TO_DISASSEMBLE_REGISTER;
+		const char *reg = get_register_name(instructionOperand->reg[registerNumber]);
+		if(EMPTY(reg)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		result.emplace_back(RegisterToken, reg);
 		tokenize_shift(instructionOperand, result);
 		return DISASM_SUCCESS;
 	}
 
-
 	uint32_t tokenize_register(
 			const InstructionOperand* restrict instructionOperand,
 			uint32_t registerNumber,
 			vector<InstructionTextToken>& result)
 	{
-		unsigned dsize = REG_DSIZE(instructionOperand->reg[registerNumber]);
-		unsigned esize = REG_ESIZE(instructionOperand->reg[registerNumber]);
+		char buf[64] = {0};
 
-		char operand[32] = {0};
+		/* case: system registers */
 		if (instructionOperand->operandClass == SYS_REG)
 		{
-			snprintf(operand, sizeof(operand), "%s",
-			get_system_register_name((SystemReg)instructionOperand->reg[registerNumber]));
-
-			result.emplace_back(RegisterToken, operand);
+			snprintf(buf, sizeof(buf), "%s",
+			  get_system_register_name((SystemReg)instructionOperand->reg[registerNumber]));
+			result.emplace_back(RegisterToken, buf);
 			return DISASM_SUCCESS;
 		}
-		else if (instructionOperand->operandClass != REG && instructionOperand->operandClass != MULTI_REG)
+
+		if (instructionOperand->operandClass != REG && instructionOperand->operandClass != MULTI_REG)
 			return OPERAND_IS_NOT_REGISTER;
 
+		/* case: shifted registers */
 		if (instructionOperand->shiftType != ShiftType_NONE)
 		{
 			return tokenize_shifted_register(instructionOperand, registerNumber, result);
 		}
-		else if (dsize == 0)
-		{
-			char reg[64];
-			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
-				return FAILED_TO_DISASSEMBLE_REGISTER;
 
-			snprintf(operand, sizeof(operand), "%s", reg);
-			result.emplace_back(RegisterToken, operand);
+		const char *reg = get_register_name(instructionOperand->reg[registerNumber]);
+		if(EMPTY(reg)) return FAILED_TO_DISASSEMBLE_REGISTER;
+
+		/* case: predicate registers */
+		if(instructionOperand->pred_qual && instructionOperand->reg[registerNumber] >= REG_P0 && instructionOperand->reg[registerNumber] <= REG_P31)
+		{
+			result.emplace_back(RegisterToken, reg);
+			result.emplace_back(TextToken, "/");
+			result.emplace_back(TextToken, string(instructionOperand->pred_qual, 1));
 			return DISASM_SUCCESS;
 		}
 
-		char elementSize;
-		switch (esize)
-		{
-			case 1: elementSize = 'b'; break;
-			case 2: elementSize = 'h'; break;
-			case 4: elementSize = 's'; break;
-			case 8: elementSize = 'd'; break;
-			case 16: elementSize = 'q'; break;
-			default:
-				return FAILED_TO_DISASSEMBLE_REGISTER;
+		/* case other regs */
+		result.emplace_back(RegisterToken, reg);
+		const char *arrspec = get_register_arrspec(instructionOperand->reg[registerNumber]);
+		if(arrspec)
+			result.emplace_back(TextToken, arrspec);
+
+		if (instructionOperand->scale) {
+			sprintf(buf, "%u", 0x7fffffff & instructionOperand->scale);
+			result.emplace_back(TextToken, "[");
+			result.emplace_back(IntegerToken, buf);
+			result.emplace_back(TextToken, "]");
 		}
 
-		if (dsize != 0)
-		{
-			if (registerNumber > 3 ||
-				(dsize != 1 &&
-				dsize != 2 &&
-				dsize != 4 &&
-				dsize != 8 &&
-				dsize != 16))
-			{
-				return FAILED_TO_DISASSEMBLE_REGISTER;
-			}
-
-			char reg[64];
-			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
-				return FAILED_TO_DISASSEMBLE_REGISTER;
-
-			snprintf(operand, sizeof(operand), "%s", reg);
-			result.emplace_back(RegisterToken, operand);
-			snprintf(operand, sizeof(operand), ".%u%c", dsize, elementSize);
-			result.emplace_back(TextToken, operand);
+		if(instructionOperand->indexUsed) {
+			sprintf(buf, "%u", instructionOperand->index);
+			result.emplace_back(TextToken, "[");
+			result.emplace_back(IntegerToken, buf);
+			result.emplace_back(TextToken, "]");
 		}
-		else
-		{
-			if (registerNumber > 3)
-				return FAILED_TO_DISASSEMBLE_REGISTER;
 
-			char reg[64];
-			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
-				return FAILED_TO_DISASSEMBLE_REGISTER;
-
-			snprintf(operand, sizeof(operand), "%s", reg);
-			result.emplace_back(RegisterToken, operand);
-			snprintf(operand,sizeof(operand), ".%c", elementSize);
-			result.emplace_back(TextToken, operand);
-		}
 		return DISASM_SUCCESS;
 	}
 
@@ -587,9 +563,10 @@ protected:
 	{
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
-		char reg1[64] = {0}, reg2[64] = {0};
-		get_register_name(REG_ENUM(instructionOperand->reg[0]), reg1);
-		get_register_name(REG_ENUM(instructionOperand->reg[1]), reg2);
+		const char *reg1 = get_register_name(instructionOperand->reg[0]);
+		if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
+		const char *reg2 = get_register_name(instructionOperand->reg[1]);
+		if(EMPTY(reg2)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		const char* sign = "";
 		int64_t imm = instructionOperand->immediate;
@@ -1263,11 +1240,7 @@ public:
 			return "syscall_imm";
 		}
 
-		char regName[64] = {'\0'};
-		if(get_register_name(REG_ENUM(reg), regName))
-			return "";
-
-		return regName;
+		return get_register_name(reg);
 	}
 
 
