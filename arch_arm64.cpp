@@ -486,7 +486,7 @@ protected:
 		vector<InstructionTextToken>& result)
 	{
 		char reg[64];
-		if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+		if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
 			return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		result.emplace_back(RegisterToken, reg);
@@ -522,7 +522,7 @@ protected:
 		else if (dsize == 0)
 		{
 			char reg[64];
-			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			snprintf(operand, sizeof(operand), "%s", reg);
@@ -555,7 +555,7 @@ protected:
 			}
 
 			char reg[64];
-			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			snprintf(operand, sizeof(operand), "%s", reg);
@@ -569,7 +569,7 @@ protected:
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			char reg[64];
-			if(get_register_name((enum Register)instructionOperand->reg[registerNumber], reg))
+			if(get_register_name(REG_ENUM(instructionOperand->reg[registerNumber]), reg))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			snprintf(operand, sizeof(operand), "%s", reg);
@@ -588,8 +588,8 @@ protected:
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
 		char reg1[64] = {0}, reg2[64] = {0};
-		get_register_name((enum Register)instructionOperand->reg[0], reg1);
-		get_register_name((enum Register)instructionOperand->reg[1], reg2);
+		get_register_name(REG_ENUM(instructionOperand->reg[0]), reg1);
+		get_register_name(REG_ENUM(instructionOperand->reg[1]), reg2);
 
 		const char* sign = "";
 		int64_t imm = instructionOperand->immediate;
@@ -1259,8 +1259,8 @@ public:
 			return "syscall_imm";
 		}
 
-		char regName[64];
-		if(get_register_name((enum Register)reg, regName))
+		char regName[64] = {'\0'};
+		if(get_register_name(REG_ENUM(reg), regName))
 			return "";
 
 		return regName;

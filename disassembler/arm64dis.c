@@ -87,8 +87,10 @@ static const char *RegisterString[] =
 	"plil1keep", "plil1strm", "plil2keep", "plil2strm",
 	"plil3keep", "plil3strm", "#0xe",		"#0xf",
 	"pstl1keep", "pstl1strm", "pstl2keep", "pstl2strm",
-	"pstl3keep", "pstl3strm",
-	"#0x17", "#0x18", "#0x19", "#0x1a", "#0x1b", "#0x1c", "#0x1d", "#0x1e", "#0x1f",
+	"pstl3keep", "pstl3strm", "#0x16", "#0x17",
+	"#0x18", "#0x19", "#0x1a", "#0x1b",
+	"#0x1c", "#0x1d", "#0x1e", "#0x1f",
+	"END"
 };
 
 static const char* DataSizeString[32] = {
@@ -353,7 +355,6 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	/* 3) handle predicate registers */
-	char pred_qual[2] = {0};
 	if(operand->operandClass == REG && operand->pred_qual && operand->reg[0] >= REG_P0 && operand->reg[0] <= REG_P31)
 	{
 		if(snprintf(outBuffer, outBufferSize, "%s/%c", reg_buf, operand->pred_qual) < 0)

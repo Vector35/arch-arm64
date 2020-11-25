@@ -155,6 +155,22 @@ def compare_disassembly(a, b):
 			return -1
 	return 0
 
+def excusable_difference(actual, expected):
+	if actual=='dgh' and expected.startswith('hint'): return True
+	if actual=='cfinv' and expected.startswith('msr'): return True
+	if actual.startswith('mov') and expected.startswith('dupm'): return True # spec is screwed up here
+	if actual == 'sb' and expected.startswith('msr'): return True
+	if actual == 'xaflag' and expected.startswith('msr'): return True
+	if actual.startswith('at ') and expected.startswith('sys'): return True
+	if actual.startswith('dc ') and expected.startswith('sys'): return True
+	if actual.startswith('cfp ') and expected.startswith('sys'): return True
+	if actual.startswith('cmpp ') and expected.startswith('subps '): return True
+	if actual.startswith('tlbi') and expected.startswith('sys '): return True
+	if actual.startswith('msr ssbs') and expected.startswith('msr s0_'): return True
+	if actual.startswith('msr pan') and expected.startswith('msr s0_'): return True
+	if actual.startswith('axflag'): return True
+	return False
+
 #------------------------------------------------------------------------------
 # main
 #------------------------------------------------------------------------------
@@ -180,19 +196,8 @@ def main():
 			actual = disassemble(insnum)
 			expected = line[9:].rstrip()
 			if compare_disassembly(actual, expected):
-				if actual=='dgh' and expected.startswith('hint'): continue
-				if actual=='cfinv' and expected.startswith('msr'): continue
-				if actual.startswith('mov') and expected.startswith('dupm'): continue # spec is screwed up here
-				if actual == 'sb' and expected.startswith('msr'): continue
-				if actual == 'xaflag' and expected.startswith('msr'): continue
-				if actual.startswith('at ') and expected.startswith('sys'): continue
-				if actual.startswith('dc ') and expected.startswith('sys'): continue
-				if actual.startswith('cfp ') and expected.startswith('sys'): continue
-				if actual.startswith('cmpp ') and expected.startswith('subps '): continue
-				if actual.startswith('tlbi') and expected.startswith('sys '): continue
-				if actual.startswith('msr ssbs') and expected.startswith('msr s0_'): continue
-				if actual.startswith('msr pan') and expected.startswith('msr s0_'): continue
-				if actual.startswith('axflag'): continue
+				if excusable_difference(actual, expected):
+					continue
 				print('0x%08X' % insnum)
 				print('actual:', actual)
 				print('expected:', expected)
