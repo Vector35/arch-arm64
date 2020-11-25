@@ -455,7 +455,7 @@ protected:
 				float floatValue;
 			} f;
 			f.intValue = (uint32_t)instructionOperand->immediate;
-			snprintf(operand, sizeof(operand), "%f", f.floatValue);
+			snprintf(operand, sizeof(operand), "%.08f", f.floatValue);
 			result.emplace_back(TextToken, "#");
 			result.emplace_back(FloatingPointToken, operand);
 			break;
@@ -529,7 +529,7 @@ protected:
 		{
 			result.emplace_back(RegisterToken, reg);
 			result.emplace_back(TextToken, "/");
-			result.emplace_back(TextToken, string(instructionOperand->pred_qual, 1));
+			result.emplace_back(TextToken, string(1, instructionOperand->pred_qual));
 			return DISASM_SUCCESS;
 		}
 
@@ -546,7 +546,8 @@ protected:
 			result.emplace_back(TextToken, "]");
 		}
 
-		if(instructionOperand->indexUsed) {
+		/* only use index if this is isolated REG (not, for example, MULTIREG */
+		if(instructionOperand->operandClass == REG && instructionOperand->indexUsed) {
 			sprintf(buf, "%u", instructionOperand->index);
 			result.emplace_back(TextToken, "[");
 			result.emplace_back(IntegerToken, buf);
@@ -563,7 +564,9 @@ protected:
 	{
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
-		const char *reg1, *reg0 = get_register_name(instructionOperand->reg[0]);
+		const char *reg0, *reg1;
+
+		reg0 = get_register_name(instructionOperand->reg[0]);
 		if(EMPTY(reg0)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		const char* sign = "";
@@ -577,6 +580,8 @@ protected:
 		const char *endToken = "]";
 		result.emplace_back(BeginMemoryOperandToken, startToken);
 		result.emplace_back(RegisterToken, reg0);
+		result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[0]));
+
 		switch (instructionOperand->operandClass)
 		{
 		case MEM_REG: break;
@@ -600,6 +605,7 @@ protected:
 				if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
 				result.emplace_back(EndMemoryOperandToken, "], ");
 				result.emplace_back(RegisterToken, reg1);
+				result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[1]));
 			}
 			break;
 		case MEM_OFFSET: // [<reg> optional(imm)]
@@ -611,10 +617,11 @@ protected:
 			}
 			break;
 		case MEM_EXTENDED: // [<reg>, <reg> optional(shift optional(imm))]
+			result.emplace_back(TextToken, ", ");
 			reg1 = get_register_name(instructionOperand->reg[1]);
 			if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
-			result.emplace_back(TextToken, ", ");
 			result.emplace_back(RegisterToken, reg1);
+			result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[1]));
 			tokenize_shift(instructionOperand, result);
 			break;
 		default:
@@ -643,7 +650,7 @@ protected:
 		}
 		result.emplace_back(TextToken, "}");
 
-		if(operand->index != 0)
+		if(operand->indexUsed)
 		{
 			result.emplace_back(TextToken, "[");
 			snprintf(index, sizeof(index), "%d", operand->index);
