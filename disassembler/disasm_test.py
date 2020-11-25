@@ -14,6 +14,7 @@ gofer = None
 
 def normalize(instxt):
 	#print('normalizing: %s' % instxt)
+	instxt = instxt.strip()
 
 	# collapse runs of whitespace to one space character
 	instxt = re.sub('\s+', ' ', instxt)

@@ -716,7 +716,7 @@ public:
 	{
 	}
 
-	bool CanAssemble()
+	bool CanAssemble() override
 	{
 		return true;
 	}
@@ -827,6 +827,10 @@ public:
 				break;
 			case IMPLEMENTATION_SPECIFIC:
 				tokenizeSuccess = tokenize_implementation_specific(&instr.operands[i], result) == 0;
+				break;
+			case NAME:
+				result.emplace_back(TextToken, instr.operands[i].name);
+				tokenizeSuccess = true;
 				break;
 			default:
 				LogError("operandClass %x\n", instr.operands[i].operandClass);

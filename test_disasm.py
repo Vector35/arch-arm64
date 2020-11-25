@@ -18,7 +18,7 @@ def disassemble(insnum):
 	(tokens, length) = arch.get_instruction_text(data, 0)
 	if not tokens or length==0:
 		return None
-	return ''.join([x.text for x in tokens])
+	return disasm_test.normalize(''.join([x.text for x in tokens]))
 
 def main():
 	if sys.argv[1:]:
@@ -35,7 +35,7 @@ def main():
 			insnum = int(line[0:8], 16)
 			actual = disassemble(insnum)
 			expected = line[9:].rstrip()
-			print('0x%08X %s    vs.    %s' % (insnum, actual, expected))
+			print('0x%08X -%s- vs. -%s-' % (insnum, actual, expected))
 			if disasm_test.compare_disassembly(actual, expected):
 				if actual and disasm_test.excusable_difference(actual, expected):
 					continue
