@@ -756,11 +756,11 @@ public:
 		len = 4;
 		Instruction instr;
 		bool tokenizeSuccess = false;
-		char padding[9];
+		char buf[9];
 		if (!Disassemble(data, addr, len, instr))
 			return false;
 
-		memset(padding, 0x20, sizeof(padding));
+		memset(buf, 0x20, sizeof(buf));
 		const char* operation = get_operation(&instr);
 		if (operation == nullptr)
 			return false;
@@ -768,13 +768,13 @@ public:
 		size_t operationLen = strlen(operation);
 		if (operationLen < 8)
 		{
-			padding[8-operationLen] = '\0';
+			buf[8-operationLen] = '\0';
 		}
 		else
-			padding[1] = '\0';
+			buf[1] = '\0';
 
 		result.emplace_back(InstructionToken, operation);
-		result.emplace_back(TextToken, padding);
+		result.emplace_back(TextToken, buf);
 		for (size_t i = 0; i < MAX_OPERANDS; i++)
 		{
 			if (instr.operands[i].operandClass == NONE)
@@ -813,6 +813,14 @@ public:
 				break;
 			case NAME:
 				result.emplace_back(TextToken, instr.operands[i].name);
+				tokenizeSuccess = true;
+				break;
+			case STR_IMM: /* eg: "mul #0xe" */
+				result.emplace_back(TextToken, instr.operands[i].name);
+				result.emplace_back(TextToken, " ");
+				result.emplace_back(TextToken, "#");
+				snprintf(buf, sizeof(buf), "0x%" PRIx64, instr.operands[i].immediate);
+				result.emplace_back(IntegerToken, buf);
 				tokenizeSuccess = true;
 				break;
 			default:
