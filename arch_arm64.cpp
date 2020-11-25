@@ -614,6 +614,9 @@ protected:
 				snprintf(immBuff, sizeof(immBuff), "%s%#" PRIx64, sign, (uint64_t)imm);
 				result.emplace_back(TextToken, ", #");
 				result.emplace_back(IntegerToken, immBuff, instructionOperand->immediate);
+
+				if(instructionOperand->mul_vl)
+					result.emplace_back(TextToken, ", mul vl");
 			}
 			break;
 		case MEM_EXTENDED: // [<reg>, <reg> optional(shift optional(imm))]
@@ -817,8 +820,7 @@ public:
 				break;
 			case STR_IMM: /* eg: "mul #0xe" */
 				result.emplace_back(TextToken, instr.operands[i].name);
-				result.emplace_back(TextToken, " ");
-				result.emplace_back(TextToken, "#");
+				result.emplace_back(TextToken, " #");
 				snprintf(buf, sizeof(buf), "0x%" PRIx64, instr.operands[i].immediate);
 				result.emplace_back(IntegerToken, buf);
 				tokenizeSuccess = true;
