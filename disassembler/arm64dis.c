@@ -97,10 +97,13 @@ const char *get_register_name(uint32_t reg)
 {
 	Register r = REG_ENUM(reg);
 
-	if(r<=REG_NONE || r>=REG_END)
-		return "";
+	if(r>REG_NONE && r<REG_END)
+		return RegisterString[r];
 
-	return RegisterString[r];
+	if(r>SYSREG_NONE && r<SYSREG_END)
+		return get_system_register_name((enum SystemReg)r);
+
+	return "";
 }
 
 const char *get_register_arrspec(uint32_t reg)
@@ -148,7 +151,7 @@ int get_register_full(uint32_t reg, char *result)
 	if(result[0] == '\0')
 		return -1;
 
-	strcpy(result, get_register_arrspec(reg));
+	strcat(result, get_register_arrspec(reg));
 	return 0;
 }
 
@@ -279,7 +282,6 @@ uint32_t get_memory_operand(
 	char reg0[16]={'\0'}, reg1[16]={'\0'};
 	if(get_register_full((Register)instructionOperand->reg[0], reg0))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
-	strcat(reg0, get_register_arrspec((Register)instructionOperand->reg[0]));
 
 	const char *sign = "";
 	int64_t imm = instructionOperand->immediate;
@@ -305,7 +307,6 @@ uint32_t get_memory_operand(
 			if (instructionOperand->reg[1] != REG_NONE) {
 				if(get_register_full((Register)instructionOperand->reg[1], reg1))
 					return FAILED_TO_DISASSEMBLE_REGISTER;
-				strcat(reg1, get_register_arrspec((Register)instructionOperand->reg[1]));
 
 				snprintf(paramBuff, sizeof(paramBuff), ", %s", reg1);
 			}
@@ -332,7 +333,6 @@ uint32_t get_memory_operand(
 		case MEM_EXTENDED:
 			if(get_register_full((Register)instructionOperand->reg[1], reg1))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
-			strcat(reg1, get_register_arrspec((Register)instructionOperand->reg[1]));
 
 			if (reg0[0] == '\0' || reg1[0] == '\0') {
 				return FAILED_TO_DISASSEMBLE_OPERAND;
@@ -388,7 +388,6 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	char reg_buf[16];
 	if(get_register_full((Register)operand->reg[registerNumber], reg_buf))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
-	strcat(reg_buf, get_register_arrspec((Register)operand->reg[registerNumber]));
 
 	/* 3) handle predicate registers */
 	if(operand->operandClass == REG && operand->pred_qual && operand->reg[0] >= REG_P0 && operand->reg[0] <= REG_P31)

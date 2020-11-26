@@ -59,15 +59,15 @@ enum Register {
 	REG_END
 };
 
-/* ddddddeeeeeennnnnnnnnn
+/* DDDDDD EEEEEE XXXXXXXXXXXXXXXXXXXX
 	data_sz is 6 bits
 	elem_sz is 6 bits
-	enum    is 10 bits */
-#define REG_ENUM(x) ((enum Register)((x) & 0x3FF))
-#define REG_ESIZE(x) (((x)>>10) & 0x3F)
-#define REG_DSIZE(x) (((x)>>16) & 0x3F)
-#define REG_ARRSPEC(x) (((x)>>10) & 0xFFF)
-#define REG_CONSTRUCT(DSIZE, ESIZE, ENUM_ID) ((DSIZE<<16) | (ESIZE<<10) | (ENUM_ID))
+	enum    is 20 bits */
+#define REG_ENUM(x) ((enum Register)((x) & 0xFFFFF))
+#define REG_ESIZE(x) (((x)>>20) & 0x3F)
+#define REG_DSIZE(x) (((x)>>26) & 0x3F)
+#define REG_ARRSPEC(x) (((x)>>20) & 0xFFF)
+#define REG_CONSTRUCT(DSIZE,ESIZE,ENUM_ID) ( ((DSIZE)<<26) | ((ESIZE)<<20) | (ENUM_ID) )
 
 //-----------------------------------------------------------------------------
 // disassembly target features
