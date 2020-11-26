@@ -152,18 +152,20 @@ int get_register_full(uint32_t reg, char *result)
 	return 0;
 }
 
-uint32_t get_register_size(Register reg)
+unsigned get_register_size(uint32_t reg)
 {
+	Register r = REG_ENUM(reg);
+
 	//Comparison done in order of likelyhood to occur
-	if ((reg >= REG_X0 && reg <= REG_SP) || (reg >= REG_D0 && reg <= REG_D31))
+	if ((r >= REG_X0 && r <= REG_SP) || (r >= REG_D0 && r <= REG_D31))
 		return 8;
-	else if ((reg >= REG_W0 && reg <= REG_WSP) || (reg >= REG_S0 && reg <= REG_S31))
+	else if ((r >= REG_W0 && r <= REG_WSP) || (r >= REG_S0 && r <= REG_S31))
 		return 4;
-	else if (reg >= REG_B0 && reg <= REG_B31)
+	else if (r >= REG_B0 && r <= REG_B31)
 		return 1;
-	else if (reg >= REG_H0 && reg <= REG_H31)
+	else if (r >= REG_H0 && r <= REG_H31)
 		return 2;
-	else if ((reg >= REG_Q0 && reg <= REG_Q31) || (reg >= REG_V0 && reg <= REG_V31))
+	else if ((r >= REG_Q0 && r <= REG_Q31) || (r >= REG_V0 && r <= REG_V31))
 		return 16;
 	return 0;
 }

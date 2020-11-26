@@ -1209,7 +1209,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_B_LDST_IMMPRE:
 		case ENC_STR_B_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Bt>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_BT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1220,7 +1219,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_B_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Bt>, [<Xn|SP>, (<Wm>|<Xm>),<extend>{<amount>}]
 			ADD_OPERAND_BT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -1249,7 +1247,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_B_LDST_IMMPOST:
 		case ENC_STR_B_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Bt>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_BT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1268,7 +1265,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDUR_B_LDST_UNSCALED:
 		case ENC_STUR_B_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Bt>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_BT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1490,7 +1486,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_D_LDST_IMMPRE:
 		case ENC_STR_D_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Dt>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_DT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1512,7 +1507,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_D_LDST_IMMPOST:
 		case ENC_STR_D_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Dt>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_DT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1531,7 +1525,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDUR_D_LDST_UNSCALED:
 		case ENC_STUR_D_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Dt>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_DT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1755,7 +1748,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_H_LDST_IMMPRE:
 		case ENC_STR_H_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Ht>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_HT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1777,7 +1769,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_H_LDST_IMMPOST:
 		case ENC_STR_H_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Ht>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_HT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -1796,7 +1787,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDUR_H_LDST_UNSCALED:
 		case ENC_STUR_H_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Ht>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_HT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2068,7 +2058,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BRKN_P_P_PP_:
 		case ENC_BRKNS_P_P_PP_:
 		{
-			const char *PDM = "pdm_error";
 			// SYNTAX: <Pdm>.B,<Pg>/Z,<Pn>.B,<Pdm>.B
 			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdm, 1);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
@@ -2080,7 +2069,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_PNEXT_P_P_P_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			const char *PDN = "pdn_error";
 			// SYNTAX: <Pdn>.<Ts>,<Pg>,<Pdn>.<Ts>
 			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, elem_sz);
 			ADD_OPERAND_PRED_REG(dec->g);
@@ -2090,7 +2078,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_PFIRST_P_P_P_:
 		{
-			const char *PDN = "pdn_error";
 			// SYNTAX: <Pdn>.B,<Pg>,<Pdn>.B
 			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, 1);
 			ADD_OPERAND_PRED_REG(dec->g);
@@ -2160,7 +2147,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_Q_LDSTPAIR_PRE:
 		case ENC_STP_Q_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <Qt1>,<Qt2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_QT1;
 			ADD_OPERAND_QT2;
@@ -2195,7 +2181,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_Q_LDST_IMMPRE:
 		case ENC_STR_Q_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Qt>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_QT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2217,7 +2202,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_Q_LDST_IMMPOST:
 		case ENC_STR_Q_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Qt>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_QT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2236,7 +2220,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDUR_Q_LDST_UNSCALED:
 		case ENC_STUR_Q_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Qt>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_QT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2462,7 +2445,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_S_LDSTPAIR_PRE:
 		case ENC_STP_S_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <St1>,<St2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_ST1;
 			ADD_OPERAND_ST2;
@@ -2497,7 +2479,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_S_LDST_IMMPRE:
 		case ENC_STR_S_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <St>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_ST;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2519,7 +2500,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_S_LDST_IMMPOST:
 		case ENC_STR_S_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <St>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_ST;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -2538,7 +2518,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDUR_S_LDST_UNSCALED:
 		case ENC_STUR_S_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <St>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_ST;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -3231,7 +3210,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t IMM8 = ABCDEFGH;
 			arrangement_spec arr_spec;
-			unsigned AMOUNT;
+			unsigned AMOUNT = 0;
 			if((dec->cmode & 0b1101) == 0b1001) { // 16-bit (cmode == 10x1)
 				arr_spec = table_4h_8h[dec->Q];
 				AMOUNT = (dec->cmode & 0b10) << 2;
@@ -4163,7 +4142,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_UBFM_32M_BITFIELD:
 		case ENC_LSR_UBFM_32M_BITFIELD:
 		{
-			unsigned CONST = 31 - IMMS;
+			unsigned CONST = (dec->encoding == ENC_LSL_UBFM_32M_BITFIELD) ?
+				31 - dec->imms : dec->immr;
 			// SYNTAX: <Wd>,<Wn>, #<const>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_WN;
@@ -4774,7 +4754,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STRH_32_LDST_IMMPRE:
 		case ENC_STR_32_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Wt>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_WT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -4829,7 +4808,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STRH_32_LDST_IMMPOST:
 		case ENC_STR_32_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Wt>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_WT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -4876,7 +4854,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STURH_32_LDST_UNSCALED:
 		case ENC_STUR_32_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Wt>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_WT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -5231,7 +5208,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_UBFM_64M_BITFIELD:
 		case ENC_LSR_UBFM_64M_BITFIELD:
 		{
-			uint64_t CONST = 64 - IMMR;
+			unsigned CONST = (dec->encoding == ENC_LSL_UBFM_64M_BITFIELD) ?
+				64 - dec->immr : dec->immr;
 			// SYNTAX: <Xd>,<Xn>, #<const>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5939,7 +5917,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_64_LDST_IMMPRE:
 		case ENC_STR_64_LDST_IMMPRE:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -5996,7 +5973,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_64_LDST_IMMPOST:
 		case ENC_STR_64_LDST_IMMPOST:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -6034,7 +6010,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STTR_64_LDST_UNPRIV:
 		case ENC_STUR_64_LDST_UNSCALED:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -6045,7 +6020,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDRAA_64W_LDST_PAC:
 		case ENC_LDRAB_64W_LDST_PAC:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt>, [<Xn|SP>{, #<simm>}]!
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -6084,7 +6058,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STZ2G_64SPRE_LDSTTAGS:
 		case ENC_STZG_64SPRE_LDSTTAGS:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt|SP>, [<Xn|SP>, #<simm>]!
 			ADD_OPERAND_XT_SP;
 			ADD_OPERAND_MEM_PRE_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -6096,7 +6069,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STZ2G_64SPOST_LDSTTAGS:
 		case ENC_STZG_64SPOST_LDSTTAGS:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt|SP>, [<Xn|SP>], #<simm>
 			ADD_OPERAND_XT_SP;
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, dec->offset);
@@ -6108,7 +6080,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STZ2G_64SOFFSET_LDSTTAGS:
 		case ENC_STZG_64SOFFSET_LDSTTAGS:
 		{
-			int64_t SIMM = dec->offset;
 			// SYNTAX: <Xt|SP>, [<Xn|SP>{, #<simm>}]
 			ADD_OPERAND_XT_SP;
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, dec->offset);

@@ -155,12 +155,12 @@ test_cases = [
 	(b'\xE8\xB0\x88\x3D', 'LLIL_STORE.128(LLIL_ADD.q(LLIL_REG.q(x7),LLIL_CONST.q(0x22C0)),LLIL_REG.128(q8))'), # str q8, [x7, #8896]
 	# IFORM: str_p_bi
 	# str_p_bi_ 1110010110xxxxxx000xxxxxxxx0xxxx
-	(b'\xA6\x12\xB0\xE5', 'LLIL_UNDEF()'), # str p6, [x21, #-124, mul vl]
-	(b'\x0F\x12\x84\xE5', 'LLIL_UNDEF()'), # str p15, [x16, #36, mul vl]
+	#(b'\xA6\x12\xB0\xE5', 'LLIL_UNDEF()'), # str p6, [x21, #-124, mul vl]
+	#(b'\x0F\x12\x84\xE5', 'LLIL_UNDEF()'), # str p15, [x16, #36, mul vl]
 	# IFORM: str_z_bi
 	# str_z_bi_ 1110010110xxxxxx01xxxxxxxxxxxxxx
-	(b'\x11\x55\x89\xE5', 'LLIL_UNDEF()'), # str z17, [x8, #77, mul vl]
-	(b'\x4E\x43\x9B\xE5', 'LLIL_UNDEF()'), # str z14, [x26, #216, mul vl]
+	#(b'\x11\x55\x89\xE5', 'LLIL_UNDEF()'), # str z17, [x8, #77, mul vl]
+	#(b'\x4E\x43\x9B\xE5', 'LLIL_UNDEF()'), # str z14, [x26, #216, mul vl]
 	# pointer auth instructions
 	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
 	(b'\x04\x18\xC1\xDA', 'LLIL_INTRINSIC([x4],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # autda x4, x0

@@ -1,3 +1,71 @@
+// ASR_SBFM_32M_bitfield 0001001100xxxxxxxxxxxxxxxxxxxxxx
+13077CF5 asr w21, w7, #0x7
+131E7CAF asr w15, w5, #0x1e
+130E7E28 asr w8, w17, #0xe
+131A7CA7 asr w7, w5, #0x1a
+131B7CB1 asr w17, w5, #0x1b
+13017E2D asr w13, w17, #0x1
+13077C3B asr w27, w1, #0x7
+131C7C12 asr w18, w0, #0x1c
+130B7DB1 asr w17, w13, #0xb
+13027FBC asr w28, w29, #0x2
+13177D82 asr w2, w12, #0x17
+13117FCF asr w15, w30, #0x11
+13167E76 asr w22, w19, #0x16
+13047D38 asr w24, w9, #0x4
+130B7E1D asr w29, w16, #0xb
+13007E87 asr w7, w20, #0x0
+// ASR_SBFM_64M_bitfield 1001001101xxxxxx111111xxxxxxxxxx
+9361FD58 asr x24, x10, #0x21
+937BFFC8 asr x8, x30, #0x3b
+9373FD27 asr x7, x9, #0x33
+935AFEB1 asr x17, x21, #0x1a
+9378FC85 asr x5, x4, #0x38
+9357FD9E asr x30, x12, #0x17
+9351FDC1 asr x1, x14, #0x11
+9361FD87 asr x7, x12, #0x21
+937DFFDB asr x27, x30, #0x3d
+936BFCA0 asr x0, x5, #0x2b
+9344FD33 asr x19, x9, #0x4
+937EFCDA asr x26, x6, #0x3e
+9372FF6B asr x11, x27, #0x32
+936AFFA6 asr x6, x29, #0x2a
+9365FE05 asr x5, x16, #0x25
+9358FED2 asr x18, x22, #0x18
+// LSR_UBFM_32M_bitfield 0101001100xxxxxxxxxxxxxxxxxxxxxx
+53007F50 lsr w16, w26, #0x0
+53167CD9 lsr w25, w6, #0x16
+53077DB6 lsr w22, w13, #0x7
+53017E54 lsr w20, w18, #0x1
+53117DA7 lsr w7, w13, #0x11
+53127E80 lsr w0, w20, #0x12
+53047C2E lsr w14, w1, #0x4
+53027DE6 lsr w6, w15, #0x2
+531F7C64 lsr w4, w3, #0x1f
+53117F57 lsr w23, w26, #0x11
+530E7CDC lsr w28, w6, #0xe
+531B7CBF lsr wzr, w5, #0x1b
+531F7D68 lsr w8, w11, #0x1f
+53087C24 lsr w4, w1, #0x8
+53057DFA lsr w26, w15, #0x5
+531E7E52 lsr w18, w18, #0x1e
+// LSR_UBFM_64M_bitfield 1101001101xxxxxx111111xxxxxxxxxx
+D359FD4B lsr x11, x10, #0x19
+D364FE56 lsr x22, x18, #0x24
+D372FC59 lsr x25, x2, #0x32
+D36EFC97 lsr x23, x4, #0x2e
+D357FCFC lsr x28, x7, #0x17
+D35EFEB4 lsr x20, x21, #0x1e
+D347FDDE lsr x30, x14, #0x7
+D35CFEB2 lsr x18, x21, #0x1c
+D34DFF89 lsr x9, x28, #0xd
+D35AFE0E lsr x14, x16, #0x1a
+D37FFE23 lsr x3, x17, #0x3f
+D36EFC1F lsr xzr, x0, #0x2e
+D371FFD3 lsr x19, x30, #0x31
+D36FFE8A lsr x10, x20, #0x2f
+D35EFCDF lsr xzr, x6, #0x1e
+D359FF7B lsr x27, x27, #0x19
 // ABS_asimdmisc_R 0x001110xx100000101110xxxxxxxxxx
 0E60BA1C abs v28.4h, v16.4h
 0EA0B9A1 abs v1.2s, v13.2s

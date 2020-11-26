@@ -633,6 +633,7 @@ const char *get_operation(const Instruction *instruction);
 const char *get_register_name(uint32_t reg);
 const char *get_register_arrspec(uint32_t reg);
 int get_register_full(uint32_t reg, char *result);
+unsigned get_register_size(uint32_t reg);
 
 //Get the text value of a given shift type
 const char *get_shift(ShiftType shift);
@@ -643,8 +644,6 @@ uint32_t get_implementation_specific(
 		const InstructionOperand *operand,
 		char *outBuffer,
 		uint32_t outBufferSize);
-
-uint32_t get_register_size(Register reg);
 
 /* undocumented: */
 void print_instruction(Instruction *instr);

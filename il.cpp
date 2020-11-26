@@ -7,7 +7,7 @@ using namespace BinaryNinja;
 
 #define IMM(X) X.immediate
 #define REG(X) X.reg[0]
-#define REGSZ(X) get_register_size((Register)REG(X))
+#define REGSZ(X) get_register_size(REG(X))
 #define ILREG(X) ExtractRegister(il, X, 0, REGSZ(X), false, REGSZ(X))
 #define ILCONST(X) il.Const(REGSZ(X), IMM(X))
 #define SETREG(R,V) il.AddInstruction(il.SetRegister(REGSZ(R), REG(R), V))
@@ -91,7 +91,7 @@ static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOpera
 
 static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
 {
-	size_t opsz = get_register_size((Register)operand.reg[regNum]);
+	size_t opsz = get_register_size(operand.reg[regNum]);
 
 	switch (operand.reg[regNum]) {
 		case REG_WZR:
