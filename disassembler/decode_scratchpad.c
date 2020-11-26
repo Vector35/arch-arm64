@@ -908,7 +908,8 @@ const char *reg_lookup_c[16] = {
 	i++;
 
 #define ADD_OPERAND_SYSTEMREG \
-	if(get_system_register_name_decomposed(dec->sys_op0, dec->sys_op1, dec->sys_crn, dec->sys_crm, dec->sys_op2)) { \
+	ccp_tmp = get_system_register_name_decomposed(dec->sys_op0, dec->sys_op1, dec->sys_crn, dec->sys_crm, dec->sys_op2); \
+	if(ccp_tmp[0] != '\0') { \
 		dec->operands[i].operandClass = SYS_REG; \
 		dec->operands[i].reg[0] = ((dec->sys_op0<<14)|(dec->sys_op1<<11)|(dec->sys_crn<<7)|(dec->sys_crm<<3)|dec->sys_op2); \
 		i++; \
@@ -1150,6 +1151,7 @@ unsigned rhsdr_0123x_reg(int v)
 int decode_scratchpad(context *ctx, Instruction *dec)
 {
 	arrangement_spec arr_spec = _1B;
+	const char *ccp_tmp;
 
 	/* index of operand array, as it's built */
 	int i = 0;

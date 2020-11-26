@@ -1,12 +1,14 @@
 #include <stdarg.h>
 #include <inttypes.h>
 #include "lowlevelilinstruction.h"
+
+#include "sysregs.h"
 #include "il.h"
 
 using namespace BinaryNinja;
 
 #define IMM(X) X.immediate
-#define REG(X) X.reg[0]
+#define REG(X) (X).reg[0]
 #define REGSZ(X) get_register_size(REG(X))
 #define ILREG(X) ExtractRegister(il, X, 0, REGSZ(X), false, REGSZ(X))
 #define ILCONST(X) il.Const(REGSZ(X), IMM(X))
