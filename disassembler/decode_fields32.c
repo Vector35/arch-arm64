@@ -1,3 +1,5 @@
+/* GENERATED FILE - DO NOT MODIFY - SUBMIT GITHUB ISSUE IF PROBLEM FOUND */
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>

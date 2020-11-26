@@ -7301,7 +7301,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BL_ONLY_BRANCH_IMM:
 		case ENC_B_ONLY_BRANCH_IMM:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <label>
 			ADD_OPERAND_LABEL;
 			// SYNTAX-END
