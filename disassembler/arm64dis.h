@@ -2,6 +2,10 @@
 
 #include <stdint.h>
 
+#ifdef _MSC_VER
+#undef REG_NONE // collides with winnt's define
+#endif
+
 #ifdef __cplusplus
 #define restrict __restrict
 #endif
