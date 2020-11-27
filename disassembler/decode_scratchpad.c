@@ -257,32 +257,32 @@ typedef struct _arrangement_spec
 	unsigned elem_sz;
 } arrangement_spec;
 
-#define _ARR_SPEC_RESERVED (arrangement_spec){.data_sz=0, .elem_sz=0}
-#define _1B (arrangement_spec){.data_sz=1,.elem_sz=1}
-#define _1H (arrangement_spec){.data_sz=1,.elem_sz=2}
-#define _1S (arrangement_spec){.data_sz=1,.elem_sz=4}
-#define _1D (arrangement_spec){.data_sz=1,.elem_sz=8}
-#define _1Q (arrangement_spec){.data_sz=1,.elem_sz=16}
-#define _2B (arrangement_spec){.data_sz=2,.elem_sz=1}
-#define _2H (arrangement_spec){.data_sz=2,.elem_sz=2}
-#define _2S (arrangement_spec){.data_sz=2,.elem_sz=4}
-#define _2D (arrangement_spec){.data_sz=2,.elem_sz=8}
-#define _2Q (arrangement_spec){.data_sz=2,.elem_sz=16}
-#define _4B (arrangement_spec){.data_sz=4,.elem_sz=1}
-#define _4H (arrangement_spec){.data_sz=4,.elem_sz=2}
-#define _4S (arrangement_spec){.data_sz=4,.elem_sz=4}
-#define _4D (arrangement_spec){.data_sz=4,.elem_sz=8}
-#define _4Q (arrangement_spec){.data_sz=4,.elem_sz=16}
-#define _8B (arrangement_spec){.data_sz=8,.elem_sz=1}
-#define _8H (arrangement_spec){.data_sz=8,.elem_sz=2}
-#define _8S (arrangement_spec){.data_sz=8,.elem_sz=4}
-#define _8D (arrangement_spec){.data_sz=8,.elem_sz=8}
-#define _8Q (arrangement_spec){.data_sz=8,.elem_sz=16}
-#define _16B (arrangement_spec){.data_sz=16,.elem_sz=1}
-#define _16H (arrangement_spec){.data_sz=16,.elem_sz=2}
-#define _16S (arrangement_spec){.data_sz=16,.elem_sz=4}
-#define _16D (arrangement_spec){.data_sz=16,.elem_sz=8}
-#define _16Q (arrangement_spec){.data_sz=16,.elem_sz=16}
+#define _ARR_SPEC_RESERVED {.data_sz=0, .elem_sz=0}
+#define _1B {.data_sz=1,.elem_sz=1}
+#define _1H {.data_sz=1,.elem_sz=2}
+#define _1S {.data_sz=1,.elem_sz=4}
+#define _1D {.data_sz=1,.elem_sz=8}
+#define _1Q {.data_sz=1,.elem_sz=16}
+#define _2B {.data_sz=2,.elem_sz=1}
+#define _2H {.data_sz=2,.elem_sz=2}
+#define _2S {.data_sz=2,.elem_sz=4}
+#define _2D {.data_sz=2,.elem_sz=8}
+#define _2Q {.data_sz=2,.elem_sz=16}
+#define _4B {.data_sz=4,.elem_sz=1}
+#define _4H {.data_sz=4,.elem_sz=2}
+#define _4S {.data_sz=4,.elem_sz=4}
+#define _4D {.data_sz=4,.elem_sz=8}
+#define _4Q {.data_sz=4,.elem_sz=16}
+#define _8B {.data_sz=8,.elem_sz=1}
+#define _8H {.data_sz=8,.elem_sz=2}
+#define _8S {.data_sz=8,.elem_sz=4}
+#define _8D {.data_sz=8,.elem_sz=8}
+#define _8Q {.data_sz=8,.elem_sz=16}
+#define _16B {.data_sz=16,.elem_sz=1}
+#define _16H {.data_sz=16,.elem_sz=2}
+#define _16S {.data_sz=16,.elem_sz=4}
+#define _16D {.data_sz=16,.elem_sz=8}
+#define _16Q {.data_sz=16,.elem_sz=16}
 
 /* arrangement specifiers
 0000 x SEE Advanced SIMD modified immediate
@@ -297,57 +297,57 @@ typedef struct _arrangement_spec
 arrangement_spec arr_spec_method0(uint32_t imm5, uint32_t Q)
 {
 	if(Q==0) {
-		if(imm5 & 1) return _8B;
-		if(imm5 & 2) return _4H;
-		if(imm5 & 4) return _2S;
+		if(imm5 & 1) return (arrangement_spec)_8B;
+		if(imm5 & 2) return (arrangement_spec)_4H;
+		if(imm5 & 4) return (arrangement_spec)_2S;
 	}
 	else {
-		if(imm5 & 1) return _16B;
-		if(imm5 & 2) return _8H;
-		if(imm5 & 4) return _4S;
-		if(imm5 & 8) return _2D;
+		if(imm5 & 1) return (arrangement_spec)_16B;
+		if(imm5 & 2) return (arrangement_spec)_8H;
+		if(imm5 & 4) return (arrangement_spec)_4S;
+		if(imm5 & 8) return (arrangement_spec)_2D;
 	}
-	return _ARR_SPEC_RESERVED;
+	return (arrangement_spec)_ARR_SPEC_RESERVED;
 }
 
 arrangement_spec arr_spec_method1(unsigned key)
 {
-	//if((key & 0b01111) == 0b00000) return _ARR_SPEC_RESERVED;		// x0000 RESERVED
-	if((key & 0b00001) == 0b00001) return _1B;				// xxxx1 B
-	if((key & 0b00011) == 0b00010) return _1H;				// xxx10 H
-	if((key & 0b00111) == 0b00100) return _1S;				// xx100 S
-	if((key & 0b01111) == 0b01000) return _1D;				// x1000 D
-	if((key & 0b11111) == 0b10000) return _1Q;				// 10000 Q
-	return _ARR_SPEC_RESERVED;
+	//if((key & 0b01111) == 0b00000) return (arrangement_spec)_ARR_SPEC_RESERVED;	// x0000 RESERVED
+	if((key & 0b00001) == 0b00001) return (arrangement_spec)_1B;					// xxxx1 B
+	if((key & 0b00011) == 0b00010) return (arrangement_spec)_1H;					// xxx10 H
+	if((key & 0b00111) == 0b00100) return (arrangement_spec)_1S;					// xx100 S
+	if((key & 0b01111) == 0b01000) return (arrangement_spec)_1D;					// x1000 D
+	if((key & 0b11111) == 0b10000) return (arrangement_spec)_1Q;					// 10000 Q
+	return (arrangement_spec)_ARR_SPEC_RESERVED;
 }
 
 arrangement_spec arr_spec_method2(unsigned immh)
 {
-												// 0000 SEE Advanced SIMD modified immediate
-	if(immh==1) return _8H;						// 0001 8H
-	if((immh & 0b1110) == 0b0010) return _4S;	// 001x 4S
-	if((immh & 0b1100) == 0b0100) return _2D;	// 01xx 2D
-	return _ARR_SPEC_RESERVED;					// 1xxx RESERVED
+																	// 0000 SEE Advanced SIMD modified immediate
+	if(immh==1) return (arrangement_spec)_8H;						// 0001 8H
+	if((immh & 0b1110) == 0b0010) return (arrangement_spec)_4S;		// 001x 4S
+	if((immh & 0b1100) == 0b0100) return (arrangement_spec)_2D;		// 01xx 2D
+	return (arrangement_spec)_ARR_SPEC_RESERVED;					// 1xxx RESERVED
 }
 
 arrangement_spec arr_spec_method3(unsigned immh, unsigned q)
 {
 	switch((immh<<1)|q) {
-									// 0000 x SEE Advanced SIMD modified immediate
-		case 0b00010: return _8B;	// 0001 0 8B
-		case 0b00011: return _16B;	// 0001 1 16B
+														// 0000 x SEE Advanced SIMD modified immediate
+		case 0b00010: return (arrangement_spec)_8B;		// 0001 0 8B
+		case 0b00011: return (arrangement_spec)_16B;	// 0001 1 16B
 		case 0b00100:
-		case 0b00110: return _4H;	// 001x 0 4H
+		case 0b00110: return (arrangement_spec)_4H;		// 001x 0 4H
 		case 0b00101:
-		case 0b00111: return _8H;	// 001x 1 8H
+		case 0b00111: return (arrangement_spec)_8H;		// 001x 1 8H
 		case 0b01000:
 		case 0b01010:
 		case 0b01100:
-		case 0b01110: return _2S;	// 01xx 0 2S
+		case 0b01110: return (arrangement_spec)_2S;		// 01xx 0 2S
 		case 0b01001:
 		case 0b01011:
 		case 0b01101:
-		case 0b01111: return _4S;	// 01xx 1 4S
+		case 0b01111: return (arrangement_spec)_4S;		// 01xx 1 4S
 		case 0b10001:
 		case 0b10011:
 		case 0b10101:
@@ -355,25 +355,25 @@ arrangement_spec arr_spec_method3(unsigned immh, unsigned q)
 		case 0b11001:
 		case 0b11011:
 		case 0b11101:
-		case 0b11111: return _2D;
-		default: break;				// 1xxx 1 RESERVED
+		case 0b11111: return (arrangement_spec)_2D;
+		default: break;									// 1xxx 1 RESERVED
 	}
-	return _ARR_SPEC_RESERVED;
+	return (arrangement_spec)_ARR_SPEC_RESERVED;
 }
 
 arrangement_spec arr_spec_method4(unsigned imm5, unsigned q)
 {
 	unsigned key = (imm5<<1)|q;
-	//if((key & 0b011110) == 0b000000) return RESERVED;			// x0000 x RESERVED
-	if((key & 0b000011) == 0b000010) return _8B;				// xxxx1 0 8B
-	if((key & 0b000011) == 0b000011) return _16B;				// xxxx1 1 16B
-	if((key & 0b000111) == 0b000100) return _4H;				// xxx10 0 4H
-	if((key & 0b000111) == 0b000101) return _8H;				// xxx10 1 8H
-	if((key & 0b001111) == 0b001000) return _2S;				// xx100 0 2S
-	if((key & 0b001111) == 0b001001) return _4S;				// xx100 1 4S
-	//if((key & 0b011111) == 0b010000) return RESERVED;			// x1000 0 RESERVED
-	if((key & 0b011111) == 0b010001) return _2D;				// x1000 1 2D
-	return _ARR_SPEC_RESERVED;
+	//if((key & 0b011110) == 0b000000) return RESERVED;					// x0000 x RESERVED
+	if((key & 0b000011) == 0b000010) return (arrangement_spec)_8B;		// xxxx1 0 8B
+	if((key & 0b000011) == 0b000011) return (arrangement_spec)_16B;		// xxxx1 1 16B
+	if((key & 0b000111) == 0b000100) return (arrangement_spec)_4H;		// xxx10 0 4H
+	if((key & 0b000111) == 0b000101) return (arrangement_spec)_8H;		// xxx10 1 8H
+	if((key & 0b001111) == 0b001000) return (arrangement_spec)_2S;		// xx100 0 2S
+	if((key & 0b001111) == 0b001001) return (arrangement_spec)_4S;		// xx100 1 4S
+	//if((key & 0b011111) == 0b010000) return RESERVED;					// x1000 0 RESERVED
+	if((key & 0b011111) == 0b010001) return (arrangement_spec)_2D;		// x1000 1 2D
+	return (arrangement_spec)_ARR_SPEC_RESERVED;
 }
 
 arrangement_spec table_1s_1d[2] = {_1S, _1D};
@@ -2775,7 +2775,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FADDP_ASISDPAIR_ONLY_SD:
 		{
 			unsigned rd_base = dec->sz ? REG_D_BASE : REG_S_BASE;
-			arr_spec = dec->sz ? _2D : _2S;
+			arr_spec = table_2s_2d[dec->sz];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2799,7 +2799,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FADDP_ASISDPAIR_ONLY_H:
 		{
 			unsigned rd_base = REG_H_BASE;
-			arr_spec = _2H;
+			arr_spec = (arrangement_spec)_2H;
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3356,7 +3356,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MVN_NOT_ASIMDMISC_R:
 		case ENC_RBIT_ASIMDMISC_R:
 		{
-			arr_spec = dec->Q ? _16B : _8B;
+			arr_spec = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3520,7 +3520,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FSUB_ASIMDSAMEFP16_ONLY:
 		{
 			if(dec->esize <= 16) // half precision
-				arr_spec = dec->Q==0 ? _4H : _8H;
+				arr_spec = table_4h_8h[dec->Q];
 			else { // single, double precision
 				arr_spec = table_2s_4s_r_2d[(dec->sz<<1) | dec->Q];
 			}
