@@ -742,24 +742,22 @@ const char *reg_lookup_c[16] = {
 	*(float *)&(dec->operands[i].immediate) = VALUE; \
 	i++;
 
-#define ADD_OPERAND_CONST ADD_OPERAND_IMMEDIATE64(CONST, 0)
-#define ADD_OPERAND_FBITS ADD_OPERAND_IMMEDIATE32(FBITS, 0)
-#define ADD_OPERAND_FIMM ADD_OPERAND_FLOAT32(FIMM)
-#define ADD_OPERAND_UIMM32 ADD_OPERAND_IMMEDIATE32(IMM, 0)
-#define ADD_OPERAND_IMM32 ADD_OPERAND_IMMEDIATE32(IMM, 1)
-#define ADD_OPERAND_UIMM64 ADD_OPERAND_IMMEDIATE64(IMM, 0)
-#define ADD_OPERAND_IMM64 ADD_OPERAND_IMMEDIATE64(IMM, 1)
+#define ADD_OPERAND_CONST ADD_OPERAND_IMMEDIATE64(const_, 0)
+#define ADD_OPERAND_FBITS ADD_OPERAND_IMMEDIATE32(fbits, 0)
+#define ADD_OPERAND_FIMM ADD_OPERAND_FLOAT32(fimm)
+#define ADD_OPERAND_UIMM32 ADD_OPERAND_IMMEDIATE32(imm, 0)
+#define ADD_OPERAND_IMM32 ADD_OPERAND_IMMEDIATE32(imm, 1)
+#define ADD_OPERAND_UIMM64 ADD_OPERAND_IMMEDIATE64(imm, 0)
+#define ADD_OPERAND_IMM64 ADD_OPERAND_IMMEDIATE64(imm, 1)
 #define ADD_OPERAND_IMM0 ADD_OPERAND_IMMEDIATE32(0, 0)
-#define ADD_OPERAND_IMM1 ADD_OPERAND_IMMEDIATE32(IMM1, 0)
-#define ADD_OPERAND_IMM2 ADD_OPERAND_IMMEDIATE32(IMM2, 0)
-#define ADD_OPERAND_IMM6 ADD_OPERAND_IMMEDIATE32(IMM6, 0)
-#define ADD_OPERAND_IMM8 ADD_OPERAND_IMMEDIATE32(IMM8, 0)
-#define ADD_OPERAND_LSB ADD_OPERAND_IMMEDIATE32(LSB, 0)
+#define ADD_OPERAND_IMM1 ADD_OPERAND_IMMEDIATE32(imm1, 0)
+#define ADD_OPERAND_IMM2 ADD_OPERAND_IMMEDIATE32(imm2, 0)
+#define ADD_OPERAND_IMM6 ADD_OPERAND_IMMEDIATE32(imm6, 0)
+#define ADD_OPERAND_IMM8 ADD_OPERAND_IMMEDIATE32(imm8, 0)
+#define ADD_OPERAND_LSB ADD_OPERAND_IMMEDIATE32(lsb, 0)
 #define ADD_OPERAND_NZCV ADD_OPERAND_IMMEDIATE32(dec->nzcv, 0)
-#define ADD_OPERAND_ROTATE ADD_OPERAND_IMMEDIATE32(ROTATE, 0)
-#define ADD_OPERAND_UIMM4 ADD_OPERAND_IMMEDIATE32(UIMM4, 0)
-#define ADD_OPERAND_UIMM6 ADD_OPERAND_IMMEDIATE32(UIMM6, 0)
-#define ADD_OPERAND_WIDTH ADD_OPERAND_IMMEDIATE32(WIDTH, 0)
+#define ADD_OPERAND_ROTATE ADD_OPERAND_IMMEDIATE32(rotate, 0)
+#define ADD_OPERAND_WIDTH ADD_OPERAND_IMMEDIATE32(width, 0)
 
 //#define SEXT4(x) (x & 0x
 
@@ -923,8 +921,6 @@ const char *reg_lookup_c[16] = {
 		dec->operands[i].reg[4] = dec->sys_op2; \
 		i++; \
 	} \
-
-#define ADD_OPERAND_BOTTOM_TOP_SPECIFIER
 
 #define ADD_OPERAND_PATTERN \
 	if(dec->pattern>0b1101 && dec->pattern<0b11101) { \
@@ -1275,7 +1271,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MOVI_ASIMDIMM_D_DS: // display as hex
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Dd>, #<imm64>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->rd);
 			ADD_OPERAND_UIMM64;
@@ -1284,7 +1280,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_D_FLOATIMM: // display as float
 		{
-			float FIMM = table_imm8_to_float[dec->imm8];
+			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Dd>, #<fimm>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->d);
 			ADD_OPERAND_FIMM;
@@ -1392,7 +1388,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_D32_FLOAT2FIX:
 		case ENC_UCVTF_D32_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Dd>,<Wn>, #<fbits>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->d);
 			ADD_OPERAND_WN;
@@ -1413,7 +1409,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_D64_FLOAT2FIX:
 		case ENC_UCVTF_D64_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Dd>,<Xn>, #<fbits>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->d);
 			ADD_OPERAND_XN;
@@ -1453,7 +1449,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_D_LDSTPAIR_PRE:
 		case ENC_STP_D_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <Dt1>,<Dt2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_DT1;
 			ADD_OPERAND_DT2;
@@ -1464,11 +1459,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_D_LDSTPAIR_POST:
 		case ENC_STP_D_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <Dt1>,<Dt2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_DT1;
 			ADD_OPERAND_DT2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -1498,7 +1493,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_D_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Dt>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_DT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -1544,7 +1538,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_H_FLOATIMM:
 		{
-			float FIMM = table_imm8_to_float[dec->imm8];
+			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Hd>, #<fimm>
 			ADD_OPERAND_HD;
 			ADD_OPERAND_FIMM;
@@ -1659,7 +1653,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMULX_ASISDELEM_RH_H:
 		case ENC_FMUL_ASISDELEM_RH_H:
 		{
-			arrangement_spec arr_spec_0h = {.data_sz=0, .elem_sz=4};
 			// SYNTAX: <Hd>,<Hn>,<Vm>.H[<index>]
 			ADD_OPERAND_HD;
 			ADD_OPERAND_HN;
@@ -1689,7 +1682,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_H32_FLOAT2FIX:
 		case ENC_UCVTF_H32_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Hd>,<Wn>, #<fbits>
 			ADD_OPERAND_HD;
 			ADD_OPERAND_WN;
@@ -1710,7 +1703,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_H64_FLOAT2FIX:
 		case ENC_UCVTF_H64_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Hd>,<Xn>, #<fbits>
 			ADD_OPERAND_HD;
 			ADD_OPERAND_XN;
@@ -1760,7 +1753,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_H_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Ht>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_HT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -1840,7 +1832,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMPLT_P_P_ZI_:
 		case ENC_CMPNE_P_P_ZI_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zn>.<Ts>, #<imm>
 			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
@@ -2159,11 +2151,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_Q_LDSTPAIR_POST:
 		case ENC_STP_Q_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <Qt1>,<Qt2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_QT1;
 			ADD_OPERAND_QT2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -2193,7 +2185,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_Q_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Qt>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_QT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -2276,7 +2267,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_TBNZ_ONLY_TESTBRANCH:
 		case ENC_TBZ_ONLY_TESTBRANCH:
 		{
-			uint64_t IMM = dec->bit_pos;
+			uint64_t imm = dec->bit_pos;
 			unsigned rt_base = dec->datasize == 32 ? REG_W_BASE : REG_X_BASE;
 			uint64_t eaddr = dec->offset;
 			// SYNTAX: <R><t>, #<imm>,<label>
@@ -2288,7 +2279,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_S_FLOATIMM:
 		{
-			float FIMM = table_imm8_to_float[dec->imm8];
+			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Sd>, #<fimm>
 			ADD_OPERAND_SD;
 			ADD_OPERAND_FIMM;
@@ -2387,7 +2378,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_S32_FLOAT2FIX:
 		case ENC_UCVTF_S32_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Sd>,<Wn>, #<fbits>
 			ADD_OPERAND_SD;
 			ADD_OPERAND_WN;
@@ -2407,7 +2398,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_S64_FLOAT2FIX:
 		case ENC_UCVTF_S64_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Sd>,<Xn>, #<fbits>
 			ADD_OPERAND_SD;
 			ADD_OPERAND_XN;
@@ -2457,11 +2448,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_S_LDSTPAIR_POST:
 		case ENC_STP_S_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <St1>,<St2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_ST1;
 			ADD_OPERAND_ST2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -2491,7 +2482,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_S_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <St>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_ST;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -2633,7 +2623,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_ASISDSHF_C:
 		case ENC_UCVTF_ASISDSHF_C:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			unsigned rn_base = rhsd_0123x_reg(dec->immh);
 			unsigned rd_base = rhsd_0123x_reg(dec->immh);
 			// SYNTAX: <V><d>,<V><n>, #<fbits>
@@ -2885,10 +2875,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned rd_base = bhsd_0123_reg(dec->size);
 			unsigned elem_sz = table_b_d_h_s[dec->size];
-			arr_spec.data_sz = 0;
-			// SYNTAX: <V><d>,<Vn>.<T>[<index>]
+			// SYNTAX: <V><d>,<Vn>.<Ts>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
-			ADD_OPERAND_VREG_T_INDEXED(arr_spec, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -3000,7 +2989,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MOVI_ASIMDIMM_D2_D: // display as int
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			arrangement_spec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D, #<imm64>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->rd);
@@ -3010,7 +2999,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_ASIMDIMM_D2_D: // display as float
 		{
-			float FIMM = table_imm8_to_float[ABCDEFGH];
+			float fimm = table_imm8_to_float[ABCDEFGH];
 			arrangement_spec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->rd);
@@ -3041,7 +3030,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_XAR_VVV2_CRYPTO3_IMM6:
 		{
 			arrangement_spec arr_spec_2d = _2D;
-			uint64_t IMM6 = dec->imm6;
+			uint64_t imm6 = dec->imm6;
 			// SYNTAX: <Vd>.2D,<Vn>.2D,<Vm>.2D, #<imm6>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->n);
@@ -3105,7 +3094,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SM3TT2B_VVV_CRYPTO3_IMM2:
 		{
 			arrangement_spec arr_spec_4s = _4S;
-			uint64_t IMM2 = dec->imm2;
 			// SYNTAX: <Vd>.4S,<Vn>.4S,<Vm>.S[<imm2>]
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
@@ -3127,7 +3115,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVI_ASIMDIMM_M_SM: // "shifting ones" around
 		case ENC_MVNI_ASIMDIMM_M_SM: // 32-bit shifting ones (cmode == 110x)
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec = table_2s_4s[dec->Q];
 			// SYNTAX: <Vd>.<T>, #<imm8>, MSL #<amount>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3141,7 +3129,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVI_ASIMDIMM_N_B:
 		{
 			arrangement_spec arr_spec = table_8b_16b[dec->Q];
-			uint64_t IMM8 = dec->imm & 0xFF;
+			uint64_t imm8 = dec->imm & 0xFF;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #0}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
 			ADD_OPERAND_IMM8;
@@ -3150,7 +3138,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ORR_ASIMDIMM_L_SL:
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec = table_2s_4s[dec->Q];
 			int AMOUNT = 8*((dec->cmode>>1) & 0b11);
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
@@ -3164,7 +3152,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ORR_ASIMDIMM_L_HL:
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec = table_4h_8h[dec->Q];
 			int AMOUNT = (dec->cmode & 2) ? 8 : 0;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
@@ -3180,7 +3168,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVI_ASIMDIMM_L_HL: // 16-bit shifted immediate (op == 0 && cmode == 10x0)
 		case ENC_MVNI_ASIMDIMM_L_HL: // 16-bit shifted immediate (cmode == 10x0)
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec = table_4h_8h[dec->Q];
 			unsigned AMOUNT = (dec->cmode & 0b10)<<2;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
@@ -3195,7 +3183,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		// IFORM: MVNI_advsimd
 		case ENC_MVNI_ASIMDIMM_L_SL: // cmode == '0xx0' (32-bit shifted immediate)
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec = table_2s_4s[dec->Q];
 			unsigned AMOUNT = (dec->cmode & 0b0110)<<2;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
@@ -3210,7 +3198,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BIC_ASIMDIMM_L_HL:
 		case ENC_BIC_ASIMDIMM_L_SL:
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			arrangement_spec arr_spec;
 			unsigned AMOUNT = 0;
 			if((dec->cmode & 0b1101) == 0b1001) { // 16-bit (cmode == 10x1)
@@ -3237,7 +3225,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		// IFORM: MOVI_advsimd
 		case ENC_MOVI_ASIMDIMM_L_SL: // op == '0' && cmode == '0xx0' (32-bit shifted immediate)
 		{
-			uint64_t IMM8 = ABCDEFGH;
+			uint64_t imm8 = ABCDEFGH;
 			unsigned AMOUNT = (dec->cmode & 0b110) << 2;
 			arrangement_spec arr_spec = table_2s_4s[dec->Q];
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
@@ -3253,7 +3241,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_ASIMDIMM_H_H:
 		{
 			arrangement_spec arr_spec = table_4h_8h[dec->Q];
-			float FIMM = table_imm8_to_float[ABCDEFGH];
+			float fimm = table_imm8_to_float[ABCDEFGH];
 			// SYNTAX: <Vd>.<T>, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
 			ADD_OPERAND_FIMM;
@@ -3263,7 +3251,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_ASIMDIMM_S_S:
 		{
 			arrangement_spec arr_spec = table_2s_4s[dec->Q];
-			float FIMM = table_imm8_to_float[ABCDEFGH];
+			float fimm = table_imm8_to_float[ABCDEFGH];
 			// SYNTAX: <Vd>.<T>, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
 			ADD_OPERAND_FIMM;
@@ -3438,7 +3426,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_ASIMDSHF_C:
 		{
 			arrangement_spec arr_spec = arr_spec_method3(dec->immh, dec->Q);
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #<fbits>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3618,7 +3606,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_EXT_ASIMDEXT_ONLY:
 		{
 			arrangement_spec arr_spec = table_8b_16b[dec->Q];
-			uint64_t CONST = dec->imm4;
+			uint64_t const_ = dec->imm4;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<T>, #<const>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3631,11 +3619,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLA_ASIMDSAME2_C:
 		{
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
-			uint64_t ROTATE;
+			uint64_t rotate;
 			if(dec->encoding == ENC_FCADD_ASIMDSAME2_C)
-				ROTATE = dec->rot ? 270 : 90;
+				rotate = dec->rot ? 270 : 90;
 			else
-				ROTATE = 90*dec->rot;
+				rotate = 90*dec->rot;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<T>, #<rotate>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3680,7 +3668,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			unsigned elem_sz = table_r_h_s_d[dec->size];
-			uint64_t ROTATE = 90*dec->rot;
+			uint64_t rotate = 90*dec->rot;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<Ts>[<index>], #<rotate>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3900,9 +3888,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_MOVN_32_MOVEWIDE:
 		case ENC_MOV_MOVZ_32_MOVEWIDE:
 		{
-			int32_t IMM = dec->imm << (dec->hw*16);
+			int32_t imm = dec->imm << (dec->hw*16);
 			if(dec->encoding == ENC_MOV_MOVN_32_MOVEWIDE)
-				IMM ^= 0xFFFFFFFF;
+				imm ^= 0xFFFFFFFF;
 
 			// SYNTAX: <Wd>, #<imm32>
 			ADD_OPERAND_WD;
@@ -3914,7 +3902,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVN_32_MOVEWIDE:
 		case ENC_MOVZ_32_MOVEWIDE:
 		{
-			uint64_t IMM = dec->imm & 0xFFFFFFFF;
+			uint64_t imm = dec->imm & 0xFFFFFFFF;
 			// SYNTAX: <Wd>, #<imm32>{, LSL #<shift>}
 			ADD_OPERAND_WD;
 			ADD_OPERAND_UIMM32;
@@ -3928,8 +3916,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_BFC_BFM_32M_BITFIELD: // 32-bit (sf == 0 && N == 0)
 		{
-			uint64_t LSB = 32 - IMMR;
-			uint64_t WIDTH = IMMS+1;
+			unsigned lsb = 32 - IMMR;
+			unsigned width = IMMS+1;
 			// SYNTAX: <Wd>, #<lsb>, #<width>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_LSB;
@@ -3958,7 +3946,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_32D_FLOAT2FIX:
 		case ENC_FCVTZU_32D_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Wd>,<Dn>, #<fbits>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_DN;
@@ -3987,7 +3975,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_32H_FLOAT2FIX:
 		case ENC_FCVTZU_32H_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Wd>,<Hn>, #<fbits>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_HN;
@@ -4016,7 +4004,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_32S_FLOAT2FIX:
 		case ENC_FCVTZU_32S_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Wd>,<Sn>, #<fbits>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_SN;
@@ -4081,7 +4069,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ANDS_32S_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm & 0xFFFFFFFF;
+			uint64_t imm = dec->imm & 0xFFFFFFFF;
 			// SYNTAX: <Wd>,<Wn>, #<imm>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_WN;
@@ -4106,17 +4094,17 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UBFIZ_UBFM_32M_BITFIELD:
 		case ENC_UBFX_UBFM_32M_BITFIELD:
 		{
-			uint64_t LSB, WIDTH;
+			unsigned lsb, width;
 			switch(dec->encoding) {
 				case ENC_BFI_BFM_32M_BITFIELD:
 				case ENC_SBFIZ_SBFM_32M_BITFIELD:
 				case ENC_UBFIZ_UBFM_32M_BITFIELD:
-					LSB = -IMMR % 32;
-					WIDTH = IMMS+1;
+					lsb = -IMMR % 32;
+					width = IMMS+1;
 					break;
 				default:
-					LSB = IMMR;
-					WIDTH = IMMS-IMMR+1;
+					lsb = IMMR;
+					width = IMMS-IMMR+1;
 			}
 
 			// SYNTAX: <Wd>,<Wn>, #<lsb>, #<width>
@@ -4130,8 +4118,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BFXIL_BFM_32M_BITFIELD:
 		case ENC_SBFX_SBFM_32M_BITFIELD:
 		{
-			uint64_t LSB = IMMR;
-			uint64_t WIDTH = IMMS-IMMR+1;
+			unsigned lsb = IMMR;
+			unsigned width = IMMS-IMMR+1;
 			// SYNTAX: <Wd>,<Wn>, #<lsb>, #<width>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_WN;
@@ -4144,7 +4132,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_UBFM_32M_BITFIELD:
 		case ENC_LSR_UBFM_32M_BITFIELD:
 		{
-			unsigned CONST = (dec->encoding == ENC_LSL_UBFM_32M_BITFIELD) ?
+			unsigned const_ = (dec->encoding == ENC_LSL_UBFM_32M_BITFIELD) ?
 				31 - dec->imms : dec->immr;
 			// SYNTAX: <Wd>,<Wn>, #<const>
 			ADD_OPERAND_WD;
@@ -4185,7 +4173,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_EXTR_32_EXTRACT:
 		{
-			uint64_t LSB = dec->lsb;
+			unsigned lsb = dec->lsb;
 			// SYNTAX: <Wd>,<Wn>,<Wm>, #<lsb>
 			ADD_OPERAND_WD;
 			ADD_OPERAND_WN;
@@ -4263,7 +4251,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADDS_32S_ADDSUB_IMM:
 		case ENC_SUBS_32S_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Wd>,<Wn|WSP>, #<imm>{,<shift>}
 			ADD_OPERAND_WD;
 			ADD_OPERAND_WN_SP;
@@ -4323,7 +4311,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQINCH_R_RS_UW:
 		case ENC_UQINCW_R_RS_UW:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Wdn>{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_WDN;
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
@@ -4332,7 +4319,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MOV_ORR_32_LOG_IMM:
 		{
-			uint32_t IMM = dec->imm & 0xFFFFFFFF;
+			uint32_t imm = dec->imm & 0xFFFFFFFF;
 			// SYNTAX: <Wd|WSP>, #<imm>
 			ADD_OPERAND_WD_SP;
 			ADD_OPERAND_UIMM32;
@@ -4343,7 +4330,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_EOR_32_LOG_IMM:
 		case ENC_ORR_32_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm & 0xFFFFFFFF;
+			uint64_t imm = dec->imm & 0xFFFFFFFF;
 			// SYNTAX: <Wd|WSP>,<Wn>, #<imm>
 			ADD_OPERAND_WD_SP;
 			ADD_OPERAND_WN;
@@ -4362,7 +4349,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADD_32_ADDSUB_IMM:
 		case ENC_SUB_32_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Wd|WSP>,<Wn|WSP>, #<imm>{,<shift>}
 			ADD_OPERAND_WD_SP;
 			ADD_OPERAND_WN_SP;
@@ -4394,7 +4381,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_TST_ANDS_32S_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm & 0xFFFFFFFF;
+			uint64_t imm = dec->imm & 0xFFFFFFFF;
 			// SYNTAX: <Wn>, #<imm>
 			ADD_OPERAND_WN;
 			ADD_OPERAND_UIMM32;
@@ -4404,7 +4391,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CCMN_32_CONDCMP_IMM:
 		case ENC_CCMP_32_CONDCMP_IMM:
 		{
-			uint32_t IMM = dec->imm;
+			uint32_t imm = dec->imm;
 			// SYNTAX: <Wn>, #<imm>, #<nzcv>,<cond>
 			ADD_OPERAND_WN;
 			ADD_OPERAND_UIMM32;
@@ -4438,7 +4425,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMN_ADDS_32S_ADDSUB_IMM:
 		case ENC_CMP_SUBS_32S_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Wn|WSP>, #<imm>{,<shift>}
 			ADD_OPERAND_WN_SP;
 			ADD_OPERAND_UIMM32;
@@ -4705,7 +4692,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_32_LDSTPAIR_PRE:
 		case ENC_STP_32_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <Wt1>,<Wt2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_WT1;
 			ADD_OPERAND_WT2;
@@ -4716,11 +4702,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_32_LDSTPAIR_POST:
 		case ENC_STP_32_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <Wt1>,<Wt2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_WT1;
 			ADD_OPERAND_WT2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -4767,7 +4753,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STRB_32B_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Wt>, [<Xn|SP>, (<Wm>|<Xm>),<extend>{<amount>}]
 			ADD_OPERAND_WT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -4782,7 +4767,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_32_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Wt>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_WT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -4920,7 +4904,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_RDVL_R_I_:
 		case ENC_MOV_MOVZ_64_MOVEWIDE:
 		{
-			int64_t IMM = dec->imm << (dec->hw*16);
+			int64_t imm = dec->imm << (dec->hw*16);
 			// SYNTAX: <Xd>, #<imm64>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_UIMM64;
@@ -4930,7 +4914,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 
 		case ENC_MOV_MOVN_64_MOVEWIDE:
 		{
-			int64_t IMM = (dec->imm << (dec->hw*16)) ^ 0xFFFFFFFFFFFFFFFF;
+			int64_t imm = (dec->imm << (dec->hw*16)) ^ 0xFFFFFFFFFFFFFFFF;
 			// SYNTAX: <Xd>, #<imm>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_UIMM64;
@@ -4941,7 +4925,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVN_64_MOVEWIDE:
 		case ENC_MOVZ_64_MOVEWIDE:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Xd>, #<imm>{, LSL #<shift>}
 			ADD_OPERAND_XD;
 			ADD_OPERAND_UIMM64;
@@ -4955,8 +4939,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_BFC_BFM_64M_BITFIELD:
 		{
-			uint64_t LSB = IMMR ? 64 - IMMR : 0;
-			uint64_t WIDTH = IMMS+1;
+			unsigned lsb = IMMR ? 64 - IMMR : 0;
+			unsigned width = IMMS+1;
 			// SYNTAX: <Xd>, #<lsb>, #<width>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_LSB;
@@ -4985,7 +4969,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_64D_FLOAT2FIX:
 		case ENC_FCVTZU_64D_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Xd>,<Dn>, #<fbits>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_DN;
@@ -5014,7 +4998,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_64H_FLOAT2FIX:
 		case ENC_FCVTZU_64H_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Xd>,<Hn>, #<fbits>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_HN;
@@ -5052,7 +5036,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZS_64S_FLOAT2FIX:
 		case ENC_FCVTZU_64S_FLOAT2FIX:
 		{
-			uint64_t FBITS = dec->fracbits;
+			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Xd>,<Sn>, #<fbits>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_SN;
@@ -5158,7 +5142,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ANDS_64S_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Xd>,<Xn>, #<imm>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5182,8 +5166,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SBFIZ_SBFM_64M_BITFIELD:
 		case ENC_UBFIZ_UBFM_64M_BITFIELD:
 		{
-			uint64_t LSB = IMMR ? 64 - IMMR : 0;
-			uint64_t WIDTH = IMMS+1;
+			unsigned lsb = IMMR ? 64 - IMMR : 0;
+			unsigned width = IMMS+1;
 			// SYNTAX: <Xd>,<Xn>, #<lsb>, #<width>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5196,8 +5180,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SBFX_SBFM_64M_BITFIELD:
 		case ENC_UBFX_UBFM_64M_BITFIELD:
 		{
-			uint64_t LSB = IMMR;
-			uint64_t WIDTH = IMMS-IMMR+1;
+			unsigned lsb = IMMR;
+			unsigned width = IMMS-IMMR+1;
 			// SYNTAX: <Xd>,<Xn>, #<lsb>, #<width>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5210,7 +5194,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_UBFM_64M_BITFIELD:
 		case ENC_LSR_UBFM_64M_BITFIELD:
 		{
-			unsigned CONST = (dec->encoding == ENC_LSL_UBFM_64M_BITFIELD) ?
+			unsigned const_ = (dec->encoding == ENC_LSL_UBFM_64M_BITFIELD) ?
 				64 - dec->immr : dec->immr;
 			// SYNTAX: <Xd>,<Xn>, #<const>
 			ADD_OPERAND_XD;
@@ -5247,7 +5231,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_EXTR_64_EXTRACT:
 		{
-			uint64_t LSB = dec->lsb;
+			unsigned lsb = dec->lsb;
 			// SYNTAX: <Xd>,<Xn>,<Xm>, #<lsb>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5339,7 +5323,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADDS_64S_ADDSUB_IMM:
 		case ENC_SUBS_64S_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Xd>,<Xn|SP>, #<imm>{,<shift>}
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN_SP;
@@ -5383,7 +5367,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ROR_EXTR_64_EXTRACT:
 		{
-			unsigned IMM = IMMS;
+			unsigned imm = IMMS;
 			// SYNTAX: <Xd>,<Xn>, #<imm>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_XN;
@@ -5423,7 +5407,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CNTH_R_S_:
 		case ENC_CNTW_R_S_:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Xd>{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_XD;
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
@@ -5464,7 +5447,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SQINCH_R_RS_SX:
 		case ENC_SQINCW_R_RS_SX:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Xdn>,<Wdn>{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_XDN;
 			ADD_OPERAND_WDN;
@@ -5497,7 +5479,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQINCH_R_RS_X:
 		case ENC_UQINCW_R_RS_X:
 		{
-			uint64_t IMM = dec->imm;
 			// NONSYNTAX: <Xdn> {,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_XDN;
 			// SYNTAX-END
@@ -5516,7 +5497,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MOV_ORR_64_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Xd|SP>, #<imm>
 			ADD_OPERAND_XD_SP;
 			ADD_OPERAND_UIMM64;
@@ -5527,7 +5508,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_EOR_64_LOG_IMM:
 		case ENC_ORR_64_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Xd|SP>,<Xn>, #<imm>
 			ADD_OPERAND_XD_SP;
 			ADD_OPERAND_XN;
@@ -5546,7 +5527,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADDPL_R_RI_:
 		case ENC_ADDVL_R_RI_:
 		{
-			uint32_t IMM = dec->imm;
+			uint32_t imm = dec->imm;
 			// SYNTAX: <Xd|SP>,<Xn|SP>, #<imm>
 			ADD_OPERAND_XD_SP;
 			ADD_OPERAND_XN_SP;
@@ -5557,7 +5538,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADD_64_ADDSUB_IMM:
 		case ENC_SUB_64_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Xd|SP>,<Xn|SP>, #<imm>{,<shift>}
 			ADD_OPERAND_XD_SP;
 			ADD_OPERAND_XN_SP;
@@ -5571,13 +5552,13 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADDG_64_ADDSUB_IMMTAGS:
 		case ENC_SUBG_64_ADDSUB_IMMTAGS:
 		{
-			uint64_t UIMM6 = dec->offset;
-			uint64_t UIMM4 = dec->tag_offset;
+			uint64_t uimm6 = dec->offset;
+			uint64_t uimm4 = dec->tag_offset;
 			// SYNTAX: <Xd|SP>,<Xn|SP>, #<uimm6>, #<uimm4>
 			ADD_OPERAND_XD_SP;
 			ADD_OPERAND_XN_SP;
-			ADD_OPERAND_UIMM6;
-			ADD_OPERAND_UIMM4;
+			ADD_OPERAND_IMMEDIATE32(uimm6, 0);
+			ADD_OPERAND_IMMEDIATE32(uimm4, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -5618,7 +5599,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_TST_ANDS_64S_LOG_IMM:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			// SYNTAX: <Xn>, #<imm>
 			ADD_OPERAND_XN;
 			ADD_OPERAND_UIMM64;
@@ -5628,7 +5609,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CCMN_64_CONDCMP_IMM:
 		case ENC_CCMP_64_CONDCMP_IMM:
 		{
-			uint32_t IMM = dec->imm;
+			uint32_t imm = dec->imm;
 			// SYNTAX: <Xn>, #<imm>, #<nzcv>,<cond>
 			ADD_OPERAND_XN;
 			ADD_OPERAND_UIMM64;
@@ -5684,7 +5665,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMN_ADDS_64S_ADDSUB_IMM:
 		case ENC_CMP_SUBS_64S_ADDSUB_IMM:
 		{
-			uint64_t IMM = dec->imm12;
+			uint64_t imm = dec->imm12;
 			// SYNTAX: <Xn|SP>, #<imm>{,<shift>}
 			ADD_OPERAND_XN_SP;
 			ADD_OPERAND_UIMM64;
@@ -5808,7 +5789,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_STGP_64_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <Xt1>,<Xt2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_XT1;
 			ADD_OPERAND_XT2;
@@ -5820,7 +5800,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDPSW_64_LDSTPAIR_PRE:
 		case ENC_STP_64_LDSTPAIR_PRE:
 		{
-			uint64_t IMM = dec->offset;
 			// SYNTAX: <Xt1>,<Xt2>, [<Xn|SP>, #<imm>]!
 			ADD_OPERAND_XT1;
 			ADD_OPERAND_XT2;
@@ -5832,21 +5811,21 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDP_64_LDSTPAIR_POST:
 		case ENC_STGP_64_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <Xt1>,<Xt2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_XT1;
 			ADD_OPERAND_XT2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_STP_64_LDSTPAIR_POST:
 		{
-			uint64_t IMM = dec->offset;
+			uint64_t imm = dec->offset;
 			// SYNTAX: <Xt1>,<Xt2>, [<Xn|SP>], #<imm>
 			ADD_OPERAND_XT1;
 			ADD_OPERAND_XT2;
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -5928,7 +5907,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDRSB_64B_LDST_REGOFF:
 		{
 			int reg_base = dec->option & 1 ? REG_X_BASE : REG_W_BASE;
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Xt>, [<Xn|SP>, (<Wm>|<Xm>),<extend>{<amount>}]
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -5942,7 +5920,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STR_64_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: <Xt>, [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_XT;
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -6109,7 +6086,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FDUP_Z_I_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			float FIMM = table_imm8_to_float[dec->imm8];
+			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Zd>.<Ts>, #<fimm>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
 			ADD_OPERAND_FIMM;
@@ -6121,10 +6098,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_DUPM_Z_I_:
 		{
 			unsigned elem_sz = size_spec_method1(dec->imm13);
-			uint64_t CONST = dec->imm;
-			if(elem_sz==1) CONST &= 0xFF;
-			if(elem_sz==2) CONST &= 0xFFFF;
-			if(elem_sz==4) CONST &= 0xFFFFFFFF;
+			uint64_t const_ = dec->imm;
+			if(elem_sz==1) const_ &= 0xFF;
+			if(elem_sz==2) const_ &= 0xFFFF;
+			if(elem_sz==4) const_ &= 0xFFFFFFFF;
 			// SYNTAX: <Zd>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
 			ADD_OPERAND_CONST;
@@ -6134,8 +6111,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_INDEX_Z_II_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			uint64_t IMM1 = dec->imm1;
-			uint64_t IMM2 = dec->imm2;
+			uint64_t imm1 = dec->imm1;
+			uint64_t imm2 = dec->imm2;
 			// SYNTAX: <Zd>.<Ts>, #<imm1>, #<imm2>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
 			ADD_OPERAND_IMM1;
@@ -6145,7 +6122,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_INDEX_Z_IR_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			unsigned rm_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <Zd>.<Ts>, #<imm>,<R><m>
@@ -6158,7 +6135,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_DUP_Z_I_:
 		case ENC_DUP_Z_I_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>, #<imm>{,<shift>}
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
@@ -6226,7 +6203,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCPY_Z_P_I_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			float FIMM = table_imm8_to_float[dec->imm8];
+			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M, #<fimm>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -6237,7 +6214,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_CPY_Z_P_I_:
 		case ENC_CPY_Z_P_I_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M, #<imm>{,<shift>}
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
@@ -6309,7 +6286,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_CPY_Z_O_I_:
 		case ENC_CPY_Z_O_I_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/Z, #<imm>{,<shift>}
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
@@ -6321,7 +6298,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_INDEX_Z_RI_: // checked bhsd, on 04b346fd
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			unsigned rn_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <Zd>.<Ts>,<R><n>, #<imm>
@@ -6383,7 +6360,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			arrangement_spec arr_spec = table16_r_b_h_s_d[(dec->tszh<<2)|dec->tszl];
 			unsigned elem_sz = arr_spec.elem_sz;
-			uint64_t CONST = dec->shift;
+			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
@@ -6558,7 +6535,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMUL_Z_ZZI_D:
 		{
-			unsigned IMM = dec->imm;
 			// SYNTAX: <Zd>.D,<Zn>.D,<Zm>.D[<index>]
 			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
 			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
@@ -6604,7 +6580,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMUL_Z_ZZI_H:
 		{
-			unsigned IMM = dec->imm;
 			// SYNTAX: <Zd>.H,<Zn>.H,<Zm>.H[<index>]
 			ADD_OPERAND_ZREG_ESIZE(2, dec->d);
 			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
@@ -6664,7 +6639,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMUL_Z_ZZI_S:
 		{
-			unsigned IMM = dec->index;
 			// SYNTAX: <Zd>.S,<Zn>.S,<Zm>.S[<index>]
 			ADD_OPERAND_ZREG_ESIZE(4, dec->d);
 			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
@@ -6691,7 +6665,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLA_Z_P_ZZZ_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			uint64_t CONST = 90*dec->rot;
+			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.<Ts>,<Pg>/M,<Zn>.<Ts>,<Zm>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zda);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -6725,7 +6699,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLA_Z_ZZZI_D:
 		case ENC_FMLS_Z_ZZZI_D:
 		{
-			unsigned IMM = dec->index;
 			// SYNTAX: <Zda>.D,<Zn>.D,<Zm>.D[<index>]
 			ADD_OPERAND_ZREG_ESIZE(8, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
@@ -6736,7 +6709,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SDOT_Z_ZZZI_D:
 		case ENC_UDOT_Z_ZZZI_D:
 		{
-			uint32_t IMM = dec->i1;
 			// SYNTAX: <Zda>.D,<Zn>.H,<Zm>.H[<index>]
 			ADD_OPERAND_ZREG_ESIZE(8, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
@@ -6747,7 +6719,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLA_Z_ZZZI_H:
 		case ENC_FMLS_Z_ZZZI_H:
 		{
-			uint64_t IMM = dec->index;
 			// SYNTAX: <Zda>.H,<Zn>.H,<Zm>.H[<index>]
 			ADD_OPERAND_ZREG_ESIZE(2, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
@@ -6757,8 +6728,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FCMLA_Z_ZZZI_H:
 		{
-			uint64_t IMM = dec->i2;
-			uint64_t CONST = 90*dec->rot;
+			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.H,<Zn>.H,<Zm>.H[<index>], #<const>
 			ADD_OPERAND_ZREG_ESIZE(2, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
@@ -6784,8 +6754,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UDOT_Z_ZZZI_S:
 		case ENC_USDOT_Z_ZZZI_S:
 		{
-			unsigned elem_sz = (dec->size & 1) ? 8 : 4;
-			unsigned elem_sz_b = (dec->size & 1) ? 2 : 1;
 			// SYNTAX: <Zda>.S,<Zn>.B,<Zm>.B[<index>]
 			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(1, dec->n);
@@ -6809,7 +6777,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BFMLALB_Z_ZZZI_:
 		case ENC_BFMLALT_Z_ZZZI_:
 		{
-			unsigned IMM = dec->imm;
 			// SYNTAX: <Zda>.S,<Zn>.H,<Zm>.H[<index>]
 			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
@@ -6829,7 +6796,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLA_Z_ZZZI_S:
 		case ENC_FMLS_Z_ZZZI_S:
 		{
-			unsigned IMM = dec->index;
 			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S[<index>]
 			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
@@ -6839,8 +6805,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FCMLA_Z_ZZZI_S:
 		{
-			unsigned IMM = dec->index;
-			uint64_t CONST = 90*dec->rot;
+			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S[<index>], #<const>
 			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
 			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
@@ -6866,7 +6831,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSR_Z_P_ZI_:
 		{
 			unsigned elem_sz = dec->esize / 8;
-			uint64_t CONST = dec->shift;
+			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -6880,7 +6845,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			arrangement_spec arr_spec = table16_r_b_h_s_d[(dec->tszh<<2)|dec->tszl];
 			unsigned elem_sz = arr_spec.elem_sz;
-			uint64_t CONST = dec->shift;
+			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -6941,7 +6906,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCADD_Z_P_ZZ_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			uint64_t CONST = dec->rot ? 270 : 90;
+			uint64_t const_ = dec->rot ? 270 : 90;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>,<Zm>.<Ts>, #<const>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -6974,13 +6939,13 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FSUBR_Z_P_ZS_:
 		{
 			unsigned elem_sz = table_b_h_s_d[dec->size];
-			float FIMM;
+			float fimm;
 			if(dec->encoding == ENC_FADD_Z_P_ZS_ || dec->encoding == ENC_FSUB_Z_P_ZS_ || dec->encoding == ENC_FSUBR_Z_P_ZS_)
-				FIMM = dec->i1 ? 1.0 : 0.5;
+				fimm = dec->i1 ? 1.0 : 0.5;
 			else if(dec->encoding == ENC_FMUL_Z_P_ZS_)
-				FIMM = dec->i1 ? 2.0 : 0.5;
+				fimm = dec->i1 ? 2.0 : 0.5;
 			else
-				FIMM = dec->i1 ? 1.0 : 0;
+				fimm = dec->i1 ? 1.0 : 0;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<fimm>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
@@ -7047,11 +7012,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORR_Z_ZI_:
 		{
 			unsigned elem_sz = size_spec_method0((dec->imm13>>12)&1, dec->imm13&0x3F);
-			uint64_t CONST = dec->imm;
+			uint64_t const_ = dec->imm;
 			switch(elem_sz) {
-				case 1: CONST &= 0xFF; break;
-				case 2: CONST &= 0xFFFF; break;
-				case 4: CONST &= 0xFFFFFFFF; break;
+				case 1: const_ &= 0xFF; break;
+				case 2: const_ &= 0xFFFF; break;
+				case 4: const_ &= 0xFFFFFFFF; break;
 				default: break;
 			}
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<const>
@@ -7067,7 +7032,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMAX_Z_ZI_:
 		case ENC_UMIN_Z_ZI_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<imm>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
@@ -7084,14 +7049,14 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQSUB_Z_ZI_:
 		case ENC_UQADD_Z_ZI_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<imm>{,<shift>}
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
-			if(dec->encoding == ENC_UQADD_Z_ZI_ && dec->sh && !IMM) {
+			if(dec->encoding == ENC_UQADD_Z_ZI_ && dec->sh && !imm) {
 				LAST_OPERAND_SHIFT(ShiftType_LSL, 8);
 			}
 			// else imm is the imm8 with shift applied, no need to print
@@ -7099,7 +7064,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FTMAD_Z_ZZI_:
 		{
-			uint64_t IMM = dec->imm;
+			uint64_t imm = dec->imm;
 			unsigned elem_sz = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>,<Zm>.<Ts>, #<imm>
 			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
@@ -7111,7 +7076,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_EXT_Z_ZI_DES:
 		{
-			uint64_t IMM = dec->position;
+			uint64_t imm = dec->position;
 			// SYNTAX: <Zdn>.B,<Zdn>.B,<Zm>.B, #<imm>
 			ADD_OPERAND_ZREG_ESIZE(1, dec->Zdn);
 			ADD_OPERAND_ZREG_ESIZE(1, dec->Zdn);
@@ -7127,7 +7092,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECD_Z_ZS_:
 		case ENC_UQINCD_Z_ZS_:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Zdn>.D{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_ZREG_ESIZE(8, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
@@ -7141,7 +7105,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECH_Z_ZS_:
 		case ENC_UQINCH_Z_ZS_:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Zdn>.H{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_ZREG_ESIZE(2, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
@@ -7155,7 +7118,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECW_Z_ZS_:
 		case ENC_UQINCW_Z_ZS_:
 		{
-			uint64_t IMM = dec->imm;
 			// SYNTAX: <Zdn>.S{,<pattern>{, MUL #<imm>}}
 			ADD_OPERAND_ZREG_ESIZE(4, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
@@ -7199,9 +7161,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_BFMLAL_ASIMDSAME2_F_:
 		{
-			const char *BOTTOM_TOP_SPECIFIER = dec->Q ? "T" : "B";
-			// SYNTAX:<bt> <Vd>.4S,<Vn>.8H,<Vm>.8H
-			ADD_OPERAND_BOTTOM_TOP_SPECIFIER;
+			// SYNTAX: <Vd>.4S,<Vn>.8H,<Vm>.8H
 			ADD_OPERAND_VD;
 			ADD_OPERAND_VN;
 			ADD_OPERAND_VM;
@@ -7210,9 +7170,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_BFMLAL_ASIMDELEM_F:
 		{
-			const char *BOTTOM_TOP_SPECIFIER = dec->Q ? "T" : "B";
-			// SYNTAX:<bt> <Vd>.4S,<Vn>.8H,<Vm>.H[<index>]
-			ADD_OPERAND_BOTTOM_TOP_SPECIFIER;
+			// SYNTAX: <Vd>.4S,<Vn>.8H,<Vm>.H[<index>]
 			ADD_OPERAND_VD;
 			ADD_OPERAND_VN;
 			ADD_OPERAND_VM;
@@ -7292,7 +7250,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SVC_EX_EXCEPTION:
 		case ENC_UDF_ONLY_PERM_UNDEF:
 		{
-			uint64_t IMM = dec->imm16;
+			uint64_t imm = dec->imm16;
 			// SYNTAX: #<imm>
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -7574,7 +7532,6 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_PRFM_P_LDST_REGOFF:
 		{
 			int reg_base = table_wbase_xbase[dec->option & 1];
-			ShiftType extend = DecodeRegExtend(dec->option);
 			// SYNTAX: (<prfop>|#<imm5>), [<Xn|SP>, (<Wm>|<Xm>){,<extend>{<amount>}}]
 			ADD_OPERAND_NAME(prfop_lookup(dec->Rt));
 			ADD_OPERAND_MEM_EXTENDED(reg_base, dec->n, dec->m);
@@ -7623,7 +7580,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else if(op1==3 && op2==7 && HasMemTag()) PSTATEFIELD = "DAIFClr";
 			ADD_OPERAND_NAME(PSTATEFIELD)
 
-			unsigned IMM = dec->CRm;
+			unsigned imm = dec->CRm;
 			// SYNTAX: <pstatefield>, #<imm>
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -7728,9 +7685,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_DCPS2_DC_EXCEPTION:
 		case ENC_DCPS3_DC_EXCEPTION:
 		{
-			uint64_t IMM = dec->imm16;
+			uint64_t imm = dec->imm16;
 			// NON-SYNTAX: #<imm>
-			if(IMM) {
+			if(imm) {
 				ADD_OPERAND_UIMM32;
 			}
 			break;
@@ -7738,9 +7695,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 
 		case ENC_CLREX_BN_BARRIERS:
 		{
-			unsigned IMM = dec->CRm;
+			unsigned imm = dec->CRm;
 			// NON-SYNTAX: #<imm>
-			if(IMM != 15) {
+			if(imm != 15) {
 				ADD_OPERAND_UIMM32;
 			}
 			break;
@@ -7965,15 +7922,15 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_I4_I4: // four registers, immediate offset (Rm == 11111 && opcode == 0010)
 		case ENC_ST4_ASISDLSEP_I4_I:
 		{
-			unsigned IMM;
+			unsigned imm;
 			if(dec->encoding == ENC_LD4R_ASISDLSOP_R4_I)
-				IMM = 4 << (dec->size);
+				imm = 4 << (dec->size);
 			else
-				IMM = dec->Q ? 64 : 32;
+				imm = dec->Q ? 64 : 32;
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>,<Vt4>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -8008,10 +7965,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_I3_I3:
 		{
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
-			int IMM = dec->Q ? 48 : 24;
+			unsigned imm = dec->Q ? 48 : 24;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -8019,21 +7976,21 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSEP_I3_I:
 		{
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
-			int IMM = dec->Q ? 48 : 24;
+			unsigned imm = dec->Q ? 48 : 24;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
 
 		case ENC_LD3R_ASISDLSOP_R3_I:
 		{
-			uint32_t IMM = 3 << dec->size;
+			uint32_t imm = 3 << dec->size;
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -8068,10 +8025,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD2R_ASISDLSOP_R2_I:
 		{
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
-			int IMM = 2<<dec->size;
+			unsigned imm = 2<<dec->size;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -8080,11 +8037,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_I2_I2:
 		case ENC_ST2_ASISDLSEP_I2_I:
 		{
-			unsigned IMM = dec->Q ? 32 : 16;
+			unsigned imm = dec->Q ? 32 : 16;
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>], #<imm>
 			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
-			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, IMM);
+			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
 		}
@@ -8113,7 +8070,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_LD1R_ASISDLSOP_R1_I:
 		{
-			int IMM = 1<<dec->size;
+			unsigned imm = 1<<dec->size;
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],#<imm>
 			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
@@ -8125,7 +8082,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD1_ASISDLSEP_I1_I1: // one register, immediate offset
 		case ENC_ST1_ASISDLSEP_I1_I1:
 		{
-			int IMM = dec->Q ? 16 : 8;
+			unsigned imm = dec->Q ? 16 : 8;
 			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],<imm>
 			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
@@ -9911,7 +9868,7 @@ break;
 		}
 		case ENC_ISB_BI_BARRIERS:
 		{
-			uint64_t IMM = dec->CRm;
+			uint64_t imm = dec->CRm;
 			// NON-SYNTAX: OPTION_OR_IMMEDIATE
 			if(dec->CRm != 15) {
 				ADD_OPERAND_UIMM32;
