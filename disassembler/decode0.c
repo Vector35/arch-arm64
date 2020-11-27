@@ -9,7 +9,7 @@
 #include "decode1.h"
 #include "pcode.h"
 
-bool decode_spec(context *ctx, Instruction *dec)
+int decode_spec(context *ctx, Instruction *dec)
 {
 	uint32_t op0, op1, op2, op3, op4;
 

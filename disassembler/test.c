@@ -15,14 +15,17 @@
 
 int disassemble(uint64_t address, uint32_t insword, char *result)
 {
+	int rc;
 	Instruction instr;
 	memset(&instr, 0, sizeof(instr));
 
-	if(aarch64_decompose(insword, &instr, address) != 0)
-		return -1;
+	rc = aarch64_decompose(insword, &instr, address);
+	printf("aarch64_decompose() returned %d\n", rc);
+	if(rc) return rc;
 
-	if(aarch64_disassemble(&instr, result, 1024) != 0)
-		return -1;
+	rc = aarch64_disassemble(&instr, result, 1024);
+	printf("aarch64_disassemble() returned %d\n", rc);
+	if(rc) return rc;
 
 	return 0;
 }
@@ -30,7 +33,7 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 /* main */
 int main(int ac, char **av)
 {
-	char instxt[1024];
+	char instxt[1024]={'\0'};
 
 	if(ac <= 1) {
 		printf("example usage:\n");
@@ -61,7 +64,7 @@ int main(int ac, char **av)
 
 	else {
 		uint32_t insword = strtoul(av[1], NULL, 16);
-		disassemble(0, insword, instxt);
-		printf("%08X: %s\n", insword, instxt);
+		if(disassemble(0, insword, instxt) == 0)
+			printf("%08X: %s\n", insword, instxt);
 	}
 }

@@ -1,12 +1,12 @@
 #define INSWORD (ctx->insword)
 #define OK(X) {dec->encoding = (X); dec->operation = enc_to_oper(X); dec->status = DECODE_STATUS_OK; }
-#define UNMATCHED {dec->status = DECODE_STATUS_UNMATCHED; return false; }
-#define UNDEFINED { dec->status = DECODE_STATUS_UNDEFINED; return false; }
-#define RESERVED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_RESERVED; return false; }
-#define UNALLOCATED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_UNALLOCATED; return false; }
-#define ENDOFINSTRUCTION {dec->status = DECODE_STATUS_END_OF_INSTRUCTION; return false; }
-#define SEE {dec->status = DECODE_STATUS_LOST; return false; }
-#define UNREACHABLE {dec->status = DECODE_STATUS_UNREACHABLE; return false; }
+#define UNMATCHED {dec->status = DECODE_STATUS_UNMATCHED; return DECODE_STATUS_UNMATCHED; }
+#define UNDEFINED {dec->status = DECODE_STATUS_UNDEFINED; return DECODE_STATUS_UNDEFINED; }
+#define RESERVED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_RESERVED; return DECODE_STATUS_RESERVED; }
+#define UNALLOCATED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_UNALLOCATED; return DECODE_STATUS_UNALLOCATED; }
+#define ENDOFINSTRUCTION {dec->status = DECODE_STATUS_END_OF_INSTRUCTION; return DECODE_STATUS_END_OF_INSTRUCTION; }
+#define SEE {dec->status = DECODE_STATUS_LOST; return DECODE_STATUS_LOST; }
+#define UNREACHABLE {dec->status = DECODE_STATUS_UNREACHABLE; return DECODE_STATUS_UNREACHABLE; }
 
 #define BITMASK(N) (((uint64_t)1<<(N))-1)
 #define SLICE(X,MSB,LSB) (((X)>>(LSB)) & BITMASK((MSB)-(LSB)+1)) /* get bits [MSB,LSB] */

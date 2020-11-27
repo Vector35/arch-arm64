@@ -177,8 +177,8 @@ unsigned get_register_size(uint32_t reg)
 // decode or decompose
 //-----------------------------------------------------------------------------
 
-bool decode_spec(context *ctx, Instruction *dec); // decode0.cpp
-bool decode_scratchpad(context *ctx, Instruction *dec); // decode_scratchpad.cpp
+int decode_spec(context *ctx, Instruction *dec); // decode0.cpp
+int decode_scratchpad(context *ctx, Instruction *dec); // decode_scratchpad.cpp
 
 int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t address)
 {
@@ -191,12 +191,12 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 	ctx.features1 = 0xFFFFFFFFFFFFFFFF;
 
 	/* have the spec-generated code populate all the pcode variables */
-	if(!decode_spec(&ctx, instr)) return false;
+	int rc = decode_spec(&ctx, instr);
+	if(rc || instr->status != DECODE_STATUS_OK)
+		return rc;
 
 	/* convert the pcode variables to list of operands, etc. */
-	if(!decode_scratchpad(&ctx, instr)) return false;
-
-	return true;
+	return decode_scratchpad(&ctx, instr);
 }
 
 //-----------------------------------------------------------------------------

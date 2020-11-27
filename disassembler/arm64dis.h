@@ -157,16 +157,15 @@ enum Register {
 // decode return values
 //-----------------------------------------------------------------------------
 
-#define DECODE_STATUS_UNINITIALIZED 0
-#define DECODE_STATUS_OK 1 // success! the resulting named encoding is accurate
-#define DECODE_STATUS_RESERVED 2 // spec says this space is reserved, eg: RESERVED_36_asisdsame
-#define DECODE_STATUS_UNMATCHED 3 // decoding logic fell through the spec's checks
-#define DECODE_STATUS_UNALLOCATED 4 // spec says this space is unallocated, eg: UNALLOCATED_10_branch_reg
-#define DECODE_STATUS_UNDEFINED 5 // spec says this encoding is undefined, often due to a disallowed field
+#define DECODE_STATUS_OK 0 // success! the resulting named encoding is accurate
+#define DECODE_STATUS_RESERVED -1 // spec says this space is reserved, eg: RESERVED_36_asisdsame
+#define DECODE_STATUS_UNMATCHED -2 // decoding logic fell through the spec's checks
+#define DECODE_STATUS_UNALLOCATED -3 // spec says this space is unallocated, eg: UNALLOCATED_10_branch_reg
+#define DECODE_STATUS_UNDEFINED -4 // spec says this encoding is undefined, often due to a disallowed field
 									// or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
-#define DECODE_STATUS_END_OF_INSTRUCTION 6 // spec decode EndOfInstruction(), instruction executes as NOP
-#define DECODE_STATUS_LOST 7 // descended past a checks, ie: "SEE encoding_up_higher"
-#define DECODE_STATUS_UNREACHABLE 8 // ran into pcode Unreachable()
+#define DECODE_STATUS_END_OF_INSTRUCTION -5 // spec decode EndOfInstruction(), instruction executes as NOP
+#define DECODE_STATUS_LOST -6 // descended past a checks, ie: "SEE encoding_up_higher"
+#define DECODE_STATUS_UNREACHABLE -7 // ran into pcode Unreachable()
 
 //-----------------------------------------------------------------------------
 // floating point condition register values
