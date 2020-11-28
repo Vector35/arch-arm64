@@ -13,7 +13,6 @@
 void print_decoded_struct(Instruction *dec)
 {
 	//printf("sizeof(struct decoded): 0x%lX\n", sizeof(*dec));
-	//printf("  status: %d\n", dec->status);
 	//printf(" insword: 0x%08X\n", dec->insword);
 	printf("encoding: %d (%s)\n", dec->encoding, enc_to_str(dec->encoding));
 	//printf("operation: %d (%s)\n", dec->operation, get_operation(dec->operation));
@@ -192,7 +191,7 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 
 	/* have the spec-generated code populate all the pcode variables */
 	int rc = decode_spec(&ctx, instr);
-	if(rc || instr->status != DECODE_STATUS_OK)
+	if(rc != DECODE_STATUS_OK)
 		return rc;
 
 	/* convert the pcode variables to list of operands, etc. */
@@ -553,15 +552,6 @@ const char *get_operation(const Instruction *inst)
 
 int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 {
-	switch(instruction->status) {
-		case DECODE_STATUS_UNDEFINED: strcpy(buf, "(undefined)"); return FAILED_TO_DECODE_INSTRUCTION;
-		case DECODE_STATUS_RESERVED: strcpy(buf, "(reserved)"); return FAILED_TO_DECODE_INSTRUCTION;
-		case DECODE_STATUS_UNALLOCATED: strcpy(buf, "(unallocated)"); return FAILED_TO_DECODE_INSTRUCTION;
-		case DECODE_STATUS_UNMATCHED: strcpy(buf, "(unmatched)"); return FAILED_TO_DECODE_INSTRUCTION;
-		case DECODE_STATUS_OK: break;
-		default: strcpy(buf, "(error)"); return FAILED_TO_DECODE_INSTRUCTION;
-	}
-
 	char operandStrings[MAX_OPERANDS][130];
 	char tmpOperandString[128];
 	const char *operand = tmpOperandString;
@@ -573,10 +563,10 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 	if (operation == NULL)
 		return FAILED_TO_DISASSEMBLE_OPERATION;
 
-	for (uint32_t i = 0; i < MAX_OPERANDS; i++)
+	for(int i=0; i<MAX_OPERANDS; i++)
 		memset(&(operandStrings[i][0]), 0, 128);
 
-	for (uint32_t i = 0; i < MAX_OPERANDS && instruction->operands[i].operandClass != NONE; i++)
+	for(int i=0; i<MAX_OPERANDS && instruction->operands[i].operandClass != NONE; i++)
 	{
 		switch (instruction->operands[i].operandClass)
 		{

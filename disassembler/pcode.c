@@ -453,7 +453,7 @@ bool ELUsingAArch32(uint8_t x)
 uint64_t FPOne(bool sign, int N)
 {
 	// width should be 16, 32, 64
-	int E, F, exp, frac;
+	int E, F, exp;
 
 	switch(N) {
 		case 16: E=5;
@@ -469,7 +469,7 @@ uint64_t FPOne(bool sign, int N)
 uint64_t FPTwo(bool sign, int N)
 {
 	// width should be 16, 32, 64
-	int E, F, exp, frac;
+	int E, F, exp;
 
 	switch(N) {
 		case 16: E=5;
@@ -485,7 +485,7 @@ uint64_t FPTwo(bool sign, int N)
 uint64_t FPPointFive(bool sign, int N)
 {
 	// width should be 16, 32, 64
-	int E, F, exp, frac;
+	int E, F, exp;
 
 	switch(N) {
 		case 16: E=5;

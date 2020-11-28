@@ -14,6 +14,7 @@
 /* abs_advsimd.xml */
 int ABS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ABS_asisdmisc_R */
 	/* 01|U=0|11110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E20B800) {
@@ -44,14 +45,13 @@ int ABS_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_ABS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adc.xml */
 int ADC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=0|S=0|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1A000000) {
@@ -65,14 +65,13 @@ int ADC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADC_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_ADC_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adcs.xml */
 int ADCS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x3A000000) {
@@ -86,14 +85,13 @@ int ADCS(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADCS_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_ADCS_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addg.xml */
 int ADDG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADDG_64_addsub_immtags */
 	/* sf=1|op=0|S=0|100011|o2=0|uimm6=xxxxxx|op3=(0)(0)|uimm4=xxxx|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x91800000) {
@@ -108,14 +106,13 @@ int ADDG(context *ctx, Instruction *dec)
 		dec->ADD = TRUE;
 		OK(ENC_ADDG_64_ADDSUB_IMMTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addhn_advsimd.xml */
 int ADDHN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADDHN_asimddiff_N */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204000) {
@@ -134,14 +131,13 @@ int ADDHN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->U==1);
 		OK(ENC_ADDHN_ASIMDDIFF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addp_advsimd_pair.xml */
 int ADDP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADDP_asisdpair_only */
 	/* 01|U=0|11110|size=xx|11000|opcode=11011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E31B800) {
@@ -157,14 +153,13 @@ int ADDP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = ReduceOp_ADD;
 		OK(ENC_ADDP_ASISDPAIR_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addp_advsimd_vec.xml */
 int ADDP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADDP_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20BC00) {
@@ -180,14 +175,13 @@ int ADDP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_ADDP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adds_addsub_ext.xml */
 int ADDS_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x2B200000) {
@@ -208,14 +202,13 @@ int ADDS_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADDS_32S_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_ADDS_64S_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adds_addsub_imm.xml */
 int ADDS_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x31000000) {
@@ -236,14 +229,13 @@ int ADDS_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADDS_32S_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_ADDS_64S_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adds_addsub_shift.xml */
 int ADDS_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2B000000) {
@@ -267,14 +259,13 @@ int ADDS_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADDS_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_ADDS_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addv_advsimd.xml */
 int ADDV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADDV_asimdall_only */
 	/* 0|Q=x|U=0|01110|size=xx|11000|opcode=11011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE31B800) {
@@ -293,14 +284,13 @@ int ADDV_advsimd(context *ctx, Instruction *dec)
 		dec->op = ReduceOp_ADD;
 		OK(ENC_ADDV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_addsub_ext.xml */
 int ADD_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=0|S=0|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0xB200000) {
@@ -319,14 +309,13 @@ int ADD_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADD_32_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_ADD_64_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_addsub_imm.xml */
 int ADD_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=0|S=0|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x11000000) {
@@ -347,14 +336,13 @@ int ADD_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADD_32_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_ADD_64_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_addsub_shift.xml */
 int ADD_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=0|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xB000000) {
@@ -376,14 +364,13 @@ int ADD_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ADD_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_ADD_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_advsimd.xml */
 int ADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADD_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E208400) {
@@ -416,14 +403,13 @@ int ADD_advsimd(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->U==1);
 		OK(ENC_ADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adr.xml */
 int ADR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADR_only_pcreladdr */
 	/* op=0|immlo=xx|10000|immhi=xxxxxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x9F000000)==0x10000000) {
@@ -438,14 +424,13 @@ int ADR(context *ctx, Instruction *dec)
 		}
 		OK(ENC_ADR_ONLY_PCRELADDR);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adrp.xml */
 int ADRP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ADRP_only_pcreladdr */
 	/* op=1|immlo=xx|10000|immhi=xxxxxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x9F000000)==0x90000000) {
@@ -460,14 +445,13 @@ int ADRP(context *ctx, Instruction *dec)
 		}
 		OK(ENC_ADRP_ONLY_PCRELADDR);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* aesd_advsimd.xml */
 int AESD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AESD_B_cryptoaes */
 	/* 01001110|size=00|10100|0010|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E285800) {
@@ -480,14 +464,13 @@ int AESD_advsimd(context *ctx, Instruction *dec)
 		dec->decrypt = (dec->D==1);
 		OK(ENC_AESD_B_CRYPTOAES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* aese_advsimd.xml */
 int AESE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AESE_B_cryptoaes */
 	/* 01001110|size=00|10100|0010|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E284800) {
@@ -500,14 +483,13 @@ int AESE_advsimd(context *ctx, Instruction *dec)
 		dec->decrypt = (dec->D==1);
 		OK(ENC_AESE_B_CRYPTOAES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* aesimc_advsimd.xml */
 int AESIMC_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AESIMC_B_cryptoaes */
 	/* 01001110|size=00|10100|0011|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E287800) {
@@ -520,14 +502,13 @@ int AESIMC_advsimd(context *ctx, Instruction *dec)
 		dec->decrypt = (dec->D==1);
 		OK(ENC_AESIMC_B_CRYPTOAES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* aesmc_advsimd.xml */
 int AESMC_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AESMC_B_cryptoaes */
 	/* 01001110|size=00|10100|0011|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E286800) {
@@ -540,14 +521,13 @@ int AESMC_advsimd(context *ctx, Instruction *dec)
 		dec->decrypt = (dec->D==1);
 		OK(ENC_AESMC_B_CRYPTOAES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ands_log_imm.xml */
 int ANDS_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|opc=11|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x72000000) {
@@ -582,14 +562,13 @@ int ANDS_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_ANDS_32S_LOG_IMM);
 		if(dec->sf==1) OK(ENC_ANDS_64S_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ands_log_shift.xml */
 int ANDS_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|opc=11|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6A000000) {
@@ -625,14 +604,13 @@ int ANDS_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ANDS_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_ANDS_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_advsimd.xml */
 int AND_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AND_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=00|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE201C00) {
@@ -647,14 +625,13 @@ int AND_advsimd(context *ctx, Instruction *dec)
 		dec->op = (SLICE(dec->size,1,1)==1) ? LogicalOp_ORR : LogicalOp_AND;
 		OK(ENC_AND_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_log_imm.xml */
 int AND_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=00|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12000000) {
@@ -687,14 +664,13 @@ int AND_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_AND_32_LOG_IMM);
 		if(dec->sf==1) OK(ENC_AND_64_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_log_shift.xml */
 int AND_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=00|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xA000000) {
@@ -728,14 +704,13 @@ int AND_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_AND_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_AND_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asrv.xml */
 int ASRV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
@@ -750,14 +725,13 @@ int ASRV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ASRV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_ASRV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_asrv.xml */
 int ASR_ASRV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
@@ -765,14 +739,13 @@ int ASR_ASRV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ASR_ASRV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_ASR_ASRV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_sbfm.xml */
 int ASR_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=x11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F807C00)==0x13007C00) {
@@ -780,28 +753,26 @@ int ASR_SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0 && dec->imms==0x1f) OK(ENC_ASR_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1 && dec->imms==0x3f) OK(ENC_ASR_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* at_sys.xml */
 int AT_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=100x|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8FE00)==0xD5087800) {
 		decode_fields32(ENC_AT_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_AT_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* autda.xml */
 int AUTDA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=110|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11800) {
@@ -825,14 +796,13 @@ int AUTDA(context *ctx, Instruction *dec)
 		if(dec->Z==0) OK(ENC_AUTDA_64P_DP_1SRC);
 		if(dec->Z==1 && dec->Rn==0x1f) OK(ENC_AUTDZA_64Z_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* autdb.xml */
 int AUTDB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11C00) {
@@ -856,14 +826,13 @@ int AUTDB(context *ctx, Instruction *dec)
 		if(dec->Z==0) OK(ENC_AUTDB_64P_DP_1SRC);
 		if(dec->Z==1 && dec->Rn==0x1f) OK(ENC_AUTDZB_64Z_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* autia.xml */
 int AUTIA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=100|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11000) {
@@ -895,14 +864,13 @@ int AUTIA(context *ctx, Instruction *dec)
 		if(dec->CRm==3 && dec->op2==5) OK(ENC_AUTIASP_HI_HINTS);
 		if(dec->CRm==3 && dec->op2==4) OK(ENC_AUTIAZ_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* autib.xml */
 int AUTIB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=101|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11400) {
@@ -934,14 +902,13 @@ int AUTIB(context *ctx, Instruction *dec)
 		if(dec->CRm==3 && dec->op2==7) OK(ENC_AUTIBSP_HI_HINTS);
 		if(dec->CRm==3 && dec->op2==6) OK(ENC_AUTIBZ_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* axflag.xml */
 int AXFLAG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class AXFLAG_M_pstate */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=010|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500405F) {
@@ -951,14 +918,13 @@ int AXFLAG(context *ctx, Instruction *dec)
 		}
 		OK(ENC_AXFLAG_M_PSTATE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bcax_advsimd.xml */
 int BCAX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BCAX_VVV16_crypto4 */
 	/* 110011100|Op0=01|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE200000) {
@@ -972,14 +938,13 @@ int BCAX_advsimd(context *ctx, Instruction *dec)
 		dec->a = UINT(dec->Ra);
 		OK(ENC_BCAX_VVV16_CRYPTO4);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfcvtn_advsimd.xml */
 int BFCVTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFCVTN_asimdmisc_4S */
 	/* 0|Q=x|U=0|01110|size=10|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEA16800) {
@@ -993,14 +958,13 @@ int BFCVTN_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((0x10) ? ((0x40) / (0x10)) : 0);
 		OK(ENC_BFCVTN_ASIMDMISC_4S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfcvt_float.xml */
 int BFCVT_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFCVT_BS_floatdp1 */
 	/* M=0|0|S=0|11110|ptype=01|1|opcode=000110|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x1E634000) {
@@ -1012,14 +976,13 @@ int BFCVT_float(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_BFCVT_BS_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfc_bfm.xml */
 int BFC_BFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F8003E0)==0x330003E0) {
@@ -1027,14 +990,13 @@ int BFC_BFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_BFC_BFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_BFC_BFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfdot_advsimd_elt.xml */
 int BFDOT_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFDOT_asimdelem_E */
 	/* 0|Q=x|U=0|01111|size=01|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF40F000) {
@@ -1050,14 +1012,13 @@ int BFDOT_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((0x20) ? ((dec->datasize) / (0x20)) : 0);
 		OK(ENC_BFDOT_ASIMDELEM_E);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfdot_advsimd_vec.xml */
 int BFDOT_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFDOT_asimdsame2_D */
 	/* 0|Q=x|U=1|01110|size=01|0|Rm=xxxxx|1|opcode=1111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E40FC00) {
@@ -1072,14 +1033,13 @@ int BFDOT_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((0x20) ? ((dec->datasize) / (0x20)) : 0);
 		OK(ENC_BFDOT_ASIMDSAME2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfi_bfm.xml */
 int BFI_BFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000 && (INSWORD & 0x3E0)!=0x3E0) {
@@ -1087,14 +1047,13 @@ int BFI_BFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_BFI_BFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_BFI_BFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfm.xml */
 int BFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000) {
@@ -1135,14 +1094,13 @@ int BFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_BFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_BFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlal_advsimd_elt.xml */
 int BFMLAL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFMLAL_asimdelem_F */
 	/* 0|Q=x|U=0|01111|size=11|L=x|M=x|Rm=xxxx|opcode<3>=1|opcode<2>=1|opcode<1:0>=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xFC0F000) {
@@ -1158,14 +1116,13 @@ int BFMLAL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sel = UINT(dec->Q);
 		OK(ENC_BFMLAL_ASIMDELEM_F);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlal_advsimd_vec.xml */
 int BFMLAL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFMLAL_asimdsame2_F_ */
 	/* 0|Q=x|U=1|01110|size=11|0|Rm=xxxxx|1|opcode<3:2>=11|opcode=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC0FC00) {
@@ -1180,14 +1137,13 @@ int BFMLAL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sel = UINT(dec->Q);
 		OK(ENC_BFMLAL_ASIMDSAME2_F_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmmla_advsimd.xml */
 int BFMMLA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BFMMLA_asimdsame2_E */
 	/* 0|Q=1|U=1|01110|size=01|0|Rm=xxxxx|1|opcode=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6E40EC00) {
@@ -1200,14 +1156,13 @@ int BFMMLA_advsimd(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_BFMMLA_ASIMDSAME2_E);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfxil_bfm.xml */
 int BFXIL_BFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000) {
@@ -1215,14 +1170,13 @@ int BFXIL_BFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_BFXIL_BFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_BFXIL_BFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bics.xml */
 int BICS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|opc=11|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6A200000) {
@@ -1256,14 +1210,13 @@ int BICS(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_BICS_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_BICS_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_advsimd_imm.xml */
 int BIC_advsimd_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class shifted_immediate */
 	/* 0|Q=x|op=1|0111100000|a=x|b=x|c=x|cmode=xxx1|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF81C00)==0x2F001400) {
@@ -1317,14 +1270,13 @@ int BIC_advsimd_imm(context *ctx, Instruction *dec)
 		if((dec->cmode&13)==9) OK(ENC_BIC_ASIMDIMM_L_HL);
 		if((dec->cmode&9)==1) OK(ENC_BIC_ASIMDIMM_L_SL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_advsimd_reg.xml */
 int BIC_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BIC_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=01|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE601C00) {
@@ -1339,28 +1291,26 @@ int BIC_advsimd_reg(context *ctx, Instruction *dec)
 		dec->op = (SLICE(dec->size,1,1)==1) ? LogicalOp_ORR : LogicalOp_AND;
 		OK(ENC_BIC_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_and_z_zi.xml */
 int BIC_and_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_z_zi_ */
 	/* 00000101|opc=10|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5800000) {
 		decode_fields32(ENC_BIC_AND_Z_ZI_, dec);
 		OK(ENC_BIC_AND_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_log_shift.xml */
 int BIC_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=00|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xA200000) {
@@ -1394,14 +1344,13 @@ int BIC_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_BIC_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_BIC_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bif_advsimd.xml */
 int BIF_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BIF_asimdsame_only */
 	/* 0|Q=x|U=1|01110|opc2=11|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EE01C00) {
@@ -1426,14 +1375,13 @@ int BIF_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BIF_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bit_advsimd.xml */
 int BIT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BIT_asimdsame_only */
 	/* 0|Q=x|U=1|01110|opc2=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EA01C00) {
@@ -1458,14 +1406,13 @@ int BIT_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BIT_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bl.xml */
 int BL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BL_only_branch_imm */
 	/* op=1|00101|imm26=xxxxxxxxxxxxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFC000000)==0x94000000) {
@@ -1474,14 +1421,13 @@ int BL(context *ctx, Instruction *dec)
 		dec->offset = SignExtend((dec->imm26<<2),28);
 		OK(ENC_BL_ONLY_BRANCH_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* blr.xml */
 int BLR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BLR_64_branch_reg */
 	/* 1101011|Z=0|opc[2:1]=0|op=01|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD63F0000) {
@@ -1523,14 +1469,13 @@ int BLR(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BLR_64_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* blra.xml */
 int BLRA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* 1101011|Z=x|opc[2:1]=0|op=01|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=xxxxx|Rm=xxxxx */
 	if((INSWORD & 0xFEFFF800)==0xD63F0800) {
@@ -1575,14 +1520,13 @@ int BLRA(context *ctx, Instruction *dec)
 		if(dec->Z==0 && dec->M==1 && dec->Rm==0x1f) OK(ENC_BLRABZ_64_BRANCH_REG);
 		if(dec->Z==1 && dec->M==1) OK(ENC_BLRAB_64P_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* br.xml */
 int BR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BR_64_branch_reg */
 	/* 1101011|Z=0|opc[2:1]=0|op=00|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD61F0000) {
@@ -1624,14 +1568,13 @@ int BR(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BR_64_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bra.xml */
 int BRA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* 1101011|Z=x|opc[2:1]=0|op=00|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=xxxxx|Rm=xxxxx */
 	if((INSWORD & 0xFEFFF800)==0xD61F0800) {
@@ -1676,14 +1619,13 @@ int BRA(context *ctx, Instruction *dec)
 		if(dec->Z==0 && dec->M==1 && dec->Rm==0x1f) OK(ENC_BRABZ_64_BRANCH_REG);
 		if(dec->Z==1 && dec->M==1) OK(ENC_BRAB_64P_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brk.xml */
 int BRK(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BRK_EX_exception */
 	/* 11010100|opc=001|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
 	if((INSWORD & 0xFFE0001F)==0xD4200000) {
@@ -1694,14 +1636,13 @@ int BRK(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BRK_EX_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bsl_advsimd.xml */
 int BSL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BSL_asimdsame_only */
 	/* 0|Q=x|U=1|01110|opc2=01|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E601C00) {
@@ -1726,14 +1667,13 @@ int BSL_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BSL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bti.xml */
 int BTI(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class BTI_HB_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0100|op2=xx0|Rt=11111 */
 	if((INSWORD & 0xFFFFFF3F)==0xD503241F) {
@@ -1838,14 +1778,13 @@ int BTI(context *ctx, Instruction *dec)
 		}
 		OK(ENC_BTI_HB_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* b_cond.xml */
 int B_cond(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class B_only_condbranch */
 	/* 0101010|o1=0|imm19=xxxxxxxxxxxxxxxxxxx|o0=0|cond=xxxx */
 	if((INSWORD & 0xFF000010)==0x54000000) {
@@ -1854,14 +1793,13 @@ int B_cond(context *ctx, Instruction *dec)
 		dec->condition = dec->cond;
 		OK(ENC_B_ONLY_CONDBRANCH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* b_uncond.xml */
 int B_uncond(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class B_only_branch_imm */
 	/* op=0|00101|imm26=xxxxxxxxxxxxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFC000000)==0x14000000) {
@@ -1870,14 +1808,13 @@ int B_uncond(context *ctx, Instruction *dec)
 		dec->offset = SignExtend((dec->imm26<<2),28);
 		OK(ENC_B_ONLY_BRANCH_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cas.xml */
 int CAS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x88A07C00) {
@@ -1902,14 +1839,13 @@ int CAS(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->L==1 && dec->o0==1) OK(ENC_CASAL_C64_LDSTEXCL);
 		if(dec->size==3 && dec->L==0 && dec->o0==1) OK(ENC_CASL_C64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* casb.xml */
 int CASB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=00|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x8A07C00) {
@@ -1930,14 +1866,13 @@ int CASB(context *ctx, Instruction *dec)
 		if(dec->L==0 && dec->o0==0) OK(ENC_CASB_C32_LDSTEXCL);
 		if(dec->L==0 && dec->o0==1) OK(ENC_CASLB_C32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cash.xml */
 int CASH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=01|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x48A07C00) {
@@ -1958,14 +1893,13 @@ int CASH(context *ctx, Instruction *dec)
 		if(dec->L==0 && dec->o0==0) OK(ENC_CASH_C32_LDSTEXCL);
 		if(dec->L==0 && dec->o0==1) OK(ENC_CASLH_C32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* casp.xml */
 int CASP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* 0|sz=x|001000|o2=0|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x8207C00) {
@@ -1996,14 +1930,13 @@ int CASP(context *ctx, Instruction *dec)
 		if(dec->sz==1 && dec->L==1 && dec->o0==1) OK(ENC_CASPAL_CP64_LDSTEXCL);
 		if(dec->sz==1 && dec->L==0 && dec->o0==1) OK(ENC_CASPL_CP64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cbnz.xml */
 int CBNZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class br19 */
 	/* sf=x|011010|op=1|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x35000000) {
@@ -2015,14 +1948,13 @@ int CBNZ(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CBNZ_32_COMPBRANCH);
 		if(dec->sf==1) OK(ENC_CBNZ_64_COMPBRANCH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cbz.xml */
 int CBZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class br19 */
 	/* sf=x|011010|op=0|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x34000000) {
@@ -2034,14 +1966,13 @@ int CBZ(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CBZ_32_COMPBRANCH);
 		if(dec->sf==1) OK(ENC_CBZ_64_COMPBRANCH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ccmn_imm.xml */
 int CCMN_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm5u */
 	/* sf=x|op=0|S=1|11010010|imm5=xxxxx|cond=xxxx|1|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x3A400800) {
@@ -2055,14 +1986,13 @@ int CCMN_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CCMN_32_CONDCMP_IMM);
 		if(dec->sf==1) OK(ENC_CCMN_64_CONDCMP_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ccmn_reg.xml */
 int CCMN_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=1|11010010|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x3A400000) {
@@ -2076,14 +2006,13 @@ int CCMN_reg(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CCMN_32_CONDCMP_REG);
 		if(dec->sf==1) OK(ENC_CCMN_64_CONDCMP_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ccmp_imm.xml */
 int CCMP_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm5u */
 	/* sf=x|op=1|S=1|11010010|imm5=xxxxx|cond=xxxx|1|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x7A400800) {
@@ -2097,14 +2026,13 @@ int CCMP_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CCMP_32_CONDCMP_IMM);
 		if(dec->sf==1) OK(ENC_CCMP_64_CONDCMP_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ccmp_reg.xml */
 int CCMP_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=1|11010010|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x7A400000) {
@@ -2118,14 +2046,13 @@ int CCMP_reg(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CCMP_32_CONDCMP_REG);
 		if(dec->sf==1) OK(ENC_CCMP_64_CONDCMP_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cfinv.xml */
 int CFINV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CFINV_M_pstate */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=000|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500401F) {
@@ -2135,28 +2062,26 @@ int CFINV(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CFINV_M_PSTATE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cfp_sys.xml */
 int CFP_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=100|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B7380) {
 		decode_fields32(ENC_CFP_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_CFP_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cinc_csinc.xml */
 int CINC_CSINC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010100|Rm!=11111|cond!=111x|0|o2=1|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
@@ -2164,14 +2089,13 @@ int CINC_CSINC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CINC_CSINC_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CINC_CSINC_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cinv_csinv.xml */
 int CINV_CSINV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=0|11010100|Rm!=11111|cond!=111x|0|o2=0|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
@@ -2179,28 +2103,26 @@ int CINV_CSINV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CINV_CSINV_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CINV_CSINV_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clrex.xml */
 int CLREX(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CLREX_BN_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD503305F) {
 		decode_fields32(ENC_CLREX_BN_BARRIERS, dec);
 		OK(ENC_CLREX_BN_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cls_advsimd.xml */
 int CLS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CLS_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE204800) {
@@ -2216,14 +2138,13 @@ int CLS_advsimd(context *ctx, Instruction *dec)
 		dec->countop = (dec->U==1) ? CountOp_CLZ : CountOp_CLS;
 		OK(ENC_CLS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cls_int.xml */
 int CLS_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:1]=00010|op=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC01400) {
@@ -2235,14 +2156,13 @@ int CLS_int(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CLS_32_DP_1SRC);
 		if(dec->sf==1) OK(ENC_CLS_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clz_advsimd.xml */
 int CLZ_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CLZ_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=00100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E204800) {
@@ -2258,14 +2178,13 @@ int CLZ_advsimd(context *ctx, Instruction *dec)
 		dec->countop = (dec->U==1) ? CountOp_CLZ : CountOp_CLS;
 		OK(ENC_CLZ_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clz_int.xml */
 int CLZ_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:1]=00010|op=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC01000) {
@@ -2277,14 +2196,13 @@ int CLZ_int(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CLZ_32_DP_1SRC);
 		if(dec->sf==1) OK(ENC_CLZ_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmeq_advsimd_reg.xml */
 int CMEQ_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMEQ_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E208C00) {
@@ -2317,14 +2235,13 @@ int CMEQ_advsimd_reg(context *ctx, Instruction *dec)
 		dec->and_test = (dec->U==0);
 		OK(ENC_CMEQ_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmeq_advsimd_zero.xml */
 int CMEQ_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMEQ_asisdmisc_Z */
 	/* 01|U=0|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E209800) {
@@ -2377,14 +2294,13 @@ int CMEQ_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CMEQ_ASIMDMISC_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmge_advsimd_reg.xml */
 int CMGE_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMGE_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203C00) {
@@ -2419,14 +2335,13 @@ int CMGE_advsimd_reg(context *ctx, Instruction *dec)
 		dec->cmp_eq = (dec->eq==1);
 		OK(ENC_CMGE_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmge_advsimd_zero.xml */
 int CMGE_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMGE_asisdmisc_Z */
 	/* 01|U=1|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E208800) {
@@ -2479,14 +2394,13 @@ int CMGE_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CMGE_ASIMDMISC_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmgt_advsimd_reg.xml */
 int CMGT_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMGT_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203400) {
@@ -2521,14 +2435,13 @@ int CMGT_advsimd_reg(context *ctx, Instruction *dec)
 		dec->cmp_eq = (dec->eq==1);
 		OK(ENC_CMGT_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmgt_advsimd_zero.xml */
 int CMGT_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMGT_asisdmisc_Z */
 	/* 01|U=0|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E208800) {
@@ -2581,14 +2494,13 @@ int CMGT_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CMGT_ASIMDMISC_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmhi_advsimd.xml */
 int CMHI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMHI_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203400) {
@@ -2623,14 +2535,13 @@ int CMHI_advsimd(context *ctx, Instruction *dec)
 		dec->cmp_eq = (dec->eq==1);
 		OK(ENC_CMHI_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmhs_advsimd.xml */
 int CMHS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMHS_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203C00) {
@@ -2665,14 +2576,13 @@ int CMHS_advsimd(context *ctx, Instruction *dec)
 		dec->cmp_eq = (dec->eq==1);
 		OK(ENC_CMHS_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmle_advsimd.xml */
 int CMLE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMLE_asisdmisc_Z */
 	/* 01|U=1|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E209800) {
@@ -2725,14 +2635,13 @@ int CMLE_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CMLE_ASIMDMISC_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmlt_advsimd.xml */
 int CMLT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMLT_asisdmisc_Z */
 	/* 01|U=0|11110|size=xx|10000|opcode=01010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E20A800) {
@@ -2763,14 +2672,13 @@ int CMLT_advsimd(context *ctx, Instruction *dec)
 		dec->comparison = CompareOp_LT;
 		OK(ENC_CMLT_ASIMDMISC_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmn_adds_addsub_ext.xml */
 int CMN_ADDS_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7FE0001F)==0x2B20001F) {
@@ -2778,14 +2686,13 @@ int CMN_ADDS_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMN_ADDS_32S_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_CMN_ADDS_64S_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmn_adds_addsub_imm.xml */
 int CMN_ADDS_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x3100001F) {
@@ -2793,14 +2700,13 @@ int CMN_ADDS_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMN_ADDS_32S_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_CMN_ADDS_64S_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmn_adds_addsub_shift.xml */
 int CMN_ADDS_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=0|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x2B00001F) {
@@ -2808,84 +2714,78 @@ int CMN_ADDS_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMN_ADDS_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_CMN_ADDS_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmple_cmpeq_p_p_zz.xml */
 int CMPLE_cmpeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmpge_p_p_zz_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008000) {
 		decode_fields32(ENC_CMPLE_CMPGE_P_P_ZZ_, dec);
 		OK(ENC_CMPLE_CMPGE_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmplo_cmpeq_p_p_zz.xml */
 int CMPLO_cmpeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmphi_p_p_zz_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000010) {
 		decode_fields32(ENC_CMPLO_CMPHI_P_P_ZZ_, dec);
 		OK(ENC_CMPLO_CMPHI_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmpls_cmpeq_p_p_zz.xml */
 int CMPLS_cmpeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmphs_p_p_zz_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000000) {
 		decode_fields32(ENC_CMPLS_CMPHS_P_P_ZZ_, dec);
 		OK(ENC_CMPLS_CMPHS_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmplt_cmpeq_p_p_zz.xml */
 int CMPLT_cmpeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmpgt_p_p_zz_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008010) {
 		decode_fields32(ENC_CMPLT_CMPGT_P_P_ZZ_, dec);
 		OK(ENC_CMPLT_CMPGT_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmpp_subps.xml */
 int CMPP_SUBPS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUBPS_64S_dp_2src */
 	/* sf=1|0|S=1|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=11111 */
 	if((INSWORD & 0xFFE0FC1F)==0xBAC0001F) {
 		decode_fields32(ENC_CMPP_SUBPS_64S_DP_2SRC, dec);
 		OK(ENC_CMPP_SUBPS_64S_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmp_subs_addsub_ext.xml */
 int CMP_SUBS_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7FE0001F)==0x6B20001F) {
@@ -2893,14 +2793,13 @@ int CMP_SUBS_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMP_SUBS_32S_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_CMP_SUBS_64S_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmp_subs_addsub_imm.xml */
 int CMP_SUBS_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x7100001F) {
@@ -2908,14 +2807,13 @@ int CMP_SUBS_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMP_SUBS_32S_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_CMP_SUBS_64S_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmp_subs_addsub_shift.xml */
 int CMP_SUBS_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x6B00001F) {
@@ -2923,14 +2821,13 @@ int CMP_SUBS_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CMP_SUBS_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_CMP_SUBS_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmtst_advsimd.xml */
 int CMTST_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CMTST_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E208C00) {
@@ -2963,14 +2860,13 @@ int CMTST_advsimd(context *ctx, Instruction *dec)
 		dec->and_test = (dec->U==0);
 		OK(ENC_CMTST_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cneg_csneg.xml */
 int CNEG_CSNEG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond!=111x|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400 && (INSWORD & 0xE000)!=0xE000) {
@@ -2978,14 +2874,13 @@ int CNEG_CSNEG(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CNEG_CSNEG_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CNEG_CSNEG_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cnt_advsimd.xml */
 int CNT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CNT_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE205800) {
@@ -3000,28 +2895,26 @@ int CNT_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((8) ? ((dec->datasize) / (8)) : 0);
 		OK(ENC_CNT_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cpp_sys.xml */
 int CPP_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=111|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B73E0) {
 		decode_fields32(ENC_CPP_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_CPP_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* crc32.xml */
 int CRC32(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class crc */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=0|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC04000) {
@@ -3045,14 +2938,13 @@ int CRC32(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->sz==2) OK(ENC_CRC32W_32C_DP_2SRC);
 		if(dec->sf==1 && dec->sz==3) OK(ENC_CRC32X_64C_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* crc32c.xml */
 int CRC32C(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class crc */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=1|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC05000) {
@@ -3076,14 +2968,13 @@ int CRC32C(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->sz==2) OK(ENC_CRC32CW_32C_DP_2SRC);
 		if(dec->sf==1 && dec->sz==3) OK(ENC_CRC32CX_64C_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csdb.xml */
 int CSDB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class CSDB_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=100|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503229F) {
@@ -3188,14 +3079,13 @@ int CSDB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_CSDB_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csel.xml */
 int CSEL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800000) {
@@ -3210,14 +3100,13 @@ int CSEL(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSEL_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSEL_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csetm_csinv.xml */
 int CSETM_CSINV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=0|11010100|Rm=11111|cond!=111x|0|o2=0|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x5A9F03E0 && (INSWORD & 0xE000)!=0xE000) {
@@ -3225,14 +3114,13 @@ int CSETM_CSINV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSETM_CSINV_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSETM_CSINV_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cset_csinc.xml */
 int CSET_CSINC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010100|Rm=11111|cond!=111x|0|o2=1|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x1A9F07E0 && (INSWORD & 0xE000)!=0xE000) {
@@ -3240,14 +3128,13 @@ int CSET_CSINC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSET_CSINC_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSET_CSINC_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csinc.xml */
 int CSINC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400) {
@@ -3265,14 +3152,13 @@ int CSINC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSINC_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSINC_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csinv.xml */
 int CSINV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000) {
@@ -3290,14 +3176,13 @@ int CSINV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSINV_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSINV_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* csneg.xml */
 int CSNEG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400) {
@@ -3314,14 +3199,13 @@ int CSNEG(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_CSNEG_32_CONDSEL);
 		if(dec->sf==1) OK(ENC_CSNEG_64_CONDSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dcps1.xml */
 int DCPS1(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DCPS1_DC_exception */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=01 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00001) {
@@ -3335,14 +3219,13 @@ int DCPS1(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DCPS1_DC_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dcps2.xml */
 int DCPS2(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DCPS2_DC_exception */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=10 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00002) {
@@ -3356,14 +3239,13 @@ int DCPS2(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DCPS2_DC_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dcps3.xml */
 int DCPS3(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DCPS3_DC_exception */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=11 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00003) {
@@ -3377,28 +3259,26 @@ int DCPS3(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DCPS3_DC_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dc_sys.xml */
 int DC_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5087000) {
 		decode_fields32(ENC_DC_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_DC_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dgh.xml */
 int DGH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DGH_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=110|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD50320DF) {
@@ -3503,14 +3383,13 @@ int DGH(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DGH_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dmb.xml */
 int DMB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DMB_BO_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=01|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330BF) {
@@ -3542,14 +3421,13 @@ int DMB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DMB_BO_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* drps.xml */
 int DRPS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DRPS_64E_branch_reg */
 	/* 1101011|opc=0101|op2=11111|op3=000000|Rt=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD6BF03E0) {
@@ -3559,14 +3437,13 @@ int DRPS(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DRPS_64E_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dsb.xml */
 int DSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DSB_BO_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm!=0x00|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD503309F && (INSWORD & 0xB00)!=0x0) {
@@ -3598,14 +3475,13 @@ int DSB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_DSB_BO_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dup_advsimd_elt.xml */
 int DUP_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DUP_asisdone_only */
 	/* 01|op=0|11110000|imm5=xxxxx|0|imm4=0000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000400) {
@@ -3647,14 +3523,13 @@ int DUP_advsimd_elt(context *ctx, Instruction *dec)
 		if(MOV_DUP_advsimd_elt(ctx, dec)==0) return 0;
 		OK(ENC_DUP_ASIMDINS_DV_V);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dup_advsimd_gen.xml */
 int DUP_advsimd_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DUP_asimdins_DR_r */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4=0001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE000C00) {
@@ -3673,28 +3548,26 @@ int DUP_advsimd_gen(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_DUP_ASIMDINS_DR_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dvp_sys.xml */
 int DVP_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=101|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B73A0) {
 		decode_fields32(ENC_DVP_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_DVP_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eon.xml */
 int EON(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=10|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4A200000) {
@@ -3728,28 +3601,26 @@ int EON(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_EON_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_EON_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eon_eor_z_zi.xml */
 int EON_eor_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_z_zi_ */
 	/* 00000101|opc=01|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5400000) {
 		decode_fields32(ENC_EON_EOR_Z_ZI_, dec);
 		OK(ENC_EON_EOR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor3_advsimd.xml */
 int EOR3_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class EOR3_VVV16_crypto4 */
 	/* 110011100|Op0=00|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE000000) {
@@ -3763,14 +3634,13 @@ int EOR3_advsimd(context *ctx, Instruction *dec)
 		dec->a = UINT(dec->Ra);
 		OK(ENC_EOR3_VVV16_CRYPTO4);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_advsimd.xml */
 int EOR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class EOR_asimdsame_only */
 	/* 0|Q=x|U=1|01110|opc2=00|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E201C00) {
@@ -3795,14 +3665,13 @@ int EOR_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_EOR_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_log_imm.xml */
 int EOR_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=10|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52000000) {
@@ -3835,14 +3704,13 @@ int EOR_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_EOR_32_LOG_IMM);
 		if(dec->sf==1) OK(ENC_EOR_64_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_log_shift.xml */
 int EOR_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|opc=10|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4A000000) {
@@ -3876,14 +3744,13 @@ int EOR_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_EOR_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_EOR_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eret.xml */
 int ERET(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ERET_64E_branch_reg */
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD69F03E0) {
@@ -3904,14 +3771,13 @@ int ERET(context *ctx, Instruction *dec)
 		}
 		OK(ENC_ERET_64E_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ereta.xml */
 int ERETA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=11111|op4=11111 */
 	if((INSWORD & 0xFFFFFBFF)==0xD69F0BFF) {
@@ -3933,14 +3799,13 @@ int ERETA(context *ctx, Instruction *dec)
 		if(dec->M==0) OK(ENC_ERETAA_64E_BRANCH_REG);
 		if(dec->M==1) OK(ENC_ERETAB_64E_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* esb.xml */
 int ESB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ESB_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=000|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503221F) {
@@ -4045,14 +3910,13 @@ int ESB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_ESB_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* extr.xml */
 int EXTR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op21=00|100111|N=x|o0=0|Rm=xxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FA00000)==0x13800000) {
@@ -4073,14 +3937,13 @@ int EXTR(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0 && !(dec->imms&0x20)) OK(ENC_EXTR_32_EXTRACT);
 		if(dec->sf==1 && dec->N==1) OK(ENC_EXTR_64_EXTRACT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ext_advsimd.xml */
 int EXT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class EXT_asimdext_only */
 	/* 0|Q=x|101110|op2=00|0|Rm=xxxxx|0|imm4=xxxx|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE08400)==0x2E000000) {
@@ -4095,14 +3958,13 @@ int EXT_advsimd(context *ctx, Instruction *dec)
 		dec->position = (UINT(dec->imm4)) << (3);
 		OK(ENC_EXT_ASIMDEXT_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fabd_advsimd.xml */
 int FABD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FABD_asisdsamefp16_only */
 	/* 01|U=1|11110|a=1|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC01400) {
@@ -4164,14 +4026,13 @@ int FABD_advsimd(context *ctx, Instruction *dec)
 		dec->abs = (dec->U==1);
 		OK(ENC_FABD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fabs_advsimd.xml */
 int FABS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FABS_asimdmiscfp16_R */
 	/* 0|Q=x|U=0|01110|a=1|111100|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8F800) {
@@ -4202,14 +4063,13 @@ int FABS_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_FABS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fabs_float.xml */
 int FABS_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=01|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E20C000) {
@@ -4249,14 +4109,13 @@ int FABS_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FABS_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FABS_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* facge_advsimd.xml */
 int FACGE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FACGE_asisdsamefp16_only */
 	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402C00) {
@@ -4406,14 +4265,13 @@ int FACGE_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FACGE_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* facgt_advsimd.xml */
 int FACGT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FACGT_asisdsamefp16_only */
 	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02C00) {
@@ -4563,42 +4421,39 @@ int FACGT_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FACGT_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* facle_facge_p_p_zz.xml */
 int FACLE_facge_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class facge_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C010) {
 		decode_fields32(ENC_FACLE_FACGE_P_P_ZZ_, dec);
 		OK(ENC_FACLE_FACGE_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* faclt_facge_p_p_zz.xml */
 int FACLT_facge_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class facgt_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=1|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500E010) {
 		decode_fields32(ENC_FACLT_FACGT_P_P_ZZ_, dec);
 		OK(ENC_FACLT_FACGT_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* faddp_advsimd_pair.xml */
 int FADDP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FADDP_asisdpair_only_H */
 	/* 01|U=0|11110|0|sz=0|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E30D800) {
@@ -4629,14 +4484,13 @@ int FADDP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = ReduceOp_FADD;
 		OK(ENC_FADDP_ASISDPAIR_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* faddp_advsimd_vec.xml */
 int FADDP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FADDP_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E401400) {
@@ -4669,14 +4523,13 @@ int FADDP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->pair = (dec->U==1);
 		OK(ENC_FADDP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadd_advsimd.xml */
 int FADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FADD_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE401400) {
@@ -4709,14 +4562,13 @@ int FADD_advsimd(context *ctx, Instruction *dec)
 		dec->pair = (dec->U==1);
 		OK(ENC_FADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadd_float.xml */
 int FADD_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E202800) {
@@ -4746,14 +4598,13 @@ int FADD_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FADD_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FADD_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcadd_advsimd_vec.xml */
 int FCADD_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCADD_asimdsame2_C */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|11|rot=x|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20EC00)==0x2E00E400) {
@@ -4778,14 +4629,13 @@ int FCADD_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FCADD_ASIMDSAME2_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fccmpe_float.xml */
 int FCCMPE_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|01|Rn=xxxxx|op=1|nzcv=xxxx */
 	if((INSWORD & 0xFF200C10)==0x1E200410) {
@@ -4816,14 +4666,13 @@ int FCCMPE_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FCCMPE_S_FLOATCCMP);
 		if(dec->ftype==1) OK(ENC_FCCMPE_D_FLOATCCMP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fccmp_float.xml */
 int FCCMP_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|01|Rn=xxxxx|op=0|nzcv=xxxx */
 	if((INSWORD & 0xFF200C10)==0x1E200400) {
@@ -4854,14 +4703,13 @@ int FCCMP_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FCCMP_S_FLOATCCMP);
 		if(dec->ftype==1) OK(ENC_FCCMP_D_FLOATCCMP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmeq_advsimd_reg.xml */
 int FCMEQ_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMEQ_asisdsamefp16_only */
 	/* 01|U=0|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E402400) {
@@ -5011,14 +4859,13 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMEQ_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmeq_advsimd_zero.xml */
 int FCMEQ_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMEQ_asisdmiscfp16_FZ */
 	/* 01|U=0|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8D800) {
@@ -5120,14 +4967,13 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMEQ_ASIMDMISC_FZ);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmge_advsimd_reg.xml */
 int FCMGE_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMGE_asisdsamefp16_only */
 	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402400) {
@@ -5277,14 +5123,13 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMGE_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmge_advsimd_zero.xml */
 int FCMGE_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMGE_asisdmiscfp16_FZ */
 	/* 01|U=1|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8C800) {
@@ -5386,14 +5231,13 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMGE_ASIMDMISC_FZ);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmgt_advsimd_reg.xml */
 int FCMGT_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMGT_asisdsamefp16_only */
 	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02400) {
@@ -5543,14 +5387,13 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMGT_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmgt_advsimd_zero.xml */
 int FCMGT_advsimd_zero(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMGT_asisdmiscfp16_FZ */
 	/* 01|U=0|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8C800) {
@@ -5652,14 +5495,13 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMGT_ASIMDMISC_FZ);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmla_advsimd_elt.xml */
 int FCMLA_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class 2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|rot=xx|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF009400)==0x2F001000) {
@@ -5694,14 +5536,13 @@ int FCMLA_advsimd_elt(context *ctx, Instruction *dec)
 		if(dec->size==1) OK(ENC_FCMLA_ASIMDELEM_C_H);
 		if(dec->size==2) OK(ENC_FCMLA_ASIMDELEM_C_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmla_advsimd_vec.xml */
 int FCMLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMLA_asimdsame2_C */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|10|rot=xx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20E400)==0x2E00C400) {
@@ -5726,14 +5567,13 @@ int FCMLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FCMLA_ASIMDSAME2_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmle_advsimd.xml */
 int FCMLE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMLE_asisdmiscfp16_FZ */
 	/* 01|U=1|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8D800) {
@@ -5835,28 +5675,26 @@ int FCMLE_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FCMLE_ASIMDMISC_FZ);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmle_fcmeq_p_p_zz.xml */
 int FCMLE_fcmeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmge_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004000) {
 		decode_fields32(ENC_FCMLE_FCMGE_P_P_ZZ_, dec);
 		OK(ENC_FCMLE_FCMGE_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmlt_advsimd.xml */
 int FCMLT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCMLT_asisdmiscfp16_FZ */
 	/* 01|U=0|11110|a=1|111100|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8E800) {
@@ -5914,28 +5752,26 @@ int FCMLT_advsimd(context *ctx, Instruction *dec)
 		dec->comparison = CompareOp_LT;
 		OK(ENC_FCMLT_ASIMDMISC_FZ);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmlt_fcmeq_p_p_zz.xml */
 int FCMLT_fcmeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmgt_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004010) {
 		decode_fields32(ENC_FCMLT_FCMGT_P_P_ZZ_, dec);
 		OK(ENC_FCMLT_FCMGT_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmpe_float.xml */
 int FCMPE_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=1x|000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202010) {
@@ -5968,14 +5804,13 @@ int FCMPE_float(context *ctx, Instruction *dec)
 		if(dec->ftype==1 && dec->opc==2) OK(ENC_FCMPE_D_FLOATCMP);
 		if(dec->ftype==1 && /* PreferBitsEqual(['dec->Rm'],'00000') */ true && dec->opc==3) OK(ENC_FCMPE_DZ_FLOATCMP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmp_float.xml */
 int FCMP_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=0x|000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202000) {
@@ -6008,14 +5843,13 @@ int FCMP_float(context *ctx, Instruction *dec)
 		if(dec->ftype==1 && dec->opc==0) OK(ENC_FCMP_D_FLOATCMP);
 		if(dec->ftype==1 && /* PreferBitsEqual(['dec->Rm'],'00000') */ true && dec->opc==1) OK(ENC_FCMP_DZ_FLOATCMP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcsel_float.xml */
 int FCSEL_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF200C00)==0x1E200C00) {
@@ -6045,14 +5879,13 @@ int FCSEL_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FCSEL_S_FLOATSEL);
 		if(dec->ftype==1) OK(ENC_FCSEL_D_FLOATSEL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtas_advsimd.xml */
 int FCVTAS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTAS_asisdmiscfp16_R */
 	/* 01|U=0|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79C800) {
@@ -6114,14 +5947,13 @@ int FCVTAS_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTAS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtas_float.xml */
 int FCVTAS_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=100|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E240000) {
@@ -6201,14 +6033,13 @@ int FCVTAS_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTAS_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTAS_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtau_advsimd.xml */
 int FCVTAU_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTAU_asisdmiscfp16_R */
 	/* 01|U=1|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79C800) {
@@ -6270,14 +6101,13 @@ int FCVTAU_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTAU_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtau_float.xml */
 int FCVTAU_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=101|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E250000) {
@@ -6357,14 +6187,13 @@ int FCVTAU_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTAU_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTAU_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtl_advsimd.xml */
 int FCVTL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTL_asimdmisc_L */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE217800) {
@@ -6377,14 +6206,13 @@ int FCVTL_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FCVTL_ASIMDMISC_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtms_advsimd.xml */
 int FCVTMS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTMS_asisdmiscfp16_R */
 	/* 01|U=0|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79B800) {
@@ -6446,14 +6274,13 @@ int FCVTMS_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTMS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtms_float.xml */
 int FCVTMS_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=10|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E300000) {
@@ -6533,14 +6360,13 @@ int FCVTMS_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTMS_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTMS_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtmu_advsimd.xml */
 int FCVTMU_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTMU_asisdmiscfp16_R */
 	/* 01|U=1|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79B800) {
@@ -6602,14 +6428,13 @@ int FCVTMU_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTMU_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtmu_float.xml */
 int FCVTMU_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=10|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E310000) {
@@ -6689,14 +6514,13 @@ int FCVTMU_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTMU_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTMU_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtns_advsimd.xml */
 int FCVTNS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTNS_asisdmiscfp16_R */
 	/* 01|U=0|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79A800) {
@@ -6758,14 +6582,13 @@ int FCVTNS_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTNS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtns_float.xml */
 int FCVTNS_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E200000) {
@@ -6845,14 +6668,13 @@ int FCVTNS_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTNS_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTNS_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtnu_advsimd.xml */
 int FCVTNU_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTNU_asisdmiscfp16_R */
 	/* 01|U=1|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79A800) {
@@ -6914,14 +6736,13 @@ int FCVTNU_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTNU_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtnu_float.xml */
 int FCVTNU_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E210000) {
@@ -7001,14 +6822,13 @@ int FCVTNU_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTNU_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTNU_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtn_advsimd.xml */
 int FCVTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTN_asimdmisc_N */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE216800) {
@@ -7021,14 +6841,13 @@ int FCVTN_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FCVTN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtps_advsimd.xml */
 int FCVTPS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTPS_asisdmiscfp16_R */
 	/* 01|U=0|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9A800) {
@@ -7090,14 +6909,13 @@ int FCVTPS_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTPS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtps_float.xml */
 int FCVTPS_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=01|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E280000) {
@@ -7177,14 +6995,13 @@ int FCVTPS_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTPS_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTPS_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtpu_advsimd.xml */
 int FCVTPU_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTPU_asisdmiscfp16_R */
 	/* 01|U=1|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9A800) {
@@ -7246,14 +7063,13 @@ int FCVTPU_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTPU_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtpu_float.xml */
 int FCVTPU_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=01|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E290000) {
@@ -7333,14 +7149,13 @@ int FCVTPU_float(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTPU_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTPU_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtxn_advsimd.xml */
 int FCVTXN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTXN_asisdmisc_N */
 	/* 01|U=1|11110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E216800) {
@@ -7371,14 +7186,13 @@ int FCVTXN_advsimd(context *ctx, Instruction *dec)
 		dec->part = UINT(dec->Q);
 		OK(ENC_FCVTXN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzs_advsimd_fix.xml */
 int FCVTZS_advsimd_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTZS_asisdshf_C */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F00FC00 && (INSWORD & 0x780000)!=0x0) {
@@ -7419,14 +7233,13 @@ int FCVTZS_advsimd_fix(context *ctx, Instruction *dec)
 		dec->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_ASIMDSHF_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzs_advsimd_int.xml */
 int FCVTZS_advsimd_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTZS_asisdmiscfp16_R */
 	/* 01|U=0|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9B800) {
@@ -7488,14 +7301,13 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTZS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzs_float_fix.xml */
 int FCVTZS_float_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=11|opcode=000|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E180000) {
@@ -7544,14 +7356,13 @@ int FCVTZS_float_fix(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTZS_32D_FLOAT2FIX);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTZS_64D_FLOAT2FIX);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzs_float_int.xml */
 int FCVTZS_float_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=11|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E380000) {
@@ -7631,14 +7442,13 @@ int FCVTZS_float_int(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTZS_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTZS_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzu_advsimd_fix.xml */
 int FCVTZU_advsimd_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTZU_asisdshf_C */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F00FC00 && (INSWORD & 0x780000)!=0x0) {
@@ -7679,14 +7489,13 @@ int FCVTZU_advsimd_fix(context *ctx, Instruction *dec)
 		dec->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_ASIMDSHF_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzu_advsimd_int.xml */
 int FCVTZU_advsimd_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FCVTZU_asisdmiscfp16_R */
 	/* 01|U=1|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9B800) {
@@ -7748,14 +7557,13 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_FCVTZU_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzu_float_fix.xml */
 int FCVTZU_float_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=11|opcode=001|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E190000) {
@@ -7804,14 +7612,13 @@ int FCVTZU_float_fix(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTZU_32D_FLOAT2FIX);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTZU_64D_FLOAT2FIX);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzu_float_int.xml */
 int FCVTZU_float_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=11|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E390000) {
@@ -7891,14 +7698,13 @@ int FCVTZU_float_int(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->ftype==1) OK(ENC_FCVTZU_32D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_FCVTZU_64D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvt_float.xml */
 int FCVT_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0001|opc=xx|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3E7C00)==0x1E224000) {
@@ -7939,14 +7745,13 @@ int FCVT_float(context *ctx, Instruction *dec)
 		if(dec->ftype==1 && dec->opc==3) OK(ENC_FCVT_HD_FLOATDP1);
 		if(dec->ftype==1 && dec->opc==0) OK(ENC_FCVT_SD_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fdiv_advsimd.xml */
 int FDIV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FDIV_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E403C00) {
@@ -7977,14 +7782,13 @@ int FDIV_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FDIV_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fdiv_float.xml */
 int FDIV_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode=0001|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E201800) {
@@ -8013,14 +7817,13 @@ int FDIV_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FDIV_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FDIV_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fjcvtzs.xml */
 int FJCVTZS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FJCVTZS_32D_float2int */
 	/* sf=0|0|S=0|11110|ftype=01|1|rmode=11|opcode=110|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x1E7E0000) {
@@ -8095,14 +7898,13 @@ int FJCVTZS(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FJCVTZS_32D_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmadd_float.xml */
 int FMADD_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=0|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F000000) {
@@ -8134,14 +7936,13 @@ int FMADD_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMADD_S_FLOATDP3);
 		if(dec->ftype==1) OK(ENC_FMADD_D_FLOATDP3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnmp_advsimd_pair.xml */
 int FMAXNMP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXNMP_asisdpair_only_H */
 	/* 01|U=0|11110|o1=0|sz=0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E30C800) {
@@ -8172,14 +7973,13 @@ int FMAXNMP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMAXNMP_ASISDPAIR_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnmp_advsimd_vec.xml */
 int FMAXNMP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXNMP_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E400400) {
@@ -8214,14 +8014,13 @@ int FMAXNMP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMAXNMP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnmv_advsimd.xml */
 int FMAXNMV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXNMV_asimdall_only_H */
 	/* 0|Q=x|U=0|01110|o1=0|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE30C800) {
@@ -8252,14 +8051,13 @@ int FMAXNMV_advsimd(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMAXNMV_ASIMDALL_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnm_advsimd.xml */
 int FMAXNM_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXNM_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE400400) {
@@ -8294,14 +8092,13 @@ int FMAXNM_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMAXNM_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnm_float.xml */
 int FMAXNM_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E206800) {
@@ -8342,14 +8139,13 @@ int FMAXNM_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMAXNM_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FMAXNM_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxp_advsimd_pair.xml */
 int FMAXP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXP_asisdpair_only_H */
 	/* 01|U=0|11110|o1=0|sz=0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E30F800) {
@@ -8380,14 +8176,13 @@ int FMAXP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMAXP_ASISDPAIR_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxp_advsimd_vec.xml */
 int FMAXP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXP_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|o1=0|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E403400) {
@@ -8422,14 +8217,13 @@ int FMAXP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMAXP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxv_advsimd.xml */
 int FMAXV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAXV_asimdall_only_H */
 	/* 0|Q=x|U=0|01110|o1=0|0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE30F800) {
@@ -8460,14 +8254,13 @@ int FMAXV_advsimd(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMAXV_ASIMDALL_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmax_advsimd.xml */
 int FMAX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMAX_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|o1=0|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE403400) {
@@ -8502,14 +8295,13 @@ int FMAX_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMAX_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmax_float.xml */
 int FMAX_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=00|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E204800) {
@@ -8550,14 +8342,13 @@ int FMAX_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMAX_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FMAX_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnmp_advsimd_pair.xml */
 int FMINNMP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINNMP_asisdpair_only_H */
 	/* 01|U=0|11110|o1=1|sz=0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EB0C800) {
@@ -8588,14 +8379,13 @@ int FMINNMP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMINNMP_ASISDPAIR_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnmp_advsimd_vec.xml */
 int FMINNMP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINNMP_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|a=1|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC00400) {
@@ -8630,14 +8420,13 @@ int FMINNMP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMINNMP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnmv_advsimd.xml */
 int FMINNMV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINNMV_asimdall_only_H */
 	/* 0|Q=x|U=0|01110|o1=1|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEB0C800) {
@@ -8668,14 +8457,13 @@ int FMINNMV_advsimd(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMINNMV_ASIMDALL_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnm_advsimd.xml */
 int FMINNM_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINNM_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC00400) {
@@ -8710,14 +8498,13 @@ int FMINNM_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMINNM_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnm_float.xml */
 int FMINNM_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E207800) {
@@ -8758,14 +8545,13 @@ int FMINNM_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMINNM_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FMINNM_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminp_advsimd_pair.xml */
 int FMINP_advsimd_pair(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINP_asisdpair_only_H */
 	/* 01|U=0|11110|o1=1|sz=0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EB0F800) {
@@ -8796,14 +8582,13 @@ int FMINP_advsimd_pair(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMINP_ASISDPAIR_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminp_advsimd_vec.xml */
 int FMINP_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINP_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|o1=1|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC03400) {
@@ -8838,14 +8623,13 @@ int FMINP_advsimd_vec(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMINP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminv_advsimd.xml */
 int FMINV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMINV_asimdall_only_H */
 	/* 0|Q=x|U=0|01110|o1=1|0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEB0F800) {
@@ -8876,14 +8660,13 @@ int FMINV_advsimd(context *ctx, Instruction *dec)
 		dec->op = (dec->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMINV_ASIMDALL_ONLY_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmin_advsimd.xml */
 int FMIN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMIN_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|o1=1|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC03400) {
@@ -8918,14 +8701,13 @@ int FMIN_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_FMIN_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmin_float.xml */
 int FMIN_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E205800) {
@@ -8966,14 +8748,13 @@ int FMIN_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMIN_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FMIN_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmlal_advsimd_elt.xml */
 int FMLAL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLAL_asimdelem_LH */
 	/* 0|Q=x|U=0|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=0|S=0|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF800000) {
@@ -9016,14 +8797,13 @@ int FMLAL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_FMLAL2_ASIMDELEM_LH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmlal_advsimd_vec.xml */
 int FMLAL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLAL_asimdsame_F */
 	/* 0|Q=x|U=0|01110|S=0|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE20EC00) {
@@ -9064,14 +8844,13 @@ int FMLAL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_FMLAL2_ASIMDSAME_F);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmla_advsimd_elt.xml */
 int FMLA_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLA_asisdelem_RH_H */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F001000) {
@@ -9159,14 +8938,13 @@ int FMLA_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_FMLA_ASIMDELEM_R_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmla_advsimd_vec.xml */
 int FMLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLA_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE400C00) {
@@ -9199,14 +8977,13 @@ int FMLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->op==1);
 		OK(ENC_FMLA_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmlsl_advsimd_elt.xml */
 int FMLSL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLSL_asimdelem_LH */
 	/* 0|Q=x|U=0|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=0|S=1|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF804000) {
@@ -9249,14 +9026,13 @@ int FMLSL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_FMLSL2_ASIMDELEM_LH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmlsl_advsimd_vec.xml */
 int FMLSL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLSL_asimdsame_F */
 	/* 0|Q=x|U=0|01110|S=1|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA0EC00) {
@@ -9297,14 +9073,13 @@ int FMLSL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_FMLSL2_ASIMDSAME_F);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmls_advsimd_elt.xml */
 int FMLS_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLS_asisdelem_RH_H */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F005000) {
@@ -9392,14 +9167,13 @@ int FMLS_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_FMLS_ASIMDELEM_R_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmls_advsimd_vec.xml */
 int FMLS_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMLS_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|opcode=001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC00C00) {
@@ -9432,14 +9206,13 @@ int FMLS_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->op==1);
 		OK(ENC_FMLS_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_advsimd.xml */
 int FMOV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMOV_asimdimm_H_h */
 	/* 0|Q=x|op=0|0111100000|a=x|b=x|c=x|cmode=1111|o2=1|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF8FC00)==0xF00FC00) {
@@ -9507,70 +9280,65 @@ int FMOV_advsimd(context *ctx, Instruction *dec)
 		if(dec->op==0) OK(ENC_FMOV_ASIMDIMM_S_S);
 		if(dec->Q==1 && dec->op==1) OK(ENC_FMOV_ASIMDIMM_D2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_cpy_z_p_i.xml */
 int FMOV_cpy_z_p_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=0|imm8=00000000|Zd=xxxxx */
 	if((INSWORD & 0xFF30FFE0)==0x5104000) {
 		decode_fields32(ENC_FMOV_CPY_Z_P_I_, dec);
 		OK(ENC_FMOV_CPY_Z_P_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_dup_z_i.xml */
 int FMOV_dup_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_i_ */
 	/* 00100101|size=xx|111|opc=00|011|sh=0|imm8=00000000|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFFE0)==0x2538C000) {
 		decode_fields32(ENC_FMOV_DUP_Z_I_, dec);
 		OK(ENC_FMOV_DUP_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_fcpy_z_p_i.xml */
 int FMOV_fcpy_z_p_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcpy_z_p_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|110|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30E000)==0x510C000) {
 		decode_fields32(ENC_FMOV_FCPY_Z_P_I_, dec);
 		OK(ENC_FMOV_FCPY_Z_P_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_fdup_z_i.xml */
 int FMOV_fdup_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fdup_z_i_ */
 	/* 00100101|size=xx|111|opc=00|111|o2=0|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2539C000) {
 		decode_fields32(ENC_FMOV_FDUP_Z_I_, dec);
 		OK(ENC_FMOV_FDUP_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_float.xml */
 int FMOV_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=00|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E204000) {
@@ -9610,14 +9378,13 @@ int FMOV_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMOV_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FMOV_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_float_gen.xml */
 int FMOV_float_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=0x|opcode=11x|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F36FC00)==0x1E260000) {
@@ -9701,14 +9468,13 @@ int FMOV_float_gen(context *ctx, Instruction *dec)
 		if(dec->sf==1 && dec->ftype==1 && dec->rmode==0 && dec->opcode==6) OK(ENC_FMOV_64D_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==2 && dec->rmode==1 && dec->opcode==6) OK(ENC_FMOV_64VX_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmov_float_imm.xml */
 int FMOV_float_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm8f */
 	/* M=0|0|S=0|11110|ftype=xx|1|imm8=xxxxxxxx|100|imm5=00000|Rd=xxxxx */
 	if((INSWORD & 0xFF201FE0)==0x1E201000) {
@@ -9736,14 +9502,13 @@ int FMOV_float_imm(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMOV_S_FLOATIMM);
 		if(dec->ftype==1) OK(ENC_FMOV_D_FLOATIMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmsub_float.xml */
 int FMSUB_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=0|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F008000) {
@@ -9775,14 +9540,13 @@ int FMSUB_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMSUB_S_FLOATDP3);
 		if(dec->ftype==1) OK(ENC_FMSUB_D_FLOATDP3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmulx_advsimd_elt.xml */
 int FMULX_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMULX_asisdelem_RH_H */
 	/* 01|U=1|11111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x7F009000) {
@@ -9870,14 +9634,13 @@ int FMULX_advsimd_elt(context *ctx, Instruction *dec)
 		dec->mulx_op = (dec->U==1);
 		OK(ENC_FMULX_ASIMDELEM_R_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmulx_advsimd_vec.xml */
 int FMULX_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMULX_asisdsamefp16_only */
 	/* 01|U=0|11110|a=0|10|Rm=xxxxx|00|opcode=011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E401C00) {
@@ -9935,14 +9698,13 @@ int FMULX_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FMULX_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_advsimd_elt.xml */
 int FMUL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMUL_asisdelem_RH_H */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F009000) {
@@ -10030,14 +9792,13 @@ int FMUL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->mulx_op = (dec->U==1);
 		OK(ENC_FMUL_ASIMDELEM_R_SD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_advsimd_vec.xml */
 int FMUL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FMUL_asimdsamefp16_only */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E401C00) {
@@ -10068,14 +9829,13 @@ int FMUL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FMUL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_float.xml */
 int FMUL_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=0|000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E200800) {
@@ -10105,14 +9865,13 @@ int FMUL_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FMUL_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FMUL_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fneg_advsimd.xml */
 int FNEG_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FNEG_asimdmiscfp16_R */
 	/* 0|Q=x|U=1|01110|a=1|111100|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8F800) {
@@ -10143,14 +9902,13 @@ int FNEG_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_FNEG_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fneg_float.xml */
 int FNEG_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=10|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E214000) {
@@ -10190,14 +9948,13 @@ int FNEG_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FNEG_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FNEG_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmadd_float.xml */
 int FNMADD_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=1|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F200000) {
@@ -10229,14 +9986,13 @@ int FNMADD_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FNMADD_S_FLOATDP3);
 		if(dec->ftype==1) OK(ENC_FNMADD_D_FLOATDP3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmsub_float.xml */
 int FNMSUB_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=1|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F208000) {
@@ -10268,14 +10024,13 @@ int FNMSUB_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FNMSUB_S_FLOATDP3);
 		if(dec->ftype==1) OK(ENC_FNMSUB_D_FLOATDP3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmul_float.xml */
 int FNMUL_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=1|000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E208800) {
@@ -10305,14 +10060,13 @@ int FNMUL_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FNMUL_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FNMUL_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecpe_advsimd.xml */
 int FRECPE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRECPE_asisdmiscfp16_R */
 	/* 01|U=0|11110|size<1>=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9D800) {
@@ -10366,14 +10120,13 @@ int FRECPE_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FRECPE_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecps_advsimd.xml */
 int FRECPS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRECPS_asisdsamefp16_only */
 	/* 01|U=0|11110|a=0|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E403C00) {
@@ -10431,14 +10184,13 @@ int FRECPS_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FRECPS_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecpx_advsimd.xml */
 int FRECPX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRECPX_asisdmiscfp16_R */
 	/* 01|U=0|11110|a=1|111100|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9F800) {
@@ -10464,14 +10216,13 @@ int FRECPX_advsimd(context *ctx, Instruction *dec)
 		dec->elements = 1;
 		OK(ENC_FRECPX_ASISDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint32x_advsimd.xml */
 int FRINT32X_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINT32X_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|1111|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21E800) {
@@ -10491,14 +10242,13 @@ int FRINT32X_advsimd(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==0) ? FPRounding_ZERO : FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINT32X_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint32x_float.xml */
 int FRINT32X_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=01|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E28C000) {
@@ -10522,14 +10272,13 @@ int FRINT32X_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINT32X_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINT32X_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint32z_advsimd.xml */
 int FRINT32Z_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINT32Z_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|1111|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21E800) {
@@ -10549,14 +10298,13 @@ int FRINT32Z_advsimd(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==0) ? FPRounding_ZERO : FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINT32Z_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint32z_float.xml */
 int FRINT32Z_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=00|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E284000) {
@@ -10580,14 +10328,13 @@ int FRINT32Z_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINT32Z_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINT32Z_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint64x_advsimd.xml */
 int FRINT64X_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINT64X_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|1111|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21F800) {
@@ -10607,14 +10354,13 @@ int FRINT64X_advsimd(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==0) ? FPRounding_ZERO : FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINT64X_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint64x_float.xml */
 int FRINT64X_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=11|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E29C000) {
@@ -10638,14 +10384,13 @@ int FRINT64X_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINT64X_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINT64X_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint64z_advsimd.xml */
 int FRINT64Z_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINT64Z_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|1111|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21F800) {
@@ -10665,14 +10410,13 @@ int FRINT64Z_advsimd(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==0) ? FPRounding_ZERO : FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINT64Z_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frint64z_float.xml */
 int FRINT64Z_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=10|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E294000) {
@@ -10696,14 +10440,13 @@ int FRINT64Z_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINT64Z_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINT64Z_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frinta_advsimd.xml */
 int FRINTA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTA_asimdmiscfp16_R */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E798800) {
@@ -10766,14 +10509,13 @@ int FRINTA_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTA_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frinta_float.xml */
 int FRINTA_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=100|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E264000) {
@@ -10818,14 +10560,13 @@ int FRINTA_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTA_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTA_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frinti_advsimd.xml */
 int FRINTI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTI_asimdmiscfp16_R */
 	/* 0|Q=x|U=1|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF99800) {
@@ -10888,14 +10629,13 @@ int FRINTI_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTI_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frinti_float.xml */
 int FRINTI_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=111|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E27C000) {
@@ -10940,14 +10680,13 @@ int FRINTI_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTI_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTI_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintm_advsimd.xml */
 int FRINTM_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTM_asimdmiscfp16_R */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE799800) {
@@ -11010,14 +10749,13 @@ int FRINTM_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTM_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintm_float.xml */
 int FRINTM_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=010|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E254000) {
@@ -11062,14 +10800,13 @@ int FRINTM_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTM_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTM_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintn_advsimd.xml */
 int FRINTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTN_asimdmiscfp16_R */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE798800) {
@@ -11132,14 +10869,13 @@ int FRINTN_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTN_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintn_float.xml */
 int FRINTN_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=000|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E244000) {
@@ -11184,14 +10920,13 @@ int FRINTN_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTN_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTN_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintp_advsimd.xml */
 int FRINTP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTP_asimdmiscfp16_R */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF98800) {
@@ -11254,14 +10989,13 @@ int FRINTP_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTP_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintp_float.xml */
 int FRINTP_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=001|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E24C000) {
@@ -11306,14 +11040,13 @@ int FRINTP_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTP_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTP_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintx_advsimd.xml */
 int FRINTX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTX_asimdmiscfp16_R */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E799800) {
@@ -11376,14 +11109,13 @@ int FRINTX_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTX_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintx_float.xml */
 int FRINTX_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=110|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E274000) {
@@ -11428,14 +11160,13 @@ int FRINTX_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTX_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTX_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintz_advsimd.xml */
 int FRINTZ_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRINTZ_asimdmiscfp16_R */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF99800) {
@@ -11498,14 +11229,13 @@ int FRINTZ_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_FRINTZ_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frintz_float.xml */
 int FRINTZ_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=011|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E25C000) {
@@ -11550,14 +11280,13 @@ int FRINTZ_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FRINTZ_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FRINTZ_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frsqrte_advsimd.xml */
 int FRSQRTE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRSQRTE_asisdmiscfp16_R */
 	/* 01|U=1|11110|a=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9D800) {
@@ -11611,14 +11340,13 @@ int FRSQRTE_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FRSQRTE_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frsqrts_advsimd.xml */
 int FRSQRTS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FRSQRTS_asisdsamefp16_only */
 	/* 01|U=0|11110|a=1|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5EC03C00) {
@@ -11676,14 +11404,13 @@ int FRSQRTS_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FRSQRTS_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsqrt_advsimd.xml */
 int FSQRT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FSQRT_asimdmiscfp16_R */
 	/* 0|Q=x|U=1|01110|a=1|111100|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9F800) {
@@ -11712,14 +11439,13 @@ int FSQRT_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_FSQRT_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsqrt_float.xml */
 int FSQRT_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=11|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E21C000) {
@@ -11759,14 +11485,13 @@ int FSQRT_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FSQRT_S_FLOATDP1);
 		if(dec->ftype==1) OK(ENC_FSQRT_D_FLOATDP1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsub_advsimd.xml */
 int FSUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class FSUB_asimdsamefp16_only */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC01400) {
@@ -11799,14 +11524,13 @@ int FSUB_advsimd(context *ctx, Instruction *dec)
 		dec->abs = (dec->U==1);
 		OK(ENC_FSUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsub_float.xml */
 int FSUB_float(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E203800) {
@@ -11836,14 +11560,13 @@ int FSUB_float(context *ctx, Instruction *dec)
 		if(dec->ftype==0) OK(ENC_FSUB_S_FLOATDP2);
 		if(dec->ftype==1) OK(ENC_FSUB_D_FLOATDP2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* gmi.xml */
 int GMI(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class GMI_64G_dp_2src */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000101|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC01400) {
@@ -11856,14 +11579,13 @@ int GMI(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Xm);
 		OK(ENC_GMI_64G_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* hint.xml */
 int HINT(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class HINT_HM_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=xxxx|op2=xxx|Rt=11111 */
 	if((INSWORD & 0xFFFFF01F)==0xD503201F) {
@@ -11968,14 +11690,13 @@ int HINT(context *ctx, Instruction *dec)
 		}
 		OK(ENC_HINT_HM_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* hlt.xml */
 int HLT(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class HLT_EX_exception */
 	/* 11010100|opc=010|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
 	if((INSWORD & 0xFFE0001F)==0xD4400000) {
@@ -11988,42 +11709,39 @@ int HLT(context *ctx, Instruction *dec)
 		}
 		OK(ENC_HLT_EX_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* hvc.xml */
 int HVC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class HVC_EX_exception */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=10 */
 	if((INSWORD & 0xFFE0001F)==0xD4000002) {
 		decode_fields32(ENC_HVC_EX_EXCEPTION, dec);
 		OK(ENC_HVC_EX_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ic_sys.xml */
 int IC_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5087000) {
 		decode_fields32(ENC_IC_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_IC_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ins_advsimd_elt.xml */
 int INS_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class INS_asimdins_IV_v */
 	/* 0|Q=1|op=1|01110000|imm5=xxxxx|0|imm4=xxxx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08400)==0x6E000400) {
@@ -12042,14 +11760,13 @@ int INS_advsimd_elt(context *ctx, Instruction *dec)
 		if(MOV_INS_advsimd_elt(ctx, dec)==0) return 0;
 		OK(ENC_INS_ASIMDINS_IV_V);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ins_advsimd_gen.xml */
 int INS_advsimd_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class INS_asimdins_IR_r */
 	/* 0|Q=1|op=0|01110000|imm5=xxxxx|0|imm4=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E001C00) {
@@ -12067,14 +11784,13 @@ int INS_advsimd_gen(context *ctx, Instruction *dec)
 		if(MOV_INS_advsimd_gen(ctx, dec)==0) return 0;
 		OK(ENC_INS_ASIMDINS_IR_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* irg.xml */
 int IRG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class IRG_64I_dp_2src */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000100|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC01000) {
@@ -12087,28 +11803,26 @@ int IRG(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Xm);
 		OK(ENC_IRG_64I_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* isb.xml */
 int ISB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ISB_BI_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=10|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330DF) {
 		decode_fields32(ENC_ISB_BI_BARRIERS, dec);
 		OK(ENC_ISB_BI_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1r_advsimd.xml */
 int LD1R_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD1R_asisdlso_R1 */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD40C000) {
@@ -12170,14 +11884,13 @@ int LD1R_advsimd(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1_advsimd_mult.xml */
 int LD1_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011000|L=1|000000|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xC402000) {
@@ -12249,14 +11962,13 @@ int LD1_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1_advsimd_sngl.xml */
 int LD1_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD400000) {
@@ -12327,14 +12039,13 @@ int LD1_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2r_advsimd.xml */
 int LD2R_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD2R_asisdlso_R2 */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD60C000) {
@@ -12396,14 +12107,13 @@ int LD2R_advsimd(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2_advsimd_mult.xml */
 int LD2_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD2_asisdlse_R2 */
 	/* 0|Q=x|0011000|L=1|000000|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC408000) {
@@ -12466,14 +12176,13 @@ int LD2_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2_advsimd_sngl.xml */
 int LD2_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD600000) {
@@ -12544,14 +12253,13 @@ int LD2_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3r_advsimd.xml */
 int LD3R_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD3R_asisdlso_R3 */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD40E000) {
@@ -12613,14 +12321,13 @@ int LD3R_advsimd(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3_advsimd_mult.xml */
 int LD3_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD3_asisdlse_R3 */
 	/* 0|Q=x|0011000|L=1|000000|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC404000) {
@@ -12683,14 +12390,13 @@ int LD3_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3_advsimd_sngl.xml */
 int LD3_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD402000) {
@@ -12761,14 +12467,13 @@ int LD3_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4r_advsimd.xml */
 int LD4R_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD4R_asisdlso_R4 */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD60E000) {
@@ -12830,14 +12535,13 @@ int LD4R_advsimd(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4_advsimd_mult.xml */
 int LD4_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LD4_asisdlse_R4 */
 	/* 0|Q=x|0011000|L=1|000000|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC400000) {
@@ -12900,14 +12604,13 @@ int LD4_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4_advsimd_sngl.xml */
 int LD4_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD602000) {
@@ -12978,14 +12681,13 @@ int LD4_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldadd.xml */
 int LDADD(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8200000) {
@@ -13036,14 +12738,13 @@ int LDADD(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDADDAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDADDL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaddb.xml */
 int LDADDB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38200000) {
@@ -13090,14 +12791,13 @@ int LDADDB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDADDB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDADDLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaddh.xml */
 int LDADDH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78200000) {
@@ -13144,14 +12844,13 @@ int LDADDH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDADDH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDADDLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapr.xml */
 int LDAPR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xB8A0C000) {
@@ -13167,14 +12866,13 @@ int LDAPR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_LDAPR_32L_MEMOP);
 		if(dec->size==3) OK(ENC_LDAPR_64L_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaprb.xml */
 int LDAPRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAPRB_32L_memop */
 	/* size=00|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x38A0C000) {
@@ -13189,14 +12887,13 @@ int LDAPRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDAPRB_32L_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaprh.xml */
 int LDAPRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAPRH_32L_memop */
 	/* size=01|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x78A0C000) {
@@ -13211,14 +12908,13 @@ int LDAPRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDAPRH_32L_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapurb.xml */
 int LDAPURB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAPURB_32_ldapstl_unscaled */
 	/* size=00|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x19400000) {
@@ -13262,14 +12958,13 @@ int LDAPURB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapurh.xml */
 int LDAPURH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAPURH_32_ldapstl_unscaled */
 	/* size=01|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x59400000) {
@@ -13313,14 +13008,13 @@ int LDAPURH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapursb.xml */
 int LDAPURSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=00|011001|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x19800000) {
@@ -13365,14 +13059,13 @@ int LDAPURSB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapursh.xml */
 int LDAPURSH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=01|011001|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x59800000) {
@@ -13417,14 +13110,13 @@ int LDAPURSH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapursw.xml */
 int LDAPURSW(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAPURSW_64_ldapstl_unscaled */
 	/* size=10|011001|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x99800000) {
@@ -13468,14 +13160,13 @@ int LDAPURSW(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldapur_gen.xml */
 int LDAPUR_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0x99400000) {
@@ -13520,14 +13211,13 @@ int LDAPUR_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldar.xml */
 int LDAR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C08000) {
@@ -13545,14 +13235,13 @@ int LDAR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_LDAR_LR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_LDAR_LR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldarb.xml */
 int LDARB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDARB_LR32_ldstexcl */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C08000) {
@@ -13569,14 +13258,13 @@ int LDARB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDARB_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldarh.xml */
 int LDARH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDARH_LR32_ldstexcl */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C08000) {
@@ -13593,14 +13281,13 @@ int LDARH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDARH_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaxp.xml */
 int LDAXP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88608000) {
@@ -13619,14 +13306,13 @@ int LDAXP(context *ctx, Instruction *dec)
 		if(dec->sz==0) OK(ENC_LDAXP_LP32_LDSTEXCL);
 		if(dec->sz==1) OK(ENC_LDAXP_LP64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaxr.xml */
 int LDAXR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88408000) {
@@ -13645,14 +13331,13 @@ int LDAXR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_LDAXR_LR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_LDAXR_LR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaxrb.xml */
 int LDAXRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAXRB_LR32_ldstexcl */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8408000) {
@@ -13670,14 +13355,13 @@ int LDAXRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDAXRB_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldaxrh.xml */
 int LDAXRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDAXRH_LR32_ldstexcl */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48408000) {
@@ -13695,14 +13379,13 @@ int LDAXRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDAXRH_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldclr.xml */
 int LDCLR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8201000) {
@@ -13753,14 +13436,13 @@ int LDCLR(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDCLRAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDCLRL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldclrb.xml */
 int LDCLRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38201000) {
@@ -13807,14 +13489,13 @@ int LDCLRB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDCLRB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDCLRLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldclrh.xml */
 int LDCLRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78201000) {
@@ -13861,14 +13542,13 @@ int LDCLRH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDCLRH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDCLRLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldeor.xml */
 int LDEOR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8202000) {
@@ -13919,14 +13599,13 @@ int LDEOR(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDEORAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDEORL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldeorb.xml */
 int LDEORB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38202000) {
@@ -13973,14 +13652,13 @@ int LDEORB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDEORB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDEORLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldeorh.xml */
 int LDEORH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78202000) {
@@ -14027,14 +13705,13 @@ int LDEORH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDEORH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDEORLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldg.xml */
 int LDG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDG_64Loffset_ldsttags */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600000) {
@@ -14047,14 +13724,13 @@ int LDG(context *ctx, Instruction *dec)
 		dec->offset = LSL(SignExtend(dec->imm9,9),LOG2_TAG_GRANULE);
 		OK(ENC_LDG_64LOFFSET_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldgm.xml */
 int LDGM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDGM_64bulk_ldsttags */
 	/* 11011001|opc=11|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9E00000) {
@@ -14066,14 +13742,13 @@ int LDGM(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Xn);
 		OK(ENC_LDGM_64BULK_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldlar.xml */
 int LDLAR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C00000) {
@@ -14091,14 +13766,13 @@ int LDLAR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_LDLAR_LR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_LDLAR_LR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldlarb.xml */
 int LDLARB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDLARB_LR32_ldstexcl */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C00000) {
@@ -14115,14 +13789,13 @@ int LDLARB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDLARB_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldlarh.xml */
 int LDLARH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDLARH_LR32_ldstexcl */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C00000) {
@@ -14139,14 +13812,13 @@ int LDLARH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDLARH_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnp_fpsimd.xml */
 int LDNP_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_scaled_offset */
 	/* opc=xx|101|V=1|000|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C400000) {
@@ -14168,14 +13840,13 @@ int LDNP_fpsimd(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnp_gen.xml */
 int LDNP_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_scaled_offset */
 	/* opc=x0|101|V=0|000|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28400000) {
@@ -14196,14 +13867,13 @@ int LDNP_gen(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldpsw.xml */
 int LDPSW(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDPSW_64_ldstpair_post */
 	/* opc=01|101|V=0|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x68C00000) {
@@ -14236,14 +13906,13 @@ int LDPSW(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldp_fpsimd.xml */
 int LDP_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* opc=xx|101|V=1|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2CC00000) {
@@ -14281,14 +13950,13 @@ int LDP_fpsimd(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldp_gen.xml */
 int LDP_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* opc=x0|101|V=0|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28C00000) {
@@ -14324,14 +13992,13 @@ int LDP_gen(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldra.xml */
 int LDRA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=11|111|V=0|00|M=x|S=x|1|imm9=xxxxxxxxx|W=x|1|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF200400)==0xF8200400) {
@@ -14352,14 +14019,13 @@ int LDRA(context *ctx, Instruction *dec)
 		if(dec->M==1 && dec->W==0) OK(ENC_LDRAB_64_LDST_PAC);
 		if(dec->M==1 && dec->W==1) OK(ENC_LDRAB_64W_LDST_PAC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrb_imm.xml */
 int LDRB_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRB_32_ldst_immpost */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400400) {
@@ -14420,14 +14086,13 @@ int LDRB_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrb_reg.xml */
 int LDRB_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class 32 */
 	/* size=00|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38600800) {
@@ -14477,14 +14142,13 @@ int LDRB_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrh_imm.xml */
 int LDRH_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRH_32_ldst_immpost */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400400) {
@@ -14545,14 +14209,13 @@ int LDRH_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrh_reg.xml */
 int LDRH_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRH_32_ldst_regoff */
 	/* size=01|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78600800) {
@@ -14601,14 +14264,13 @@ int LDRH_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsb_imm.xml */
 int LDRSB_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800400) {
@@ -14672,14 +14334,13 @@ int LDRSB_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsb_reg.xml */
 int LDRSB_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|opc=1x|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38A00800) {
@@ -14731,14 +14392,13 @@ int LDRSB_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsh_imm.xml */
 int LDRSH_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800400) {
@@ -14802,14 +14462,13 @@ int LDRSH_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsh_reg.xml */
 int LDRSH_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|opc=1x|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78A00800) {
@@ -14859,14 +14518,13 @@ int LDRSH_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsw_imm.xml */
 int LDRSW_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRSW_64_ldst_immpost */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800400) {
@@ -14927,14 +14585,13 @@ int LDRSW_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsw_lit.xml */
 int LDRSW_lit(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRSW_64_loadlit */
 	/* opc=10|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF000000)==0x98000000) {
@@ -14959,14 +14616,13 @@ int LDRSW_lit(context *ctx, Instruction *dec)
 		dec->tag_checked = FALSE;
 		OK(ENC_LDRSW_64_LOADLIT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldrsw_reg.xml */
 int LDRSW_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDRSW_64_ldst_regoff */
 	/* size=10|111|V=0|00|opc=10|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8A00800) {
@@ -15015,14 +14671,13 @@ int LDRSW_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_imm_fpsimd.xml */
 int LDR_imm_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=xx|111|V=1|00|opc=x1|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C400400) {
@@ -15081,14 +14736,13 @@ int LDR_imm_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_imm_gen.xml */
 int LDR_imm_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400400) {
@@ -15152,14 +14806,13 @@ int LDR_imm_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_lit_fpsimd.xml */
 int LDR_lit_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class literal */
 	/* opc=xx|011|V=1|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F000000)==0x1C000000) {
@@ -15183,14 +14836,13 @@ int LDR_lit_fpsimd(context *ctx, Instruction *dec)
 		if(dec->opc==1) OK(ENC_LDR_D_LOADLIT);
 		if(dec->opc==2) OK(ENC_LDR_Q_LOADLIT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_lit_gen.xml */
 int LDR_lit_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class literal */
 	/* opc=0x|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF000000)==0x18000000) {
@@ -15216,14 +14868,13 @@ int LDR_lit_gen(context *ctx, Instruction *dec)
 		if(dec->opc==0) OK(ENC_LDR_32_LOADLIT);
 		if(dec->opc==1) OK(ENC_LDR_64_LOADLIT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_reg_fpsimd.xml */
 int LDR_reg_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fpsimd */
 	/* size=xx|111|V=1|00|opc=x1|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C600800) {
@@ -15254,14 +14905,13 @@ int LDR_reg_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_reg_gen.xml */
 int LDR_reg_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8600800) {
@@ -15311,14 +14961,13 @@ int LDR_reg_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldset.xml */
 int LDSET(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8203000) {
@@ -15369,14 +15018,13 @@ int LDSET(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDSETAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDSETL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsetb.xml */
 int LDSETB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38203000) {
@@ -15423,14 +15071,13 @@ int LDSETB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSETB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSETLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldseth.xml */
 int LDSETH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78203000) {
@@ -15477,14 +15124,13 @@ int LDSETH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSETH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSETLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsmax.xml */
 int LDSMAX(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8204000) {
@@ -15535,14 +15181,13 @@ int LDSMAX(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDSMAXAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDSMAXL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsmaxb.xml */
 int LDSMAXB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38204000) {
@@ -15589,14 +15234,13 @@ int LDSMAXB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSMAXB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSMAXLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsmaxh.xml */
 int LDSMAXH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78204000) {
@@ -15643,14 +15287,13 @@ int LDSMAXH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSMAXH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSMAXLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsmin.xml */
 int LDSMIN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8205000) {
@@ -15701,14 +15344,13 @@ int LDSMIN(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDSMINAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDSMINL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsminb.xml */
 int LDSMINB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38205000) {
@@ -15755,14 +15397,13 @@ int LDSMINB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSMINB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSMINLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldsminh.xml */
 int LDSMINH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78205000) {
@@ -15809,14 +15450,13 @@ int LDSMINH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDSMINH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDSMINLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtr.xml */
 int LDTR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400800) {
@@ -15866,14 +15506,13 @@ int LDTR(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtrb.xml */
 int LDTRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDTRB_32_ldst_unpriv */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400800) {
@@ -15922,14 +15561,13 @@ int LDTRB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtrh.xml */
 int LDTRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDTRH_32_ldst_unpriv */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400800) {
@@ -15978,14 +15616,13 @@ int LDTRH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtrsb.xml */
 int LDTRSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800800) {
@@ -16035,14 +15672,13 @@ int LDTRSB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtrsh.xml */
 int LDTRSH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800800) {
@@ -16092,14 +15728,13 @@ int LDTRSH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldtrsw.xml */
 int LDTRSW(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDTRSW_64_ldst_unpriv */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800800) {
@@ -16148,14 +15783,13 @@ int LDTRSW(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldumax.xml */
 int LDUMAX(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8206000) {
@@ -16206,14 +15840,13 @@ int LDUMAX(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDUMAXAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDUMAXL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldumaxb.xml */
 int LDUMAXB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38206000) {
@@ -16260,14 +15893,13 @@ int LDUMAXB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDUMAXB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDUMAXLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldumaxh.xml */
 int LDUMAXH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78206000) {
@@ -16314,14 +15946,13 @@ int LDUMAXH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDUMAXH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDUMAXLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldumin.xml */
 int LDUMIN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8207000) {
@@ -16372,14 +16003,13 @@ int LDUMIN(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_LDUMINAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_LDUMINL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lduminb.xml */
 int LDUMINB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38207000) {
@@ -16426,14 +16056,13 @@ int LDUMINB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDUMINB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDUMINLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lduminh.xml */
 int LDUMINH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78207000) {
@@ -16480,14 +16109,13 @@ int LDUMINH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_LDUMINH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_LDUMINLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldurb.xml */
 int LDURB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDURB_32_ldst_unscaled */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400000) {
@@ -16531,14 +16159,13 @@ int LDURB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldurh.xml */
 int LDURH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDURH_32_ldst_unscaled */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400000) {
@@ -16582,14 +16209,13 @@ int LDURH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldursb.xml */
 int LDURSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800000) {
@@ -16634,14 +16260,13 @@ int LDURSB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldursh.xml */
 int LDURSH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800000) {
@@ -16686,14 +16311,13 @@ int LDURSH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldursw.xml */
 int LDURSW(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDURSW_64_ldst_unscaled */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800000) {
@@ -16737,14 +16361,13 @@ int LDURSW(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldur_fpsimd.xml */
 int LDUR_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=xx|111|V=1|00|opc=x1|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C400000) {
@@ -16769,14 +16392,13 @@ int LDUR_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldur_gen.xml */
 int LDUR_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400000) {
@@ -16821,14 +16443,13 @@ int LDUR_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldxp.xml */
 int LDXP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88600000) {
@@ -16847,14 +16468,13 @@ int LDXP(context *ctx, Instruction *dec)
 		if(dec->sz==0) OK(ENC_LDXP_LP32_LDSTEXCL);
 		if(dec->sz==1) OK(ENC_LDXP_LP64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldxr.xml */
 int LDXR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88400000) {
@@ -16873,14 +16493,13 @@ int LDXR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_LDXR_LR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_LDXR_LR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldxrb.xml */
 int LDXRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDXRB_LR32_ldstexcl */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8400000) {
@@ -16898,14 +16517,13 @@ int LDXRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDXRB_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldxrh.xml */
 int LDXRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class LDXRH_LR32_ldstexcl */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48400000) {
@@ -16923,14 +16541,13 @@ int LDXRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_LDXRH_LR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lslv.xml */
 int LSLV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
@@ -16945,14 +16562,13 @@ int LSLV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_LSLV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_LSLV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_lslv.xml */
 int LSL_LSLV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
@@ -16960,14 +16576,13 @@ int LSL_LSLV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_LSL_LSLV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_LSL_LSLV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_ubfm.xml */
 int LSL_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
@@ -16975,14 +16590,13 @@ int LSL_UBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0 && dec->imms!=0x1f) OK(ENC_LSL_UBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1 && dec->imms!=0x3f) OK(ENC_LSL_UBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsrv.xml */
 int LSRV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
@@ -16997,14 +16611,13 @@ int LSRV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_LSRV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_LSRV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_lsrv.xml */
 int LSR_LSRV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
@@ -17012,14 +16625,13 @@ int LSR_LSRV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_LSR_LSRV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_LSR_LSRV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_ubfm.xml */
 int LSR_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=x11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F807C00)==0x53007C00) {
@@ -17027,14 +16639,13 @@ int LSR_UBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0 && dec->imms==0x1f) OK(ENC_LSR_UBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1 && dec->imms==0x3f) OK(ENC_LSR_UBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* madd.xml */
 int MADD(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE08000)==0x1B000000) {
@@ -17051,14 +16662,13 @@ int MADD(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MADD_32A_DP_3SRC);
 		if(dec->sf==1) OK(ENC_MADD_64A_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mla_advsimd_elt.xml */
 int MLA_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MLA_asimdelem_R */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F000000) {
@@ -17084,14 +16694,13 @@ int MLA_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_MLA_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mla_advsimd_vec.xml */
 int MLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MLA_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209400) {
@@ -17108,14 +16717,13 @@ int MLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->U==1);
 		OK(ENC_MLA_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mls_advsimd_elt.xml */
 int MLS_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MLS_asimdelem_R */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F004000) {
@@ -17141,14 +16749,13 @@ int MLS_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_MLS_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mls_advsimd_vec.xml */
 int MLS_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MLS_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E209400) {
@@ -17165,14 +16772,13 @@ int MLS_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->U==1);
 		OK(ENC_MLS_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mneg_msub.xml */
 int MNEG_MSUB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1B00FC00) {
@@ -17180,14 +16786,13 @@ int MNEG_MSUB(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MNEG_MSUB_32A_DP_3SRC);
 		if(dec->sf==1) OK(ENC_MNEG_MSUB_64A_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movi_advsimd.xml */
 int MOVI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|op=x|0111100000|a=x|b=x|c=x|cmode=xxxx|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0x9FF80C00)==0xF000400) {
@@ -17245,14 +16850,13 @@ int MOVI_advsimd(context *ctx, Instruction *dec)
 		if(dec->Q==0 && dec->op==1 && dec->cmode==14) OK(ENC_MOVI_ASIMDIMM_D_DS);
 		if(dec->Q==1 && dec->op==1 && dec->cmode==14) OK(ENC_MOVI_ASIMDIMM_D2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movk.xml */
 int MOVK(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm18_packed */
 	/* sf=x|opc=11|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x72800000) {
@@ -17279,14 +16883,13 @@ int MOVK(context *ctx, Instruction *dec)
 		if(dec->sf==0 && !(dec->hw&2)) OK(ENC_MOVK_32_MOVEWIDE);
 		if(dec->sf==1) OK(ENC_MOVK_64_MOVEWIDE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movn.xml */
 int MOVN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm18_packed */
 	/* sf=x|opc=00|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12800000) {
@@ -17317,42 +16920,39 @@ int MOVN(context *ctx, Instruction *dec)
 		if(dec->sf==0 && !(dec->hw&2)) OK(ENC_MOVN_32_MOVEWIDE);
 		if(dec->sf==1) OK(ENC_MOVN_64_MOVEWIDE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movs_and_p_p_pp.xml */
 int MOVS_and_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ands_p_p_pp_z */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404000) {
 		decode_fields32(ENC_MOVS_ANDS_P_P_PP_Z, dec);
 		OK(ENC_MOVS_ANDS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movs_orr_p_p_pp.xml */
 int MOVS_orr_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orrs_p_p_pp_z */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04000) {
 		decode_fields32(ENC_MOVS_ORRS_P_P_PP_Z, dec);
 		OK(ENC_MOVS_ORRS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movz.xml */
 int MOVZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm18_packed */
 	/* sf=x|opc=10|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52800000) {
@@ -17381,14 +16981,13 @@ int MOVZ(context *ctx, Instruction *dec)
 		if(dec->sf==0 && !(dec->hw&2)) OK(ENC_MOVZ_32_MOVEWIDE);
 		if(dec->sf==1) OK(ENC_MOVZ_64_MOVEWIDE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_add_addsub_imm.xml */
 int MOV_ADD_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=0|S=0|100010|sh=0|imm12=000000000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x11000000) {
@@ -17396,56 +16995,52 @@ int MOV_ADD_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MOV_ADD_32_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_MOV_ADD_64_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_dup_advsimd_elt.xml */
 int MOV_DUP_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class DUP_asisdone_only */
 	/* 01|op=0|11110000|imm5=xxxxx|0|imm4=0000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000400) {
 		decode_fields32(ENC_MOV_DUP_ASISDONE_ONLY, dec);
 		OK(ENC_MOV_DUP_ASISDONE_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_ins_advsimd_elt.xml */
 int MOV_INS_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class INS_asimdins_IV_v */
 	/* 0|Q=1|op=1|01110000|imm5=xxxxx|0|imm4=xxxx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08400)==0x6E000400) {
 		decode_fields32(ENC_MOV_INS_ASIMDINS_IV_V, dec);
 		OK(ENC_MOV_INS_ASIMDINS_IV_V);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_ins_advsimd_gen.xml */
 int MOV_INS_advsimd_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class INS_asimdins_IR_r */
 	/* 0|Q=1|op=0|01110000|imm5=xxxxx|0|imm4=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E001C00) {
 		decode_fields32(ENC_MOV_INS_ASIMDINS_IR_R, dec);
 		OK(ENC_MOV_INS_ASIMDINS_IR_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_movn.xml */
 int MOV_MOVN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm18_packed */
 	/* sf=x|opc=00|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12800000) {
@@ -17453,14 +17048,13 @@ int MOV_MOVN(context *ctx, Instruction *dec)
 		if(dec->sf==0 && !(dec->hw&2)) OK(ENC_MOV_MOVN_32_MOVEWIDE);
 		if(dec->sf==1) OK(ENC_MOV_MOVN_64_MOVEWIDE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_movz.xml */
 int MOV_MOVZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class imm18_packed */
 	/* sf=x|opc=10|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52800000) {
@@ -17468,28 +17062,26 @@ int MOV_MOVZ(context *ctx, Instruction *dec)
 		if(dec->sf==0 && !(dec->hw&2)) OK(ENC_MOV_MOVZ_32_MOVEWIDE);
 		if(dec->sf==1) OK(ENC_MOV_MOVZ_64_MOVEWIDE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_orr_advsimd_reg.xml */
 int MOV_ORR_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ORR_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA01C00) {
 		decode_fields32(ENC_MOV_ORR_ASIMDSAME_ONLY, dec);
 		OK(ENC_MOV_ORR_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_orr_log_imm.xml */
 int MOV_ORR_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F8003E0)==0x320003E0) {
@@ -17497,14 +17089,13 @@ int MOV_ORR_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_MOV_ORR_32_LOG_IMM);
 		if(dec->sf==1) OK(ENC_MOV_ORR_64_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_orr_log_shift.xml */
 int MOV_ORR_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|01010|shift=00|N=0|Rm=xxxxx|imm6=000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x2A0003E0) {
@@ -17512,14 +17103,13 @@ int MOV_ORR_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MOV_ORR_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_MOV_ORR_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_umov_advsimd.xml */
 int MOV_UMOV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxx00|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE3FC00)==0xE003C00) {
@@ -17527,112 +17117,104 @@ int MOV_UMOV_advsimd(context *ctx, Instruction *dec)
 		if(dec->Q==0 && (dec->imm5&7)==4) OK(ENC_MOV_UMOV_ASIMDINS_W_W);
 		if(dec->Q==1 && (dec->imm5&15)==8) OK(ENC_MOV_UMOV_ASIMDINS_X_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_and_p_p_pp.xml */
 int MOV_and_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_p_p_pp_z */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004000) {
 		decode_fields32(ENC_MOV_AND_P_P_PP_Z, dec);
 		OK(ENC_MOV_AND_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_cpy_z_o_i.xml */
 int MOV_cpy_z_o_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_o_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=0|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5100000) {
 		decode_fields32(ENC_MOV_CPY_Z_O_I_, dec);
 		OK(ENC_MOV_CPY_Z_O_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_cpy_z_p_i.xml */
 int MOV_cpy_z_p_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5104000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_I_, dec);
 		OK(ENC_MOV_CPY_Z_P_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_cpy_z_p_r.xml */
 int MOV_cpy_z_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_r_ */
 	/* 00000101|size=xx|101000101|Pg=xxx|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x528A000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_R_, dec);
 		OK(ENC_MOV_CPY_Z_P_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_cpy_z_p_v.xml */
 int MOV_cpy_z_p_v(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_v_ */
 	/* 00000101|size=xx|100000100|Pg=xxx|Vn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5208000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_V_, dec);
 		OK(ENC_MOV_CPY_Z_P_V_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_dup_z_i.xml */
 int MOV_dup_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_i_ */
 	/* 00100101|size=xx|111|opc=00|011|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2538C000) {
 		decode_fields32(ENC_MOV_DUP_Z_I_, dec);
 		OK(ENC_MOV_DUP_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_dup_z_r.xml */
 int MOV_dup_z_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_r_ */
 	/* 00000101|size=xx|100000001110|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5203800) {
 		decode_fields32(ENC_MOV_DUP_Z_R_, dec);
 		OK(ENC_MOV_DUP_Z_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_dup_z_zi.xml */
 int MOV_dup_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_zi_ */
 	/* 00000101|imm2=xx|1|tsz=xxxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202000) {
@@ -17640,84 +17222,78 @@ int MOV_dup_z_zi(context *ctx, Instruction *dec)
 		if(BitCount(((dec->imm2<<5)|dec->tsz))==1) OK(ENC_MOV_DUP_Z_ZI_);
 		if(BitCount(((dec->imm2<<5)|dec->tsz))>1) OK(ENC_MOV_DUP_Z_ZI_2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_dupm_z_i.xml */
 int MOV_dupm_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dupm_z_i_ */
 	/* 00000101110000|imm13=xxxxxxxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5C00000) {
 		decode_fields32(ENC_MOV_DUPM_Z_I_, dec);
 		OK(ENC_MOV_DUPM_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_orr_p_p_pp.xml */
 int MOV_orr_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_p_p_pp_z */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804000) {
 		decode_fields32(ENC_MOV_ORR_P_P_PP_Z, dec);
 		OK(ENC_MOV_ORR_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_orr_z_zz.xml */
 int MOV_orr_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_z_zz_ */
 	/* 00000100|opc=01|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603000) {
 		decode_fields32(ENC_MOV_ORR_Z_ZZ_, dec);
 		OK(ENC_MOV_ORR_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_sel_p_p_pp.xml */
 int MOV_sel_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sel_p_p_pp_ */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004210) {
 		decode_fields32(ENC_MOV_SEL_P_P_PP_, dec);
 		OK(ENC_MOV_SEL_P_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mov_sel_z_p_zz.xml */
 int MOV_sel_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sel_z_p_zz_ */
 	/* 00000101|size=xx|1|Zm=xxxxx|11|Pg=xxxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20C000)==0x520C000) {
 		decode_fields32(ENC_MOV_SEL_Z_P_ZZ_, dec);
 		OK(ENC_MOV_SEL_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mrs.xml */
 int MRS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MRS_RS_systemmove */
 	/* 1101010100|L=1|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5300000) {
@@ -17732,14 +17308,13 @@ int MRS(context *ctx, Instruction *dec)
 		dec->read = (dec->L==1);
 		OK(ENC_MRS_RS_SYSTEMMOVE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* msr_imm.xml */
 int MSR_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MSR_SI_pstate */
 	/* 1101010100|L=0|op0=00|op1=xxx|CRn=0100|CRm=xxxx|op2=xxx|Rt =11111 */
 	if((INSWORD & 0xFFF8F01F)==0xD500401F) {
@@ -17809,14 +17384,13 @@ int MSR_imm(context *ctx, Instruction *dec)
 		}
 		OK(ENC_MSR_SI_PSTATE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* msr_reg.xml */
 int MSR_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MSR_SR_systemmove */
 	/* 1101010100|L=0|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5100000) {
@@ -17831,14 +17405,13 @@ int MSR_reg(context *ctx, Instruction *dec)
 		dec->read = (dec->L==1);
 		OK(ENC_MSR_SR_SYSTEMMOVE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* msub.xml */
 int MSUB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE08000)==0x1B008000) {
@@ -17855,14 +17428,13 @@ int MSUB(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MSUB_32A_DP_3SRC);
 		if(dec->sf==1) OK(ENC_MSUB_64A_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mul_madd.xml */
 int MUL_MADD(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1B007C00) {
@@ -17870,14 +17442,13 @@ int MUL_MADD(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MUL_MADD_32A_DP_3SRC);
 		if(dec->sf==1) OK(ENC_MUL_MADD_64A_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mul_advsimd_elt.xml */
 int MUL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MUL_asimdelem_R */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1000|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF008000) {
@@ -17902,14 +17473,13 @@ int MUL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_MUL_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mul_advsimd_vec.xml */
 int MUL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class MUL_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209C00) {
@@ -17929,14 +17499,13 @@ int MUL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->poly = (dec->U==1);
 		OK(ENC_MUL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mvni_advsimd.xml */
 int MVNI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|op=1|0111100000|a=x|b=x|c=x|cmode=xxxx|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF80C00)==0x2F000400) {
@@ -17991,28 +17560,26 @@ int MVNI_advsimd(context *ctx, Instruction *dec)
 		if(!(dec->cmode&9)) OK(ENC_MVNI_ASIMDIMM_L_SL);
 		if((dec->cmode&14)==12) OK(ENC_MVNI_ASIMDIMM_M_SM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mvn_not_advsimd.xml */
 int MVN_NOT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class NOT_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|size=00|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E205800) {
 		decode_fields32(ENC_MVN_NOT_ASIMDMISC_R, dec);
 		OK(ENC_MVN_NOT_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mvn_orn_log_shift.xml */
 int MVN_ORN_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F2003E0)==0x2A2003E0) {
@@ -18020,14 +17587,13 @@ int MVN_ORN_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_MVN_ORN_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_MVN_ORN_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* negs_subs_addsub_shift.xml */
 int NEGS_SUBS_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F2003E0)==0x6B0003E0) {
@@ -18035,14 +17601,13 @@ int NEGS_SUBS_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_NEGS_SUBS_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_NEGS_SUBS_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* neg_sub_addsub_shift.xml */
 int NEG_SUB_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F2003E0)==0x4B0003E0) {
@@ -18050,14 +17615,13 @@ int NEG_SUB_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_NEG_SUB_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_NEG_SUB_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* neg_advsimd.xml */
 int NEG_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class NEG_asisdmisc_R */
 	/* 01|U=1|11110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E20B800) {
@@ -18088,14 +17652,13 @@ int NEG_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_NEG_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ngcs_sbcs.xml */
 int NGCS_SBCS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|11010000|Rm=xxxxx|000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x7A0003E0) {
@@ -18103,14 +17666,13 @@ int NGCS_SBCS(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_NGCS_SBCS_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_NGCS_SBCS_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ngc_sbc.xml */
 int NGC_SBC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|11010000|Rm=xxxxx|000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x5A0003E0) {
@@ -18118,14 +17680,13 @@ int NGC_SBC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_NGC_SBC_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_NGC_SBC_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* nop.xml */
 int NOP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class NOP_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=000|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503201F) {
@@ -18230,28 +17791,26 @@ int NOP(context *ctx, Instruction *dec)
 		}
 		OK(ENC_NOP_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* nots_eor_p_p_pp.xml */
 int NOTS_eor_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eors_p_p_pp_z */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404200) {
 		decode_fields32(ENC_NOTS_EORS_P_P_PP_Z, dec);
 		OK(ENC_NOTS_EORS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* not_advsimd.xml */
 int NOT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class NOT_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|size=00|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E205800) {
@@ -18265,28 +17824,26 @@ int NOT_advsimd(context *ctx, Instruction *dec)
 		if(MVN_NOT_advsimd(ctx, dec)==0) return 0;
 		OK(ENC_NOT_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* not_eor_p_p_pp.xml */
 int NOT_eor_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_p_p_pp_z */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004200) {
 		decode_fields32(ENC_NOT_EOR_P_P_PP_Z, dec);
 		OK(ENC_NOT_EOR_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orn_advsimd.xml */
 int ORN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ORN_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=11|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEE01C00) {
@@ -18301,14 +17858,13 @@ int ORN_advsimd(context *ctx, Instruction *dec)
 		dec->op = (SLICE(dec->size,1,1)==1) ? LogicalOp_ORR : LogicalOp_AND;
 		OK(ENC_ORN_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orn_log_shift.xml */
 int ORN_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2A200000) {
@@ -18344,28 +17900,26 @@ int ORN_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ORN_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_ORN_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orn_orr_z_zi.xml */
 int ORN_orr_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_z_zi_ */
 	/* 00000101|opc=00|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5000000) {
 		decode_fields32(ENC_ORN_ORR_Z_ZI_, dec);
 		OK(ENC_ORN_ORR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_advsimd_imm.xml */
 int ORR_advsimd_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class shifted_immediate */
 	/* 0|Q=x|op=0|0111100000|a=x|b=x|c=x|cmode=xxx1|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF81C00)==0xF001400) {
@@ -18419,14 +17973,13 @@ int ORR_advsimd_imm(context *ctx, Instruction *dec)
 		if((dec->cmode&13)==9) OK(ENC_ORR_ASIMDIMM_L_HL);
 		if((dec->cmode&9)==1) OK(ENC_ORR_ASIMDIMM_L_SL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_advsimd_reg.xml */
 int ORR_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ORR_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA01C00) {
@@ -18443,14 +17996,13 @@ int ORR_advsimd_reg(context *ctx, Instruction *dec)
 		if(dec->Rm==dec->Rn) return MOV_ORR_advsimd_reg(ctx, dec);
 		OK(ENC_ORR_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_log_imm.xml */
 int ORR_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x32000000) {
@@ -18485,14 +18037,13 @@ int ORR_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_ORR_32_LOG_IMM);
 		if(dec->sf==1) OK(ENC_ORR_64_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_log_shift.xml */
 int ORR_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2A000000) {
@@ -18528,14 +18079,13 @@ int ORR_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ORR_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_ORR_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pacda.xml */
 int PACDA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=010|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10800) {
@@ -18559,14 +18109,13 @@ int PACDA(context *ctx, Instruction *dec)
 		if(dec->Z==0) OK(ENC_PACDA_64P_DP_1SRC);
 		if(dec->Z==1 && dec->Rn==0x1f) OK(ENC_PACDZA_64Z_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pacdb.xml */
 int PACDB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=011|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10C00) {
@@ -18590,14 +18139,13 @@ int PACDB(context *ctx, Instruction *dec)
 		if(dec->Z==0) OK(ENC_PACDB_64P_DP_1SRC);
 		if(dec->Z==1 && dec->Rn==0x1f) OK(ENC_PACDZB_64Z_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pacga.xml */
 int PACGA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PACGA_64P_dp_2src */
 	/* sf=1|op=0|S=0|11010110|Rm=xxxxx|opcode2=001100|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC03000) {
@@ -18614,14 +18162,13 @@ int PACGA(context *ctx, Instruction *dec)
 		}
 		OK(ENC_PACGA_64P_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pacia.xml */
 int PACIA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10000) {
@@ -18693,14 +18240,13 @@ int PACIA(context *ctx, Instruction *dec)
 		if(dec->CRm==3 && dec->op2==1) OK(ENC_PACIASP_HI_HINTS);
 		if(dec->CRm==3 && dec->op2==0) OK(ENC_PACIAZ_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pacib.xml */
 int PACIB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=001|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10400) {
@@ -18772,14 +18318,13 @@ int PACIB(context *ctx, Instruction *dec)
 		if(dec->CRm==3 && dec->op2==3) OK(ENC_PACIBSP_HI_HINTS);
 		if(dec->CRm==3 && dec->op2==2) OK(ENC_PACIBZ_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pmull_advsimd.xml */
 int PMULL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PMULL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1110|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20E000) {
@@ -18799,14 +18344,13 @@ int PMULL_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_PMULL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pmul_advsimd.xml */
 int PMUL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PMUL_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E209C00) {
@@ -18826,14 +18370,13 @@ int PMUL_advsimd(context *ctx, Instruction *dec)
 		dec->poly = (dec->U==1);
 		OK(ENC_PMUL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfm_imm.xml */
 int PRFM_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PRFM_P_ldst_pos */
 	/* size=11|111|V=0|01|opc=10|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0xF9800000) {
@@ -18877,14 +18420,13 @@ int PRFM_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfm_lit.xml */
 int PRFM_lit(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PRFM_P_loadlit */
 	/* opc=11|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF000000)==0xD8000000) {
@@ -18909,14 +18451,13 @@ int PRFM_lit(context *ctx, Instruction *dec)
 		dec->tag_checked = FALSE;
 		OK(ENC_PRFM_P_LOADLIT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfm_reg.xml */
 int PRFM_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PRFM_P_ldst_regoff */
 	/* size=11|111|V=0|00|opc=10|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xF8A00800) {
@@ -18965,14 +18506,13 @@ int PRFM_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfum.xml */
 int PRFUM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PRFUM_P_ldst_unscaled */
 	/* size=11|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xF8800000) {
@@ -19016,14 +18556,13 @@ int PRFUM(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* psb.xml */
 int PSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PSB_HC_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=001|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503223F) {
@@ -19128,28 +18667,26 @@ int PSB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_PSB_HC_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pssbb.xml */
 int PSSBB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class PSSBB_only_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0100|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503349F) {
 		decode_fields32(ENC_PSSBB_ONLY_BARRIERS, dec);
 		OK(ENC_PSSBB_ONLY_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* raddhn_advsimd.xml */
 int RADDHN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RADDHN_asimddiff_N */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204000) {
@@ -19168,14 +18705,13 @@ int RADDHN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->U==1);
 		OK(ENC_RADDHN_ASIMDDIFF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rax1_advsimd.xml */
 int RAX1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RAX1_VVV2_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608C00) {
@@ -19188,14 +18724,13 @@ int RAX1_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_RAX1_VVV2_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rbit_advsimd.xml */
 int RBIT_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RBIT_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|size=01|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E605800) {
@@ -19207,14 +18742,13 @@ int RBIT_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((8) ? ((dec->datasize) / (8)) : 0);
 		OK(ENC_RBIT_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rbit_int.xml */
 int RBIT_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opcode[1:0]=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC00000) {
@@ -19225,14 +18759,13 @@ int RBIT_int(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_RBIT_32_DP_1SRC);
 		if(dec->sf==1) OK(ENC_RBIT_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ret.xml */
 int RET(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RET_64R_branch_reg */
 	/* 1101011|Z=0|opc[2:1]=0|op=10|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD65F0000) {
@@ -19274,14 +18807,13 @@ int RET(context *ctx, Instruction *dec)
 		}
 		OK(ENC_RET_64R_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* reta.xml */
 int RETA(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* 1101011|Z=0|opc[2:1]=0|op=10|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=11111|Rm=11111 */
 	if((INSWORD & 0xFFFFFBFF)==0xD65F0BFF) {
@@ -19324,14 +18856,13 @@ int RETA(context *ctx, Instruction *dec)
 		if(dec->M==0) OK(ENC_RETAA_64E_BRANCH_REG);
 		if(dec->M==1) OK(ENC_RETAB_64E_BRANCH_REG);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev.xml */
 int REV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=1x|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFF800)==0x5AC00800) {
@@ -19357,14 +18888,13 @@ int REV(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->opc==2) OK(ENC_REV_32_DP_1SRC);
 		if(dec->sf==1 && dec->opc==3) OK(ENC_REV_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev16_advsimd.xml */
 int REV16_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class REV16_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE201800) {
@@ -19390,14 +18920,13 @@ int REV16_advsimd(context *ctx, Instruction *dec)
 		dec->elements_per_container = ((dec->esize) ? ((dec->container_size) / (dec->esize)) : 0);
 		OK(ENC_REV16_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev16_int.xml */
 int REV16_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC00400) {
@@ -19423,14 +18952,13 @@ int REV16_int(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_REV16_32_DP_1SRC);
 		if(dec->sf==1) OK(ENC_REV16_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev32_advsimd.xml */
 int REV32_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class REV32_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E200800) {
@@ -19456,14 +18984,13 @@ int REV32_advsimd(context *ctx, Instruction *dec)
 		dec->elements_per_container = ((dec->esize) ? ((dec->container_size) / (dec->esize)) : 0);
 		OK(ENC_REV32_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev32_int.xml */
 int REV32_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class REV32_64_dp_1src */
 	/* sf=1|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xDAC00800) {
@@ -19488,28 +19015,26 @@ int REV32_int(context *ctx, Instruction *dec)
 		}
 		OK(ENC_REV32_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev64_rev.xml */
 int REV64_REV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xDAC00C00) {
 		decode_fields32(ENC_REV64_REV_64_DP_1SRC, dec);
 		OK(ENC_REV64_REV_64_DP_1SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev64_advsimd.xml */
 int REV64_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class REV64_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE200800) {
@@ -19535,14 +19060,13 @@ int REV64_advsimd(context *ctx, Instruction *dec)
 		dec->elements_per_container = ((dec->esize) ? ((dec->container_size) / (dec->esize)) : 0);
 		OK(ENC_REV64_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rmif.xml */
 int RMIF(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RMIF_only_rmif */
 	/* sf=1|op=0|S=1|11010000|imm6=xxxxxx|00001|Rn=xxxxx|o2=0|mask=xxxx */
 	if((INSWORD & 0xFFE07C10)==0xBA000400) {
@@ -19554,14 +19078,13 @@ int RMIF(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Rn);
 		OK(ENC_RMIF_ONLY_RMIF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rorv.xml */
 int RORV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
@@ -19576,14 +19099,13 @@ int RORV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_RORV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_RORV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ror_extr.xml */
 int ROR_EXTR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op21=00|100111|N=x|o0=0|Rm=xxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FA00000)==0x13800000) {
@@ -19591,14 +19113,13 @@ int ROR_EXTR(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0 && !(dec->imms&0x20)) OK(ENC_ROR_EXTR_32_EXTRACT);
 		if(dec->sf==1 && dec->N==1) OK(ENC_ROR_EXTR_64_EXTRACT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ror_rorv.xml */
 int ROR_RORV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
@@ -19606,14 +19127,13 @@ int ROR_RORV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_ROR_RORV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_ROR_RORV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rshrn_advsimd.xml */
 int RSHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RSHRN_asimdshf_N */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008C00 && (INSWORD & 0x780000)!=0x0) {
@@ -19634,14 +19154,13 @@ int RSHRN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_RSHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rsubhn_advsimd.xml */
 int RSUBHN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class RSUBHN_asimddiff_N */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206000) {
@@ -19660,14 +19179,13 @@ int RSUBHN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->U==1);
 		OK(ENC_RSUBHN_ASIMDDIFF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sabal_advsimd.xml */
 int SABAL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SABAL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205000) {
@@ -19686,14 +19204,13 @@ int SABAL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SABAL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saba_advsimd.xml */
 int SABA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SABA_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207C00) {
@@ -19711,14 +19228,13 @@ int SABA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->ac==1);
 		OK(ENC_SABA_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sabdl_advsimd.xml */
 int SABDL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SABDL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207000) {
@@ -19737,14 +19253,13 @@ int SABDL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SABDL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sabd_advsimd.xml */
 int SABD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SABD_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207400) {
@@ -19762,14 +19277,13 @@ int SABD_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->ac==1);
 		OK(ENC_SABD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sadalp_advsimd.xml */
 int SADALP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SADALP_asimdmisc_P */
 	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE206800) {
@@ -19786,14 +19300,13 @@ int SADALP_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SADALP_ASIMDMISC_P);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saddlp_advsimd.xml */
 int SADDLP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SADDLP_asimdmisc_P */
 	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE202800) {
@@ -19810,14 +19323,13 @@ int SADDLP_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SADDLP_ASIMDMISC_P);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saddlv_advsimd.xml */
 int SADDLV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SADDLV_asimdall_only */
 	/* 0|Q=x|U=0|01110|size=xx|11000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE303800) {
@@ -19836,14 +19348,13 @@ int SADDLV_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SADDLV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saddl_advsimd.xml */
 int SADDL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SADDL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200000) {
@@ -19862,14 +19373,13 @@ int SADDL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SADDL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saddw_advsimd.xml */
 int SADDW_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SADDW_asimddiff_W */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE201000) {
@@ -19888,14 +19398,13 @@ int SADDW_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SADDW_ASIMDDIFF_W);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sb.xml */
 int SB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SB_only_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=(0)(0)(0)(0)|1|opc=11|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330FF) {
@@ -19905,14 +19414,13 @@ int SB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SB_ONLY_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sbc.xml */
 int SBC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x5A000000) {
@@ -19928,14 +19436,13 @@ int SBC(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SBC_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_SBC_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sbcs.xml */
 int SBCS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x7A000000) {
@@ -19951,14 +19458,13 @@ int SBCS(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SBCS_32_ADDSUB_CARRY);
 		if(dec->sf==1) OK(ENC_SBCS_64_ADDSUB_CARRY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sbfiz_sbfm.xml */
 int SBFIZ_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
@@ -19966,14 +19472,13 @@ int SBFIZ_SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_SBFIZ_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_SBFIZ_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sbfm.xml */
 int SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
@@ -20019,14 +19524,13 @@ int SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sbfx_sbfm.xml */
 int SBFX_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
@@ -20034,14 +19538,13 @@ int SBFX_SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_SBFX_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_SBFX_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* scvtf_advsimd_fix.xml */
 int SCVTF_advsimd_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SCVTF_asisdshf_C */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F00E400 && (INSWORD & 0x780000)!=0x0) {
@@ -20082,14 +19585,13 @@ int SCVTF_advsimd_fix(context *ctx, Instruction *dec)
 		dec->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_ASIMDSHF_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* scvtf_advsimd_int.xml */
 int SCVTF_advsimd_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SCVTF_asisdmiscfp16_R */
 	/* 01|U=0|11110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79D800) {
@@ -20147,14 +19649,13 @@ int SCVTF_advsimd_int(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SCVTF_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* scvtf_float_fix.xml */
 int SCVTF_float_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=00|opcode=010|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E020000) {
@@ -20203,14 +19704,13 @@ int SCVTF_float_fix(context *ctx, Instruction *dec)
 		if(dec->sf==1 && dec->ftype==0) OK(ENC_SCVTF_S64_FLOAT2FIX);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_SCVTF_D64_FLOAT2FIX);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* scvtf_float_int.xml */
 int SCVTF_float_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=010|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E220000) {
@@ -20290,14 +19790,13 @@ int SCVTF_float_int(context *ctx, Instruction *dec)
 		if(dec->sf==1 && dec->ftype==0) OK(ENC_SCVTF_S64_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_SCVTF_D64_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdiv.xml */
 int SDIV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00C00) {
@@ -20310,14 +19809,13 @@ int SDIV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SDIV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_SDIV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdot_advsimd_elt.xml */
 int SDOT_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SDOT_asimdelem_D */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1110|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00E000) {
@@ -20338,14 +19836,13 @@ int SDOT_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_SDOT_ASIMDELEM_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdot_advsimd_vec.xml */
 int SDOT_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SDOT_asimdsame2_D */
 	/* 0|Q=x|U=0|01110|size=xx|0|Rm=xxxxx|1|opcode=0010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE009400) {
@@ -20365,14 +19862,13 @@ int SDOT_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_SDOT_ASIMDSAME2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* setf.xml */
 int SETF(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=0|op=0|S=1|11010000|opcode2=000000|sz=x|0010|Rn=xxxxx|o3=0|mask=1101 */
 	if((INSWORD & 0xFFFFBC1F)==0x3A00080D) {
@@ -20385,14 +19881,13 @@ int SETF(context *ctx, Instruction *dec)
 		if(dec->sz==0) OK(ENC_SETF8_ONLY_SETF);
 		if(dec->sz==1) OK(ENC_SETF16_ONLY_SETF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sev.xml */
 int SEV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SEV_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=100|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503209F) {
@@ -20497,14 +19992,13 @@ int SEV(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SEV_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sevl.xml */
 int SEVL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SEVL_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=101|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD50320BF) {
@@ -20609,14 +20103,13 @@ int SEVL(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SEVL_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1c_advsimd.xml */
 int SHA1C_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1C_QSV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=000|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000000) {
@@ -20629,14 +20122,13 @@ int SHA1C_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1C_QSV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1h_advsimd.xml */
 int SHA1H_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1H_SS_cryptosha2 */
 	/* 01011110|size=00|10100|opcode=00000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E280800) {
@@ -20648,14 +20140,13 @@ int SHA1H_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1H_SS_CRYPTOSHA2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1m_advsimd.xml */
 int SHA1M_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1M_QSV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=010|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E002000) {
@@ -20668,14 +20159,13 @@ int SHA1M_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1M_QSV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1p_advsimd.xml */
 int SHA1P_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1P_QSV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=001|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E001000) {
@@ -20688,14 +20178,13 @@ int SHA1P_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1P_QSV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1su0_advsimd.xml */
 int SHA1SU0_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1SU0_VVV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=011|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E003000) {
@@ -20708,14 +20197,13 @@ int SHA1SU0_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1SU0_VVV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha1su1_advsimd.xml */
 int SHA1SU1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA1SU1_VV_cryptosha2 */
 	/* 01011110|size=00|10100|opcode=00001|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E281800) {
@@ -20727,14 +20215,13 @@ int SHA1SU1_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA1SU1_VV_CRYPTOSHA2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha256h2_advsimd.xml */
 int SHA256H2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA256H2_QQV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E005000) {
@@ -20748,14 +20235,13 @@ int SHA256H2_advsimd(context *ctx, Instruction *dec)
 		dec->part1 = (dec->P==0);
 		OK(ENC_SHA256H2_QQV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha256h_advsimd.xml */
 int SHA256H_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA256H_QQV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E004000) {
@@ -20769,14 +20255,13 @@ int SHA256H_advsimd(context *ctx, Instruction *dec)
 		dec->part1 = (dec->P==0);
 		OK(ENC_SHA256H_QQV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha256su0_advsimd.xml */
 int SHA256SU0_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA256SU0_VV_cryptosha2 */
 	/* 01011110|size=00|10100|opcode=00010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E282800) {
@@ -20788,14 +20273,13 @@ int SHA256SU0_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA256SU0_VV_CRYPTOSHA2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha256su1_advsimd.xml */
 int SHA256SU1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA256SU1_VVV_cryptosha3 */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=110|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E006000) {
@@ -20808,14 +20292,13 @@ int SHA256SU1_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SHA256SU1_VVV_CRYPTOSHA3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha512h2_advsimd.xml */
 int SHA512H2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA512H2_QQV_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608400) {
@@ -20828,14 +20311,13 @@ int SHA512H2_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SHA512H2_QQV_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha512h_advsimd.xml */
 int SHA512H_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA512H_QQV_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608000) {
@@ -20848,14 +20330,13 @@ int SHA512H_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SHA512H_QQV_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha512su0_advsimd.xml */
 int SHA512SU0_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA512SU0_VV2_cryptosha512_2 */
 	/* 11001110110000001000|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xCEC08000) {
@@ -20867,14 +20348,13 @@ int SHA512SU0_advsimd(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Rn);
 		OK(ENC_SHA512SU0_VV2_CRYPTOSHA512_2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sha512su1_advsimd.xml */
 int SHA512SU1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHA512SU1_VVV2_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608800) {
@@ -20887,14 +20367,13 @@ int SHA512SU1_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SHA512SU1_VVV2_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shadd_advsimd.xml */
 int SHADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHADD_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200400) {
@@ -20911,14 +20390,13 @@ int SHADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SHADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shll_advsimd.xml */
 int SHLL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHLL_asimdmisc_S */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=10011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E213800) {
@@ -20936,14 +20414,13 @@ int SHLL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SHLL_ASIMDMISC_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shl_advsimd.xml */
 int SHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHL_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F005400 && (INSWORD & 0x780000)!=0x0) {
@@ -20977,14 +20454,13 @@ int SHL_advsimd(context *ctx, Instruction *dec)
 		dec->shift = UINT(((dec->immh<<3)|dec->immb))-dec->esize;
 		OK(ENC_SHL_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shrn_advsimd.xml */
 int SHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHRN_asimdshf_N */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008400 && (INSWORD & 0x780000)!=0x0) {
@@ -21005,14 +20481,13 @@ int SHRN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_SHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shsub_advsimd.xml */
 int SHSUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SHSUB_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202400) {
@@ -21029,14 +20504,13 @@ int SHSUB_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SHSUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sli_advsimd.xml */
 int SLI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SLI_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F005400 && (INSWORD & 0x780000)!=0x0) {
@@ -21070,14 +20544,13 @@ int SLI_advsimd(context *ctx, Instruction *dec)
 		dec->shift = UINT(((dec->immh<<3)|dec->immb))-dec->esize;
 		OK(ENC_SLI_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3partw1_advsimd.xml */
 int SM3PARTW1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3PARTW1_VVV4_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C000) {
@@ -21090,14 +20563,13 @@ int SM3PARTW1_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SM3PARTW1_VVV4_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3partw2_advsimd.xml */
 int SM3PARTW2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3PARTW2_VVV4_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C400) {
@@ -21110,14 +20582,13 @@ int SM3PARTW2_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SM3PARTW2_VVV4_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3ss1_advsimd.xml */
 int SM3SS1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3SS1_VVV4_crypto4 */
 	/* 110011100|Op0=10|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE400000) {
@@ -21131,14 +20602,13 @@ int SM3SS1_advsimd(context *ctx, Instruction *dec)
 		dec->a = UINT(dec->Ra);
 		OK(ENC_SM3SS1_VVV4_CRYPTO4);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3tt1a_advsimd.xml */
 int SM3TT1A_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3TT1A_VVV4_crypto3_imm2 */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408000) {
@@ -21152,14 +20622,13 @@ int SM3TT1A_advsimd(context *ctx, Instruction *dec)
 		dec->i = UINT(dec->imm2);
 		OK(ENC_SM3TT1A_VVV4_CRYPTO3_IMM2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3tt1b_advsimd.xml */
 int SM3TT1B_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3TT1B_VVV4_crypto3_imm2 */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408400) {
@@ -21173,14 +20642,13 @@ int SM3TT1B_advsimd(context *ctx, Instruction *dec)
 		dec->i = UINT(dec->imm2);
 		OK(ENC_SM3TT1B_VVV4_CRYPTO3_IMM2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3tt2a_advsimd.xml */
 int SM3TT2A_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3TT2A_VVV4_crypto3_imm2 */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408800) {
@@ -21194,14 +20662,13 @@ int SM3TT2A_advsimd(context *ctx, Instruction *dec)
 		dec->i = UINT(dec->imm2);
 		OK(ENC_SM3TT2A_VVV4_CRYPTO3_IMM2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm3tt2b_advsimd.xml */
 int SM3TT2B_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM3TT2B_VVV_crypto3_imm2 */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408C00) {
@@ -21215,14 +20682,13 @@ int SM3TT2B_advsimd(context *ctx, Instruction *dec)
 		dec->i = UINT(dec->imm2);
 		OK(ENC_SM3TT2B_VVV_CRYPTO3_IMM2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm4ekey_advsimd.xml */
 int SM4EKEY_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM4EKEY_VVV4_cryptosha512_3 */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C800) {
@@ -21235,14 +20701,13 @@ int SM4EKEY_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_SM4EKEY_VVV4_CRYPTOSHA512_3);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sm4e_advsimd.xml */
 int SM4E_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SM4E_VV4_cryptosha512_2 */
 	/* 11001110110000001000|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xCEC08400) {
@@ -21254,14 +20719,13 @@ int SM4E_advsimd(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Rn);
 		OK(ENC_SM4E_VV4_CRYPTOSHA512_2);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smaddl.xml */
 int SMADDL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMADDL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B200000) {
@@ -21278,14 +20742,13 @@ int SMADDL(context *ctx, Instruction *dec)
 		if(dec->Ra==0x1f) return SMULL_SMADDL(ctx, dec);
 		OK(ENC_SMADDL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smaxp_advsimd.xml */
 int SMAXP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMAXP_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A400) {
@@ -21303,14 +20766,13 @@ int SMAXP_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_SMAXP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smaxv_advsimd.xml */
 int SMAXV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMAXV_asimdall_only */
 	/* 0|Q=x|U=0|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE30A800) {
@@ -21330,14 +20792,13 @@ int SMAXV_advsimd(context *ctx, Instruction *dec)
 		dec->min = (dec->op==1);
 		OK(ENC_SMAXV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smax_advsimd.xml */
 int SMAX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMAX_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206400) {
@@ -21355,28 +20816,26 @@ int SMAX_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_SMAX_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smc.xml */
 int SMC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMC_EX_exception */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=11 */
 	if((INSWORD & 0xFFE0001F)==0xD4000003) {
 		decode_fields32(ENC_SMC_EX_EXCEPTION, dec);
 		OK(ENC_SMC_EX_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sminp_advsimd.xml */
 int SMINP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMINP_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20AC00) {
@@ -21394,14 +20853,13 @@ int SMINP_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_SMINP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sminv_advsimd.xml */
 int SMINV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMINV_asimdall_only */
 	/* 0|Q=x|U=0|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE31A800) {
@@ -21421,14 +20879,13 @@ int SMINV_advsimd(context *ctx, Instruction *dec)
 		dec->min = (dec->op==1);
 		OK(ENC_SMINV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smin_advsimd.xml */
 int SMIN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMIN_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206C00) {
@@ -21446,14 +20903,13 @@ int SMIN_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_SMIN_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smlal_advsimd_elt.xml */
 int SMLAL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMLAL_asimdelem_L */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF002000) {
@@ -21481,14 +20937,13 @@ int SMLAL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_SMLAL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smlal_advsimd_vec.xml */
 int SMLAL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMLAL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE208000) {
@@ -21507,14 +20962,13 @@ int SMLAL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SMLAL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smlsl_advsimd_elt.xml */
 int SMLSL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMLSL_asimdelem_L */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF006000) {
@@ -21542,14 +20996,13 @@ int SMLSL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_SMLSL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smlsl_advsimd_vec.xml */
 int SMLSL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMLSL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A000) {
@@ -21568,14 +21021,13 @@ int SMLSL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SMLSL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smmla_advsimd_vec.xml */
 int SMMLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMMLA_asimdsame2_G */
 	/* 0|Q=1|U=0|01110|size=10|0|Rm=xxxxx|1|010|B=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E80A400) {
@@ -21603,28 +21055,26 @@ int SMMLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_SMMLA_ASIMDSAME2_G);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smnegl_smsubl.xml */
 int SMNEGL_SMSUBL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMSUBL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B20FC00) {
 		decode_fields32(ENC_SMNEGL_SMSUBL_64WA_DP_3SRC, dec);
 		OK(ENC_SMNEGL_SMSUBL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smov_advsimd.xml */
 int SMOV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=01|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE002C00) {
@@ -21650,14 +21100,13 @@ int SMOV_advsimd(context *ctx, Instruction *dec)
 		if(dec->Q==0) OK(ENC_SMOV_ASIMDINS_W_W);
 		if(dec->Q==1) OK(ENC_SMOV_ASIMDINS_X_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smsubl.xml */
 int SMSUBL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMSUBL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B208000) {
@@ -21674,14 +21123,13 @@ int SMSUBL(context *ctx, Instruction *dec)
 		if(dec->Ra==0x1f) return SMNEGL_SMSUBL(ctx, dec);
 		OK(ENC_SMSUBL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smulh.xml */
 int SMULH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMULH_64_dp_3src */
 	/* sf=1|op54=00|11011|U=0|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B400000) {
@@ -21695,28 +21143,26 @@ int SMULH(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SMULH_64_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smull_smaddl.xml */
 int SMULL_SMADDL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMADDL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B207C00) {
 		decode_fields32(ENC_SMULL_SMADDL_64WA_DP_3SRC, dec);
 		OK(ENC_SMULL_SMADDL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smull_advsimd_elt.xml */
 int SMULL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMULL_asimdelem_L */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1010|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00A000) {
@@ -21743,14 +21189,13 @@ int SMULL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SMULL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smull_advsimd_vec.xml */
 int SMULL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SMULL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20C000) {
@@ -21768,14 +21213,13 @@ int SMULL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SMULL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqabs_advsimd.xml */
 int SQABS_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQABS_asisdmisc_R */
 	/* 01|U=0|11110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E207800) {
@@ -21803,14 +21247,13 @@ int SQABS_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_SQABS_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqadd_advsimd.xml */
 int SQADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQADD_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E200C00) {
@@ -21840,14 +21283,13 @@ int SQADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SQADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmlal_advsimd_elt.xml */
 int SQDMLAL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMLAL_asisdelem_L */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F003000) {
@@ -21900,14 +21342,13 @@ int SQDMLAL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_SQDMLAL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmlal_advsimd_vec.xml */
 int SQDMLAL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMLAL_asisddiff_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E209000) {
@@ -21942,14 +21383,13 @@ int SQDMLAL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o1==1);
 		OK(ENC_SQDMLAL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmlsl_advsimd_elt.xml */
 int SQDMLSL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMLSL_asisdelem_L */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F007000) {
@@ -22002,14 +21442,13 @@ int SQDMLSL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_SQDMLSL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmlsl_advsimd_vec.xml */
 int SQDMLSL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMLSL_asisddiff_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20B000) {
@@ -22044,14 +21483,13 @@ int SQDMLSL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o1==1);
 		OK(ENC_SQDMLSL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmulh_advsimd_elt.xml */
 int SQDMULH_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMULH_asisdelem_R */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00C000) {
@@ -22102,14 +21540,13 @@ int SQDMULH_advsimd_elt(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_SQDMULH_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmulh_advsimd_vec.xml */
 int SQDMULH_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMULH_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20B400) {
@@ -22142,14 +21579,13 @@ int SQDMULH_advsimd_vec(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==1);
 		OK(ENC_SQDMULH_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmull_advsimd_elt.xml */
 int SQDMULL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMULL_asisdelem_L */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode=1011|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00B000) {
@@ -22200,14 +21636,13 @@ int SQDMULL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_SQDMULL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdmull_advsimd_vec.xml */
 int SQDMULL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQDMULL_asisddiff_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=1101|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20D000) {
@@ -22240,14 +21675,13 @@ int SQDMULL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_SQDMULL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqneg_advsimd.xml */
 int SQNEG_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQNEG_asisdmisc_R */
 	/* 01|U=1|11110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E207800) {
@@ -22275,14 +21709,13 @@ int SQNEG_advsimd(context *ctx, Instruction *dec)
 		dec->neg = (dec->U==1);
 		OK(ENC_SQNEG_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmlah_advsimd_elt.xml */
 int SQRDMLAH_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMLAH_asisdelem_R */
 	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=0|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00D000) {
@@ -22341,14 +21774,13 @@ int SQRDMLAH_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->S==1);
 		OK(ENC_SQRDMLAH_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmlah_advsimd_vec.xml */
 int SQRDMLAH_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMLAH_asisdsame2_only */
 	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008400) {
@@ -22389,14 +21821,13 @@ int SQRDMLAH_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->S==1);
 		OK(ENC_SQRDMLAH_ASIMDSAME2_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmlsh_advsimd_elt.xml */
 int SQRDMLSH_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMLSH_asisdelem_R */
 	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=1|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00F000) {
@@ -22455,14 +21886,13 @@ int SQRDMLSH_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->S==1);
 		OK(ENC_SQRDMLSH_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmlsh_advsimd_vec.xml */
 int SQRDMLSH_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMLSH_asisdsame2_only */
 	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008C00) {
@@ -22503,14 +21933,13 @@ int SQRDMLSH_advsimd_vec(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->S==1);
 		OK(ENC_SQRDMLSH_ASIMDSAME2_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmulh_advsimd_elt.xml */
 int SQRDMULH_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMULH_asisdelem_R */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00D000) {
@@ -22561,14 +21990,13 @@ int SQRDMULH_advsimd_elt(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_SQRDMULH_ASIMDELEM_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrdmulh_advsimd_vec.xml */
 int SQRDMULH_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRDMULH_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E20B400) {
@@ -22601,14 +22029,13 @@ int SQRDMULH_advsimd_vec(context *ctx, Instruction *dec)
 		dec->rounding = (dec->U==1);
 		OK(ENC_SQRDMULH_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrshl_advsimd.xml */
 int SQRSHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRSHL_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205C00) {
@@ -22645,14 +22072,13 @@ int SQRSHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_SQRSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrshrn_advsimd.xml */
 int SQRSHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRSHRN_asisdshf_N */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009C00 && (INSWORD & 0x780000)!=0x0) {
@@ -22695,14 +22121,13 @@ int SQRSHRN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SQRSHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqrshrun_advsimd.xml */
 int SQRSHRUN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQRSHRUN_asisdshf_N */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008C00 && (INSWORD & 0x780000)!=0x0) {
@@ -22743,14 +22168,13 @@ int SQRSHRUN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_SQRSHRUN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqshlu_advsimd.xml */
 int SQSHLU_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSHLU_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F006400 && (INSWORD & 0x780000)!=0x0) {
@@ -22814,14 +22238,13 @@ int SQSHLU_advsimd(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SQSHLU_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqshl_advsimd_imm.xml */
 int SQSHL_advsimd_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSHL_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F007400 && (INSWORD & 0x780000)!=0x0) {
@@ -22885,14 +22308,13 @@ int SQSHL_advsimd_imm(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SQSHL_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqshl_advsimd_reg.xml */
 int SQSHL_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSHL_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204C00) {
@@ -22929,14 +22351,13 @@ int SQSHL_advsimd_reg(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_SQSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqshrn_advsimd.xml */
 int SQSHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSHRN_asisdshf_N */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009400 && (INSWORD & 0x780000)!=0x0) {
@@ -22979,14 +22400,13 @@ int SQSHRN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SQSHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqshrun_advsimd.xml */
 int SQSHRUN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSHRUN_asisdshf_N */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008400 && (INSWORD & 0x780000)!=0x0) {
@@ -23027,14 +22447,13 @@ int SQSHRUN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->op==1);
 		OK(ENC_SQSHRUN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqsub_advsimd.xml */
 int SQSUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQSUB_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E202C00) {
@@ -23064,14 +22483,13 @@ int SQSUB_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SQSUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqxtn_advsimd.xml */
 int SQXTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQXTN_asisdmisc_N */
 	/* 01|U=0|11110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E214800) {
@@ -23104,14 +22522,13 @@ int SQXTN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SQXTN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqxtun_advsimd.xml */
 int SQXTUN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SQXTUN_asisdmisc_N */
 	/* 01|U=1|11110|size=xx|10000|opcode=10010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E212800) {
@@ -23142,14 +22559,13 @@ int SQXTUN_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_SQXTUN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* srhadd_advsimd.xml */
 int SRHADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SRHADD_asimdsame_only */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE201400) {
@@ -23166,14 +22582,13 @@ int SRHADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SRHADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sri_advsimd.xml */
 int SRI_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SRI_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=01000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F004400 && (INSWORD & 0x780000)!=0x0) {
@@ -23207,14 +22622,13 @@ int SRI_advsimd(context *ctx, Instruction *dec)
 		dec->shift = ((dec->esize) * (2))-UINT(((dec->immh<<3)|dec->immb));
 		OK(ENC_SRI_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* srshl_advsimd.xml */
 int SRSHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SRSHL_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205400) {
@@ -23251,14 +22665,13 @@ int SRSHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_SRSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* srshr_advsimd.xml */
 int SRSHR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SRSHR_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F002400 && (INSWORD & 0x780000)!=0x0) {
@@ -23298,14 +22711,13 @@ int SRSHR_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_SRSHR_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* srsra_advsimd.xml */
 int SRSRA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SRSRA_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F003400 && (INSWORD & 0x780000)!=0x0) {
@@ -23345,28 +22757,26 @@ int SRSRA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_SRSRA_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ssbb.xml */
 int SSBB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSBB_only_barriers */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503309F) {
 		decode_fields32(ENC_SSBB_ONLY_BARRIERS, dec);
 		OK(ENC_SSBB_ONLY_BARRIERS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sshll_advsimd.xml */
 int SSHLL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSHLL_asimdshf_L */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF00A400 && (INSWORD & 0x780000)!=0x0) {
@@ -23389,14 +22799,13 @@ int SSHLL_advsimd(context *ctx, Instruction *dec)
 		if(dec->immb==0 && BitCount(dec->immh)==1) return SXTL_SSHLL_advsimd(ctx, dec);
 		OK(ENC_SSHLL_ASIMDSHF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sshl_advsimd.xml */
 int SSHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSHL_asisdsame_only */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204400) {
@@ -23433,14 +22842,13 @@ int SSHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_SSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sshr_advsimd.xml */
 int SSHR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSHR_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F000400 && (INSWORD & 0x780000)!=0x0) {
@@ -23480,14 +22888,13 @@ int SSHR_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_SSHR_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ssra_advsimd.xml */
 int SSRA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSRA_asisdshf_R */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F001400 && (INSWORD & 0x780000)!=0x0) {
@@ -23527,14 +22934,13 @@ int SSRA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_SSRA_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ssubl_advsimd.xml */
 int SSUBL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSUBL_asimddiff_L */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202000) {
@@ -23553,14 +22959,13 @@ int SSUBL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SSUBL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ssubw_advsimd.xml */
 int SSUBW_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSUBW_asimddiff_W */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203000) {
@@ -23579,14 +22984,13 @@ int SSUBW_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SSUBW_ASIMDDIFF_W);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1_advsimd_mult.xml */
 int ST1_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011000|L=0|000000|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xC002000) {
@@ -23658,14 +23062,13 @@ int ST1_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1_advsimd_sngl.xml */
 int ST1_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=0|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD000000) {
@@ -23736,14 +23139,13 @@ int ST1_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2g.xml */
 int ST2G(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ST2G_64Spost_ldsttags */
 	/* 11011001|opc=10|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9A00400) {
@@ -23789,14 +23191,13 @@ int ST2G(context *ctx, Instruction *dec)
 		dec->zero_data = FALSE;
 		OK(ENC_ST2G_64SOFFSET_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2_advsimd_mult.xml */
 int ST2_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ST2_asisdlse_R2 */
 	/* 0|Q=x|0011000|L=0|000000|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC008000) {
@@ -23859,14 +23260,13 @@ int ST2_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2_advsimd_sngl.xml */
 int ST2_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=1|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD200000) {
@@ -23937,14 +23337,13 @@ int ST2_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3_advsimd_mult.xml */
 int ST3_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ST3_asisdlse_R3 */
 	/* 0|Q=x|0011000|L=0|000000|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC004000) {
@@ -24007,14 +23406,13 @@ int ST3_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3_advsimd_sngl.xml */
 int ST3_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=0|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD002000) {
@@ -24085,14 +23483,13 @@ int ST3_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4_advsimd_mult.xml */
 int ST4_advsimd_mult(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ST4_asisdlse_R4 */
 	/* 0|Q=x|0011000|L=0|000000|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC000000) {
@@ -24155,14 +23552,13 @@ int ST4_advsimd_mult(context *ctx, Instruction *dec)
 	if(((dec->size<<1)|dec->Q)==6 && dec->selem!=1) {
 		UNDEFINED;
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4_advsimd_sngl.xml */
 int ST4_advsimd_sngl(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=1|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD202000) {
@@ -24233,14 +23629,13 @@ int ST4_advsimd_sngl(context *ctx, Instruction *dec)
 	dec->memop = (dec->L==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (dec->Q==1) ? 0x80 : 0x40;
 	dec->esize = (8) << (dec->scale);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* staddb_ldaddb.xml */
 int STADDB_LDADDB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820001F) {
@@ -24248,14 +23643,13 @@ int STADDB_LDADDB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STADDB_LDADDB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STADDLB_LDADDLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* staddh_ldaddh.xml */
 int STADDH_LDADDH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820001F) {
@@ -24263,14 +23657,13 @@ int STADDH_LDADDH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STADDH_LDADDH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STADDLH_LDADDLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stadd_ldadd.xml */
 int STADD_LDADD(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820001F) {
@@ -24280,14 +23673,13 @@ int STADD_LDADD(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STADD_LDADD_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STADDL_LDADDL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stclrb_ldclrb.xml */
 int STCLRB_LDCLRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820101F) {
@@ -24295,14 +23687,13 @@ int STCLRB_LDCLRB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STCLRB_LDCLRB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STCLRLB_LDCLRLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stclrh_ldclrh.xml */
 int STCLRH_LDCLRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820101F) {
@@ -24310,14 +23701,13 @@ int STCLRH_LDCLRH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STCLRH_LDCLRH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STCLRLH_LDCLRLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stclr_ldclr.xml */
 int STCLR_LDCLR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820101F) {
@@ -24327,14 +23717,13 @@ int STCLR_LDCLR(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STCLR_LDCLR_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STCLRL_LDCLRL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* steorb_ldeorb.xml */
 int STEORB_LDEORB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820201F) {
@@ -24342,14 +23731,13 @@ int STEORB_LDEORB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STEORB_LDEORB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STEORLB_LDEORLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* steorh_ldeorh.xml */
 int STEORH_LDEORH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820201F) {
@@ -24357,14 +23745,13 @@ int STEORH_LDEORH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STEORH_LDEORH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STEORLH_LDEORLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* steor_ldeor.xml */
 int STEOR_LDEOR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820201F) {
@@ -24374,14 +23761,13 @@ int STEOR_LDEOR(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STEOR_LDEOR_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STEORL_LDEORL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stg.xml */
 int STG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STG_64Spost_ldsttags */
 	/* 11011001|opc=00|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9200400) {
@@ -24421,14 +23807,13 @@ int STG(context *ctx, Instruction *dec)
 		dec->zero_data = FALSE;
 		OK(ENC_STG_64SOFFSET_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stgm.xml */
 int STGM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STGM_64bulk_ldsttags */
 	/* 11011001|opc=10|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9A00000) {
@@ -24440,14 +23825,13 @@ int STGM(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Xn);
 		OK(ENC_STGM_64BULK_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stgp.xml */
 int STGP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STGP_64_ldstpair_post */
 	/* opc=01|101|V=0|001|L=0|simm7=xxxxxxx|Xt2=xxxxx|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x68800000) {
@@ -24487,14 +23871,13 @@ int STGP(context *ctx, Instruction *dec)
 		dec->postindex = FALSE;
 		OK(ENC_STGP_64_LDSTPAIR_OFF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stllr.xml */
 int STLLR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88800000) {
@@ -24512,14 +23895,13 @@ int STLLR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_STLLR_SL32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_STLLR_SL64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stllrb.xml */
 int STLLRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLLRB_SL32_ldstexcl */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8800000) {
@@ -24536,14 +23918,13 @@ int STLLRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLLRB_SL32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stllrh.xml */
 int STLLRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLLRH_SL32_ldstexcl */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48800000) {
@@ -24560,14 +23941,13 @@ int STLLRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLLRH_SL32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlr.xml */
 int STLR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88808000) {
@@ -24585,14 +23965,13 @@ int STLR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_STLR_SL32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_STLR_SL64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlrb.xml */
 int STLRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLRB_SL32_ldstexcl */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8808000) {
@@ -24609,14 +23988,13 @@ int STLRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLRB_SL32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlrh.xml */
 int STLRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLRH_SL32_ldstexcl */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48808000) {
@@ -24633,14 +24011,13 @@ int STLRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLRH_SL32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlurb.xml */
 int STLURB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLURB_32_ldapstl_unscaled */
 	/* size=00|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x19000000) {
@@ -24684,14 +24061,13 @@ int STLURB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlurh.xml */
 int STLURH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLURH_32_ldapstl_unscaled */
 	/* size=01|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x59000000) {
@@ -24735,14 +24111,13 @@ int STLURH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlur_gen.xml */
 int STLUR_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0x99000000) {
@@ -24787,14 +24162,13 @@ int STLUR_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlxp.xml */
 int STLXP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88208000) {
@@ -24813,14 +24187,13 @@ int STLXP(context *ctx, Instruction *dec)
 		if(dec->sz==0) OK(ENC_STLXP_SP32_LDSTEXCL);
 		if(dec->sz==1) OK(ENC_STLXP_SP64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlxr.xml */
 int STLXR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88008000) {
@@ -24839,14 +24212,13 @@ int STLXR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_STLXR_SR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_STLXR_SR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlxrb.xml */
 int STLXRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLXRB_SR32_ldstexcl */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8008000) {
@@ -24864,14 +24236,13 @@ int STLXRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLXRB_SR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stlxrh.xml */
 int STLXRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STLXRH_SR32_ldstexcl */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48008000) {
@@ -24889,14 +24260,13 @@ int STLXRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STLXRH_SR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnp_fpsimd.xml */
 int STNP_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_scaled_offset */
 	/* opc=xx|101|V=1|000|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C000000) {
@@ -24918,14 +24288,13 @@ int STNP_fpsimd(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnp_gen.xml */
 int STNP_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_scaled_offset */
 	/* opc=x0|101|V=0|000|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28000000) {
@@ -24946,14 +24315,13 @@ int STNP_gen(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stp_fpsimd.xml */
 int STP_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* opc=xx|101|V=1|001|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C800000) {
@@ -24991,14 +24359,13 @@ int STP_fpsimd(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stp_gen.xml */
 int STP_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* opc=x0|101|V=0|001|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28800000) {
@@ -25034,14 +24401,13 @@ int STP_gen(context *ctx, Instruction *dec)
 	dec->datasize = (8) << (dec->scale);
 	dec->offset = LSL(SignExtend(dec->imm7,7),dec->scale);
 	dec->tag_checked = dec->wback || dec->n!=0x1f;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* strb_imm.xml */
 int STRB_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STRB_32_ldst_immpost */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000400) {
@@ -25102,14 +24468,13 @@ int STRB_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* strb_reg.xml */
 int STRB_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class 32 */
 	/* size=00|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38200800) {
@@ -25159,14 +24524,13 @@ int STRB_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* strh_imm.xml */
 int STRH_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STRH_32_ldst_immpost */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000400) {
@@ -25227,14 +24591,13 @@ int STRH_imm(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* strh_reg.xml */
 int STRH_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STRH_32_ldst_regoff */
 	/* size=01|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78200800) {
@@ -25283,14 +24646,13 @@ int STRH_reg(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_imm_fpsimd.xml */
 int STR_imm_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=xx|111|V=1|00|opc=x0|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C000400) {
@@ -25349,14 +24711,13 @@ int STR_imm_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_imm_gen.xml */
 int STR_imm_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class post_indexed */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000400) {
@@ -25420,14 +24781,13 @@ int STR_imm_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_reg_fpsimd.xml */
 int STR_reg_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fpsimd */
 	/* size=xx|111|V=1|00|opc=x0|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C200800) {
@@ -25458,14 +24818,13 @@ int STR_reg_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_reg_gen.xml */
 int STR_reg_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8200800) {
@@ -25515,14 +24874,13 @@ int STR_reg_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH;
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsetb_ldsetb.xml */
 int STSETB_LDSETB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820301F) {
@@ -25530,14 +24888,13 @@ int STSETB_LDSETB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSETB_LDSETB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSETLB_LDSETLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stseth_ldseth.xml */
 int STSETH_LDSETH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820301F) {
@@ -25545,14 +24902,13 @@ int STSETH_LDSETH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSETH_LDSETH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSETLH_LDSETLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stset_ldset.xml */
 int STSET_LDSET(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820301F) {
@@ -25562,14 +24918,13 @@ int STSET_LDSET(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STSET_LDSET_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STSETL_LDSETL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsmaxb_ldsmaxb.xml */
 int STSMAXB_LDSMAXB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820401F) {
@@ -25577,14 +24932,13 @@ int STSMAXB_LDSMAXB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSMAXB_LDSMAXB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSMAXLB_LDSMAXLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsmaxh_ldsmaxh.xml */
 int STSMAXH_LDSMAXH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820401F) {
@@ -25592,14 +24946,13 @@ int STSMAXH_LDSMAXH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSMAXH_LDSMAXH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSMAXLH_LDSMAXLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsmax_ldsmax.xml */
 int STSMAX_LDSMAX(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820401F) {
@@ -25609,14 +24962,13 @@ int STSMAX_LDSMAX(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STSMAX_LDSMAX_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STSMAXL_LDSMAXL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsminb_ldsminb.xml */
 int STSMINB_LDSMINB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820501F) {
@@ -25624,14 +24976,13 @@ int STSMINB_LDSMINB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSMINB_LDSMINB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSMINLB_LDSMINLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsminh_ldsminh.xml */
 int STSMINH_LDSMINH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820501F) {
@@ -25639,14 +24990,13 @@ int STSMINH_LDSMINH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STSMINH_LDSMINH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STSMINLH_LDSMINLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stsmin_ldsmin.xml */
 int STSMIN_LDSMIN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820501F) {
@@ -25656,14 +25006,13 @@ int STSMIN_LDSMIN(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STSMIN_LDSMIN_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STSMINL_LDSMINL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sttr.xml */
 int STTR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000800) {
@@ -25713,14 +25062,13 @@ int STTR(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sttrb.xml */
 int STTRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STTRB_32_ldst_unpriv */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000800) {
@@ -25769,14 +25117,13 @@ int STTRB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sttrh.xml */
 int STTRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STTRH_32_ldst_unpriv */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000800) {
@@ -25825,14 +25172,13 @@ int STTRH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stumaxb_ldumaxb.xml */
 int STUMAXB_LDUMAXB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820601F) {
@@ -25840,14 +25186,13 @@ int STUMAXB_LDUMAXB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STUMAXB_LDUMAXB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STUMAXLB_LDUMAXLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stumaxh_ldumaxh.xml */
 int STUMAXH_LDUMAXH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820601F) {
@@ -25855,14 +25200,13 @@ int STUMAXH_LDUMAXH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STUMAXH_LDUMAXH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STUMAXLH_LDUMAXLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stumax_ldumax.xml */
 int STUMAX_LDUMAX(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820601F) {
@@ -25872,14 +25216,13 @@ int STUMAX_LDUMAX(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STUMAX_LDUMAX_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STUMAXL_LDUMAXL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stuminb_lduminb.xml */
 int STUMINB_LDUMINB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820701F) {
@@ -25887,14 +25230,13 @@ int STUMINB_LDUMINB(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STUMINB_LDUMINB_32_MEMOP);
 		if(dec->R==1) OK(ENC_STUMINLB_LDUMINLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stuminh_lduminh.xml */
 int STUMINH_LDUMINH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820701F) {
@@ -25902,14 +25244,13 @@ int STUMINH_LDUMINH(context *ctx, Instruction *dec)
 		if(dec->R==0) OK(ENC_STUMINH_LDUMINH_32_MEMOP);
 		if(dec->R==1) OK(ENC_STUMINLH_LDUMINLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stumin_ldumin.xml */
 int STUMIN_LDUMIN(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820701F) {
@@ -25919,14 +25260,13 @@ int STUMIN_LDUMIN(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->R==0) OK(ENC_STUMIN_LDUMIN_64_MEMOP);
 		if(dec->size==3 && dec->R==1) OK(ENC_STUMINL_LDUMINL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sturb.xml */
 int STURB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STURB_32_ldst_unscaled */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000000) {
@@ -25970,14 +25310,13 @@ int STURB(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sturh.xml */
 int STURH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STURH_32_ldst_unscaled */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000000) {
@@ -26021,14 +25360,13 @@ int STURH(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stur_fpsimd.xml */
 int STUR_fpsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=xx|111|V=1|00|opc=x0|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C000000) {
@@ -26053,14 +25391,13 @@ int STUR_fpsimd(context *ctx, Instruction *dec)
 	dec->memop = (SLICE(dec->opc,0,0)==1) ? MemOp_LOAD : MemOp_STORE;
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stur_gen.xml */
 int STUR_gen(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_plus_offset */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000000) {
@@ -26105,14 +25442,13 @@ int STUR_gen(context *ctx, Instruction *dec)
 	}
 	dec->datasize = (8) << (dec->scale);
 	dec->tag_checked = dec->memop!=MemOp_PREFETCH && (dec->wback || dec->n!=0x1f);
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stxp.xml */
 int STXP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88200000) {
@@ -26131,14 +25467,13 @@ int STXP(context *ctx, Instruction *dec)
 		if(dec->sz==0) OK(ENC_STXP_SP32_LDSTEXCL);
 		if(dec->sz==1) OK(ENC_STXP_SP64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stxr.xml */
 int STXR(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88000000) {
@@ -26157,14 +25492,13 @@ int STXR(context *ctx, Instruction *dec)
 		if(dec->size==2) OK(ENC_STXR_SR32_LDSTEXCL);
 		if(dec->size==3) OK(ENC_STXR_SR64_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stxrb.xml */
 int STXRB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STXRB_SR32_ldstexcl */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8000000) {
@@ -26182,14 +25516,13 @@ int STXRB(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STXRB_SR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stxrh.xml */
 int STXRH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STXRH_SR32_ldstexcl */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48000000) {
@@ -26207,14 +25540,13 @@ int STXRH(context *ctx, Instruction *dec)
 		dec->tag_checked = dec->n!=0x1f;
 		OK(ENC_STXRH_SR32_LDSTEXCL);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stz2g.xml */
 int STZ2G(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STZ2G_64Spost_ldsttags */
 	/* 11011001|opc=11|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9E00400) {
@@ -26260,14 +25592,13 @@ int STZ2G(context *ctx, Instruction *dec)
 		dec->zero_data = TRUE;
 		OK(ENC_STZ2G_64SOFFSET_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stzg.xml */
 int STZG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STZG_64Spost_ldsttags */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600400) {
@@ -26313,14 +25644,13 @@ int STZG(context *ctx, Instruction *dec)
 		dec->zero_data = TRUE;
 		OK(ENC_STZG_64SOFFSET_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stzgm.xml */
 int STZGM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class STZGM_64bulk_ldsttags */
 	/* 11011001|opc=00|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9200000) {
@@ -26332,14 +25662,13 @@ int STZGM(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Xn);
 		OK(ENC_STZGM_64BULK_LDSTTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subg.xml */
 int SUBG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUBG_64_addsub_immtags */
 	/* sf=1|op=1|S=0|100011|o2=0|uimm6=xxxxxx|op3=(0)(0)|uimm4=xxxx|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFC00000)==0xD1800000) {
@@ -26354,14 +25683,13 @@ int SUBG(context *ctx, Instruction *dec)
 		dec->ADD = FALSE;
 		OK(ENC_SUBG_64_ADDSUB_IMMTAGS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subhn_advsimd.xml */
 int SUBHN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUBHN_asimddiff_N */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206000) {
@@ -26380,14 +25708,13 @@ int SUBHN_advsimd(context *ctx, Instruction *dec)
 		dec->round = (dec->U==1);
 		OK(ENC_SUBHN_ASIMDDIFF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subp.xml */
 int SUBP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUBP_64S_dp_2src */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC00000) {
@@ -26398,14 +25725,13 @@ int SUBP(context *ctx, Instruction *dec)
 		dec->setflags = FALSE;
 		OK(ENC_SUBP_64S_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subps.xml */
 int SUBPS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUBPS_64S_dp_2src */
 	/* sf=1|0|S=1|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xBAC00000) {
@@ -26418,14 +25744,13 @@ int SUBPS(context *ctx, Instruction *dec)
 		if(dec->S==1 && dec->Xd==0x1f) return CMPP_SUBPS(ctx, dec);
 		OK(ENC_SUBPS_64S_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subs_addsub_ext.xml */
 int SUBS_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x6B200000) {
@@ -26446,14 +25771,13 @@ int SUBS_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUBS_32S_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_SUBS_64S_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subs_addsub_imm.xml */
 int SUBS_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x71000000) {
@@ -26474,14 +25798,13 @@ int SUBS_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUBS_32S_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_SUBS_64S_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subs_addsub_shift.xml */
 int SUBS_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6B000000) {
@@ -26506,14 +25829,13 @@ int SUBS_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUBS_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_SUBS_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_addsub_ext.xml */
 int SUB_addsub_ext(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x4B200000) {
@@ -26532,14 +25854,13 @@ int SUB_addsub_ext(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUB_32_ADDSUB_EXT);
 		if(dec->sf==1) OK(ENC_SUB_64_ADDSUB_EXT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_addsub_imm.xml */
 int SUB_addsub_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x51000000) {
@@ -26558,14 +25879,13 @@ int SUB_addsub_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUB_32_ADDSUB_IMM);
 		if(dec->sf==1) OK(ENC_SUB_64_ADDSUB_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_addsub_shift.xml */
 int SUB_addsub_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class no_s */
 	/* sf=x|op=1|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4B000000) {
@@ -26589,14 +25909,13 @@ int SUB_addsub_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_SUB_32_ADDSUB_SHIFT);
 		if(dec->sf==1) OK(ENC_SUB_64_ADDSUB_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_advsimd.xml */
 int SUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUB_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E208400) {
@@ -26629,14 +25948,13 @@ int SUB_advsimd(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->U==1);
 		OK(ENC_SUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sudot_advsimd_elt.xml */
 int SUDOT_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUDOT_asimdelem_D */
 	/* 0|Q=x|U=0|01111|US=0|0|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF00F000) {
@@ -26654,14 +25972,13 @@ int SUDOT_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((0x20) ? ((dec->datasize) / (0x20)) : 0);
 		OK(ENC_SUDOT_ASIMDELEM_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* suqadd_advsimd.xml */
 int SUQADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SUQADD_asisdmisc_R */
 	/* 01|U=0|11110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E203800) {
@@ -26689,28 +26006,26 @@ int SUQADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_SUQADD_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* svc.xml */
 int SVC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SVC_EX_exception */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=01 */
 	if((INSWORD & 0xFFE0001F)==0xD4000001) {
 		decode_fields32(ENC_SVC_EX_EXCEPTION, dec);
 		OK(ENC_SVC_EX_EXCEPTION);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* swp.xml */
 int SWP(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8208000) {
@@ -26735,14 +26050,13 @@ int SWP(context *ctx, Instruction *dec)
 		if(dec->size==3 && dec->A==1 && dec->R==1) OK(ENC_SWPAL_64_MEMOP);
 		if(dec->size==3 && dec->A==0 && dec->R==1) OK(ENC_SWPL_64_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* swpb.xml */
 int SWPB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38208000) {
@@ -26763,14 +26077,13 @@ int SWPB(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_SWPB_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_SWPLB_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* swph.xml */
 int SWPH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78208000) {
@@ -26791,14 +26104,13 @@ int SWPH(context *ctx, Instruction *dec)
 		if(dec->A==0 && dec->R==0) OK(ENC_SWPH_32_MEMOP);
 		if(dec->A==0 && dec->R==1) OK(ENC_SWPLH_32_MEMOP);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sxtb_sbfm.xml */
 int SXTB_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=000000|imms=000111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FBFFC00)==0x13001C00) {
@@ -26806,14 +26118,13 @@ int SXTB_SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_SXTB_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_SXTB_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sxth_sbfm.xml */
 int SXTH_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=000000|imms=001111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FBFFC00)==0x13003C00) {
@@ -26821,42 +26132,39 @@ int SXTH_SBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_SXTH_SBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_SXTH_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sxtl_sshll_advsimd.xml */
 int SXTL_SSHLL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SSHLL_asimdshf_L */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=000|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF87FC00)==0xF00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SXTL_SSHLL_ASIMDSHF_L, dec);
 		OK(ENC_SXTL_SSHLL_ASIMDSHF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sxtw_sbfm.xml */
 int SXTW_SBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class signed_fill */
 	/* sf=1|opc=00|100110|N=1|immr=000000|imms=011111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x93407C00) {
 		decode_fields32(ENC_SXTW_SBFM_64M_BITFIELD, dec);
 		OK(ENC_SXTW_SBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sys.xml */
 int SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF80000)==0xD5080000) {
@@ -26879,14 +26187,13 @@ int SYS(context *ctx, Instruction *dec)
 		if(dec->CRn==8 && SysOp(dec->op1,8,dec->CRm,dec->op2)==dec->Sys_TLBI) return TLBI_SYS(ctx, dec);
 		OK(ENC_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sysl.xml */
 int SYSL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYSL_RC_systeminstrs */
 	/* 1101010100|L=1|op0=01|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF80000)==0xD5280000) {
@@ -26901,14 +26208,13 @@ int SYSL(context *ctx, Instruction *dec)
 		dec->has_result = (dec->L==1);
 		OK(ENC_SYSL_RC_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tbl_advsimd.xml */
 int TBL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|001110|op2=00|0|Rm=xxxxx|0|len=xx|op=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE09C00)==0xE000000) {
@@ -26925,14 +26231,13 @@ int TBL_advsimd(context *ctx, Instruction *dec)
 		if(dec->len==3) OK(ENC_TBL_ASIMDTBL_L4_4);
 		if(dec->len==0) OK(ENC_TBL_ASIMDTBL_L1_1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tbnz.xml */
 int TBNZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class TBNZ_only_testbranch */
 	/* b5=x|011011|op=1|b40=xxxxx|imm14=xxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x37000000) {
@@ -26944,14 +26249,13 @@ int TBNZ(context *ctx, Instruction *dec)
 		dec->offset = SignExtend((dec->imm14<<2),16);
 		OK(ENC_TBNZ_ONLY_TESTBRANCH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tbx_advsimd.xml */
 int TBX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|001110|op2=00|0|Rm=xxxxx|0|len=xx|op=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE09C00)==0xE001000) {
@@ -26968,14 +26272,13 @@ int TBX_advsimd(context *ctx, Instruction *dec)
 		if(dec->len==3) OK(ENC_TBX_ASIMDTBL_L4_4);
 		if(dec->len==0) OK(ENC_TBX_ASIMDTBL_L1_1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tbz.xml */
 int TBZ(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class TBZ_only_testbranch */
 	/* b5=x|011011|op=0|b40=xxxxx|imm14=xxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x36000000) {
@@ -26987,28 +26290,26 @@ int TBZ(context *ctx, Instruction *dec)
 		dec->offset = SignExtend((dec->imm14<<2),16);
 		OK(ENC_TBZ_ONLY_TESTBRANCH);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tlbi_sys.xml */
 int TLBI_SYS(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class SYS_CR_systeminstrs */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=1000|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5088000) {
 		decode_fields32(ENC_TLBI_SYS_CR_SYSTEMINSTRS, dec);
 		OK(ENC_TLBI_SYS_CR_SYSTEMINSTRS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* trn1_advsimd.xml */
 int TRN1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class TRN1_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE002800) {
@@ -27026,14 +26327,13 @@ int TRN1_advsimd(context *ctx, Instruction *dec)
 		dec->pairs = ((2) ? ((dec->elements) / (2)) : 0);
 		OK(ENC_TRN1_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* trn2_advsimd.xml */
 int TRN2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class TRN2_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE006800) {
@@ -27051,14 +26351,13 @@ int TRN2_advsimd(context *ctx, Instruction *dec)
 		dec->pairs = ((2) ? ((dec->elements) / (2)) : 0);
 		OK(ENC_TRN2_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tsb.xml */
 int TSB(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class TSB_HC_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503225F) {
@@ -27163,14 +26462,13 @@ int TSB(context *ctx, Instruction *dec)
 		}
 		OK(ENC_TSB_HC_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tst_ands_log_imm.xml */
 int TST_ANDS_log_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|opc=11|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x7200001F) {
@@ -27178,14 +26476,13 @@ int TST_ANDS_log_imm(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_TST_ANDS_32S_LOG_IMM);
 		if(dec->sf==1) OK(ENC_TST_ANDS_64S_LOG_IMM);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tst_ands_log_shift.xml */
 int TST_ANDS_log_shift(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class s */
 	/* sf=x|opc=11|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x6A00001F) {
@@ -27193,14 +26490,13 @@ int TST_ANDS_log_shift(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_TST_ANDS_32_LOG_SHIFT);
 		if(dec->sf==1) OK(ENC_TST_ANDS_64_LOG_SHIFT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uabal_advsimd.xml */
 int UABAL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UABAL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205000) {
@@ -27219,14 +26515,13 @@ int UABAL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UABAL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaba_advsimd.xml */
 int UABA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UABA_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207C00) {
@@ -27244,14 +26539,13 @@ int UABA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->ac==1);
 		OK(ENC_UABA_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uabdl_advsimd.xml */
 int UABDL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UABDL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207000) {
@@ -27270,14 +26564,13 @@ int UABDL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UABDL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uabd_advsimd.xml */
 int UABD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UABD_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207400) {
@@ -27295,14 +26588,13 @@ int UABD_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->ac==1);
 		OK(ENC_UABD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uadalp_advsimd.xml */
 int UADALP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UADALP_asimdmisc_P */
 	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E206800) {
@@ -27319,14 +26611,13 @@ int UADALP_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UADALP_ASIMDMISC_P);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaddlp_advsimd.xml */
 int UADDLP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UADDLP_asimdmisc_P */
 	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E202800) {
@@ -27343,14 +26634,13 @@ int UADDLP_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UADDLP_ASIMDMISC_P);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaddlv_advsimd.xml */
 int UADDLV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UADDLV_asimdall_only */
 	/* 0|Q=x|U=1|01110|size=xx|11000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E303800) {
@@ -27369,14 +26659,13 @@ int UADDLV_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UADDLV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaddl_advsimd.xml */
 int UADDL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UADDL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200000) {
@@ -27395,14 +26684,13 @@ int UADDL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UADDL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaddw_advsimd.xml */
 int UADDW_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UADDW_asimddiff_W */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E201000) {
@@ -27421,14 +26709,13 @@ int UADDW_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UADDW_ASIMDDIFF_W);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ubfiz_ubfm.xml */
 int UBFIZ_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
@@ -27436,14 +26723,13 @@ int UBFIZ_UBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_UBFIZ_UBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_UBFIZ_UBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ubfm.xml */
 int UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
@@ -27489,14 +26775,13 @@ int UBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_UBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_UBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ubfx_ubfm.xml */
 int UBFX_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
@@ -27504,14 +26789,13 @@ int UBFX_UBFM(context *ctx, Instruction *dec)
 		if(dec->sf==0 && dec->N==0) OK(ENC_UBFX_UBFM_32M_BITFIELD);
 		if(dec->sf==1 && dec->N==1) OK(ENC_UBFX_UBFM_64M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ucvtf_advsimd_fix.xml */
 int UCVTF_advsimd_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UCVTF_asisdshf_C */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F00E400 && (INSWORD & 0x780000)!=0x0) {
@@ -27552,14 +26836,13 @@ int UCVTF_advsimd_fix(context *ctx, Instruction *dec)
 		dec->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_ASIMDSHF_C);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ucvtf_advsimd_int.xml */
 int UCVTF_advsimd_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UCVTF_asisdmiscfp16_R */
 	/* 01|U=1|11110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79D800) {
@@ -27617,14 +26900,13 @@ int UCVTF_advsimd_int(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UCVTF_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ucvtf_float_fix.xml */
 int UCVTF_float_fix(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=00|opcode=011|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E030000) {
@@ -27673,14 +26955,13 @@ int UCVTF_float_fix(context *ctx, Instruction *dec)
 		if(dec->sf==1 && dec->ftype==0) OK(ENC_UCVTF_S64_FLOAT2FIX);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_UCVTF_D64_FLOAT2FIX);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ucvtf_float_int.xml */
 int UCVTF_float_int(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=011|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E230000) {
@@ -27760,28 +27041,26 @@ int UCVTF_float_int(context *ctx, Instruction *dec)
 		if(dec->sf==1 && dec->ftype==0) OK(ENC_UCVTF_S64_FLOAT2INT);
 		if(dec->sf==1 && dec->ftype==1) OK(ENC_UCVTF_D64_FLOAT2INT);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udf_perm_undef.xml */
 int UDF_perm_undef(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UDF_only_perm_undef */
 	/* 0000000000000000|imm16=xxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFFFF0000)==0x0) {
 		decode_fields32(ENC_UDF_ONLY_PERM_UNDEF, dec);
 		OK(ENC_UDF_ONLY_PERM_UNDEF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udiv.xml */
 int UDIV(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00800) {
@@ -27794,14 +27073,13 @@ int UDIV(context *ctx, Instruction *dec)
 		if(dec->sf==0) OK(ENC_UDIV_32_DP_2SRC);
 		if(dec->sf==1) OK(ENC_UDIV_64_DP_2SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udot_advsimd_elt.xml */
 int UDOT_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UDOT_asimdelem_D */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1110|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00E000) {
@@ -27822,14 +27100,13 @@ int UDOT_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_UDOT_ASIMDELEM_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udot_advsimd_vec.xml */
 int UDOT_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UDOT_asimdsame2_D */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|opcode=0010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E009400) {
@@ -27849,14 +27126,13 @@ int UDOT_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_UDOT_ASIMDSAME2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uhadd_advsimd.xml */
 int UHADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UHADD_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200400) {
@@ -27873,14 +27149,13 @@ int UHADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UHADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uhsub_advsimd.xml */
 int UHSUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UHSUB_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202400) {
@@ -27897,14 +27172,13 @@ int UHSUB_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UHSUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umaddl.xml */
 int UMADDL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMADDL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA00000) {
@@ -27921,14 +27195,13 @@ int UMADDL(context *ctx, Instruction *dec)
 		if(dec->Ra==0x1f) return UMULL_UMADDL(ctx, dec);
 		OK(ENC_UMADDL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umaxp_advsimd.xml */
 int UMAXP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMAXP_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A400) {
@@ -27946,14 +27219,13 @@ int UMAXP_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_UMAXP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umaxv_advsimd.xml */
 int UMAXV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMAXV_asimdall_only */
 	/* 0|Q=x|U=1|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E30A800) {
@@ -27973,14 +27245,13 @@ int UMAXV_advsimd(context *ctx, Instruction *dec)
 		dec->min = (dec->op==1);
 		OK(ENC_UMAXV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umax_advsimd.xml */
 int UMAX_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMAX_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206400) {
@@ -27998,14 +27269,13 @@ int UMAX_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_UMAX_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uminp_advsimd.xml */
 int UMINP_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMINP_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20AC00) {
@@ -28023,14 +27293,13 @@ int UMINP_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_UMINP_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uminv_advsimd.xml */
 int UMINV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMINV_asimdall_only */
 	/* 0|Q=x|U=1|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E31A800) {
@@ -28050,14 +27319,13 @@ int UMINV_advsimd(context *ctx, Instruction *dec)
 		dec->min = (dec->op==1);
 		OK(ENC_UMINV_ASIMDALL_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umin_advsimd.xml */
 int UMIN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMIN_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206C00) {
@@ -28075,14 +27343,13 @@ int UMIN_advsimd(context *ctx, Instruction *dec)
 		dec->minimum = (dec->o1==1);
 		OK(ENC_UMIN_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umlal_advsimd_elt.xml */
 int UMLAL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMLAL_asimdelem_L */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F002000) {
@@ -28110,14 +27377,13 @@ int UMLAL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_UMLAL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umlal_advsimd_vec.xml */
 int UMLAL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMLAL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E208000) {
@@ -28136,14 +27402,13 @@ int UMLAL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UMLAL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umlsl_advsimd_elt.xml */
 int UMLSL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMLSL_asimdelem_L */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F006000) {
@@ -28171,14 +27436,13 @@ int UMLSL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->sub_op = (dec->o2==1);
 		OK(ENC_UMLSL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umlsl_advsimd_vec.xml */
 int UMLSL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMLSL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A000) {
@@ -28197,14 +27461,13 @@ int UMLSL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UMLSL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ummla_advsimd_vec.xml */
 int UMMLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMMLA_asimdsame2_G */
 	/* 0|Q=1|U=1|01110|size=10|0|Rm=xxxxx|1|010|B=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6E80A400) {
@@ -28232,28 +27495,26 @@ int UMMLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_UMMLA_ASIMDSAME2_G);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umnegl_umsubl.xml */
 int UMNEGL_UMSUBL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMSUBL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA0FC00) {
 		decode_fields32(ENC_UMNEGL_UMSUBL_64WA_DP_3SRC, dec);
 		OK(ENC_UMNEGL_UMSUBL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umov_advsimd.xml */
 int UMOV_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE003C00) {
@@ -28284,14 +27545,13 @@ int UMOV_advsimd(context *ctx, Instruction *dec)
 		if(dec->Q==0) OK(ENC_UMOV_ASIMDINS_W_W);
 		if(dec->Q==1 && (dec->imm5&15)==8) OK(ENC_UMOV_ASIMDINS_X_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umsubl.xml */
 int UMSUBL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMSUBL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA08000) {
@@ -28308,14 +27568,13 @@ int UMSUBL(context *ctx, Instruction *dec)
 		if(dec->Ra==0x1f) return UMNEGL_UMSUBL(ctx, dec);
 		OK(ENC_UMSUBL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umulh.xml */
 int UMULH(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMULH_64_dp_3src */
 	/* sf=1|op54=00|11011|U=1|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BC00000) {
@@ -28329,28 +27588,26 @@ int UMULH(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UMULH_64_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umull_umaddl.xml */
 int UMULL_UMADDL(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMADDL_64WA_dp_3src */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA07C00) {
 		decode_fields32(ENC_UMULL_UMADDL_64WA_DP_3SRC, dec);
 		OK(ENC_UMULL_UMADDL_64WA_DP_3SRC);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umull_advsimd_elt.xml */
 int UMULL_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMULL_asimdelem_L */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1010|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00A000) {
@@ -28377,14 +27634,13 @@ int UMULL_advsimd_elt(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UMULL_ASIMDELEM_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umull_advsimd_vec.xml */
 int UMULL_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UMULL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20C000) {
@@ -28402,14 +27658,13 @@ int UMULL_advsimd_vec(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UMULL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqadd_advsimd.xml */
 int UQADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQADD_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E200C00) {
@@ -28439,14 +27694,13 @@ int UQADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UQADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqrshl_advsimd.xml */
 int UQRSHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQRSHL_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205C00) {
@@ -28483,14 +27737,13 @@ int UQRSHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_UQRSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqrshrn_advsimd.xml */
 int UQRSHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQRSHRN_asisdshf_N */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009C00 && (INSWORD & 0x780000)!=0x0) {
@@ -28533,14 +27786,13 @@ int UQRSHRN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UQRSHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqshl_advsimd_imm.xml */
 int UQSHL_advsimd_imm(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQSHL_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F007400 && (INSWORD & 0x780000)!=0x0) {
@@ -28604,14 +27856,13 @@ int UQSHL_advsimd_imm(context *ctx, Instruction *dec)
 		}
 		OK(ENC_UQSHL_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqshl_advsimd_reg.xml */
 int UQSHL_advsimd_reg(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQSHL_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204C00) {
@@ -28648,14 +27899,13 @@ int UQSHL_advsimd_reg(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_UQSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqshrn_advsimd.xml */
 int UQSHRN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQSHRN_asisdshf_N */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009400 && (INSWORD & 0x780000)!=0x0) {
@@ -28698,14 +27948,13 @@ int UQSHRN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UQSHRN_ASIMDSHF_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqsub_advsimd.xml */
 int UQSUB_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQSUB_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E202C00) {
@@ -28735,14 +27984,13 @@ int UQSUB_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UQSUB_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqxtn_advsimd.xml */
 int UQXTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UQXTN_asisdmisc_N */
 	/* 01|U=1|11110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E214800) {
@@ -28775,14 +28023,13 @@ int UQXTN_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_UQXTN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* urecpe_advsimd.xml */
 int URECPE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URECPE_asimdmisc_R */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1C800) {
@@ -28797,14 +28044,13 @@ int URECPE_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_URECPE_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* urhadd_advsimd.xml */
 int URHADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URHADD_asimdsame_only */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E201400) {
@@ -28821,14 +28067,13 @@ int URHADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_URHADD_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* urshl_advsimd.xml */
 int URSHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URSHL_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205400) {
@@ -28865,14 +28110,13 @@ int URSHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_URSHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* urshr_advsimd.xml */
 int URSHR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URSHR_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F002400 && (INSWORD & 0x780000)!=0x0) {
@@ -28912,14 +28156,13 @@ int URSHR_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_URSHR_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ursqrte_advsimd.xml */
 int URSQRTE_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URSQRTE_asimdmisc_R */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1C800) {
@@ -28934,14 +28177,13 @@ int URSQRTE_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_URSQRTE_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ursra_advsimd.xml */
 int URSRA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class URSRA_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F003400 && (INSWORD & 0x780000)!=0x0) {
@@ -28981,14 +28223,13 @@ int URSRA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_URSRA_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usdot_advsimd_elt.xml */
 int USDOT_advsimd_elt(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USDOT_asimdelem_D */
 	/* 0|Q=x|U=0|01111|US=1|0|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF80F000) {
@@ -29006,14 +28247,13 @@ int USDOT_advsimd_elt(context *ctx, Instruction *dec)
 		dec->elements = ((0x20) ? ((dec->datasize) / (0x20)) : 0);
 		OK(ENC_USDOT_ASIMDELEM_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usdot_advsimd_vec.xml */
 int USDOT_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USDOT_asimdsame2_D */
 	/* 0|Q=x|U=0|01110|size=10|0|Rm=xxxxx|1|opcode=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE809C00) {
@@ -29028,14 +28268,13 @@ int USDOT_advsimd_vec(context *ctx, Instruction *dec)
 		dec->elements = ((0x20) ? ((dec->datasize) / (0x20)) : 0);
 		OK(ENC_USDOT_ASIMDSAME2_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ushll_advsimd.xml */
 int USHLL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USHLL_asimdshf_L */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F00A400 && (INSWORD & 0x780000)!=0x0) {
@@ -29058,14 +28297,13 @@ int USHLL_advsimd(context *ctx, Instruction *dec)
 		if(dec->immb==0 && BitCount(dec->immh)==1) return UXTL_USHLL_advsimd(ctx, dec);
 		OK(ENC_USHLL_ASIMDSHF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ushl_advsimd.xml */
 int USHL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USHL_asisdsame_only */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204400) {
@@ -29102,14 +28340,13 @@ int USHL_advsimd(context *ctx, Instruction *dec)
 		dec->saturating = (dec->S==1);
 		OK(ENC_USHL_ASIMDSAME_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ushr_advsimd.xml */
 int USHR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USHR_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F000400 && (INSWORD & 0x780000)!=0x0) {
@@ -29149,14 +28386,13 @@ int USHR_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_USHR_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usmmla_advsimd_vec.xml */
 int USMMLA_advsimd_vec(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USMMLA_asimdsame2_G */
 	/* 0|Q=1|U=0|01110|size=10|0|Rm=xxxxx|1|010|B=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E80AC00) {
@@ -29184,14 +28420,13 @@ int USMMLA_advsimd_vec(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_USMMLA_ASIMDSAME2_G);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usqadd_advsimd.xml */
 int USQADD_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USQADD_asisdmisc_R */
 	/* 01|U=1|11110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E203800) {
@@ -29219,14 +28454,13 @@ int USQADD_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_USQADD_ASIMDMISC_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usra_advsimd.xml */
 int USRA_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USRA_asisdshf_R */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F001400 && (INSWORD & 0x780000)!=0x0) {
@@ -29266,14 +28500,13 @@ int USRA_advsimd(context *ctx, Instruction *dec)
 		dec->accumulate = (dec->o0==1);
 		OK(ENC_USRA_ASIMDSHF_R);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usubl_advsimd.xml */
 int USUBL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USUBL_asimddiff_L */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202000) {
@@ -29292,14 +28525,13 @@ int USUBL_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_USUBL_ASIMDDIFF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usubw_advsimd.xml */
 int USUBW_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USUBW_asimddiff_W */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203000) {
@@ -29318,56 +28550,52 @@ int USUBW_advsimd(context *ctx, Instruction *dec)
 		dec->unsigned_ = (dec->U==1);
 		OK(ENC_USUBW_ASIMDDIFF_W);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uxtb_ubfm.xml */
 int UXTB_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=0|opc=10|100110|N=0|immr=000000|imms=000111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x53001C00) {
 		decode_fields32(ENC_UXTB_UBFM_32M_BITFIELD, dec);
 		OK(ENC_UXTB_UBFM_32M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uxth_ubfm.xml */
 int UXTH_UBFM(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zero_fill */
 	/* sf=0|opc=10|100110|N=0|immr=000000|imms=001111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x53003C00) {
 		decode_fields32(ENC_UXTH_UBFM_32M_BITFIELD, dec);
 		OK(ENC_UXTH_UBFM_32M_BITFIELD);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uxtl_ushll_advsimd.xml */
 int UXTL_USHLL_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class USHLL_asimdshf_L */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=000|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF87FC00)==0x2F00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UXTL_USHLL_ASIMDSHF_L, dec);
 		OK(ENC_UXTL_USHLL_ASIMDSHF_L);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uzp1_advsimd.xml */
 int UZP1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UZP1_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE001800) {
@@ -29384,14 +28612,13 @@ int UZP1_advsimd(context *ctx, Instruction *dec)
 		dec->part = UINT(dec->op);
 		OK(ENC_UZP1_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uzp2_advsimd.xml */
 int UZP2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class UZP2_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE005800) {
@@ -29408,14 +28635,13 @@ int UZP2_advsimd(context *ctx, Instruction *dec)
 		dec->part = UINT(dec->op);
 		OK(ENC_UZP2_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* wfe.xml */
 int WFE(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class WFE_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503205F) {
@@ -29520,14 +28746,13 @@ int WFE(context *ctx, Instruction *dec)
 		}
 		OK(ENC_WFE_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* wfi.xml */
 int WFI(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class WFI_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=011|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503207F) {
@@ -29632,14 +28857,13 @@ int WFI(context *ctx, Instruction *dec)
 		}
 		OK(ENC_WFI_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* xaflag.xml */
 int XAFLAG(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class XAFLAG_M_pstate */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=001|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500403F) {
@@ -29649,14 +28873,13 @@ int XAFLAG(context *ctx, Instruction *dec)
 		}
 		OK(ENC_XAFLAG_M_PSTATE);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* xar_advsimd.xml */
 int XAR_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class XAR_VVV2_crypto3_imm6 */
 	/* 11001110100|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE00000)==0xCE800000) {
@@ -29669,14 +28892,13 @@ int XAR_advsimd(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_XAR_VVV2_CRYPTO3_IMM6);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* xpac.xml */
 int XPAC(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=1|opcode[3:1]=000|D=x|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFBE0)==0xDAC143E0) {
@@ -29699,14 +28921,13 @@ int XPAC(context *ctx, Instruction *dec)
 		decode_fields32(ENC_XPACLRI_HI_HINTS, dec);
 		OK(ENC_XPACLRI_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* xtn_advsimd.xml */
 int XTN_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class XTN_asimdmisc_N */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=10010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE212800) {
@@ -29722,14 +28943,13 @@ int XTN_advsimd(context *ctx, Instruction *dec)
 		dec->elements = ((dec->esize) ? ((dec->datasize) / (dec->esize)) : 0);
 		OK(ENC_XTN_ASIMDMISC_N);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* yield.xml */
 int YIELD(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class YIELD_HI_hints */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=001|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503203F) {
@@ -29834,14 +29054,13 @@ int YIELD(context *ctx, Instruction *dec)
 		}
 		OK(ENC_YIELD_HI_HINTS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* zip1_advsimd.xml */
 int ZIP1_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ZIP1_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE003800) {
@@ -29859,14 +29078,13 @@ int ZIP1_advsimd(context *ctx, Instruction *dec)
 		dec->pairs = ((2) ? ((dec->elements) / (2)) : 0);
 		OK(ENC_ZIP1_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* zip2_advsimd.xml */
 int ZIP2_advsimd(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ZIP2_asimdperm_only */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE007800) {
@@ -29884,14 +29102,13 @@ int ZIP2_advsimd(context *ctx, Instruction *dec)
 		dec->pairs = ((2) ? ((dec->elements) / (2)) : 0);
 		OK(ENC_ZIP2_ASIMDPERM_ONLY);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* abs_z_p_z.xml */
 int abs_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class abs_z_p_z_ */
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x416A000) {
@@ -29905,14 +29122,13 @@ int abs_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_ABS_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_z_p_zz.xml */
 int add_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class add_z_p_zz_ */
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4000000) {
@@ -29926,14 +29142,13 @@ int add_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_ADD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_z_zi.xml */
 int add_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class add_z_zi_ */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2520C000) {
@@ -29952,14 +29167,13 @@ int add_z_zi(context *ctx, Instruction *dec)
 		}
 		OK(ENC_ADD_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* add_z_zz.xml */
 int add_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class add_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200000) {
@@ -29973,14 +29187,13 @@ int add_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_ADD_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addpl_r_ri.xml */
 int addpl_r_ri(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class addpl_r_ri_ */
 	/* 000001000|op=1|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4605000) {
@@ -29993,14 +29206,13 @@ int addpl_r_ri(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm6,6);
 		OK(ENC_ADDPL_R_RI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* addvl_r_ri.xml */
 int addvl_r_ri(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class addvl_r_ri_ */
 	/* 000001000|op=0|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4205000) {
@@ -30013,14 +29225,13 @@ int addvl_r_ri(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm6,6);
 		OK(ENC_ADDVL_R_RI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* adr_z_az.xml */
 int adr_z_az(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class adr_z_az_sd_same_scaled */
 	/* 00000100|1|sz=x|1|Zm=xxxxx|1010|msz=xx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0F000)==0x4A0A000) {
@@ -30069,14 +29280,13 @@ int adr_z_az(context *ctx, Instruction *dec)
 		dec->mbytes = (1) << (UINT(dec->msz));
 		OK(ENC_ADR_Z_AZ_D_U32_SCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_p_p_pp.xml */
 int and_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_p_p_pp_z */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004000) {
@@ -30113,14 +29323,13 @@ int and_p_p_pp(context *ctx, Instruction *dec)
 		if(dec->S==0 && dec->Pn==dec->Pm) return MOV_and_p_p_pp(ctx, dec);
 		OK(ENC_ANDS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_z_p_zz.xml */
 int and_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_z_p_zz_ */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A0000) {
@@ -30134,14 +29343,13 @@ int and_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_AND_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_z_zi.xml */
 int and_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_z_zi_ */
 	/* 00000101|opc=10|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5800000) {
@@ -30155,14 +29363,13 @@ int and_z_zi(context *ctx, Instruction *dec)
 		dec->imm = dbmrt.wmask;
 		OK(ENC_AND_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* and_z_zz.xml */
 int and_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class and_z_zz_ */
 	/* 00000100|opc=00|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4203000) {
@@ -30175,14 +29382,13 @@ int and_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_AND_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* andv_r_p_z.xml */
 int andv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class andv_r_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A2000) {
@@ -30196,14 +29402,13 @@ int andv_r_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_ANDV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_z_p_zi.xml */
 int asr_z_p_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asr_z_p_zi_ */
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4008000) {
@@ -30232,14 +29437,13 @@ int asr_z_p_zi(context *ctx, Instruction *dec)
 		dec->shift = ((2) * (dec->esize))-UINT(((dec->tsize<<3)|dec->imm3));
 		OK(ENC_ASR_Z_P_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_z_p_zw.xml */
 int asr_z_p_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asr_z_p_zw_ */
 	/* 00000100|size=xx|011|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4188000) {
@@ -30256,14 +29460,13 @@ int asr_z_p_zw(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_ASR_Z_P_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_z_p_zz.xml */
 int asr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asr_z_p_zz_ */
 	/* 00000100|size=xx|010|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4108000) {
@@ -30277,14 +29480,13 @@ int asr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_ASR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_z_zi.xml */
 int asr_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asr_z_zi_ */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209000) {
@@ -30313,14 +29515,13 @@ int asr_z_zi(context *ctx, Instruction *dec)
 		dec->shift = ((2) * (dec->esize))-UINT(((dec->tsize<<3)|dec->imm3));
 		OK(ENC_ASR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asr_z_zw.xml */
 int asr_z_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asr_z_zw_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208000) {
@@ -30337,14 +29538,13 @@ int asr_z_zw(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_ASR_Z_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asrd_z_p_zi.xml */
 int asrd_z_p_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asrd_z_p_zi_ */
 	/* 00000100|tszh=xx|00|opc=01|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4048000) {
@@ -30373,14 +29573,13 @@ int asrd_z_p_zi(context *ctx, Instruction *dec)
 		dec->shift = ((2) * (dec->esize))-UINT(((dec->tsize<<3)|dec->imm3));
 		OK(ENC_ASRD_Z_P_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* asrr_z_p_zz.xml */
 int asrr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class asrr_z_p_zz_ */
 	/* 00000100|size=xx|010|R=1|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4148000) {
@@ -30394,14 +29593,13 @@ int asrr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_ASRR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfcvt_z_p_z.xml */
 int bfcvt_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfcvt_z_p_z_s2bf */
 	/* 01100101|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x658AA000) {
@@ -30414,14 +29612,13 @@ int bfcvt_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_BFCVT_Z_P_Z_S2BF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfcvtnt_z_p_z.xml */
 int bfcvtnt_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfcvtnt_z_p_z_s2bf */
 	/* 01100100|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x648AA000) {
@@ -30434,14 +29631,13 @@ int bfcvtnt_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_BFCVTNT_Z_P_Z_S2BF);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfdot_z_zzz.xml */
 int bfdot_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfdot_z_zzz_ */
 	/* 011001000|op=1|1|Zm=xxxxx|100000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64608000) {
@@ -30454,14 +29650,13 @@ int bfdot_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_BFDOT_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfdot_z_zzzi.xml */
 int bfdot_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfdot_z_zzzi_ */
 	/* 011001000|op=1|1|i2=xx|Zm=xxx|010000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64604000) {
@@ -30475,14 +29670,13 @@ int bfdot_z_zzzi(context *ctx, Instruction *dec)
 		dec->index = UINT(dec->i2);
 		OK(ENC_BFDOT_Z_ZZZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlalb_z_zzz.xml */
 int bfmlalb_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfmlalb_z_zzz_ */
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08000) {
@@ -30495,14 +29689,13 @@ int bfmlalb_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_BFMLALB_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlalb_z_zzzi.xml */
 int bfmlalb_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfmlalb_z_zzzi_ */
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04000) {
@@ -30516,14 +29709,13 @@ int bfmlalb_z_zzzi(context *ctx, Instruction *dec)
 		dec->index = UINT(((dec->i3h<<1)|dec->i3l));
 		OK(ENC_BFMLALB_Z_ZZZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlalt_z_zzz.xml */
 int bfmlalt_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfmlalt_z_zzz_ */
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08400) {
@@ -30536,14 +29728,13 @@ int bfmlalt_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_BFMLALT_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmlalt_z_zzzi.xml */
 int bfmlalt_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfmlalt_z_zzzi_ */
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04400) {
@@ -30557,14 +29748,13 @@ int bfmlalt_z_zzzi(context *ctx, Instruction *dec)
 		dec->index = UINT(((dec->i3h<<1)|dec->i3l));
 		OK(ENC_BFMLALT_Z_ZZZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bfmmla_z_zzz.xml */
 int bfmmla_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bfmmla_z_zzz_ */
 	/* 01100100|opc=01|1|Zm=xxxxx|111001|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6460E400) {
@@ -30577,14 +29767,13 @@ int bfmmla_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_BFMMLA_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_p_p_pp.xml */
 int bic_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bic_p_p_pp_z */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004010) {
@@ -30615,14 +29804,13 @@ int bic_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BICS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_z_p_zz.xml */
 int bic_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bic_z_p_zz_ */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B0000) {
@@ -30636,14 +29824,13 @@ int bic_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_BIC_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* bic_z_zz.xml */
 int bic_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class bic_z_zz_ */
 	/* 00000100|opc=11|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E03000) {
@@ -30656,14 +29843,13 @@ int bic_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_BIC_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brka_p_p_p.xml */
 int brka_p_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class brka_p_p_p_ */
 	/* 00100101|B=0|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25104000) {
@@ -30694,14 +29880,13 @@ int brka_p_p_p(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BRKAS_P_P_P_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brkb_p_p_p.xml */
 int brkb_p_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class brkb_p_p_p_ */
 	/* 00100101|B=1|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25904000) {
@@ -30732,14 +29917,13 @@ int brkb_p_p_p(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BRKBS_P_P_P_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brkn_p_p_pp.xml */
 int brkn_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class brkn_p_p_pp_ */
 	/* 001001010|S=0|01100001|Pg=xxxx|0|Pn=xxxx|0|Pdm=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25184000) {
@@ -30766,14 +29950,13 @@ int brkn_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BRKNS_P_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brkpa_p_p_pp.xml */
 int brkpa_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class brkpa_p_p_pp_ */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C000) {
@@ -30804,14 +29987,13 @@ int brkpa_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BRKPAS_P_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* brkpb_p_p_pp.xml */
 int brkpb_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class brkpb_p_p_pp_ */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C010) {
@@ -30842,14 +30024,13 @@ int brkpb_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_BRKPBS_P_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clasta_r_p_z.xml */
 int clasta_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clasta_r_p_z_ */
 	/* 00000101|size=xx|11000|B=0|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x530A000) {
@@ -30865,14 +30046,13 @@ int clasta_r_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = FALSE;
 		OK(ENC_CLASTA_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clasta_v_p_z.xml */
 int clasta_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clasta_v_p_z_ */
 	/* 00000101|size=xx|10101|B=0|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52A8000) {
@@ -30887,14 +30067,13 @@ int clasta_v_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = FALSE;
 		OK(ENC_CLASTA_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clasta_z_p_zz.xml */
 int clasta_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clasta_z_p_zz_ */
 	/* 00000101|size=xx|10100|B=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5288000) {
@@ -30909,14 +30088,13 @@ int clasta_z_p_zz(context *ctx, Instruction *dec)
 		dec->isBefore = FALSE;
 		OK(ENC_CLASTA_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clastb_r_p_z.xml */
 int clastb_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clastb_r_p_z_ */
 	/* 00000101|size=xx|11000|B=1|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x531A000) {
@@ -30932,14 +30110,13 @@ int clastb_r_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = TRUE;
 		OK(ENC_CLASTB_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clastb_v_p_z.xml */
 int clastb_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clastb_v_p_z_ */
 	/* 00000101|size=xx|10101|B=1|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52B8000) {
@@ -30954,14 +30131,13 @@ int clastb_v_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = TRUE;
 		OK(ENC_CLASTB_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clastb_z_p_zz.xml */
 int clastb_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clastb_z_p_zz_ */
 	/* 00000101|size=xx|10100|B=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5298000) {
@@ -30976,14 +30152,13 @@ int clastb_z_p_zz(context *ctx, Instruction *dec)
 		dec->isBefore = TRUE;
 		OK(ENC_CLASTB_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cls_z_p_z.xml */
 int cls_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cls_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x418A000) {
@@ -30997,14 +30172,13 @@ int cls_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_CLS_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* clz_z_p_z.xml */
 int clz_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class clz_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x419A000) {
@@ -31018,14 +30192,13 @@ int clz_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_CLZ_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmpeq_p_p_zi.xml */
 int cmpeq_p_p_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmpeq_p_p_zi_ */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25008000) {
@@ -31186,14 +30359,13 @@ int cmpeq_p_p_zi(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_CMPNE_P_P_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmpeq_p_p_zw.xml */
 int cmpeq_p_p_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmpeq_p_p_zw_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24002000) {
@@ -31384,14 +30556,13 @@ int cmpeq_p_p_zw(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_CMPNE_P_P_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cmpeq_p_p_zz.xml */
 int cmpeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cmpeq_p_p_zz_ */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400A000) {
@@ -31488,14 +30659,13 @@ int cmpeq_p_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_CMPNE_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cnot_z_p_z.xml */
 int cnot_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cnot_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41BA000) {
@@ -31509,14 +30679,13 @@ int cnot_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_CNOT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cnt_z_p_z.xml */
 int cnt_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cnt_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41AA000) {
@@ -31530,14 +30699,13 @@ int cnt_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_CNT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cntb_r_s.xml */
 int cntb_r_s(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cntb_r_s_ */
 	/* 00000100|size=00|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420E000) {
@@ -31590,14 +30758,13 @@ int cntb_r_s(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm4)+1;
 		OK(ENC_CNTW_R_S_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cntp_r_p_p.xml */
 int cntp_r_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cntp_r_p_p_ */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|10|Pg=xxxx|o2=0|Pn=xxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FC200)==0x25208000) {
@@ -31611,14 +30778,13 @@ int cntp_r_p_p(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Rd);
 		OK(ENC_CNTP_R_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* compact_z_p_z.xml */
 int compact_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class compact_z_p_z_ */
 	/* 00000101|size=xx|100001100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5218000) {
@@ -31635,14 +30801,13 @@ int compact_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_COMPACT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cpy_z_o_i.xml */
 int cpy_z_o_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_o_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=0|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5100000) {
@@ -31665,14 +30830,13 @@ int cpy_z_o_i(context *ctx, Instruction *dec)
 		if(MOV_cpy_z_o_i(ctx, dec)==0) return 0;
 		OK(ENC_CPY_Z_O_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cpy_z_p_i.xml */
 int cpy_z_p_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5104000) {
@@ -31695,14 +30859,13 @@ int cpy_z_p_i(context *ctx, Instruction *dec)
 		if(MOV_cpy_z_p_i(ctx, dec)==0) return 0;
 		OK(ENC_CPY_Z_P_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cpy_z_p_r.xml */
 int cpy_z_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_r_ */
 	/* 00000101|size=xx|101000101|Pg=xxx|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x528A000) {
@@ -31718,14 +30881,13 @@ int cpy_z_p_r(context *ctx, Instruction *dec)
 		if(MOV_cpy_z_p_r(ctx, dec)==0) return 0;
 		OK(ENC_CPY_Z_P_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* cpy_z_p_v.xml */
 int cpy_z_p_v(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class cpy_z_p_v_ */
 	/* 00000101|size=xx|100000100|Pg=xxx|Vn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5208000) {
@@ -31741,14 +30903,13 @@ int cpy_z_p_v(context *ctx, Instruction *dec)
 		if(MOV_cpy_z_p_v(ctx, dec)==0) return 0;
 		OK(ENC_CPY_Z_P_V_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ctermeq_rr.xml */
 int ctermeq_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ctermeq_rr_ */
 	/* 00|100101|op=1|sz=x|1|Rm=xxxxx|001000|Rn=xxxxx|ne=0|0|0|00 */
 	if((INSWORD & 0xFFA0FC1F)==0x25A02000) {
@@ -31775,14 +30936,13 @@ int ctermeq_rr(context *ctx, Instruction *dec)
 		dec->op = Cmp_NE;
 		OK(ENC_CTERMNE_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* decb_r_rs.xml */
 int decb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class decb_r_rs_ */
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E400) {
@@ -31835,14 +30995,13 @@ int decb_r_rs(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm4)+1;
 		OK(ENC_DECW_R_RS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* decd_z_zs.xml */
 int decd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class decd_z_zs_ */
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C400) {
@@ -31882,14 +31041,13 @@ int decd_z_zs(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm4)+1;
 		OK(ENC_DECW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* decp_r_p_r.xml */
 int decp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class decp_r_p_r_ */
 	/* 00100101|size=xx|1011|op=0|D=1|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8800) {
@@ -31902,14 +31060,13 @@ int decp_r_p_r(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Rdn);
 		OK(ENC_DECP_R_P_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* decp_z_p_z.xml */
 int decp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class decp_z_p_z_ */
 	/* 00100101|size=xx|1011|op=0|D=1|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8000) {
@@ -31925,14 +31082,13 @@ int decp_z_p_z(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Zdn);
 		OK(ENC_DECP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dup_z_i.xml */
 int dup_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_i_ */
 	/* 00100101|size=xx|111|opc=00|011|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2538C000) {
@@ -31953,14 +31109,13 @@ int dup_z_i(context *ctx, Instruction *dec)
 		if(MOV_dup_z_i(ctx, dec)==0) return 0;
 		OK(ENC_DUP_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dup_z_r.xml */
 int dup_z_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_r_ */
 	/* 00000101|size=xx|100000001110|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5203800) {
@@ -31975,14 +31130,13 @@ int dup_z_r(context *ctx, Instruction *dec)
 		if(MOV_dup_z_r(ctx, dec)==0) return 0;
 		OK(ENC_DUP_Z_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dup_z_zi.xml */
 int dup_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dup_z_zi_ */
 	/* 00000101|imm2=xx|1|tsz=xxxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202000) {
@@ -32020,14 +31174,13 @@ int dup_z_zi(context *ctx, Instruction *dec)
 		if((BitCount(((dec->imm2<<5)|dec->tsz))==1) || (BitCount(((dec->imm2<<5)|dec->tsz))>1)) return MOV_dup_z_zi(ctx, dec);
 		OK(ENC_DUP_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* dupm_z_i.xml */
 int dupm_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dupm_z_i_ */
 	/* 00000101110000|imm13=xxxxxxxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5C00000) {
@@ -32044,14 +31197,13 @@ int dupm_z_i(context *ctx, Instruction *dec)
 		if(SVEMoveMaskPreferred(dec->imm13)) return MOV_dupm_z_i(ctx, dec);
 		OK(ENC_DUPM_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_p_p_pp.xml */
 int eor_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_p_p_pp_z */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004200) {
@@ -32088,14 +31240,13 @@ int eor_p_p_pp(context *ctx, Instruction *dec)
 		if(dec->Pm==dec->Pg) return NOT_eor_p_p_pp(ctx, dec);
 		OK(ENC_EORS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_z_p_zz.xml */
 int eor_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_z_p_zz_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4190000) {
@@ -32109,14 +31260,13 @@ int eor_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_EOR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_z_zi.xml */
 int eor_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_z_zi_ */
 	/* 00000101|opc=01|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5400000) {
@@ -32130,14 +31280,13 @@ int eor_z_zi(context *ctx, Instruction *dec)
 		dec->imm = dbmrt.wmask;
 		OK(ENC_EOR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eor_z_zz.xml */
 int eor_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eor_z_zz_ */
 	/* 00000100|opc=10|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4A03000) {
@@ -32150,14 +31299,13 @@ int eor_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_EOR_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* eorv_r_p_z.xml */
 int eorv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class eorv_r_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4192000) {
@@ -32171,14 +31319,13 @@ int eorv_r_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_EORV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ext_z_zi.xml */
 int ext_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ext_z_zi_des */
 	/* 00000101001|imm8h=xxxxx|000|imm8l=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x5200000) {
@@ -32192,14 +31339,13 @@ int ext_z_zi(context *ctx, Instruction *dec)
 		dec->position = UINT(((dec->imm8h<<3)|dec->imm8l));
 		OK(ENC_EXT_Z_ZI_DES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fabd_z_p_zz.xml */
 int fabd_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fabd_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65088000) {
@@ -32216,14 +31362,13 @@ int fabd_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FABD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fabs_z_p_z.xml */
 int fabs_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fabs_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41CA000) {
@@ -32240,14 +31385,13 @@ int fabs_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FABS_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* facge_p_p_zz.xml */
 int facge_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class facgt_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=1|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500E010) {
@@ -32284,14 +31428,13 @@ int facge_p_p_zz(context *ctx, Instruction *dec)
 		dec->op = Cmp_GE;
 		OK(ENC_FACGE_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadd_z_p_zs.xml */
 int fadd_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fadd_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65188000) {
@@ -32308,14 +31451,13 @@ int fadd_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? FPPointFive(0,dec->esize) : FPOne(0,dec->esize);
 		OK(ENC_FADD_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadd_z_p_zz.xml */
 int fadd_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fadd_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65008000) {
@@ -32332,14 +31474,13 @@ int fadd_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FADD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadd_z_zz.xml */
 int fadd_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fadd_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000000) {
@@ -32356,14 +31497,13 @@ int fadd_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FADD_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fadda_v_p_z.xml */
 int fadda_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fadda_v_p_z_ */
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65182000) {
@@ -32380,14 +31520,13 @@ int fadda_v_p_z(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FADDA_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* faddv_v_p_z.xml */
 int faddv_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class faddv_v_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65002000) {
@@ -32404,14 +31543,13 @@ int faddv_v_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_FADDV_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcadd_z_p_zz.xml */
 int fcadd_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcadd_z_p_zz_ */
 	/* 01100100|size=xx|00000|rot=x|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x64008000) {
@@ -32430,14 +31568,13 @@ int fcadd_z_p_zz(context *ctx, Instruction *dec)
 		dec->sub_r = (dec->rot==1);
 		OK(ENC_FCADD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmeq_p_p_z0.xml */
 int fcmeq_p_p_z0(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmeq_p_p_z0_ */
 	/* 01100101|size=xx|0100|eq=1|lt=0|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65122000) {
@@ -32540,14 +31677,13 @@ int fcmeq_p_p_z0(context *ctx, Instruction *dec)
 		dec->op = Cmp_NE;
 		OK(ENC_FCMNE_P_P_Z0_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmeq_p_p_zz.xml */
 int fcmeq_p_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmeq_p_p_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=1|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65006000) {
@@ -32638,14 +31774,13 @@ int fcmeq_p_p_zz(context *ctx, Instruction *dec)
 		dec->op = Cmp_UN;
 		OK(ENC_FCMUO_P_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmla_z_p_zzz.xml */
 int fcmla_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmla_z_p_zzz_ */
 	/* 01100100|size=xx|0|Zm=xxxxx|0|rot=xx|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF208000)==0x64000000) {
@@ -32667,14 +31802,13 @@ int fcmla_z_p_zzz(context *ctx, Instruction *dec)
 		dec->neg_r = (SLICE(dec->rot,0,0)!=SLICE(dec->rot,1,1));
 		OK(ENC_FCMLA_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcmla_z_zzzi.xml */
 int fcmla_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcmla_z_zzzi_h */
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x64A01000) {
@@ -32711,14 +31845,13 @@ int fcmla_z_zzzi(context *ctx, Instruction *dec)
 		dec->neg_r = (SLICE(dec->rot,0,0)!=SLICE(dec->rot,1,1));
 		OK(ENC_FCMLA_Z_ZZZI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcpy_z_p_i.xml */
 int fcpy_z_p_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcpy_z_p_i_ */
 	/* 00000101|size=xx|01|Pg=xxxx|110|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30E000)==0x510C000) {
@@ -32737,14 +31870,13 @@ int fcpy_z_p_i(context *ctx, Instruction *dec)
 		if(FMOV_fcpy_z_p_i(ctx, dec)==0) return 0;
 		OK(ENC_FCPY_Z_P_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvt_z_p_z.xml */
 int fcvt_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcvt_z_p_z_h2s */
 	/* 01100101|opc=10|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6589A000) {
@@ -32835,14 +31967,13 @@ int fcvt_z_p_z(context *ctx, Instruction *dec)
 		dec->d_esize = 0x20;
 		OK(ENC_FCVT_Z_P_Z_D2S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzs_z_p_z.xml */
 int fcvtzs_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcvtzs_z_p_z_fp162h */
 	/* 01100101|opc=01|011|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655AA000) {
@@ -32962,14 +32093,13 @@ int fcvtzs_z_p_z(context *ctx, Instruction *dec)
 		dec->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_D2X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fcvtzu_z_p_z.xml */
 int fcvtzu_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fcvtzu_z_p_z_fp162h */
 	/* 01100101|opc=01|011|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655BA000) {
@@ -33089,14 +32219,13 @@ int fcvtzu_z_p_z(context *ctx, Instruction *dec)
 		dec->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_D2X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fdiv_z_p_zz.xml */
 int fdiv_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fdiv_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650D8000) {
@@ -33113,14 +32242,13 @@ int fdiv_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FDIV_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fdivr_z_p_zz.xml */
 int fdivr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fdivr_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650C8000) {
@@ -33137,14 +32265,13 @@ int fdivr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FDIVR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fdup_z_i.xml */
 int fdup_z_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fdup_z_i_ */
 	/* 00100101|size=xx|111|opc=00|111|o2=0|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2539C000) {
@@ -33162,14 +32289,13 @@ int fdup_z_i(context *ctx, Instruction *dec)
 		if(FMOV_fdup_z_i(ctx, dec)==0) return 0;
 		OK(ENC_FDUP_Z_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fexpa_z_z.xml */
 int fexpa_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fexpa_z_z_ */
 	/* 00000100|size=xx|1|opc<4:1>=0000|opc<0>=0|101110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x420B800) {
@@ -33185,14 +32311,13 @@ int fexpa_z_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FEXPA_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmad_z_p_zzz.xml */
 int fmad_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmad_z_p_zzz_ */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65208000) {
@@ -33212,14 +32337,13 @@ int fmad_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMAD_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmax_z_p_zs.xml */
 int fmax_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmax_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651E8000) {
@@ -33236,14 +32360,13 @@ int fmax_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? 0 : FPOne(0,dec->esize);
 		OK(ENC_FMAX_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmax_z_p_zz.xml */
 int fmax_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmax_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65068000) {
@@ -33260,14 +32383,13 @@ int fmax_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMAX_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnm_z_p_zs.xml */
 int fmaxnm_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmaxnm_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651C8000) {
@@ -33284,14 +32406,13 @@ int fmaxnm_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? 0 : FPOne(0,dec->esize);
 		OK(ENC_FMAXNM_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnm_z_p_zz.xml */
 int fmaxnm_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmaxnm_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65048000) {
@@ -33308,14 +32429,13 @@ int fmaxnm_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMAXNM_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxnmv_v_p_z.xml */
 int fmaxnmv_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmaxnmv_v_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65042000) {
@@ -33332,14 +32452,13 @@ int fmaxnmv_v_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_FMAXNMV_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmaxv_v_p_z.xml */
 int fmaxv_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmaxv_v_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65062000) {
@@ -33356,14 +32475,13 @@ int fmaxv_v_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_FMAXV_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmin_z_p_zs.xml */
 int fmin_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmin_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651F8000) {
@@ -33380,14 +32498,13 @@ int fmin_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? 0 : FPOne(0,dec->esize);
 		OK(ENC_FMIN_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmin_z_p_zz.xml */
 int fmin_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmin_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65078000) {
@@ -33404,14 +32521,13 @@ int fmin_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMIN_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnm_z_p_zs.xml */
 int fminnm_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fminnm_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651D8000) {
@@ -33428,14 +32544,13 @@ int fminnm_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? 0 : FPOne(0,dec->esize);
 		OK(ENC_FMINNM_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnm_z_p_zz.xml */
 int fminnm_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fminnm_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65058000) {
@@ -33452,14 +32567,13 @@ int fminnm_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMINNM_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminnmv_v_p_z.xml */
 int fminnmv_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fminnmv_v_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65052000) {
@@ -33476,14 +32590,13 @@ int fminnmv_v_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_FMINNMV_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fminv_v_p_z.xml */
 int fminv_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fminv_v_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65072000) {
@@ -33500,14 +32613,13 @@ int fminv_v_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_FMINV_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmla_z_p_zzz.xml */
 int fmla_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmla_z_p_zzz_ */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65200000) {
@@ -33527,14 +32639,13 @@ int fmla_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMLA_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmla_z_zzzi.xml */
 int fmla_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmla_z_zzzi_h */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200000) {
@@ -33583,14 +32694,13 @@ int fmla_z_zzzi(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMLA_Z_ZZZI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmls_z_p_zzz.xml */
 int fmls_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmls_z_p_zzz_ */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65202000) {
@@ -33610,14 +32720,13 @@ int fmls_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMLS_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmls_z_zzzi.xml */
 int fmls_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmls_z_zzzi_h */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200400) {
@@ -33666,14 +32775,13 @@ int fmls_z_zzzi(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMLS_Z_ZZZI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmmla_z_zzz.xml */
 int fmmla_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmmla_z_zzz_s */
 	/* 01100100|opc=10|1|Zm=xxxxx|111001|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A0E400) {
@@ -33700,14 +32808,13 @@ int fmmla_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_FMMLA_Z_ZZZ_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmsb_z_p_zzz.xml */
 int fmsb_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmsb_z_p_zzz_ */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520A000) {
@@ -33727,14 +32834,13 @@ int fmsb_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = FALSE;
 		OK(ENC_FMSB_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_z_p_zs.xml */
 int fmul_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmul_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651A8000) {
@@ -33751,14 +32857,13 @@ int fmul_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? FPPointFive(0,dec->esize) : FPTwo(0,dec->esize);
 		OK(ENC_FMUL_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_z_p_zz.xml */
 int fmul_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmul_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65028000) {
@@ -33775,14 +32880,13 @@ int fmul_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMUL_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_z_zz.xml */
 int fmul_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmul_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=01|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000800) {
@@ -33799,14 +32903,13 @@ int fmul_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FMUL_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmul_z_zzi.xml */
 int fmul_z_zzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmul_z_zzi_h */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64202000) {
@@ -33849,14 +32952,13 @@ int fmul_z_zzi(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FMUL_Z_ZZI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fmulx_z_p_zz.xml */
 int fmulx_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fmulx_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=101|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650A8000) {
@@ -33873,14 +32975,13 @@ int fmulx_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FMULX_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fneg_z_p_z.xml */
 int fneg_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fneg_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41DA000) {
@@ -33897,14 +32998,13 @@ int fneg_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FNEG_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmad_z_p_zzz.xml */
 int fnmad_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fnmad_z_p_zzz_ */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520C000) {
@@ -33924,14 +33024,13 @@ int fnmad_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = TRUE;
 		OK(ENC_FNMAD_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmla_z_p_zzz.xml */
 int fnmla_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fnmla_z_p_zzz_ */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65204000) {
@@ -33951,14 +33050,13 @@ int fnmla_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = TRUE;
 		OK(ENC_FNMLA_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmls_z_p_zzz.xml */
 int fnmls_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fnmls_z_p_zzz_ */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65206000) {
@@ -33978,14 +33076,13 @@ int fnmls_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = TRUE;
 		OK(ENC_FNMLS_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fnmsb_z_p_zzz.xml */
 int fnmsb_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fnmsb_z_p_zzz_ */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520E000) {
@@ -34005,14 +33102,13 @@ int fnmsb_z_p_zzz(context *ctx, Instruction *dec)
 		dec->op3_neg = TRUE;
 		OK(ENC_FNMSB_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecpe_z_z.xml */
 int frecpe_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frecpe_z_z_ */
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=0|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650E3000) {
@@ -34028,14 +33124,13 @@ int frecpe_z_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FRECPE_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecps_z_zz.xml */
 int frecps_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frecps_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001800) {
@@ -34052,14 +33147,13 @@ int frecps_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FRECPS_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frecpx_z_p_z.xml */
 int frecpx_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frecpx_z_p_z_ */
 	/* 01100101|size=xx|0011|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650CA000) {
@@ -34076,14 +33170,13 @@ int frecpx_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FRECPX_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frinta_z_p_z.xml */
 int frinta_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frinti_z_p_z_ */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6507A000) {
@@ -34210,14 +33303,13 @@ int frinta_z_p_z(context *ctx, Instruction *dec)
 		dec->rounding = FPRounding_POSINF;
 		OK(ENC_FRINTP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frsqrte_z_z.xml */
 int frsqrte_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frsqrte_z_z_ */
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=1|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650F3000) {
@@ -34233,14 +33325,13 @@ int frsqrte_z_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FRSQRTE_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* frsqrts_z_zz.xml */
 int frsqrts_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class frsqrts_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001C00) {
@@ -34257,14 +33348,13 @@ int frsqrts_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FRSQRTS_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fscale_z_p_zz.xml */
 int fscale_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fscale_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65098000) {
@@ -34281,14 +33371,13 @@ int fscale_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FSCALE_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsqrt_z_p_z.xml */
 int fsqrt_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsqrt_z_p_z_ */
 	/* 01100101|size=xx|0011|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650DA000) {
@@ -34305,14 +33394,13 @@ int fsqrt_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FSQRT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsub_z_p_zs.xml */
 int fsub_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsub_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65198000) {
@@ -34329,14 +33417,13 @@ int fsub_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? FPPointFive(0,dec->esize) : FPOne(0,dec->esize);
 		OK(ENC_FSUB_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsub_z_p_zz.xml */
 int fsub_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsub_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65018000) {
@@ -34353,14 +33440,13 @@ int fsub_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FSUB_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsub_z_zz.xml */
 int fsub_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsub_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000400) {
@@ -34377,14 +33463,13 @@ int fsub_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FSUB_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsubr_z_p_zs.xml */
 int fsubr_z_p_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsubr_z_p_zs_ */
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651B8000) {
@@ -34401,14 +33486,13 @@ int fsubr_z_p_zs(context *ctx, Instruction *dec)
 		dec->imm = (dec->i1==0) ? FPPointFive(0,dec->esize) : FPOne(0,dec->esize);
 		OK(ENC_FSUBR_Z_P_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* fsubr_z_p_zz.xml */
 int fsubr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class fsubr_z_p_zz_ */
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65038000) {
@@ -34425,14 +33509,13 @@ int fsubr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_FSUBR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ftmad_z_zzi.xml */
 int ftmad_z_zzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ftmad_z_zzi_ */
 	/* 01100101|size=xx|010|imm3=xxx|100000|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF38FC00)==0x65108000) {
@@ -34449,14 +33532,13 @@ int ftmad_z_zzi(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm3);
 		OK(ENC_FTMAD_Z_ZZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ftsmul_z_zz.xml */
 int ftsmul_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ftsmul_z_zz_ */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=01|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000C00) {
@@ -34473,14 +33555,13 @@ int ftsmul_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FTSMUL_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ftssel_z_zz.xml */
 int ftssel_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ftssel_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|10110|op=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x420B000) {
@@ -34497,14 +33578,13 @@ int ftssel_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_FTSSEL_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* incb_r_rs.xml */
 int incb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class incb_r_rs_ */
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E000) {
@@ -34557,14 +33637,13 @@ int incb_r_rs(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm4)+1;
 		OK(ENC_INCW_R_RS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* incd_z_zs.xml */
 int incd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class incd_z_zs_ */
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C000) {
@@ -34604,14 +33683,13 @@ int incd_z_zs(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm4)+1;
 		OK(ENC_INCW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* incp_r_p_r.xml */
 int incp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class incp_r_p_r_ */
 	/* 00100101|size=xx|1011|op=0|D=0|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8800) {
@@ -34624,14 +33702,13 @@ int incp_r_p_r(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Rdn);
 		OK(ENC_INCP_R_P_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* incp_z_p_z.xml */
 int incp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class incp_z_p_z_ */
 	/* 00100101|size=xx|1011|op=0|D=0|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8000) {
@@ -34647,14 +33724,13 @@ int incp_z_p_z(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Zdn);
 		OK(ENC_INCP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* index_z_ii.xml */
 int index_z_ii(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class index_z_ii_ */
 	/* 00000100|size=xx|1|imm5b=xxxxx|010000|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204000) {
@@ -34668,14 +33744,13 @@ int index_z_ii(context *ctx, Instruction *dec)
 		dec->imm2 = SInt(dec->imm5b,5);
 		OK(ENC_INDEX_Z_II_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* index_z_ir.xml */
 int index_z_ir(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class index_z_ir_ */
 	/* 00000100|size=xx|1|Rm=xxxxx|010010|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204800) {
@@ -34689,14 +33764,13 @@ int index_z_ir(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm5,5);
 		OK(ENC_INDEX_Z_IR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* index_z_ri.xml */
 int index_z_ri(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class index_z_ri_ */
 	/* 00000100|size=xx|1|imm5=xxxxx|010001|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204400) {
@@ -34710,14 +33784,13 @@ int index_z_ri(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm5,5);
 		OK(ENC_INDEX_Z_RI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* index_z_rr.xml */
 int index_z_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class index_z_rr_ */
 	/* 00000100|size=xx|1|Rm=xxxxx|010011|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204C00) {
@@ -34731,14 +33804,13 @@ int index_z_rr(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_INDEX_Z_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* insr_z_r.xml */
 int insr_z_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class insr_z_r_ */
 	/* 00000101|size=xx|100100001110|Rm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5243800) {
@@ -34751,14 +33823,13 @@ int insr_z_r(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Rm);
 		OK(ENC_INSR_Z_R_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* insr_z_v.xml */
 int insr_z_v(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class insr_z_v_ */
 	/* 00000101|size=xx|110100001110|Vm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5343800) {
@@ -34771,14 +33842,13 @@ int insr_z_v(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Vm);
 		OK(ENC_INSR_Z_V_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lasta_r_p_z.xml */
 int lasta_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lasta_r_p_z_ */
 	/* 00000101|size=xx|10000|B=0|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x520A000) {
@@ -34794,14 +33864,13 @@ int lasta_r_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = FALSE;
 		OK(ENC_LASTA_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lasta_v_p_z.xml */
 int lasta_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lasta_v_p_z_ */
 	/* 00000101|size=xx|10001|B=0|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5228000) {
@@ -34816,14 +33885,13 @@ int lasta_v_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = FALSE;
 		OK(ENC_LASTA_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lastb_r_p_z.xml */
 int lastb_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lastb_r_p_z_ */
 	/* 00000101|size=xx|10000|B=1|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x521A000) {
@@ -34839,14 +33907,13 @@ int lastb_r_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = TRUE;
 		OK(ENC_LASTB_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lastb_v_p_z.xml */
 int lastb_v_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lastb_v_p_z_ */
 	/* 00000101|size=xx|10001|B=1|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5238000) {
@@ -34861,14 +33928,13 @@ int lastb_v_p_z(context *ctx, Instruction *dec)
 		dec->isBefore = TRUE;
 		OK(ENC_LASTB_V_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1b_z_p_ai.xml */
 int ld1b_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1b_z_p_ai_s */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420C000) {
@@ -34901,14 +33967,13 @@ int ld1b_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1B_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1b_z_p_bi.xml */
 int ld1b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1b_z_p_bi_u8 */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400A000) {
@@ -34973,14 +34038,13 @@ int ld1b_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1B_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1b_z_p_br.xml */
 int ld1b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1b_z_p_br_u8 */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4004000) {
@@ -35057,14 +34121,13 @@ int ld1b_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LD1B_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1b_z_p_bz.xml */
 int ld1b_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1b_z_p_bz_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4004000) {
@@ -35122,14 +34185,13 @@ int ld1b_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1B_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1d_z_p_ai.xml */
 int ld1d_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1d_z_p_ai_d */
 	/* 1100010|msz=11|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5A0C000) {
@@ -35146,14 +34208,13 @@ int ld1d_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1D_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1d_z_p_bi.xml */
 int ld1d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1d_z_p_bi_u64 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0A000) {
@@ -35170,14 +34231,13 @@ int ld1d_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1D_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1d_z_p_br.xml */
 int ld1d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1d_z_p_br_u64 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E04000) {
@@ -35197,14 +34257,13 @@ int ld1d_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LD1D_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1d_z_p_bz.xml */
 int ld1d_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1d_z_p_bz_d_x32_scaled */
 	/* 1100010|opc=11|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5A04000) {
@@ -35281,14 +34340,13 @@ int ld1d_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1D_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1h_z_p_ai.xml */
 int ld1h_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1h_z_p_ai_s */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0C000) {
@@ -35321,14 +34379,13 @@ int ld1h_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1H_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1h_z_p_bi.xml */
 int ld1h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1h_z_p_bi_u16 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0A000) {
@@ -35377,14 +34434,13 @@ int ld1h_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1H_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1h_z_p_br.xml */
 int ld1h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1h_z_p_br_u16 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A04000) {
@@ -35442,14 +34498,13 @@ int ld1h_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LD1H_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1h_z_p_bz.xml */
 int ld1h_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1h_z_p_bz_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A04000) {
@@ -35564,14 +34619,13 @@ int ld1h_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1H_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rb_z_p_bi.xml */
 int ld1rb_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rb_z_p_bi_u8 */
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84408000) {
@@ -35636,14 +34690,13 @@ int ld1rb_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RB_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rd_z_p_bi.xml */
 int ld1rd_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rd_z_p_bi_u64 */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0E000) {
@@ -35660,14 +34713,13 @@ int ld1rd_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RD_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rh_z_p_bi.xml */
 int ld1rh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rh_z_p_bi_u16 */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0A000) {
@@ -35716,14 +34768,13 @@ int ld1rh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RH_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rob_z_p_bi.xml */
 int ld1rob_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rob_z_p_bi_u8 */
 	/* 1010010|msz=00|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4202000) {
@@ -35738,14 +34789,13 @@ int ld1rob_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1ROB_Z_P_BI_U8);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rob_z_p_br.xml */
 int ld1rob_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rob_z_p_br_contiguous */
 	/* 1010010|msz=00|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4200000) {
@@ -35763,14 +34813,13 @@ int ld1rob_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 8;
 		OK(ENC_LD1ROB_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rod_z_p_bi.xml */
 int ld1rod_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rod_z_p_bi_u64 */
 	/* 1010010|msz=11|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A02000) {
@@ -35785,14 +34834,13 @@ int ld1rod_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1ROD_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rod_z_p_br.xml */
 int ld1rod_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rod_z_p_br_contiguous */
 	/* 1010010|msz=11|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A00000) {
@@ -35810,14 +34858,13 @@ int ld1rod_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x40;
 		OK(ENC_LD1ROD_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1roh_z_p_bi.xml */
 int ld1roh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1roh_z_p_bi_u16 */
 	/* 1010010|msz=01|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A02000) {
@@ -35832,14 +34879,13 @@ int ld1roh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1ROH_Z_P_BI_U16);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1roh_z_p_br.xml */
 int ld1roh_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1roh_z_p_br_contiguous */
 	/* 1010010|msz=01|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A00000) {
@@ -35857,14 +34903,13 @@ int ld1roh_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x10;
 		OK(ENC_LD1ROH_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1row_z_p_bi.xml */
 int ld1row_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1row_z_p_bi_u32 */
 	/* 1010010|msz=10|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5202000) {
@@ -35879,14 +34924,13 @@ int ld1row_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1ROW_Z_P_BI_U32);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1row_z_p_br.xml */
 int ld1row_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1row_z_p_br_contiguous */
 	/* 1010010|msz=10|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5200000) {
@@ -35904,14 +34948,13 @@ int ld1row_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x20;
 		OK(ENC_LD1ROW_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqb_z_p_bi.xml */
 int ld1rqb_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqb_z_p_bi_u8 */
 	/* 1010010|msz=00|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4002000) {
@@ -35926,14 +34969,13 @@ int ld1rqb_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1RQB_Z_P_BI_U8);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqb_z_p_br.xml */
 int ld1rqb_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqb_z_p_br_contiguous */
 	/* 1010010|msz=00|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4000000) {
@@ -35951,14 +34993,13 @@ int ld1rqb_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 8;
 		OK(ENC_LD1RQB_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqd_z_p_bi.xml */
 int ld1rqd_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqd_z_p_bi_u64 */
 	/* 1010010|msz=11|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5802000) {
@@ -35973,14 +35014,13 @@ int ld1rqd_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1RQD_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqd_z_p_br.xml */
 int ld1rqd_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqd_z_p_br_contiguous */
 	/* 1010010|msz=11|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5800000) {
@@ -35998,14 +35038,13 @@ int ld1rqd_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x40;
 		OK(ENC_LD1RQD_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqh_z_p_bi.xml */
 int ld1rqh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqh_z_p_bi_u16 */
 	/* 1010010|msz=01|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4802000) {
@@ -36020,14 +35059,13 @@ int ld1rqh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1RQH_Z_P_BI_U16);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqh_z_p_br.xml */
 int ld1rqh_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqh_z_p_br_contiguous */
 	/* 1010010|msz=01|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4800000) {
@@ -36045,14 +35083,13 @@ int ld1rqh_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x10;
 		OK(ENC_LD1RQH_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqw_z_p_bi.xml */
 int ld1rqw_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqw_z_p_bi_u32 */
 	/* 1010010|msz=10|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5002000) {
@@ -36067,14 +35104,13 @@ int ld1rqw_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1RQW_Z_P_BI_U32);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rqw_z_p_br.xml */
 int ld1rqw_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rqw_z_p_br_contiguous */
 	/* 1010010|msz=10|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5000000) {
@@ -36092,14 +35128,13 @@ int ld1rqw_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x20;
 		OK(ENC_LD1RQW_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rsb_z_p_bi.xml */
 int ld1rsb_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rsb_z_p_bi_s16 */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0C000) {
@@ -36148,14 +35183,13 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RSB_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rsh_z_p_bi.xml */
 int ld1rsh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rsh_z_p_bi_s32 */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540A000) {
@@ -36188,14 +35222,13 @@ int ld1rsh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RSH_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rsw_z_p_bi.xml */
 int ld1rsw_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rsw_z_p_bi_s64 */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C08000) {
@@ -36212,14 +35245,13 @@ int ld1rsw_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RSW_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1rw_z_p_bi.xml */
 int ld1rw_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1rw_z_p_bi_u32 */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540C000) {
@@ -36252,14 +35284,13 @@ int ld1rw_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm6);
 		OK(ENC_LD1RW_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sb_z_p_ai.xml */
 int ld1sb_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sb_z_p_ai_s */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84208000) {
@@ -36292,14 +35323,13 @@ int ld1sb_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1SB_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sb_z_p_bi.xml */
 int ld1sb_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sb_z_p_bi_s16 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0A000) {
@@ -36348,14 +35378,13 @@ int ld1sb_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1SB_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sb_z_p_br.xml */
 int ld1sb_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sb_z_p_br_s16 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C04000) {
@@ -36413,14 +35442,13 @@ int ld1sb_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LD1SB_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sb_z_p_bz.xml */
 int ld1sb_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sb_z_p_bz_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4000000) {
@@ -36478,14 +35506,13 @@ int ld1sb_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1SB_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sh_z_p_ai.xml */
 int ld1sh_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sh_z_p_ai_s */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A08000) {
@@ -36518,14 +35545,13 @@ int ld1sh_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1SH_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sh_z_p_bi.xml */
 int ld1sh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sh_z_p_bi_s32 */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520A000) {
@@ -36558,14 +35584,13 @@ int ld1sh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1SH_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sh_z_p_br.xml */
 int ld1sh_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sh_z_p_br_s32 */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5204000) {
@@ -36604,14 +35629,13 @@ int ld1sh_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LD1SH_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sh_z_p_bz.xml */
 int ld1sh_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sh_z_p_bz_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A00000) {
@@ -36726,14 +35750,13 @@ int ld1sh_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1SH_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sw_z_p_ai.xml */
 int ld1sw_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sw_z_p_ai_d */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5208000) {
@@ -36750,14 +35773,13 @@ int ld1sw_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1SW_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sw_z_p_bi.xml */
 int ld1sw_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sw_z_p_bi_s64 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480A000) {
@@ -36774,14 +35796,13 @@ int ld1sw_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1SW_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sw_z_p_br.xml */
 int ld1sw_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sw_z_p_br_s64 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4804000) {
@@ -36801,14 +35822,13 @@ int ld1sw_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LD1SW_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1sw_z_p_bz.xml */
 int ld1sw_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1sw_z_p_bz_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5200000) {
@@ -36885,14 +35905,13 @@ int ld1sw_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1SW_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1w_z_p_ai.xml */
 int ld1w_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1w_z_p_ai_s */
 	/* 1000010|msz=10|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8520C000) {
@@ -36925,14 +35944,13 @@ int ld1w_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LD1W_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1w_z_p_bi.xml */
 int ld1w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1w_z_p_bi_u32 */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540A000) {
@@ -36965,14 +35983,13 @@ int ld1w_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LD1W_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1w_z_p_br.xml */
 int ld1w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1w_z_p_br_u32 */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5404000) {
@@ -37011,14 +36028,13 @@ int ld1w_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LD1W_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld1w_z_p_bz.xml */
 int ld1w_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld1w_z_p_bz_s_x32_scaled */
 	/* 100001010|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85204000) {
@@ -37133,14 +36149,13 @@ int ld1w_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LD1W_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2b_z_p_bi.xml */
 int ld2b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2b_z_p_bi_contiguous */
 	/* 1010010|msz=00|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA420E000) {
@@ -37156,14 +36171,13 @@ int ld2b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2b_z_p_br.xml */
 int ld2b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2b_z_p_br_contiguous */
 	/* 1010010|msz=00|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA420C000) {
@@ -37182,14 +36196,13 @@ int ld2b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2d_z_p_bi.xml */
 int ld2d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2d_z_p_bi_contiguous */
 	/* 1010010|msz=11|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A0E000) {
@@ -37205,14 +36218,13 @@ int ld2d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2d_z_p_br.xml */
 int ld2d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2d_z_p_br_contiguous */
 	/* 1010010|msz=11|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A0C000) {
@@ -37231,14 +36243,13 @@ int ld2d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2h_z_p_bi.xml */
 int ld2h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2h_z_p_bi_contiguous */
 	/* 1010010|msz=01|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0E000) {
@@ -37254,14 +36265,13 @@ int ld2h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2h_z_p_br.xml */
 int ld2h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2h_z_p_br_contiguous */
 	/* 1010010|msz=01|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A0C000) {
@@ -37280,14 +36290,13 @@ int ld2h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2w_z_p_bi.xml */
 int ld2w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2w_z_p_bi_contiguous */
 	/* 1010010|msz=10|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520E000) {
@@ -37303,14 +36312,13 @@ int ld2w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld2w_z_p_br.xml */
 int ld2w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld2w_z_p_br_contiguous */
 	/* 1010010|msz=10|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA520C000) {
@@ -37329,14 +36337,13 @@ int ld2w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_LD2W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3b_z_p_bi.xml */
 int ld3b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3b_z_p_bi_contiguous */
 	/* 1010010|msz=00|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA440E000) {
@@ -37352,14 +36359,13 @@ int ld3b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3b_z_p_br.xml */
 int ld3b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3b_z_p_br_contiguous */
 	/* 1010010|msz=00|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA440C000) {
@@ -37378,14 +36384,13 @@ int ld3b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3d_z_p_bi.xml */
 int ld3d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3d_z_p_bi_contiguous */
 	/* 1010010|msz=11|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0E000) {
@@ -37401,14 +36406,13 @@ int ld3d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3d_z_p_br.xml */
 int ld3d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3d_z_p_br_contiguous */
 	/* 1010010|msz=11|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C0C000) {
@@ -37427,14 +36431,13 @@ int ld3d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3h_z_p_bi.xml */
 int ld3h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3h_z_p_bi_contiguous */
 	/* 1010010|msz=01|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4C0E000) {
@@ -37450,14 +36453,13 @@ int ld3h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3h_z_p_br.xml */
 int ld3h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3h_z_p_br_contiguous */
 	/* 1010010|msz=01|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C0C000) {
@@ -37476,14 +36478,13 @@ int ld3h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3w_z_p_bi.xml */
 int ld3w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3w_z_p_bi_contiguous */
 	/* 1010010|msz=10|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540E000) {
@@ -37499,14 +36500,13 @@ int ld3w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld3w_z_p_br.xml */
 int ld3w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld3w_z_p_br_contiguous */
 	/* 1010010|msz=10|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA540C000) {
@@ -37525,14 +36525,13 @@ int ld3w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_LD3W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4b_z_p_bi.xml */
 int ld4b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4b_z_p_bi_contiguous */
 	/* 1010010|msz=00|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA460E000) {
@@ -37548,14 +36547,13 @@ int ld4b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4b_z_p_br.xml */
 int ld4b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4b_z_p_br_contiguous */
 	/* 1010010|msz=00|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA460C000) {
@@ -37574,14 +36572,13 @@ int ld4b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4d_z_p_bi.xml */
 int ld4d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4d_z_p_bi_contiguous */
 	/* 1010010|msz=11|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0E000) {
@@ -37597,14 +36594,13 @@ int ld4d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4d_z_p_br.xml */
 int ld4d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4d_z_p_br_contiguous */
 	/* 1010010|msz=11|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E0C000) {
@@ -37623,14 +36619,13 @@ int ld4d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4h_z_p_bi.xml */
 int ld4h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4h_z_p_bi_contiguous */
 	/* 1010010|msz=01|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4E0E000) {
@@ -37646,14 +36641,13 @@ int ld4h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4h_z_p_br.xml */
 int ld4h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4h_z_p_br_contiguous */
 	/* 1010010|msz=01|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E0C000) {
@@ -37672,14 +36666,13 @@ int ld4h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4w_z_p_bi.xml */
 int ld4w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4w_z_p_bi_contiguous */
 	/* 1010010|msz=10|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA560E000) {
@@ -37695,14 +36688,13 @@ int ld4w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ld4w_z_p_br.xml */
 int ld4w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ld4w_z_p_br_contiguous */
 	/* 1010010|msz=10|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA560C000) {
@@ -37721,14 +36713,13 @@ int ld4w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_LD4W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1b_z_p_ai.xml */
 int ldff1b_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1b_z_p_ai_s */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420E000) {
@@ -37761,14 +36752,13 @@ int ldff1b_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1B_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1b_z_p_br.xml */
 int ldff1b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1b_z_p_br_u8 */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4006000) {
@@ -37833,14 +36823,13 @@ int ldff1b_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LDFF1B_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1b_z_p_bz.xml */
 int ldff1b_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1b_z_p_bz_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4006000) {
@@ -37898,14 +36887,13 @@ int ldff1b_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1B_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1d_z_p_ai.xml */
 int ldff1d_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1d_z_p_ai_d */
 	/* 1100010|msz=11|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5A0E000) {
@@ -37922,14 +36910,13 @@ int ldff1d_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1D_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1d_z_p_br.xml */
 int ldff1d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1d_z_p_br_u64 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E06000) {
@@ -37946,14 +36933,13 @@ int ldff1d_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LDFF1D_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1d_z_p_bz.xml */
 int ldff1d_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1d_z_p_bz_d_x32_scaled */
 	/* 1100010|opc=11|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5A06000) {
@@ -38030,14 +37016,13 @@ int ldff1d_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1D_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1h_z_p_ai.xml */
 int ldff1h_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1h_z_p_ai_s */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0E000) {
@@ -38070,14 +37055,13 @@ int ldff1h_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1H_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1h_z_p_br.xml */
 int ldff1h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1h_z_p_br_u16 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A06000) {
@@ -38126,14 +37110,13 @@ int ldff1h_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LDFF1H_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1h_z_p_bz.xml */
 int ldff1h_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1h_z_p_bz_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A06000) {
@@ -38248,14 +37231,13 @@ int ldff1h_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1H_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sb_z_p_ai.xml */
 int ldff1sb_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sb_z_p_ai_s */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420A000) {
@@ -38288,14 +37270,13 @@ int ldff1sb_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1SB_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sb_z_p_br.xml */
 int ldff1sb_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sb_z_p_br_s16 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C06000) {
@@ -38344,14 +37325,13 @@ int ldff1sb_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LDFF1SB_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sb_z_p_bz.xml */
 int ldff1sb_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sb_z_p_bz_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4002000) {
@@ -38409,14 +37389,13 @@ int ldff1sb_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1SB_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sh_z_p_ai.xml */
 int ldff1sh_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sh_z_p_ai_s */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0A000) {
@@ -38449,14 +37428,13 @@ int ldff1sh_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1SH_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sh_z_p_br.xml */
 int ldff1sh_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sh_z_p_br_s32 */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5206000) {
@@ -38489,14 +37467,13 @@ int ldff1sh_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LDFF1SH_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sh_z_p_bz.xml */
 int ldff1sh_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sh_z_p_bz_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A02000) {
@@ -38611,14 +37588,13 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1SH_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sw_z_p_ai.xml */
 int ldff1sw_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sw_z_p_ai_d */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC520A000) {
@@ -38635,14 +37611,13 @@ int ldff1sw_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1SW_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sw_z_p_br.xml */
 int ldff1sw_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sw_z_p_br_s64 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4806000) {
@@ -38659,14 +37634,13 @@ int ldff1sw_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_LDFF1SW_Z_P_BR_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1sw_z_p_bz.xml */
 int ldff1sw_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1sw_z_p_bz_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5202000) {
@@ -38743,14 +37717,13 @@ int ldff1sw_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1SW_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1w_z_p_ai.xml */
 int ldff1w_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1w_z_p_ai_s */
 	/* 1000010|msz=10|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8520E000) {
@@ -38783,14 +37756,13 @@ int ldff1w_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_LDFF1W_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1w_z_p_br.xml */
 int ldff1w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1w_z_p_br_u32 */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5406000) {
@@ -38823,14 +37795,13 @@ int ldff1w_z_p_br(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_LDFF1W_Z_P_BR_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldff1w_z_p_bz.xml */
 int ldff1w_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldff1w_z_p_bz_s_x32_scaled */
 	/* 100001010|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85206000) {
@@ -38945,14 +37916,13 @@ int ldff1w_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_LDFF1W_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1b_z_p_bi.xml */
 int ldnf1b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1b_z_p_bi_u8 */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA410A000) {
@@ -39017,14 +37987,13 @@ int ldnf1b_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1B_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1d_z_p_bi.xml */
 int ldnf1d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1d_z_p_bi_u64 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5F0A000) {
@@ -39041,14 +38010,13 @@ int ldnf1d_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1D_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1h_z_p_bi.xml */
 int ldnf1h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1h_z_p_bi_u16 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4B0A000) {
@@ -39097,14 +38065,13 @@ int ldnf1h_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1H_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1sb_z_p_bi.xml */
 int ldnf1sb_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1sb_z_p_bi_s16 */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5D0A000) {
@@ -39153,14 +38120,13 @@ int ldnf1sb_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1SB_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1sh_z_p_bi.xml */
 int ldnf1sh_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1sh_z_p_bi_s32 */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA530A000) {
@@ -39193,14 +38159,13 @@ int ldnf1sh_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1SH_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1sw_z_p_bi.xml */
 int ldnf1sw_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1sw_z_p_bi_s64 */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA490A000) {
@@ -39217,14 +38182,13 @@ int ldnf1sw_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1SW_Z_P_BI_S64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnf1w_z_p_bi.xml */
 int ldnf1w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnf1w_z_p_bi_u32 */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA550A000) {
@@ -39257,14 +38221,13 @@ int ldnf1w_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNF1W_Z_P_BI_U64);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1b_z_p_bi.xml */
 int ldnt1b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1b_z_p_bi_contiguous */
 	/* 1010010|msz=00|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400E000) {
@@ -39279,14 +38242,13 @@ int ldnt1b_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNT1B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1b_z_p_br.xml */
 int ldnt1b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1b_z_p_br_contiguous */
 	/* 1010010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA400C000) {
@@ -39304,14 +38266,13 @@ int ldnt1b_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 8;
 		OK(ENC_LDNT1B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1d_z_p_bi.xml */
 int ldnt1d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1d_z_p_bi_contiguous */
 	/* 1010010|msz=11|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA580E000) {
@@ -39326,14 +38287,13 @@ int ldnt1d_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNT1D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1d_z_p_br.xml */
 int ldnt1d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1d_z_p_br_contiguous */
 	/* 1010010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA580C000) {
@@ -39351,14 +38311,13 @@ int ldnt1d_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x40;
 		OK(ENC_LDNT1D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1h_z_p_bi.xml */
 int ldnt1h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1h_z_p_bi_contiguous */
 	/* 1010010|msz=01|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480E000) {
@@ -39373,14 +38332,13 @@ int ldnt1h_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNT1H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1h_z_p_br.xml */
 int ldnt1h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1h_z_p_br_contiguous */
 	/* 1010010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA480C000) {
@@ -39398,14 +38356,13 @@ int ldnt1h_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x10;
 		OK(ENC_LDNT1H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1w_z_p_bi.xml */
 int ldnt1w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1w_z_p_bi_contiguous */
 	/* 1010010|msz=10|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA500E000) {
@@ -39420,14 +38377,13 @@ int ldnt1w_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_LDNT1W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldnt1w_z_p_br.xml */
 int ldnt1w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldnt1w_z_p_br_contiguous */
 	/* 1010010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA500C000) {
@@ -39445,14 +38401,13 @@ int ldnt1w_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x20;
 		OK(ENC_LDNT1W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_p_bi.xml */
 int ldr_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldr_p_bi_ */
 	/* 1000010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85800000) {
@@ -39465,14 +38420,13 @@ int ldr_p_bi(context *ctx, Instruction *dec)
 		dec->imm = SInt(((dec->imm9h<<3)|dec->imm9l),9);
 		OK(ENC_LDR_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ldr_z_bi.xml */
 int ldr_z_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ldr_z_bi_ */
 	/* 1000010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85804000) {
@@ -39485,14 +38439,13 @@ int ldr_z_bi(context *ctx, Instruction *dec)
 		dec->imm = SInt(((dec->imm9h<<3)|dec->imm9l),9);
 		OK(ENC_LDR_Z_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_z_p_zi.xml */
 int lsl_z_p_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsl_z_p_zi_ */
 	/* 00000100|tszh=xx|00|opc=00|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4038000) {
@@ -39521,14 +38474,13 @@ int lsl_z_p_zi(context *ctx, Instruction *dec)
 		dec->shift = UINT(((dec->tsize<<3)|dec->imm3))-dec->esize;
 		OK(ENC_LSL_Z_P_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_z_p_zw.xml */
 int lsl_z_p_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsl_z_p_zw_ */
 	/* 00000100|size=xx|011|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B8000) {
@@ -39545,14 +38497,13 @@ int lsl_z_p_zw(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSL_Z_P_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_z_p_zz.xml */
 int lsl_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsl_z_p_zz_ */
 	/* 00000100|size=xx|010|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4138000) {
@@ -39566,14 +38517,13 @@ int lsl_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSL_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_z_zi.xml */
 int lsl_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsl_z_zi_ */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209C00) {
@@ -39602,14 +38552,13 @@ int lsl_z_zi(context *ctx, Instruction *dec)
 		dec->shift = UINT(((dec->tsize<<3)|dec->imm3))-dec->esize;
 		OK(ENC_LSL_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsl_z_zw.xml */
 int lsl_z_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsl_z_zw_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208C00) {
@@ -39626,14 +38575,13 @@ int lsl_z_zw(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_LSL_Z_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lslr_z_p_zz.xml */
 int lslr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lslr_z_p_zz_ */
 	/* 00000100|size=xx|010|R=1|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4178000) {
@@ -39647,14 +38595,13 @@ int lslr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSLR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_z_p_zi.xml */
 int lsr_z_p_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsr_z_p_zi_ */
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4018000) {
@@ -39683,14 +38630,13 @@ int lsr_z_p_zi(context *ctx, Instruction *dec)
 		dec->shift = ((2) * (dec->esize))-UINT(((dec->tsize<<3)|dec->imm3));
 		OK(ENC_LSR_Z_P_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_z_p_zw.xml */
 int lsr_z_p_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsr_z_p_zw_ */
 	/* 00000100|size=xx|011|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4198000) {
@@ -39707,14 +38653,13 @@ int lsr_z_p_zw(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSR_Z_P_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_z_p_zz.xml */
 int lsr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsr_z_p_zz_ */
 	/* 00000100|size=xx|010|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4118000) {
@@ -39728,14 +38673,13 @@ int lsr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_z_zi.xml */
 int lsr_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsr_z_zi_ */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209400) {
@@ -39764,14 +38708,13 @@ int lsr_z_zi(context *ctx, Instruction *dec)
 		dec->shift = ((2) * (dec->esize))-UINT(((dec->tsize<<3)|dec->imm3));
 		OK(ENC_LSR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsr_z_zw.xml */
 int lsr_z_zw(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsr_z_zw_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208400) {
@@ -39788,14 +38731,13 @@ int lsr_z_zw(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_LSR_Z_ZW_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* lsrr_z_p_zz.xml */
 int lsrr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class lsrr_z_p_zz_ */
 	/* 00000100|size=xx|010|R=1|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4158000) {
@@ -39809,14 +38751,13 @@ int lsrr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_LSRR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mad_z_p_zzz.xml */
 int mad_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class mad_z_p_zzz_ */
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=0|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400C000) {
@@ -39832,14 +38773,13 @@ int mad_z_p_zzz(context *ctx, Instruction *dec)
 		dec->sub_op = FALSE;
 		OK(ENC_MAD_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mla_z_p_zzz.xml */
 int mla_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class mla_z_p_zzz_ */
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4004000) {
@@ -39855,14 +38795,13 @@ int mla_z_p_zzz(context *ctx, Instruction *dec)
 		dec->sub_op = FALSE;
 		OK(ENC_MLA_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mls_z_p_zzz.xml */
 int mls_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class mls_z_p_zzz_ */
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4006000) {
@@ -39878,14 +38817,13 @@ int mls_z_p_zzz(context *ctx, Instruction *dec)
 		dec->sub_op = TRUE;
 		OK(ENC_MLS_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movprfx_z_p_z.xml */
 int movprfx_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class movprfx_z_p_z_ */
 	/* 00000100|size=xx|010|opc=00|M=x|001|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x4102000) {
@@ -39900,14 +38838,13 @@ int movprfx_z_p_z(context *ctx, Instruction *dec)
 		dec->merging = (dec->M==1);
 		OK(ENC_MOVPRFX_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* movprfx_z_z.xml */
 int movprfx_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class movprfx_z_z_ */
 	/* 00000100|opc=00|1|opc2<4:1>=0000|opc2<0>=0|101111|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x420BC00) {
@@ -39919,14 +38856,13 @@ int movprfx_z_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_MOVPRFX_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* msb_z_p_zzz.xml */
 int msb_z_p_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class msb_z_p_zzz_ */
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=1|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400E000) {
@@ -39942,14 +38878,13 @@ int msb_z_p_zzz(context *ctx, Instruction *dec)
 		dec->sub_op = TRUE;
 		OK(ENC_MSB_Z_P_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mul_z_p_zz.xml */
 int mul_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class mul_z_p_zz_ */
 	/* 00000100|size=xx|0100|H=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4100000) {
@@ -39963,14 +38898,13 @@ int mul_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_MUL_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* mul_z_zi.xml */
 int mul_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class mul_z_zi_ */
 	/* 00100101|size=xx|110|opc<2:1>=00|opc<0>=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2530C000) {
@@ -39983,14 +38917,13 @@ int mul_z_zi(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm8,8);
 		OK(ENC_MUL_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* nand_p_p_pp.xml */
 int nand_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nand_p_p_pp_z */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804210) {
@@ -40021,14 +38954,13 @@ int nand_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_NANDS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* neg_z_p_z.xml */
 int neg_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class neg_z_p_z_ */
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x417A000) {
@@ -40042,14 +38974,13 @@ int neg_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_NEG_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* nor_p_p_pp.xml */
 int nor_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class nor_p_p_pp_z */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804200) {
@@ -40080,14 +39011,13 @@ int nor_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_NORS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* not_z_p_z.xml */
 int not_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class not_z_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41EA000) {
@@ -40101,14 +39031,13 @@ int not_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_NOT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orn_p_p_pp.xml */
 int orn_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orn_p_p_pp_z */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804010) {
@@ -40139,14 +39068,13 @@ int orn_p_p_pp(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_ORNS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_p_p_pp.xml */
 int orr_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_p_p_pp_z */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804000) {
@@ -40183,14 +39111,13 @@ int orr_p_p_pp(context *ctx, Instruction *dec)
 		if(dec->S==0 && dec->Pn==dec->Pm && dec->Pm==dec->Pg) return MOV_orr_p_p_pp(ctx, dec);
 		OK(ENC_ORRS_P_P_PP_Z);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_z_p_zz.xml */
 int orr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_z_p_zz_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4180000) {
@@ -40204,14 +39131,13 @@ int orr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_ORR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_z_zi.xml */
 int orr_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_z_zi_ */
 	/* 00000101|opc=00|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5000000) {
@@ -40225,14 +39151,13 @@ int orr_z_zi(context *ctx, Instruction *dec)
 		dec->imm = dbmrt.wmask;
 		OK(ENC_ORR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orr_z_zz.xml */
 int orr_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orr_z_zz_ */
 	/* 00000100|opc=01|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603000) {
@@ -40247,14 +39172,13 @@ int orr_z_zz(context *ctx, Instruction *dec)
 		if(dec->Zn==dec->Zm) return MOV_orr_z_zz(ctx, dec);
 		OK(ENC_ORR_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* orv_r_p_z.xml */
 int orv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class orv_r_p_z_ */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4182000) {
@@ -40268,14 +39192,13 @@ int orv_r_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_ORV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pfalse_p.xml */
 int pfalse_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class pfalse_p_ */
 	/* 00100101|op=0|S=0|011000111001|000000|Pd=xxxx */
 	if((INSWORD & 0xFFFFFFF0)==0x2518E400) {
@@ -40286,14 +39209,13 @@ int pfalse_p(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Pd);
 		OK(ENC_PFALSE_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pfirst_p_p_p.xml */
 int pfirst_p_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class pfirst_p_p_p_ */
 	/* 00100101|op=0|S=1|011000110000|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2558C000) {
@@ -40306,14 +39228,13 @@ int pfirst_p_p_p(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Pdn);
 		OK(ENC_PFIRST_P_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* pnext_p_p_p.xml */
 int pnext_p_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class pnext_p_p_p_ */
 	/* 00100101|size=xx|011001110001|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x2519C400) {
@@ -40326,14 +39247,13 @@ int pnext_p_p_p(context *ctx, Instruction *dec)
 		dec->dn = UINT(dec->Pdn);
 		OK(ENC_PNEXT_P_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfb_i_p_ai.xml */
 int prfb_i_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfb_i_p_ai_s */
 	/* 1000010|msz=00|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8400E000) {
@@ -40372,14 +39292,13 @@ int prfb_i_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_PRFB_I_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfb_i_p_bi.xml */
 int prfb_i_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfb_i_p_bi_s */
 	/* 1000010111|imm6=xxxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C00000) {
@@ -40399,14 +39318,13 @@ int prfb_i_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm6,6);
 		OK(ENC_PRFB_I_P_BI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfb_i_p_br.xml */
 int prfb_i_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfb_i_p_br_s */
 	/* 1000010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8400C000) {
@@ -40429,14 +39347,13 @@ int prfb_i_p_br(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_PRFB_I_P_BR_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfb_i_p_bz.xml */
 int prfb_i_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfb_i_p_bz_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84200000) {
@@ -40500,14 +39417,13 @@ int prfb_i_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_PRFB_I_P_BZ_D_64_SCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfd_i_p_ai.xml */
 int prfd_i_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfd_i_p_ai_s */
 	/* 1000010|msz=11|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8580E000) {
@@ -40546,14 +39462,13 @@ int prfd_i_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_PRFD_I_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfd_i_p_bi.xml */
 int prfd_i_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfd_i_p_bi_s */
 	/* 1000010111|imm6=xxxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C06000) {
@@ -40573,14 +39488,13 @@ int prfd_i_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm6,6);
 		OK(ENC_PRFD_I_P_BI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfd_i_p_br.xml */
 int prfd_i_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfd_i_p_br_s */
 	/* 1000010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8580C000) {
@@ -40603,14 +39517,13 @@ int prfd_i_p_br(context *ctx, Instruction *dec)
 		dec->scale = 3;
 		OK(ENC_PRFD_I_P_BR_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfd_i_p_bz.xml */
 int prfd_i_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfd_i_p_bz_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84206000) {
@@ -40674,14 +39587,13 @@ int prfd_i_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 3;
 		OK(ENC_PRFD_I_P_BZ_D_64_SCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfh_i_p_ai.xml */
 int prfh_i_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfh_i_p_ai_s */
 	/* 1000010|msz=01|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8480E000) {
@@ -40720,14 +39632,13 @@ int prfh_i_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_PRFH_I_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfh_i_p_bi.xml */
 int prfh_i_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfh_i_p_bi_s */
 	/* 1000010111|imm6=xxxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C02000) {
@@ -40747,14 +39658,13 @@ int prfh_i_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm6,6);
 		OK(ENC_PRFH_I_P_BI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfh_i_p_br.xml */
 int prfh_i_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfh_i_p_br_s */
 	/* 1000010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8480C000) {
@@ -40777,14 +39687,13 @@ int prfh_i_p_br(context *ctx, Instruction *dec)
 		dec->scale = 1;
 		OK(ENC_PRFH_I_P_BR_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfh_i_p_bz.xml */
 int prfh_i_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfh_i_p_bz_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84202000) {
@@ -40848,14 +39757,13 @@ int prfh_i_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 1;
 		OK(ENC_PRFH_I_P_BZ_D_64_SCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfw_i_p_ai.xml */
 int prfw_i_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfw_i_p_ai_s */
 	/* 1000010|msz=10|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8500E000) {
@@ -40894,14 +39802,13 @@ int prfw_i_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_PRFW_I_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfw_i_p_bi.xml */
 int prfw_i_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfw_i_p_bi_s */
 	/* 1000010111|imm6=xxxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C04000) {
@@ -40921,14 +39828,13 @@ int prfw_i_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm6,6);
 		OK(ENC_PRFW_I_P_BI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfw_i_p_br.xml */
 int prfw_i_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfw_i_p_br_s */
 	/* 1000010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8500C000) {
@@ -40951,14 +39857,13 @@ int prfw_i_p_br(context *ctx, Instruction *dec)
 		dec->scale = 2;
 		OK(ENC_PRFW_I_P_BR_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* prfw_i_p_bz.xml */
 int prfw_i_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class prfw_i_p_bz_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84204000) {
@@ -41022,14 +39927,13 @@ int prfw_i_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 2;
 		OK(ENC_PRFW_I_P_BZ_D_64_SCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ptest_p_p.xml */
 int ptest_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ptest_p_p_ */
 	/* 00|100101|op=0|S=1|01|000011|Pg=xxxx|0|Pn=xxxx|0|opc2=0000 */
 	if((INSWORD & 0xFFFFC21F)==0x2550C000) {
@@ -41042,14 +39946,13 @@ int ptest_p_p(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Pn);
 		OK(ENC_PTEST_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ptrue_p_s.xml */
 int ptrue_p_s(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ptrue_p_s_ */
 	/* 00100101|size=xx|01100|S=0|111000|pattern=xxxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFC10)==0x2518E000) {
@@ -41076,14 +39979,13 @@ int ptrue_p_s(context *ctx, Instruction *dec)
 		dec->pat = dec->pattern;
 		OK(ENC_PTRUES_P_S_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* punpkhi_p_p.xml */
 int punpkhi_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class punpkhi_p_p_ */
 	/* 000001010011000|H=1|010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x5314000) {
@@ -41110,14 +40012,13 @@ int punpkhi_p_p(context *ctx, Instruction *dec)
 		dec->hi = FALSE;
 		OK(ENC_PUNPKLO_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rbit_z_p_z.xml */
 int rbit_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rbit_z_p_z_ */
 	/* 00000101|size=xx|1001|opc=11|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5278000) {
@@ -41131,14 +40032,13 @@ int rbit_z_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_RBIT_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rdffr_p_f.xml */
 int rdffr_p_f(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rdffr_p_f_ */
 	/* 00100101|op=0|S=0|011001111100|000000|Pd=xxxx */
 	if((INSWORD & 0xFFFFFFF0)==0x2519F000) {
@@ -41149,14 +40049,13 @@ int rdffr_p_f(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Pd);
 		OK(ENC_RDFFR_P_F_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rdffr_p_p_f.xml */
 int rdffr_p_p_f(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rdffr_p_p_f_ */
 	/* 00100101|op=0|S=0|011000111100|0|Pg=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2518F000) {
@@ -41181,14 +40080,13 @@ int rdffr_p_p_f(context *ctx, Instruction *dec)
 		dec->setflags = TRUE;
 		OK(ENC_RDFFRS_P_P_F_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rdvl_r_i.xml */
 int rdvl_r_i(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rdvl_r_i_ */
 	/* 000001001|op=0|1|opc2<4:1>=1111|opc2<0>=1|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFF800)==0x4BF5000) {
@@ -41200,14 +40098,13 @@ int rdvl_r_i(context *ctx, Instruction *dec)
 		dec->imm = SInt(dec->imm6,6);
 		OK(ENC_RDVL_R_I_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev_p_p.xml */
 int rev_p_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rev_p_p_ */
 	/* 00000101|size=xx|110100010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x5344000) {
@@ -41220,14 +40117,13 @@ int rev_p_p(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Pd);
 		OK(ENC_REV_P_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* rev_z_z.xml */
 int rev_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class rev_z_z_ */
 	/* 00000101|size=xx|111000001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5383800) {
@@ -41240,14 +40136,13 @@ int rev_z_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_REV_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* revb_z_z.xml */
 int revb_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class revb_z_z_ */
 	/* 00000101|size=xx|1001|opc=00|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5248000) {
@@ -41299,14 +40194,13 @@ int revb_z_z(context *ctx, Instruction *dec)
 		dec->swsize = 0x20;
 		OK(ENC_REVW_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sabd_z_p_zz.xml */
 int sabd_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sabd_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=10|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40C0000) {
@@ -41321,14 +40215,13 @@ int sabd_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SABD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* saddv_r_p_z.xml */
 int saddv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class saddv_r_p_z_ */
 	/* 00000100|size=xx|000|opc=00|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4002000) {
@@ -41345,14 +40238,13 @@ int saddv_r_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_SADDV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* scvtf_z_p_z.xml */
 int scvtf_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class scvtf_z_p_z_h2fp16 */
 	/* 01100101|opc=01|010|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6552A000) {
@@ -41472,14 +40364,13 @@ int scvtf_z_p_z(context *ctx, Instruction *dec)
 		dec->rounding = FPRoundingMode(SLICE(ctx->FPCR,0x1f,0));
 		OK(ENC_SCVTF_Z_P_Z_X2D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdiv_z_p_zz.xml */
 int sdiv_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sdiv_z_p_zz_ */
 	/* 00000100|size=xx|0101|R=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4140000) {
@@ -41497,14 +40388,13 @@ int sdiv_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SDIV_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdivr_z_p_zz.xml */
 int sdivr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sdivr_z_p_zz_ */
 	/* 00000100|size=xx|0101|R=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4160000) {
@@ -41522,14 +40412,13 @@ int sdivr_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SDIVR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdot_z_zzz.xml */
 int sdot_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sdot_z_zzz_ */
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000000) {
@@ -41546,14 +40435,13 @@ int sdot_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_SDOT_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sdot_z_zzzi.xml */
 int sdot_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sdot_z_zzzi_s */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00000) {
@@ -41582,14 +40470,13 @@ int sdot_z_zzzi(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_SDOT_Z_ZZZI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sel_p_p_pp.xml */
 int sel_p_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sel_p_p_pp_ */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004210) {
@@ -41606,14 +40493,13 @@ int sel_p_p_pp(context *ctx, Instruction *dec)
 		if(dec->Pd==dec->Pm) return MOV_sel_p_p_pp(ctx, dec);
 		OK(ENC_SEL_P_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sel_z_p_zz.xml */
 int sel_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sel_z_p_zz_ */
 	/* 00000101|size=xx|1|Zm=xxxxx|11|Pg=xxxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20C000)==0x520C000) {
@@ -41630,14 +40516,13 @@ int sel_z_p_zz(context *ctx, Instruction *dec)
 		if(dec->Zd==dec->Zm) return MOV_sel_z_p_zz(ctx, dec);
 		OK(ENC_SEL_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* setffr_f.xml */
 int setffr_f(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class setffr_f_ */
 	/* 00|100101|opc=00|10|1100100100|000000|0|0|00 */
 	if((INSWORD & 0xFFFFFFFF)==0x252C9000) {
@@ -41647,22 +40532,20 @@ int setffr_f(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SETFFR_F_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* shared_pseudocode.xml */
 int shared_pseudocode(context *ctx, Instruction *dec)
 {
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	int rc = DECODE_STATUS_UNMATCHED;
+	return rc;
 }
 
 /* smax_z_p_zz.xml */
 int smax_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smax_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=00|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4080000) {
@@ -41677,14 +40560,13 @@ int smax_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SMAX_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smax_z_zi.xml */
 int smax_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smax_z_zi_ */
 	/* 00100101|size=xx|101|00|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2528C000) {
@@ -41698,14 +40580,13 @@ int smax_z_zi(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm8);
 		OK(ENC_SMAX_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smaxv_r_p_z.xml */
 int smaxv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smaxv_r_p_z_ */
 	/* 00000100|size=xx|001|opc=00|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4082000) {
@@ -41720,14 +40601,13 @@ int smaxv_r_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SMAXV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smin_z_p_zz.xml */
 int smin_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smin_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=01|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A0000) {
@@ -41742,14 +40622,13 @@ int smin_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SMIN_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smin_z_zi.xml */
 int smin_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smin_z_zi_ */
 	/* 00100101|size=xx|101|01|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252AC000) {
@@ -41763,14 +40642,13 @@ int smin_z_zi(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm8);
 		OK(ENC_SMIN_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sminv_r_p_z.xml */
 int sminv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sminv_r_p_z_ */
 	/* 00000100|size=xx|001|opc=01|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A2000) {
@@ -41785,14 +40663,13 @@ int sminv_r_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SMINV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smmla_z_zzz.xml */
 int smmla_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smmla_z_zzz_ */
 	/* 01000101|uns=00|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45009800) {
@@ -41807,14 +40684,13 @@ int smmla_z_zzz(context *ctx, Instruction *dec)
 		dec->op2_unsigned = FALSE;
 		OK(ENC_SMMLA_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* smulh_z_p_zz.xml */
 int smulh_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class smulh_z_p_zz_ */
 	/* 00000100|size=xx|0100|H=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4120000) {
@@ -41829,14 +40705,13 @@ int smulh_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SMULH_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* splice_z_p_zz.xml */
 int splice_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class splice_z_p_zz_des */
 	/* 00000101|size=xx|101100100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52C8000) {
@@ -41850,14 +40725,13 @@ int splice_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_SPLICE_Z_P_ZZ_DES);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqadd_z_zi.xml */
 int sqadd_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqadd_z_zi_ */
 	/* 00100101|size=xx|100|10|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2524C000) {
@@ -41877,14 +40751,13 @@ int sqadd_z_zi(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQADD_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqadd_z_zz.xml */
 int sqadd_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqadd_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201000) {
@@ -41899,14 +40772,13 @@ int sqadd_z_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQADD_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecb_r_rs.xml */
 int sqdecb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecb_r_rs_sx */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F800) {
@@ -41937,14 +40809,13 @@ int sqdecb_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQDECB_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecd_r_rs.xml */
 int sqdecd_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecd_r_rs_sx */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F800) {
@@ -41975,14 +40846,13 @@ int sqdecd_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQDECD_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecd_z_zs.xml */
 int sqdecd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecd_z_zs_ */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C800) {
@@ -41997,14 +40867,13 @@ int sqdecd_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQDECD_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdech_r_rs.xml */
 int sqdech_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdech_r_rs_sx */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F800) {
@@ -42035,14 +40904,13 @@ int sqdech_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQDECH_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdech_z_zs.xml */
 int sqdech_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdech_z_zs_ */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C800) {
@@ -42057,14 +40925,13 @@ int sqdech_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQDECH_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecp_r_p_r.xml */
 int sqdecp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecp_r_p_r_sx */
 	/* 00100101|size=xx|1010|D=1|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8800) {
@@ -42093,14 +40960,13 @@ int sqdecp_r_p_r(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQDECP_R_P_R_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecp_z_p_z.xml */
 int sqdecp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecp_z_p_z_ */
 	/* 00100101|size=xx|1010|D=1|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8000) {
@@ -42117,14 +40983,13 @@ int sqdecp_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQDECP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecw_r_rs.xml */
 int sqdecw_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecw_r_rs_sx */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F800) {
@@ -42155,14 +41020,13 @@ int sqdecw_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQDECW_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqdecw_z_zs.xml */
 int sqdecw_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqdecw_z_zs_ */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C800) {
@@ -42177,14 +41041,13 @@ int sqdecw_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQDECW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincb_r_rs.xml */
 int sqincb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincb_r_rs_sx */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F000) {
@@ -42215,14 +41078,13 @@ int sqincb_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQINCB_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincd_r_rs.xml */
 int sqincd_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincd_r_rs_sx */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F000) {
@@ -42253,14 +41115,13 @@ int sqincd_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQINCD_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincd_z_zs.xml */
 int sqincd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincd_z_zs_ */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C000) {
@@ -42275,14 +41136,13 @@ int sqincd_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQINCD_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqinch_r_rs.xml */
 int sqinch_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqinch_r_rs_sx */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F000) {
@@ -42313,14 +41173,13 @@ int sqinch_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQINCH_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqinch_z_zs.xml */
 int sqinch_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqinch_z_zs_ */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C000) {
@@ -42335,14 +41194,13 @@ int sqinch_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQINCH_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincp_r_p_r.xml */
 int sqincp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincp_r_p_r_sx */
 	/* 00100101|size=xx|1010|D=0|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288800) {
@@ -42371,14 +41229,13 @@ int sqincp_r_p_r(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQINCP_R_P_R_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincp_z_p_z.xml */
 int sqincp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincp_z_p_z_ */
 	/* 00100101|size=xx|1010|D=0|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288000) {
@@ -42395,14 +41252,13 @@ int sqincp_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQINCP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincw_r_rs.xml */
 int sqincw_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincw_r_rs_sx */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F000) {
@@ -42433,14 +41289,13 @@ int sqincw_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_SQINCW_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqincw_z_zs.xml */
 int sqincw_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqincw_z_zs_ */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C000) {
@@ -42455,14 +41310,13 @@ int sqincw_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQINCW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqsub_z_zi.xml */
 int sqsub_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqsub_z_zi_ */
 	/* 00100101|size=xx|100|11|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2526C000) {
@@ -42482,14 +41336,13 @@ int sqsub_z_zi(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQSUB_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sqsub_z_zz.xml */
 int sqsub_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sqsub_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201800) {
@@ -42504,14 +41357,13 @@ int sqsub_z_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SQSUB_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1b_z_p_ai.xml */
 int st1b_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1b_z_p_ai_s */
 	/* 1110010|msz=00|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE460A000) {
@@ -42542,14 +41394,13 @@ int st1b_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_ST1B_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1b_z_p_bi.xml */
 int st1b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1b_z_p_bi_ */
 	/* 1110010|msz=00|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE400E000) {
@@ -42565,14 +41416,13 @@ int st1b_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_ST1B_Z_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1b_z_p_br.xml */
 int st1b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1b_z_p_br_ */
 	/* 1110010|00|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4004000) {
@@ -42591,14 +41441,13 @@ int st1b_z_p_br(context *ctx, Instruction *dec)
 		dec->msize = 8;
 		OK(ENC_ST1B_Z_P_BR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1b_z_p_bz.xml */
 int st1b_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1b_z_p_bz_d_x32_unscaled */
 	/* 1110010|msz=00|00|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4008000) {
@@ -42653,14 +41502,13 @@ int st1b_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_ST1B_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1d_z_p_ai.xml */
 int st1d_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1d_z_p_ai_d */
 	/* 1110010|msz=11|10|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5C0A000) {
@@ -42676,14 +41524,13 @@ int st1d_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_ST1D_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1d_z_p_bi.xml */
 int st1d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1d_z_p_bi_ */
 	/* 1110010|msz=11|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE580E000) {
@@ -42702,14 +41549,13 @@ int st1d_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_ST1D_Z_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1d_z_p_br.xml */
 int st1d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1d_z_p_br_ */
 	/* 1110010|opc<2:1>=11|opc<0>=1|o2=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E04000) {
@@ -42728,14 +41574,13 @@ int st1d_z_p_br(context *ctx, Instruction *dec)
 		dec->msize = 0x40;
 		OK(ENC_ST1D_Z_P_BR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1d_z_p_bz.xml */
 int st1d_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1d_z_p_bz_d_x32_scaled */
 	/* 1110010|msz=11|01|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5A08000) {
@@ -42808,14 +41653,13 @@ int st1d_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_ST1D_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1h_z_p_ai.xml */
 int st1h_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1h_z_p_ai_s */
 	/* 1110010|msz=01|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4E0A000) {
@@ -42846,14 +41690,13 @@ int st1h_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_ST1H_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1h_z_p_bi.xml */
 int st1h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1h_z_p_bi_ */
 	/* 1110010|msz=01|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE480E000) {
@@ -42872,14 +41715,13 @@ int st1h_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_ST1H_Z_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1h_z_p_br.xml */
 int st1h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1h_z_p_br_ */
 	/* 1110010|01|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4804000) {
@@ -42901,14 +41743,13 @@ int st1h_z_p_br(context *ctx, Instruction *dec)
 		dec->msize = 0x10;
 		OK(ENC_ST1H_Z_P_BR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1h_z_p_bz.xml */
 int st1h_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1h_z_p_bz_s_x32_scaled */
 	/* 1110010|msz=01|11|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4E08000) {
@@ -43017,14 +41858,13 @@ int st1h_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_ST1H_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1w_z_p_ai.xml */
 int st1w_z_p_ai(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1w_z_p_ai_s */
 	/* 1110010|msz=10|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE560A000) {
@@ -43055,14 +41895,13 @@ int st1w_z_p_ai(context *ctx, Instruction *dec)
 		dec->offset = UINT(dec->imm5);
 		OK(ENC_ST1W_Z_P_AI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1w_z_p_bi.xml */
 int st1w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1w_z_p_bi_ */
 	/* 1110010|msz=10|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE500E000) {
@@ -43081,14 +41920,13 @@ int st1w_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_ST1W_Z_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1w_z_p_br.xml */
 int st1w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1w_z_p_br_ */
 	/* 1110010|10|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE5004000) {
@@ -43110,14 +41948,13 @@ int st1w_z_p_br(context *ctx, Instruction *dec)
 		dec->msize = 0x20;
 		OK(ENC_ST1W_Z_P_BR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st1w_z_p_bz.xml */
 int st1w_z_p_bz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st1w_z_p_bz_s_x32_scaled */
 	/* 1110010|msz=10|11|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5608000) {
@@ -43226,14 +42063,13 @@ int st1w_z_p_bz(context *ctx, Instruction *dec)
 		dec->scale = 0;
 		OK(ENC_ST1W_Z_P_BZ_D_64_UNSCALED);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2b_z_p_bi.xml */
 int st2b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2b_z_p_bi_contiguous */
 	/* 1110010|msz=00|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE430E000) {
@@ -43249,14 +42085,13 @@ int st2b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2b_z_p_br.xml */
 int st2b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2b_z_p_br_contiguous */
 	/* 1110010|msz=00|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4206000) {
@@ -43275,14 +42110,13 @@ int st2b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2d_z_p_bi.xml */
 int st2d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2d_z_p_bi_contiguous */
 	/* 1110010|msz=11|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5B0E000) {
@@ -43298,14 +42132,13 @@ int st2d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2d_z_p_br.xml */
 int st2d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2d_z_p_br_contiguous */
 	/* 1110010|msz=11|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5A06000) {
@@ -43324,14 +42157,13 @@ int st2d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2h_z_p_bi.xml */
 int st2h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2h_z_p_bi_contiguous */
 	/* 1110010|msz=01|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4B0E000) {
@@ -43347,14 +42179,13 @@ int st2h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2h_z_p_br.xml */
 int st2h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2h_z_p_br_contiguous */
 	/* 1110010|msz=01|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4A06000) {
@@ -43373,14 +42204,13 @@ int st2h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2w_z_p_bi.xml */
 int st2w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2w_z_p_bi_contiguous */
 	/* 1110010|msz=10|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE530E000) {
@@ -43396,14 +42226,13 @@ int st2w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st2w_z_p_br.xml */
 int st2w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st2w_z_p_br_contiguous */
 	/* 1110010|msz=10|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5206000) {
@@ -43422,14 +42251,13 @@ int st2w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 2;
 		OK(ENC_ST2W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3b_z_p_bi.xml */
 int st3b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3b_z_p_bi_contiguous */
 	/* 1110010|msz=00|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE450E000) {
@@ -43445,14 +42273,13 @@ int st3b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3b_z_p_br.xml */
 int st3b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3b_z_p_br_contiguous */
 	/* 1110010|msz=00|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4406000) {
@@ -43471,14 +42298,13 @@ int st3b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3d_z_p_bi.xml */
 int st3d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3d_z_p_bi_contiguous */
 	/* 1110010|msz=11|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5D0E000) {
@@ -43494,14 +42320,13 @@ int st3d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3d_z_p_br.xml */
 int st3d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3d_z_p_br_contiguous */
 	/* 1110010|msz=11|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5C06000) {
@@ -43520,14 +42345,13 @@ int st3d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3h_z_p_bi.xml */
 int st3h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3h_z_p_bi_contiguous */
 	/* 1110010|msz=01|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4D0E000) {
@@ -43543,14 +42367,13 @@ int st3h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3h_z_p_br.xml */
 int st3h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3h_z_p_br_contiguous */
 	/* 1110010|msz=01|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4C06000) {
@@ -43569,14 +42392,13 @@ int st3h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3w_z_p_bi.xml */
 int st3w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3w_z_p_bi_contiguous */
 	/* 1110010|msz=10|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE550E000) {
@@ -43592,14 +42414,13 @@ int st3w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st3w_z_p_br.xml */
 int st3w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st3w_z_p_br_contiguous */
 	/* 1110010|msz=10|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5406000) {
@@ -43618,14 +42439,13 @@ int st3w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 3;
 		OK(ENC_ST3W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4b_z_p_bi.xml */
 int st4b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4b_z_p_bi_contiguous */
 	/* 1110010|msz=00|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE470E000) {
@@ -43641,14 +42461,13 @@ int st4b_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4b_z_p_br.xml */
 int st4b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4b_z_p_br_contiguous */
 	/* 1110010|msz=00|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4606000) {
@@ -43667,14 +42486,13 @@ int st4b_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4d_z_p_bi.xml */
 int st4d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4d_z_p_bi_contiguous */
 	/* 1110010|msz=11|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5F0E000) {
@@ -43690,14 +42508,13 @@ int st4d_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4d_z_p_br.xml */
 int st4d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4d_z_p_br_contiguous */
 	/* 1110010|msz=11|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E06000) {
@@ -43716,14 +42533,13 @@ int st4d_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4h_z_p_bi.xml */
 int st4h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4h_z_p_bi_contiguous */
 	/* 1110010|msz=01|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4F0E000) {
@@ -43739,14 +42555,13 @@ int st4h_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4h_z_p_br.xml */
 int st4h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4h_z_p_br_contiguous */
 	/* 1110010|msz=01|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4E06000) {
@@ -43765,14 +42580,13 @@ int st4h_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4w_z_p_bi.xml */
 int st4w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4w_z_p_bi_contiguous */
 	/* 1110010|msz=10|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE570E000) {
@@ -43788,14 +42602,13 @@ int st4w_z_p_bi(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* st4w_z_p_br.xml */
 int st4w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class st4w_z_p_br_contiguous */
 	/* 1110010|msz=10|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5606000) {
@@ -43814,14 +42627,13 @@ int st4w_z_p_br(context *ctx, Instruction *dec)
 		dec->nreg = 4;
 		OK(ENC_ST4W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1b_z_p_bi.xml */
 int stnt1b_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1b_z_p_bi_contiguous */
 	/* 1110010|msz=00|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE410E000) {
@@ -43836,14 +42648,13 @@ int stnt1b_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_STNT1B_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1b_z_p_br.xml */
 int stnt1b_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1b_z_p_br_contiguous */
 	/* 1110010|msz=00|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4006000) {
@@ -43861,14 +42672,13 @@ int stnt1b_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 8;
 		OK(ENC_STNT1B_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1d_z_p_bi.xml */
 int stnt1d_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1d_z_p_bi_contiguous */
 	/* 1110010|msz=11|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE590E000) {
@@ -43883,14 +42693,13 @@ int stnt1d_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_STNT1D_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1d_z_p_br.xml */
 int stnt1d_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1d_z_p_br_contiguous */
 	/* 1110010|msz=11|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5806000) {
@@ -43908,14 +42717,13 @@ int stnt1d_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x40;
 		OK(ENC_STNT1D_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1h_z_p_bi.xml */
 int stnt1h_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1h_z_p_bi_contiguous */
 	/* 1110010|msz=01|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE490E000) {
@@ -43930,14 +42738,13 @@ int stnt1h_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_STNT1H_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1h_z_p_br.xml */
 int stnt1h_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1h_z_p_br_contiguous */
 	/* 1110010|msz=01|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4806000) {
@@ -43955,14 +42762,13 @@ int stnt1h_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x10;
 		OK(ENC_STNT1H_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1w_z_p_bi.xml */
 int stnt1w_z_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1w_z_p_bi_contiguous */
 	/* 1110010|msz=10|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE510E000) {
@@ -43977,14 +42783,13 @@ int stnt1w_z_p_bi(context *ctx, Instruction *dec)
 		dec->offset = SInt(dec->imm4,4);
 		OK(ENC_STNT1W_Z_P_BI_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* stnt1w_z_p_br.xml */
 int stnt1w_z_p_br(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class stnt1w_z_p_br_contiguous */
 	/* 1110010|msz=10|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5006000) {
@@ -44002,14 +42807,13 @@ int stnt1w_z_p_br(context *ctx, Instruction *dec)
 		dec->esize = 0x20;
 		OK(ENC_STNT1W_Z_P_BR_CONTIGUOUS);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_p_bi.xml */
 int str_p_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class str_p_bi_ */
 	/* 1110010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0xE5800000) {
@@ -44022,14 +42826,13 @@ int str_p_bi(context *ctx, Instruction *dec)
 		dec->imm = SInt(((dec->imm9h<<3)|dec->imm9l),9);
 		OK(ENC_STR_P_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* str_z_bi.xml */
 int str_z_bi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class str_z_bi_ */
 	/* 1110010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0xE5804000) {
@@ -44042,14 +42845,13 @@ int str_z_bi(context *ctx, Instruction *dec)
 		dec->imm = SInt(((dec->imm9h<<3)|dec->imm9l),9);
 		OK(ENC_STR_Z_BI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_z_p_zz.xml */
 int sub_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sub_z_p_zz_ */
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4010000) {
@@ -44063,14 +42865,13 @@ int sub_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_SUB_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_z_zi.xml */
 int sub_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sub_z_zi_ */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2521C000) {
@@ -44089,14 +42890,13 @@ int sub_z_zi(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SUB_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sub_z_zz.xml */
 int sub_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sub_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200400) {
@@ -44110,14 +42910,13 @@ int sub_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_SUB_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subr_z_p_zz.xml */
 int subr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class subr_z_p_zz_ */
 	/* 00000100|size=xx|000|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4030000) {
@@ -44131,14 +42930,13 @@ int subr_z_p_zz(context *ctx, Instruction *dec)
 		dec->m = UINT(dec->Zm);
 		OK(ENC_SUBR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* subr_z_zi.xml */
 int subr_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class subr_z_zi_ */
 	/* 00100101|size=xx|100|opc<2:1>=01|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2523C000) {
@@ -44157,14 +42955,13 @@ int subr_z_zi(context *ctx, Instruction *dec)
 		}
 		OK(ENC_SUBR_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sudot_z_zzzi.xml */
 int sudot_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sudot_z_zzzi_s */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01C00) {
@@ -44179,14 +42976,13 @@ int sudot_z_zzzi(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_SUDOT_Z_ZZZI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sunpkhi_z_z.xml */
 int sunpkhi_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sunpkhi_z_z_ */
 	/* 00000101|size=xx|1100|U=0|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5313800) {
@@ -44221,14 +43017,13 @@ int sunpkhi_z_z(context *ctx, Instruction *dec)
 		dec->hi = FALSE;
 		OK(ENC_SUNPKLO_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* sxtb_z_p_z.xml */
 int sxtb_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sxtb_z_p_z_ */
 	/* 00000100|size=xx|010|00|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x410A000) {
@@ -44283,14 +43078,13 @@ int sxtb_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = FALSE;
 		OK(ENC_SXTW_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* tbl_z_zz.xml */
 int tbl_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class tbl_z_zz_1 */
 	/* 00000101|size=xx|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5203000) {
@@ -44304,14 +43098,13 @@ int tbl_z_zz(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Zd);
 		OK(ENC_TBL_Z_ZZ_1);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* trn1_p_pp.xml */
 int trn1_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class trn1_p_pp_ */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=10|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5205000) {
@@ -44340,14 +43133,13 @@ int trn1_p_pp(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_TRN2_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* trn1_z_zz.xml */
 int trn1_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class trn1_z_zz_ */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|10|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5207000) {
@@ -44404,14 +43196,13 @@ int trn1_z_zz(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_TRN2_Z_ZZ_Q);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uabd_z_p_zz.xml */
 int uabd_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uabd_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=10|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40D0000) {
@@ -44426,14 +43217,13 @@ int uabd_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UABD_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uaddv_r_p_z.xml */
 int uaddv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uaddv_r_p_z_ */
 	/* 00000100|size=xx|000|opc=00|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4012000) {
@@ -44447,14 +43237,13 @@ int uaddv_r_p_z(context *ctx, Instruction *dec)
 		dec->d = UINT(dec->Vd);
 		OK(ENC_UADDV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ucvtf_z_p_z.xml */
 int ucvtf_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ucvtf_z_p_z_h2fp16 */
 	/* 01100101|opc=01|010|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6553A000) {
@@ -44574,14 +43363,13 @@ int ucvtf_z_p_z(context *ctx, Instruction *dec)
 		dec->rounding = FPRoundingMode(SLICE(ctx->FPCR,0x1f,0));
 		OK(ENC_UCVTF_Z_P_Z_X2D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udiv_z_p_zz.xml */
 int udiv_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class udiv_z_p_zz_ */
 	/* 00000100|size=xx|0101|R=0|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4150000) {
@@ -44599,14 +43387,13 @@ int udiv_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UDIV_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udivr_z_p_zz.xml */
 int udivr_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class udivr_z_p_zz_ */
 	/* 00000100|size=xx|0101|R=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4170000) {
@@ -44624,14 +43411,13 @@ int udivr_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UDIVR_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udot_z_zzz.xml */
 int udot_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class udot_z_zzz_ */
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000400) {
@@ -44648,14 +43434,13 @@ int udot_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_UDOT_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* udot_z_zzzi.xml */
 int udot_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class udot_z_zzzi_s */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00400) {
@@ -44684,14 +43469,13 @@ int udot_z_zzzi(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_UDOT_Z_ZZZI_D);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umax_z_p_zz.xml */
 int umax_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umax_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=00|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4090000) {
@@ -44706,14 +43490,13 @@ int umax_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UMAX_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umax_z_zi.xml */
 int umax_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umax_z_zi_ */
 	/* 00100101|size=xx|101|00|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2529C000) {
@@ -44727,14 +43510,13 @@ int umax_z_zi(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm8);
 		OK(ENC_UMAX_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umaxv_r_p_z.xml */
 int umaxv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umaxv_r_p_z_ */
 	/* 00000100|size=xx|001|opc=00|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4092000) {
@@ -44749,14 +43531,13 @@ int umaxv_r_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UMAXV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umin_z_p_zz.xml */
 int umin_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umin_z_p_zz_ */
 	/* 00000100|size=xx|001|opc=01|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B0000) {
@@ -44771,14 +43552,13 @@ int umin_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UMIN_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umin_z_zi.xml */
 int umin_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umin_z_zi_ */
 	/* 00100101|size=xx|101|01|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252BC000) {
@@ -44792,14 +43572,13 @@ int umin_z_zi(context *ctx, Instruction *dec)
 		dec->imm = UINT(dec->imm8);
 		OK(ENC_UMIN_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uminv_r_p_z.xml */
 int uminv_r_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uminv_r_p_z_ */
 	/* 00000100|size=xx|001|opc=01|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B2000) {
@@ -44814,14 +43593,13 @@ int uminv_r_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UMINV_R_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* ummla_z_zzz.xml */
 int ummla_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class ummla_z_zzz_ */
 	/* 01000101|uns=11|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45C09800) {
@@ -44836,14 +43614,13 @@ int ummla_z_zzz(context *ctx, Instruction *dec)
 		dec->op2_unsigned = TRUE;
 		OK(ENC_UMMLA_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* umulh_z_p_zz.xml */
 int umulh_z_p_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class umulh_z_p_zz_ */
 	/* 00000100|size=xx|0100|H=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4130000) {
@@ -44858,14 +43635,13 @@ int umulh_z_p_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UMULH_Z_P_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqadd_z_zi.xml */
 int uqadd_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqadd_z_zi_ */
 	/* 00100101|size=xx|100|10|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2525C000) {
@@ -44885,14 +43661,13 @@ int uqadd_z_zi(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQADD_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqadd_z_zz.xml */
 int uqadd_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqadd_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201400) {
@@ -44907,14 +43682,13 @@ int uqadd_z_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQADD_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecb_r_rs.xml */
 int uqdecb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecb_r_rs_uw */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420FC00) {
@@ -44945,14 +43719,13 @@ int uqdecb_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQDECB_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecd_r_rs.xml */
 int uqdecd_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecd_r_rs_uw */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0FC00) {
@@ -44983,14 +43756,13 @@ int uqdecd_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQDECD_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecd_z_zs.xml */
 int uqdecd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecd_z_zs_ */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0CC00) {
@@ -45005,14 +43777,13 @@ int uqdecd_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQDECD_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdech_r_rs.xml */
 int uqdech_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdech_r_rs_uw */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460FC00) {
@@ -45043,14 +43814,13 @@ int uqdech_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQDECH_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdech_z_zs.xml */
 int uqdech_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdech_z_zs_ */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460CC00) {
@@ -45065,14 +43835,13 @@ int uqdech_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQDECH_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecp_r_p_r.xml */
 int uqdecp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecp_r_p_r_uw */
 	/* 00100101|size=xx|1010|D=1|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8800) {
@@ -45101,14 +43870,13 @@ int uqdecp_r_p_r(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQDECP_R_P_R_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecp_z_p_z.xml */
 int uqdecp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecp_z_p_z_ */
 	/* 00100101|size=xx|1010|D=1|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8000) {
@@ -45125,14 +43893,13 @@ int uqdecp_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQDECP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecw_r_rs.xml */
 int uqdecw_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecw_r_rs_uw */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0FC00) {
@@ -45163,14 +43930,13 @@ int uqdecw_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQDECW_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqdecw_z_zs.xml */
 int uqdecw_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqdecw_z_zs_ */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0CC00) {
@@ -45185,14 +43951,13 @@ int uqdecw_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQDECW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincb_r_rs.xml */
 int uqincb_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincb_r_rs_uw */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F400) {
@@ -45223,14 +43988,13 @@ int uqincb_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQINCB_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincd_r_rs.xml */
 int uqincd_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincd_r_rs_uw */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F400) {
@@ -45261,14 +44025,13 @@ int uqincd_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQINCD_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincd_z_zs.xml */
 int uqincd_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincd_z_zs_ */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C400) {
@@ -45283,14 +44046,13 @@ int uqincd_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQINCD_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqinch_r_rs.xml */
 int uqinch_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqinch_r_rs_uw */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F400) {
@@ -45321,14 +44083,13 @@ int uqinch_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQINCH_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqinch_z_zs.xml */
 int uqinch_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqinch_z_zs_ */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C400) {
@@ -45343,14 +44104,13 @@ int uqinch_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQINCH_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincp_r_p_r.xml */
 int uqincp_r_p_r(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincp_r_p_r_uw */
 	/* 00100101|size=xx|1010|D=0|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298800) {
@@ -45379,14 +44139,13 @@ int uqincp_r_p_r(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQINCP_R_P_R_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincp_z_p_z.xml */
 int uqincp_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincp_z_p_z_ */
 	/* 00100101|size=xx|1010|D=0|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298000) {
@@ -45403,14 +44162,13 @@ int uqincp_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQINCP_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincw_r_rs.xml */
 int uqincw_r_rs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincw_r_rs_uw */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F400) {
@@ -45441,14 +44199,13 @@ int uqincw_r_rs(context *ctx, Instruction *dec)
 		dec->ssize = 0x40;
 		OK(ENC_UQINCW_R_RS_X);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqincw_z_zs.xml */
 int uqincw_z_zs(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqincw_z_zs_ */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C400) {
@@ -45463,14 +44220,13 @@ int uqincw_z_zs(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQINCW_Z_ZS_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqsub_z_zi.xml */
 int uqsub_z_zi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqsub_z_zi_ */
 	/* 00100101|size=xx|100|11|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2527C000) {
@@ -45490,14 +44246,13 @@ int uqsub_z_zi(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQSUB_Z_ZI_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uqsub_z_zz.xml */
 int uqsub_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uqsub_z_zz_ */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201C00) {
@@ -45512,14 +44267,13 @@ int uqsub_z_zz(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UQSUB_Z_ZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usdot_z_zzz.xml */
 int usdot_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class usdot_z_zzz_s */
 	/* 01000100|size=10|0|Zm=xxxxx|011110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44807800) {
@@ -45533,14 +44287,13 @@ int usdot_z_zzz(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_USDOT_Z_ZZZ_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usdot_z_zzzi.xml */
 int usdot_z_zzzi(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class usdot_z_zzzi_s */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01800) {
@@ -45555,14 +44308,13 @@ int usdot_z_zzzi(context *ctx, Instruction *dec)
 		dec->da = UINT(dec->Zda);
 		OK(ENC_USDOT_Z_ZZZI_S);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* usmmla_z_zzz.xml */
 int usmmla_z_zzz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class usmmla_z_zzz_ */
 	/* 01000101|uns=10|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45809800) {
@@ -45577,14 +44329,13 @@ int usmmla_z_zzz(context *ctx, Instruction *dec)
 		dec->op2_unsigned = FALSE;
 		OK(ENC_USMMLA_Z_ZZZ_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uunpkhi_z_z.xml */
 int uunpkhi_z_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uunpkhi_z_z_ */
 	/* 00000101|size=xx|1100|U=1|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5333800) {
@@ -45619,14 +44370,13 @@ int uunpkhi_z_z(context *ctx, Instruction *dec)
 		dec->hi = FALSE;
 		OK(ENC_UUNPKLO_Z_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uxtb_z_p_z.xml */
 int uxtb_z_p_z(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uxtb_z_p_z_ */
 	/* 00000100|size=xx|010|00|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x411A000) {
@@ -45681,14 +44431,13 @@ int uxtb_z_p_z(context *ctx, Instruction *dec)
 		dec->unsigned_ = TRUE;
 		OK(ENC_UXTW_Z_P_Z_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uzp1_p_pp.xml */
 int uzp1_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uzp1_p_pp_ */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=01|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204800) {
@@ -45717,14 +44466,13 @@ int uzp1_p_pp(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_UZP2_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* uzp1_z_zz.xml */
 int uzp1_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class uzp1_z_zz_ */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|01|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206800) {
@@ -45781,14 +44529,13 @@ int uzp1_z_zz(context *ctx, Instruction *dec)
 		dec->part = 1;
 		OK(ENC_UZP2_Z_ZZ_Q);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* whilele_p_p_rr.xml */
 int whilele_p_p_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class whilele_p_p_rr_ */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200410) {
@@ -45805,14 +44552,13 @@ int whilele_p_p_rr(context *ctx, Instruction *dec)
 		dec->op = Cmp_LE;
 		OK(ENC_WHILELE_P_P_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* whilelo_p_p_rr.xml */
 int whilelo_p_p_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class whilelo_p_p_rr_ */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C00) {
@@ -45829,14 +44575,13 @@ int whilelo_p_p_rr(context *ctx, Instruction *dec)
 		dec->op = Cmp_LT;
 		OK(ENC_WHILELO_P_P_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* whilels_p_p_rr.xml */
 int whilels_p_p_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class whilels_p_p_rr_ */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C10) {
@@ -45853,14 +44598,13 @@ int whilels_p_p_rr(context *ctx, Instruction *dec)
 		dec->op = Cmp_LE;
 		OK(ENC_WHILELS_P_P_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* whilelt_p_p_rr.xml */
 int whilelt_p_p_rr(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class whilelt_p_p_rr_ */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200400) {
@@ -45877,14 +44621,13 @@ int whilelt_p_p_rr(context *ctx, Instruction *dec)
 		dec->op = Cmp_LT;
 		OK(ENC_WHILELT_P_P_RR_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* wrffr_f_p.xml */
 int wrffr_f_p(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class wrffr_f_p_ */
 	/* 00|100101|opc=00|10|1000100100|0|Pn=xxxx|0|0|0|00 */
 	if((INSWORD & 0xFFFFFE1F)==0x25289000) {
@@ -45895,14 +44638,13 @@ int wrffr_f_p(context *ctx, Instruction *dec)
 		dec->n = UINT(dec->Pn);
 		OK(ENC_WRFFR_F_P_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* zip1_p_pp.xml */
 int zip1_p_pp(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zip2_p_pp_ */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=00|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204400) {
@@ -45931,14 +44673,13 @@ int zip1_p_pp(context *ctx, Instruction *dec)
 		dec->part = 0;
 		OK(ENC_ZIP1_P_PP_);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 
 /* zip1_z_zz.xml */
 int zip1_z_zz(context *ctx, Instruction *dec)
 {
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class zip2_z_zz_ */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|00|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206400) {
@@ -45995,8 +44736,6 @@ int zip1_z_zz(context *ctx, Instruction *dec)
 		dec->part = 0;
 		OK(ENC_ZIP1_Z_ZZ_Q);
 	}
-	/* instruction form epilogue */
-	if(dec->status == DECODE_STATUS_OK) return 0;
-	UNMATCHED;
+	return rc;
 }
 

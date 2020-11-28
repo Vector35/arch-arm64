@@ -2,6 +2,8 @@
 
 LIB_OBJS = arm64dis.o pcode.o decode0.o decode1.o decode_fields32.o decode_scratchpad.o decode2.o operations.o encodings.o sysregs.o
 
+HEADERS = decode1.h decode2.h arm64dis.h pcode.h operations.h sysregs.h decode_fields32.h encodings.h
+
 CFLAGS = -g -Wunused
 #CFLAGS = -g -Wpedantic
 #CFLAGS = -ofast
@@ -12,7 +14,8 @@ CFLAGS = -g -Wunused
 
 all: libdisasm.a gofer.so test
 
-%.o: %.c
+# operations.o, encodings.o, sysregs.o
+%.o: %.c $(HEADERS)
 	gcc -c $(CFLAGS) $< -o $@
 
 libdisasm.a: $(LIB_OBJS)

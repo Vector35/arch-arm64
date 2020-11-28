@@ -316,7 +316,6 @@ struct InstructionOperand {
 #define MAX_OPERANDS 5
 
 struct Instruction {
-	int status;
 	uint32_t insword;
 	enum ENCODING encoding;
 

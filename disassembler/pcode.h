@@ -1,19 +1,20 @@
 #define INSWORD (ctx->insword)
-#define OK(X) {dec->encoding = (X); dec->operation = enc_to_oper(X); dec->status = DECODE_STATUS_OK; }
-#define UNMATCHED {dec->status = DECODE_STATUS_UNMATCHED; return DECODE_STATUS_UNMATCHED; }
-#define UNDEFINED {dec->status = DECODE_STATUS_UNDEFINED; return DECODE_STATUS_UNDEFINED; }
-#define RESERVED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_RESERVED; return DECODE_STATUS_RESERVED; }
-#define UNALLOCATED(X) {dec->encoding = (X); dec->status = DECODE_STATUS_UNALLOCATED; return DECODE_STATUS_UNALLOCATED; }
-#define ENDOFINSTRUCTION {dec->status = DECODE_STATUS_END_OF_INSTRUCTION; return DECODE_STATUS_END_OF_INSTRUCTION; }
-#define SEE {dec->status = DECODE_STATUS_LOST; return DECODE_STATUS_LOST; }
-#define UNREACHABLE {dec->status = DECODE_STATUS_UNREACHABLE; return DECODE_STATUS_UNREACHABLE; }
+#define UNDEFINED { return DECODE_STATUS_UNDEFINED; }
+#define UNMATCHED { return DECODE_STATUS_UNMATCHED; }
+#define RESERVED(X) { return DECODE_STATUS_RESERVED; }
+#define UNALLOCATED(X) {dec->encoding = (X); return DECODE_STATUS_UNALLOCATED; }
+#define ENDOFINSTRUCTION { return DECODE_STATUS_END_OF_INSTRUCTION; }
+#define SEE { return DECODE_STATUS_LOST; }
+#define UNREACHABLE { return DECODE_STATUS_UNREACHABLE; }
+/* do NOT return immediately! post-decode pcode might still need to run */ 
+#define OK(X) {dec->encoding = (X); dec->operation = enc_to_oper(X); rc = DECODE_STATUS_OK; }
 
 #define BITMASK(N) (((uint64_t)1<<(N))-1)
 #define SLICE(X,MSB,LSB) (((X)>>(LSB)) & BITMASK((MSB)-(LSB)+1)) /* get bits [MSB,LSB] */
 #define CONCAT(A,B,B_WIDTH) (((A)<<(B_WIDTH))|(B))
 #define NOT(X,X_WIDTH) ((X) ^ BITMASK(X_WIDTH))
 
-#define DecodeBitMasksCheckUndefined(N,imms) if((N==0 && (imms==0x3D || imms==0x3B || imms==0x37 || imms==0x2F || imms==0x1F)) || (N==1 && imms==0x3F)) {dec->status = DECODE_STATUS_UNDEFINED; return false; }
+#define DecodeBitMasksCheckUndefined(N,imms) if((N==0 && (imms==0x3D || imms==0x3B || imms==0x37 || imms==0x2F || imms==0x1F)) || (N==1 && imms==0x3F)) { return DECODE_STATUS_UNDEFINED; }
 
 #define UINT(x) (unsigned int)(x)
 #define SInt(X,X_WIDTH) SignExtend((X),(X_WIDTH))
