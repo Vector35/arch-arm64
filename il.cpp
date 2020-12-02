@@ -1389,57 +1389,20 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_BRK:
 		il.AddInstruction(il.Trap(IMM(operand1))); // FIXME Breakpoint may need a parameter (IMM(operand1)));
 		return false;
+	case ARM64_DGH:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_DGH, {}));
+		break;
+	case ARM64_TSB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_TSB, {}));
+		break;
+	case ARM64_CSDB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_CSDB, {}));
+		break;
 	case ARM64_HINT:
-		switch (IMM(operand1)) {
-		case 0:
-			// this case should be impossible, as the instruction should be decoded as ARM64_NOP
-			il.AddInstruction(il.Nop());
-			break;
-		case 1:
-			// this case should be impossible, as the instruction should be decoded as ARM64_YIELD
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
-			break;
-		case 2:
-			// this case should be impossible, as the instruction should be decoded as ARM64_WFE
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFE, {}));
-			break;
-		case 3:
-			// this case should be impossible, as the instruction should be decoded as ARM64_WFI
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_WFI, {}));
-			break;
-		case 4:
-			// this case should be impossible, as the instruction should be decoded as ARM64_SEV
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEV, {}));
-			break;
-		case 5:
-			// this case should be impossible, as the instruction should be decoded as ARM64_SEVL
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEVL, {}));
-			break;
-		case 6:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_DGH, {}));
-			break;
-		case 0x10:
-			// this case should be impossible, as the instruction should be decoded as ARM64_ESB
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
-			break;
-		case 0x11:
-			// this case should be impossible, as the instruction should be decoded as ARM64_PSBCSYNC
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
-			break;
-		case 0x12:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_TSB, {}));
-			break;
-		case 0x14:
-			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_CSDB, {}));
-			break;
-		default:
-			if ((IMM(operand1) & ~0b110) == 0b100000)
-				il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_BTI, {}));
-			else
-				LogWarn("unknown hint operand: 0x%" PRIx64 "\n", IMM(operand1));
-			break;
-		}
-
+		if ((IMM(operand1) & ~0b110) == 0b100000)
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_BTI, {}));
+		else
+			LogWarn("unknown hint operand: 0x%" PRIx64 "\n", IMM(operand1));
 		break;
 	case ARM64_HLT:
 		il.AddInstruction(il.Trap(IMM(operand1)));
