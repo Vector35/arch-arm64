@@ -10,7 +10,7 @@ import os, sys, struct, ctypes, re
 #------------------------------------------------------------------------------
 
 cbuf = None
-gofer = None
+pfunc_disasm = None
 
 def normalize(instxt):
 	#print('normalizing: %s' % instxt)
@@ -72,11 +72,11 @@ def normalize(instxt):
 	# done
 	return instxt
 
-def disassemble(insnum):
-	global cbuf, gofer
+def disassemble(addr, insnum):
+	global cbuf, pfunc_disasm
 	insword = struct.pack('<I', insnum)
 	cbuf.value = b'(uninitialized)'
-	gofer.disassemble(0, insword, 4, ctypes.byref(cbuf), False)
+	pfunc_disasm(addr, insword, 4, ctypes.byref(cbuf), False)
 	return normalize(cbuf.value.decode('utf-8').strip())
 
 #------------------------------------------------------------------------------
@@ -176,25 +176,31 @@ def excusable_difference(actual, expected):
 # main
 #------------------------------------------------------------------------------
 
+ADDRESS_TEST = 0x8000000000000004
+
 def main():
-	global cbuf, gofer
+	global cbuf, pfunc_disasm
 	cbuf = ctypes.create_string_buffer(1024)
-	gofer = ctypes.CDLL(os.path.join(os.path.dirname(__file__), 'gofer.so'))
-	assert gofer
+	dll = ctypes.CDLL(os.path.join(os.path.dirname(__file__), 'gofer.so'))
+	pfunc_disasm = dll.disassemble
+	pfunc_disasm.restype = ctypes.c_int
+	pfunc_disasm.argtypes = [ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint, ctypes.c_void_p]
 
 	if sys.argv[1:]:
 		insnum = int(sys.argv[1], 16)
-		print(disassemble(insnum))
+		print(disassemble(ADDRESS_TEST, insnum))
 
 	else:
 		with open('test_cases.txt') as fp:
 			lines = fp.readlines()
 
 		for (i,line) in enumerate(lines):
-			if line.startswith('// '): continue
+			if line.startswith('// '):
+				print(line, end='')
+				continue
 			assert line[8] == ' '
 			insnum = int(line[0:8], 16)
-			actual = disassemble(insnum)
+			actual = disassemble(ADDRESS_TEST, insnum)
 			expected = line[9:].rstrip()
 			print('%08X: -%s- vs -%s-' % (insnum, actual, expected))
 			if compare_disassembly(actual, expected):
