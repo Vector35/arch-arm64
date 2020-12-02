@@ -1529,7 +1529,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_LDR_D_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <Dt>,<label>
 			ADD_OPERAND_DT;
 			ADD_OPERAND_LABEL;
@@ -2221,7 +2221,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_LDR_Q_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <Qt>,<label>
 			ADD_OPERAND_QT;
 			ADD_OPERAND_LABEL;
@@ -2269,7 +2269,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t imm = dec->bit_pos;
 			unsigned rt_base = dec->datasize == 32 ? REG_W_BASE : REG_X_BASE;
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <R><t>, #<imm>,<label>
 			ADD_OPERAND_REG(REGSET_ZR, rt_base, dec->Rt);
 			ADD_OPERAND_UIMM32;
@@ -2518,7 +2518,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_LDR_S_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <St>,<label>
 			ADD_OPERAND_ST;
 			ADD_OPERAND_LABEL;
@@ -4878,7 +4878,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CBZ_32_COMPBRANCH:
 		case ENC_LDR_32_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <Wt>,<label>
 			ADD_OPERAND_WT;
 			ADD_OPERAND_LABEL;
@@ -6026,6 +6026,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDR_64_LOADLIT:
 		{
 			uint64_t eaddr = dec->offset;
+			if(dec->encoding != ENC_LDR_64_LOADLIT)
+				eaddr += ctx->address;
 			// SYNTAX: <Xt>,<label>
 			ADD_OPERAND_XT;
 			ADD_OPERAND_LABEL;
@@ -7189,7 +7191,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 
 			dec->operation = lookup[dec->condition];
 
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <label>
 			ADD_OPERAND_LABEL;
 			// SYNTAX-END
@@ -7558,7 +7560,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_PRFM_P_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: (<prfop>|#<imm5>),<label>
 			ADD_OPERAND_NAME(prfop_lookup(dec->Rt));
 			ADD_OPERAND_LABEL;
