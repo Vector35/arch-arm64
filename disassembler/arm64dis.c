@@ -194,6 +194,10 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 	if(rc != DECODE_STATUS_OK)
 		return rc;
 
+	/* if UDF encoding, return undefined */
+	if(instr->encoding == ENC_UDF_ONLY_PERM_UNDEF)
+		return DECODE_STATUS_UNDEFINED;
+
 	/* convert the pcode variables to list of operands, etc. */
 	return decode_scratchpad(&ctx, instr);
 }
