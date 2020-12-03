@@ -18,6 +18,7 @@ using namespace BinaryNinja;
 #define LOADVAL(R1, O) il.Load(REGSZ(R1), O)
 #define LOADREG(R1) il.Load(REGSZ(R1), ILREG(R1))
 #define ONES(N) (-1ULL >> (64-N))
+#define SETFLAGS (instr.setflags ? IL_FLAGWRITE_ALL : IL_FLAGWRITE_NONE)
 
 static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 {
@@ -746,7 +747,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.Add(REGSZ(operand1),
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)),
-						instr.operation == ARM64_ADDS ? IL_FLAGWRITE_ALL : 0)));
+						SETFLAGS)));
 		break;
 	case ARM64_AND:
 	case ARM64_ANDS:
@@ -754,7 +755,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.And(REGSZ(operand1),
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)),
-						instr.operation == ARM64_ANDS ? IL_FLAGWRITE_ALL : 0)));
+						SETFLAGS)));
 		break;
 	case ARM64_ADR:
 	case ARM64_ADRP:
@@ -856,19 +857,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Jump(ILREG(operand1)));
 		return false;
 	case ARM64_BIC:
-		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-					il.And(REGSZ(operand2),
-						ILREG(operand2),
-						il.Not(REGSZ(operand2),
-							ReadILOperand(il, operand3, REGSZ(operand2)))
-							)));
-		break;
 	case ARM64_BICS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.And(REGSZ(operand2),
 						ILREG(operand2),
 						il.Not(REGSZ(operand2),
-							ReadILOperand(il, operand3, REGSZ(operand2)), IL_FLAGWRITE_ALL)
+							ReadILOperand(il, operand3, REGSZ(operand2)), SETFLAGS)
 							)));
 		break;
 	case ARM64_CBNZ:
@@ -888,7 +882,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_CMN:
 		il.AddInstruction(il.Add(REGSZ(operand1),
 					ILREG(operand1),
-					ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+					ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 		break;
 	case ARM64_CCMN:
 		{
@@ -899,7 +893,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Add(REGSZ(operand1),
 						ILREG(operand1),
-						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+						ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 			il.AddInstruction(il.Goto(done));
 
 			il.MarkLabel(falseCode);
@@ -916,7 +910,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_CMP:
 		il.AddInstruction(il.Sub(REGSZ(operand1),
 					ILREG(operand1),
-					ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+					ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 		break;
 	case ARM64_CCMP:
 		{
@@ -927,7 +921,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Sub(REGSZ(operand1),
 						ILREG(operand1),
-						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+						ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 			il.AddInstruction(il.Goto(done));
 
 			il.MarkLabel(falseCode);
@@ -1138,8 +1132,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		}
 		break;
 	case ARM64_NEG:
+	case ARM64_NEGS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-					il.Neg(REGSZ(operand1), ReadILOperand(il, instr.operands[1], REGSZ(operand1)), IL_FLAGWRITE_ALL)));
+					il.Neg(REGSZ(operand1), ReadILOperand(il, instr.operands[1], REGSZ(operand1)), SETFLAGS)));
 		break;
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
@@ -1219,10 +1214,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						il.Not(REGSZ(operand1), ReadILOperand(il, operand3, REGSZ(operand1))))));
 		break;
 	case ARM64_ORR:
+	case ARM64_ORRS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Or(REGSZ(operand1),
 						ILREG(operand2),
-						ReadILOperand(il, operand3, REGSZ(operand1)), IL_FLAGWRITE_ALL)));
+						ReadILOperand(il, operand3, REGSZ(operand1)), SETFLAGS)));
 		break;
 	case ARM64_PSB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
@@ -1245,7 +1241,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)),
 						il.Flag(IL_FLAG_C),
-						instr.operation == ARM64_SBCS ? IL_FLAGWRITE_ALL : 0)));
+						SETFLAGS)));
 		break;
 	case ARM64_SBFIZ:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
@@ -1301,7 +1297,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_SUBS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Sub(REGSZ(operand1), ILREG(operand2), ReadILOperand(il, instr.operands[2], REGSZ(operand1)),
-					instr.operation == ARM64_SUBS ? IL_FLAGWRITE_ALL : 0)));
+					SETFLAGS)));
 		break;
 	case ARM64_SVC:
 		il.AddInstruction(il.SetRegister(2, FAKEREG_SYSCALL_IMM, il.Const(2, IMM(operand1))));
@@ -1334,7 +1330,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_TST:
 		il.AddInstruction(il.And(REGSZ(operand1),
 						ILREG(operand1),
-						ReadILOperand(il, operand2, REGSZ(operand1)), IL_FLAGWRITE_ALL));
+						ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 		break;
 	case ARM64_UMULL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
