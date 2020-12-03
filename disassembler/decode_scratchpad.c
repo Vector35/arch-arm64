@@ -5385,17 +5385,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			break;
 		}
 		case ENC_ADRP_ONLY_PCRELADDR:
-		{
-			uint64_t eaddr = dec->imm;
-			// SYNTAX: <Xd>,<label>
-			ADD_OPERAND_XD;
-			ADD_OPERAND_LABEL;
-			// SYNTAX-END
-			break;
-		}
 		case ENC_ADR_ONLY_PCRELADDR:
 		{
-			uint64_t eaddr = dec->imm;
+			uint64_t eaddr = dec->page ?
+				(ctx->address & 0xFFFFFFFFFFFFF000) + dec->imm : ctx->address + dec->imm;
 			// SYNTAX: <Xd>,<label>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_LABEL;
