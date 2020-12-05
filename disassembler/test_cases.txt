@@ -14562,22 +14562,22 @@ F867FB9D ldr x29, [x28, x7, sxtx #0x3]
 F87CD8FF ldr xzr, [x7, w28, sxtw #0x3]
 F87B696C ldr x12, [x11, x27]
 // LDR_64_loadlit 01011000xxxxxxxxxxxxxxxxxxxxxxxx
-58564E32 ldr x18, 0xac9c4
-581C6185 ldr x5, 0x38c30
-58BBF93C ldr x28, -0x880dc
-58B220E2 ldr x2, -0x9bbe4
-58900900 ldr x0, -0xdfee0
-583923CB ldr x11, 0x72478
-58C34B44 ldr x4, -0x79698
-58077A5E ldr x30, 0xef48
-58CEA419 ldr x25, -0x62b80
-58B80CF3 ldr x19, -0x8fe64
-5864B3F5 ldr x21, 0xc967c
-58F53CEB ldr x11, -0x15864
-58AA3CAD ldr x13, -0xab86c
-58A5ABAC ldr x12, -0xb4a8c
-583FD920 ldr x0, 0x7fb24
-5894E479 ldr x25, -0xd6374
+58564E32 ldr x18, 0x80000000000ac9c8
+581C6185 ldr x5, 0x8000000000038c34
+58BBF93C ldr x28, 0x7ffffffffff77f28
+58B220E2 ldr x2, 0x7ffffffffff64420
+58900900 ldr x0, 0x7ffffffffff20124
+583923CB ldr x11, 0x800000000007247c
+58C34B44 ldr x4, 0x7ffffffffff8696c
+58077A5E ldr x30, 0x800000000000ef4c
+58CEA419 ldr x25, 0x7ffffffffff9d484
+58B80CF3 ldr x19, 0x7ffffffffff701a0
+5864B3F5 ldr x21, 0x80000000000c9680
+58F53CEB ldr x11, 0x7ffffffffffea7a0
+58AA3CAD ldr x13, 0x7ffffffffff54798
+58A5ABAC ldr x12, 0x7ffffffffff4b578
+583FD920 ldr x0, 0x800000000007fb28
+5894E479 ldr x25, 0x7ffffffffff29c90
 // LDR_BL_ldst_regoff 00111100011xxxxx011x10xxxxxxxxxx
 3C626983 ldr b3, [x12, x2]
 3C6E78A7 ldr b7, [x5, x14, lsl #0x0]

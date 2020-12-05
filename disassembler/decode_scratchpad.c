@@ -6018,9 +6018,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDRSW_64_LOADLIT:
 		case ENC_LDR_64_LOADLIT:
 		{
-			uint64_t eaddr = dec->offset;
-			if(dec->encoding != ENC_LDR_64_LOADLIT)
-				eaddr += ctx->address;
+			uint64_t eaddr = ctx->address + dec->offset;
 			// SYNTAX: <Xt>,<label>
 			ADD_OPERAND_XT;
 			ADD_OPERAND_LABEL;
