@@ -215,6 +215,8 @@ typedef struct context_ {
 	//uint32_t exception_level; // used by AArch64.CheckSystemAccess()
 	//uint32_t security_state;
 	uint8_t pstate_btype; // used by BTypeCompatible_BTI()
+	uint8_t pstate_el;
+	uint8_t pstate_uao;
 	bool BTypeCompatible;
 	uint8_t BTypeNext;
 	bool halted; // is CPU halted? used by Halted()
@@ -346,8 +348,6 @@ struct Instruction {
 	uint64_t O;
 	uint64_t Op0, Op3;
 	uint64_t P;
-	uint64_t PSTATE_EL;
-	uint64_t PSTATE_UAO;
 	uint64_t Pd, Pdm, Pdn, Pg, Pm, Pn, Pt;
 	uint64_t Q, Qa, Qd, Qm, Qn, Qt, Qt2;
 	uint64_t R, Ra, Rd, Rdn, Rm, Rmhi, Rn, Rs, Rt, Rt2;

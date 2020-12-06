@@ -3213,9 +3213,7 @@ int DCPS1(context *ctx, Instruction *dec)
 		if(dec->LL==0) {
 			UNDEFINED;
 		}
-		if(!Halted()) {
-			UNDEFINED;
-		}
+		/* if(!Halted()) { UNDEFINED; } */
 		OK(ENC_DCPS1_DC_EXCEPTION);
 	}
 	return rc;
@@ -3233,9 +3231,7 @@ int DCPS2(context *ctx, Instruction *dec)
 		if(dec->LL==0) {
 			UNDEFINED;
 		}
-		if(!Halted()) {
-			UNDEFINED;
-		}
+		/* if(!Halted()) { UNDEFINED; } */
 		OK(ENC_DCPS2_DC_EXCEPTION);
 	}
 	return rc;
@@ -3253,9 +3249,7 @@ int DCPS3(context *ctx, Instruction *dec)
 		if(dec->LL==0) {
 			UNDEFINED;
 		}
-		if(!Halted()) {
-			UNDEFINED;
-		}
+		/* if(!Halted()) { UNDEFINED; } */
 		OK(ENC_DCPS3_DC_EXCEPTION);
 	}
 	return rc;
@@ -3431,9 +3425,7 @@ int DRPS(context *ctx, Instruction *dec)
 	/* 1101011|opc=0101|op2=11111|op3=000000|Rt=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD6BF03E0) {
 		decode_fields32(ENC_DRPS_64E_BRANCH_REG, dec);
-		if(!Halted() || dec->PSTATE_EL==EL0) {
-			UNDEFINED;
-		}
+		/* if(!Halted() || ctx->pstate_el==EL0) { UNDEFINED; } */
 		OK(ENC_DRPS_64E_BRANCH_REG);
 	}
 	return rc;
@@ -3754,9 +3746,7 @@ int ERET(context *ctx, Instruction *dec)
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD69F03E0) {
 		decode_fields32(ENC_ERET_64E_BRANCH_REG, dec);
-		if(dec->PSTATE_EL==EL0) {
-			UNDEFINED;
-		}
+		/* if(ctx->pstate_el==EL0) { UNDEFINED; } */
 		dec->pac = (dec->A==1);
 		dec->use_key_a = (dec->M==0);
 		if(!dec->pac && dec->op4!=0) {
@@ -3781,9 +3771,7 @@ int ERETA(context *ctx, Instruction *dec)
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=11111|op4=11111 */
 	if((INSWORD & 0xFFFFFBFF)==0xD69F0BFF) {
 		decode_fields32(ENC_ERETAA_64E_BRANCH_REG, dec);
-		if(dec->PSTATE_EL==EL0) {
-			UNDEFINED;
-		}
+		/* if(ctx->pstate_el==EL0) { UNDEFINED; } */
 		dec->pac = (dec->A==1);
 		dec->use_key_a = (dec->M==0);
 		if(!dec->pac && dec->op4!=0) {
@@ -15470,9 +15458,9 @@ int LDTR(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -15525,9 +15513,9 @@ int LDTRB(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -15580,9 +15568,9 @@ int LDTRH(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -15636,9 +15624,9 @@ int LDTRSB(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -15692,9 +15680,9 @@ int LDTRSH(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -15747,9 +15735,9 @@ int LDTRSW(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -17371,16 +17359,7 @@ int MSR_imm(context *ctx, Instruction *dec)
 		else {
 			UNDEFINED;
 		}
-		if(dec->PSTATE_EL==EL0 && (dec->field==PSTATEField_DAIFSet || dec->field==PSTATEField_DAIFClr)) {
-			if(!ELUsingAArch32(EL1) && ((EL2Enabled() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3) || dec->SCTLR_EL1_UMA==0)) {
-				if(EL2Enabled() && !ELUsingAArch32(EL2) && dec->HCR_EL2_TGE==1) {
-					SystemAccessTrap(EL2,0x18);
-				}
-				else {
-					SystemAccessTrap(EL1,0x18);
-				}
-			}
-		}
+		/* if(ctx->pstate_el==EL0 && (dec->field==PSTATEField_DAIFSet || dec->field==PSTATEField_DAIFClr)) { if(!ELUsingAArch32(EL1) && ((EL2Enabled() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3) || dec->SCTLR_EL1_UMA==0)) {	if(EL2Enabled() && !ELUsingAArch32(EL2) && dec->HCR_EL2_TGE==1) {		SystemAccessTrap(EL2,0x18);	}	else {		SystemAccessTrap(EL1,0x18);	}} } */
 		OK(ENC_MSR_SI_PSTATE);
 	}
 	return rc;
@@ -25026,9 +25005,9 @@ int STTR(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -25081,9 +25060,9 @@ int STTRB(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
@@ -25136,9 +25115,9 @@ int STTRH(context *ctx, Instruction *dec)
 	/* post-decode pcode */
 	dec->n = UINT(dec->Rn);
 	dec->t = UINT(dec->Rt);
-	dec->unpriv_at_el1 = dec->PSTATE_EL==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
-	dec->unpriv_at_el2 = dec->PSTATE_EL==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
-	dec->user_access_override = HaveUAOExt() && dec->PSTATE_UAO==1;
+	dec->unpriv_at_el1 = ctx->pstate_el==EL1 && !(EL2Enabled() && HaveNVExt() && CONCAT(dec->HCR_EL2_NV,dec->HCR_EL2_NV1,1)==3);
+	dec->unpriv_at_el2 = ctx->pstate_el==EL2 && HaveVirtHostExt() && CONCAT(dec->HCR_EL2_E2H,dec->HCR_EL2_TGE,1)==3;
+	dec->user_access_override = HaveUAOExt() && ctx->pstate_uao==1;
 	if(!dec->user_access_override && (dec->unpriv_at_el1 || dec->unpriv_at_el2)) {
 		dec->acctype = dec->AccType_UNPRIV;
 	}
