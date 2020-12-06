@@ -1,5 +1,5 @@
+/* GENERATED FILE */
 #pragma once
-
 // 3385 total named encodings
 // 2542 are "real" (encoding or alias)
 // 206 are alias

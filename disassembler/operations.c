@@ -1,3 +1,4 @@
+/* GENERATED FILE */
 #include "operations.h"
 const char *operation_to_str(enum Operation oper)
 {

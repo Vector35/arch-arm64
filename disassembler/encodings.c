@@ -1,5 +1,4 @@
-/* GENERATED FILE - DO NOT MODIFY - SUBMIT GITHUB ISSUE IF PROBLEM FOUND */
-
+/* GENERATED FILE */
 #include "operations.h"
 #include "encodings.h"
 

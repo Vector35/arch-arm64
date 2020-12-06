@@ -1,3 +1,5 @@
+/* GENERATED FILE */
+#pragma once
 int ABS_advsimd(context *ctx, Instruction *dec);
 int ADC(context *ctx, Instruction *dec);
 int ADCS(context *ctx, Instruction *dec);

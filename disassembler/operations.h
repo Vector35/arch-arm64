@@ -1,3 +1,4 @@
+/* GENERATED FILE */
 #pragma once
 
 enum Operation {

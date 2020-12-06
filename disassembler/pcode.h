@@ -114,11 +114,12 @@
 #define Halted() ctx->halted
 
 enum SystemOp {
-	Sys_ERROR=0,
-	Sys_AT,
-	Sys_DC,
-	Sys_IC,
-	Sys_TLBI
+	Sys_ERROR=-1,
+	Sys_AT=0,
+	Sys_DC=1,
+	Sys_IC=2,
+	Sys_TLBI=3,
+	Sys_SYS=4,
 };
 
 enum ReduceOp {

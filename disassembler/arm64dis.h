@@ -354,10 +354,6 @@ struct Instruction {
 	uint64_t S, Sa, Sd, Sm, Sn, St, St2;
 	uint64_t S10;
 	uint64_t SCTLR_EL1_UMA;
-	uint64_t Sys_AT;
-	uint64_t Sys_DC;
-	uint64_t Sys_IC;
-	uint64_t Sys_TLBI;
 	uint64_t T;
 	uint64_t U;
 	uint64_t US;

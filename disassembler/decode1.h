@@ -1,3 +1,5 @@
+/* GENERATED FILE */
+#pragma once
 int decode_iclass_sve_int_bin_pred_log(context *ctx, Instruction *dec);
 int decode_iclass_sve_int_bin_pred_arit_0(context *ctx, Instruction *dec);
 int decode_iclass_sve_int_bin_pred_div(context *ctx, Instruction *dec);

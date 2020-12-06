@@ -1,5 +1,4 @@
-/* GENERATED FILE - DO NOT MODIFY - SUBMIT GITHUB ISSUE IF PROBLEM FOUND */
-
+/* GENERATED FILE */
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -26178,13 +26177,13 @@ int SYS(context *ctx, Instruction *dec)
 		dec->sys_crm = UINT(dec->CRm);
 		dec->has_result = (dec->L==1);
 		/* regular aliases */
-		if(dec->CRn==7 && (dec->CRm&14)==8 && SysOp(dec->op1,7,dec->CRm,dec->op2)==dec->Sys_AT) return AT_SYS(ctx, dec);
+		if(dec->CRn==7 && (dec->CRm&14)==8 && SysOp(dec->op1,7,dec->CRm,dec->op2)==Sys_AT) return AT_SYS(ctx, dec);
 		if(dec->op1==3 && dec->CRn==7 && dec->CRm==3 && dec->op2==4) return CFP_SYS(ctx, dec);
 		if(dec->op1==3 && dec->CRn==7 && dec->CRm==3 && dec->op2==7) return CPP_SYS(ctx, dec);
-		if(dec->CRn==7 && SysOp(dec->op1,7,dec->CRm,dec->op2)==dec->Sys_DC) return DC_SYS(ctx, dec);
+		if(dec->CRn==7 && SysOp(dec->op1,7,dec->CRm,dec->op2)==Sys_DC) return DC_SYS(ctx, dec);
 		if(dec->op1==3 && dec->CRn==7 && dec->CRm==3 && dec->op2==5) return DVP_SYS(ctx, dec);
-		if(dec->CRn==7 && SysOp(dec->op1,7,dec->CRm,dec->op2)==dec->Sys_IC) return IC_SYS(ctx, dec);
-		if(dec->CRn==8 && SysOp(dec->op1,8,dec->CRm,dec->op2)==dec->Sys_TLBI) return TLBI_SYS(ctx, dec);
+		if(dec->CRn==7 && SysOp(dec->op1,7,dec->CRm,dec->op2)==Sys_IC) return IC_SYS(ctx, dec);
+		if(dec->CRn==8 && SysOp(dec->op1,8,dec->CRm,dec->op2)==Sys_TLBI) return TLBI_SYS(ctx, dec);
 		OK(ENC_SYS_CR_SYSTEMINSTRS);
 	}
 	return rc;

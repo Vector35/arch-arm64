@@ -172,6 +172,7 @@ enum SystemOp SysOp(uint32_t op1, uint32_t CRn, uint32_t CRm, uint32_t op2)
 		case 0b10001111000000: return Sys_AT;   // S1E2R
 		case 0b11001111000000: return Sys_AT;   // S1E3R
 		case 0b00001111000001: return Sys_AT;   // S1E1W
+		case 0b00001111001001: return Sys_AT;   // S1E1WP
 		case 0b10001111000001: return Sys_AT;   // S1E2W
 		case 0b11001111000001: return Sys_AT;   // S1E3W
 		case 0b00001111000010: return Sys_AT;   // S1E0R
