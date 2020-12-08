@@ -905,22 +905,31 @@ const char *reg_lookup_c[16] = {
 	dec->operands[i].immediate = eaddr; \
 	i++;
 
-#define ADD_OPERAND_SYSTEMREG \
-	ccp_tmp = get_system_register_name_decomposed(dec->sys_op0, dec->sys_op1, dec->sys_crn, dec->sys_crm, dec->sys_op2); \
-	if(ccp_tmp[0] != '\0') { \
-		dec->operands[i].operandClass = SYS_REG; \
-		dec->operands[i].reg[0] = ((dec->sys_op0<<14)|(dec->sys_op1<<11)|(dec->sys_crn<<7)|(dec->sys_crm<<3)|dec->sys_op2); \
-		i++; \
-	} \
-	else { \
-		dec->operands[i].operandClass = IMPLEMENTATION_SPECIFIC; \
-		dec->operands[i].reg[0] = dec->sys_op0; \
-		dec->operands[i].reg[1] = dec->sys_op1; \
-		dec->operands[i].reg[2] = dec->sys_crn; \
-		dec->operands[i].reg[3] = dec->sys_crm; \
-		dec->operands[i].reg[4] = dec->sys_op2; \
-		i++; \
-	} \
+#define ADD_OPERAND_SYSTEMREG_IMPL_SPEC \
+	dec->operands[i].operandClass = IMPLEMENTATION_SPECIFIC; \
+	dec->operands[i].reg[0] = dec->sys_op0; \
+	dec->operands[i].reg[1] = dec->sys_op1; \
+	dec->operands[i].reg[2] = dec->sys_crn; \
+	dec->operands[i].reg[3] = dec->sys_crm; \
+	dec->operands[i].reg[4] = dec->sys_op2; \
+	i++;
+
+#define ADD_OPERAND_SYSTEMREG(R) \
+	dec->operands[i].operandClass = SYS_REG; \
+	dec->operands[i].reg[0] = (R); \
+	i++; \
+
+#define ADD_OPERAND_SYSTEMREG_SENSE \
+	{ \
+		SystemReg sr = ((dec->sys_op0<<14)|(dec->sys_op1<<11)|(dec->sys_crn<<7)|(dec->sys_crm<<3)|dec->sys_op2); \
+		const char *name = get_system_register_name(sr); \
+		if(name[0]) { \
+			ADD_OPERAND_SYSTEMREG(sr); \
+		} \
+		else { \
+			ADD_OPERAND_SYSTEMREG_IMPL_SPEC; \
+		} \
+	}
 
 #define ADD_OPERAND_PATTERN \
 	if(dec->pattern>0b1101 && dec->pattern<0b11101) { \
@@ -1147,7 +1156,6 @@ unsigned rhsdr_0123x_reg(int v)
 int decode_scratchpad(context *ctx, Instruction *dec)
 {
 	arrangement_spec arr_spec = _1B;
-	const char *ccp_tmp;
 
 	/* index of operand array, as it's built */
 	int i = 0;
@@ -5881,7 +5889,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: <Xt>, (<systemreg>|S<op0>_<op1>_<Cn>_<Cm>_<op2>)
 			ADD_OPERAND_XT;
-			ADD_OPERAND_SYSTEMREG;
+			ADD_OPERAND_SYSTEMREG_SENSE;
 			// SYNTAX-END
 			break;
 		}
@@ -7560,29 +7568,33 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MSR_SI_PSTATE:
 		{
-			const char *PSTATEFIELD = "RESERVED";
-			uint64_t op1 = dec->op1;
-			uint64_t op2 = dec->op2;
-			if(op1==0 && op2==3 && HaveUAOExt()) PSTATEFIELD = "UAO";
-			else if(op1==0 && op2==4 && HavePANExt()) PSTATEFIELD = "PAN";
-			else if(op1==0 && op2==5) PSTATEFIELD = "SPSel";
-			else if(op1==3 && op2==1 && HaveSSBSExt()) PSTATEFIELD = "SSBS";
-			else if(op1==3 && op2==2 && HaveDITExt()) PSTATEFIELD = "DIT";
-			else if(op1==3 && op2==4 && HasMemTag()) PSTATEFIELD = "TCO";
-			else if(op1==3 && op2==6 && HasMemTag()) PSTATEFIELD = "DAIFSet";
-			else if(op1==3 && op2==7 && HasMemTag()) PSTATEFIELD = "DAIFClr";
-			ADD_OPERAND_NAME(PSTATEFIELD)
+			SystemReg sr = SYSREG_NONE;
+			if(dec->op1==0 && dec->op2==3 && HaveUAOExt()) sr = REG_UAO; // "UAO";
+			else if(dec->op1==0 && dec->op2==4 && HavePANExt()) sr = REG_PAN; // "PAN";
+			else if(dec->op1==0 && dec->op2==5) sr = REG_PSTATE_SPSEL; // "SPSel";
+			else if(dec->op1==3 && dec->op2==1 && HaveSSBSExt()) sr = REG_SSBS; // "SSBS";
+			else if(dec->op1==3 && dec->op2==2 && HaveDITExt()) sr = REG_DIT; // "DIT";
+			else if(dec->op1==3 && dec->op2==4 && HasMemTag()) sr = REG_TCO; // "TCO";
+			else if(dec->op1==3 && dec->op2==6 && HasMemTag()) sr = REG_DAIFSET; // "DAIFSet";
+			else if(dec->op1==3 && dec->op2==7 && HasMemTag()) sr = REG_DAIFCLR; // "DAIFClr";
+
+			if(sr == SYSREG_NONE) {
+				ADD_OPERAND_SYSTEMREG_IMPL_SPEC;
+			}
+			else
+			{
+				ADD_OPERAND_SYSTEMREG(sr);
+			}
 
 			unsigned imm = dec->CRm;
-			// SYNTAX: <pstatefield>, #<imm>
 			ADD_OPERAND_UIMM32;
-			// SYNTAX-END
+
 			break;
 		}
 		case ENC_MSR_SR_SYSTEMMOVE:
 		{
 			// SYNTAX: (<systemreg>|S<op0>_<op1>_<Cn>_<Cm>_<op2>),<Xt>
-			ADD_OPERAND_SYSTEMREG;
+			ADD_OPERAND_SYSTEMREG_SENSE;
 			ADD_OPERAND_XT;
 			// SYNTAX-END
 			break;

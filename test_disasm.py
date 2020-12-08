@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# this tests disassembly through the binja API, ensuring binja <- arch <- disassembler
+#
+# that's an important distinction versus testing just the disassembler
+
 import re, struct, os, sys, ctypes
 
 import binaryninja
@@ -10,12 +14,12 @@ import disasm_test
 
 
 arch = None
-def disassemble(insnum):
+def disassemble(addr, insnum):
 	global arch
 	if not arch:
 		arch = binaryninja.Architecture['aarch64']
 	data = struct.pack('<I', insnum)
-	(tokens, length) = arch.get_instruction_text(data, 0)
+	(tokens, length) = arch.get_instruction_text(data, addr)
 	if not tokens or length==0:
 		return None
 	return disasm_test.normalize(''.join([x.text for x in tokens]))
@@ -23,7 +27,7 @@ def disassemble(insnum):
 def main():
 	if sys.argv[1:]:
 		insnum = int(sys.argv[1], 16)
-		print(disassemble(insnum))
+		print(disassemble(0, insnum))
 
 	else:
 		with open('./disassembler/test_cases.txt') as fp:
@@ -33,7 +37,7 @@ def main():
 			if line.startswith('// '): continue
 			assert line[8] == ' '
 			insnum = int(line[0:8], 16)
-			actual = disassemble(insnum)
+			actual = disassemble(disasm_test.ADDRESS_TEST, insnum)
 			expected = line[9:].rstrip()
 			print('0x%08X -%s- vs. -%s-' % (insnum, actual, expected))
 			if disasm_test.compare_disassembly(actual, expected):
