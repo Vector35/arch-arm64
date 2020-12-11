@@ -221,6 +221,7 @@ typedef struct context_ {
 	uint8_t BTypeNext;
 	bool halted; // is CPU halted? used by Halted()
 	uint64_t FPCR; // floating point control register
+	bool EDSCR_HDE; // External Debug Status and Control Register, Halting debug enable
 } context;
 
 //-----------------------------------------------------------------------------
@@ -338,7 +339,6 @@ struct Instruction {
 	uint64_t CRn;
 	uint64_t D;
 	uint64_t E;
-	uint64_t EDSCR_HDE;
 	uint64_t H;
 	uint64_t HCR_EL2_E2H, HCR_EL2_NV, HCR_EL2_NV1, HCR_EL2_TGE;
 	uint64_t L;

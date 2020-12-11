@@ -11688,7 +11688,7 @@ int HLT(context *ctx, Instruction *dec)
 	/* 11010100|opc=010|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
 	if((INSWORD & 0xFFE0001F)==0xD4400000) {
 		decode_fields32(ENC_HLT_EX_EXCEPTION, dec);
-		if(dec->EDSCR_HDE==0 || !HaltingAllowed()) {
+		if(ctx->EDSCR_HDE==0 || !HaltingAllowed()) {
 			UNDEFINED;
 		}
 		if(HaveBTIExt()) {

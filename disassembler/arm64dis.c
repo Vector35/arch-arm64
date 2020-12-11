@@ -188,6 +188,7 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 	ctx.address = address;
 	ctx.features0 = 0xFFFFFFFFFFFFFFFF;
 	ctx.features1 = 0xFFFFFFFFFFFFFFFF;
+	ctx.EDSCR_HDE = 1;
 
 	/* have the spec-generated code populate all the pcode variables */
 	int rc = decode_spec(&ctx, instr);

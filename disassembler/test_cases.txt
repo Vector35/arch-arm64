@@ -10668,6 +10668,23 @@ D503221F esb
 9ACD170A gmi x10, x24, x13
 9ACE1700 gmi x0, x24, x14
 9AC9160F gmi x15, x16, x9
+// HLT_EX_exception 11010100010xxxxxxxxxxxxxxxx00000
+D4424C60 hlt #0x1263
+D459BE40 hlt #0xcdf2
+D45103E0 hlt #0x881f
+D4406B80 hlt #0x35c
+D45E11C0 hlt #0xf08e
+D4500920 hlt #0x8049
+D44BF9A0 hlt #0x5fcd
+D44BC340 hlt #0x5e1a
+D44CA580 hlt #0x652c
+D458FC40 hlt #0xc7e2
+D45FF180 hlt #0xff8c
+D4459D80 hlt #0x2cec
+D45AAE60 hlt #0xd573
+D4554F40 hlt #0xaa7a
+D44ADD00 hlt #0x56e8
+D4444580 hlt #0x222c
 // HVC_EX_exception 11010100000xxxxxxxxxxxxxxxx00010
 D40DF462 hvc #0x6fa3
 D4149882 hvc #0xa4c4
