@@ -388,6 +388,7 @@ protected:
 		case ARM64_BRAAZ:
 		case ARM64_BRAB:
 		case ARM64_BRABZ:
+		case ARM64_DRPS:
 			result.AddBranch(UnresolvedBranch);
 			break;
 		case ARM64_ERET:
@@ -397,9 +398,6 @@ protected:
 		case ARM64_RETAA:
 		case ARM64_RETAB:
 			result.AddBranch(FunctionReturn);
-			break;
-		case ARM64_DRPS:
-			result.AddBranch(IndirectBranch);
 			break;
 
 		case ARM64_SVC:
