@@ -1001,6 +1001,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ESB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 		break;
+	case ARM64_ERET:
+	case ARM64_ERETAA:
+	case ARM64_ERETAB:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ERET, {}));
+		il.AddInstruction(il.Trap(0));
+		return false;
 	case ARM64_ISB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
