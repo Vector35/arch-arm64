@@ -1001,6 +1001,23 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ESB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 		break;
+	case ARM64_FMOV:
+		switch(instr.encoding) {
+			case ENC_FMOV_32H_FLOAT2INT:
+			case ENC_FMOV_32S_FLOAT2INT:
+			case ENC_FMOV_64D_FLOAT2INT:
+			case ENC_FMOV_64H_FLOAT2INT:
+			case ENC_FMOV_D64_FLOAT2INT:
+			case ENC_FMOV_H32_FLOAT2INT:
+			case ENC_FMOV_H64_FLOAT2INT:
+			case ENC_FMOV_S32_FLOAT2INT:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.FloatToInt(REGSZ(operand1), ILREG(instr.operands[1]))));
+				break;
+			default:
+				il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_ISB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
