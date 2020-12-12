@@ -383,7 +383,6 @@ protected:
 			result.AddBranch(TrueBranch, instr.operands[1].immediate);
 			result.AddBranch(FalseBranch, addr + 4);
 			break;
-		case ARM64_ERET:
 		case ARM64_DRPS:
 		case ARM64_BR:
 		case ARM64_BRAA:
@@ -392,6 +391,7 @@ protected:
 		case ARM64_BRABZ:
 			result.AddBranch(UnresolvedBranch);
 			break;
+		case ARM64_ERET:
 		case ARM64_RET:
 		case ARM64_RETAA:
 		case ARM64_RETAB:
