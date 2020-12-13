@@ -1380,11 +1380,22 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.Const(1, IMM(operand3))))));
 		break;
 	case ARM64_UBFX:
-		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-			il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
-				il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
-					il.Const(REGSZ(operand2), (1LL << IMM(operand4)) - 1)))));
+	{
+		// ubfx <dst>, <src>, <src_lsb>, <src_len>
+		int src_lsb = IMM(operand3);
+		int src_len = IMM(operand4);
+		if(src_lsb==0 && (src_len==8 || src_len==16 || src_len==32 || src_len==64)) {
+			il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+				il.LowPart(src_len/8, ILREG(operand2))));
+		}
+		else {
+			il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+				il.ZeroExtend(REGSZ(operand1), il.And(REGSZ(operand2),
+					il.LogicalShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(1, IMM(operand3))),
+						il.Const(REGSZ(operand2), (1LL << IMM(operand4)) - 1)))));
+		}
 		break;
+	}
 	case ARM64_UXTB:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					ExtractRegister(il, operand2, 0, 1, false, REGSZ(operand1))));

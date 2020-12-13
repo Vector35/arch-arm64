@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x29\x7d\x40\xd3', 'LLIL_SET_REG.q(x9,LLIL_LOW_PART.d(LLIL_REG.q(x9)))'), # ubfx x9, x9, #0, #0x20
 	# FMOV_32H_float2int 0001111011100110000000xxxxxxxxxx (half-precision to 32-bit)
 	(b'\x22\x02\xE6\x1E', 'LLIL_SET_REG.d(w2,LLIL_FLOAT_TO_INT.d(LLIL_REG.w(h17)))'), # fmov w2, h17
 	(b'\x98\x02\xE6\x1E', 'LLIL_SET_REG.d(w24,LLIL_FLOAT_TO_INT.d(LLIL_REG.w(h20)))'), # fmov w24, h20
