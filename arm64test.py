@@ -3,6 +3,9 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	# Unknown system register
+	(b'\x21\x00\x1b\xd5', 'LLIL_INTRINSIC([unknown_catchall],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
+	(b'\x23\x00\x3b\xd5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.d(unknown_catchall)]))'), # mrs x3, s3_3_c0_c0_1
 	# FMOV_32H_float2int 0001111011100110000000xxxxxxxxxx (half-precision to 32-bit)
 	(b'\x22\x02\xE6\x1E', 'LLIL_SET_REG.d(w2,LLIL_FLOAT_TO_INT.d(LLIL_REG.w(h17)))'), # fmov w2, h17
 	(b'\x98\x02\xE6\x1E', 'LLIL_SET_REG.d(w24,LLIL_FLOAT_TO_INT.d(LLIL_REG.w(h20)))'), # fmov w24, h20
