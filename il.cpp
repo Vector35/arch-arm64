@@ -1044,11 +1044,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_LDUR:
 	case ARM64_LDRAA:
 	case ARM64_LDRAB:
-		//No support for SIMD
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperand(il, true, instr.operands[0], instr.operands[1]);
+		LoadStoreOperand(il, true, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRB:
 	case ARM64_LDURB:
