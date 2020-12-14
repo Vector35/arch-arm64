@@ -1001,6 +1001,54 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ESB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 		break;
+	case ARM64_FADD:
+		switch(instr.encoding) {
+			case ENC_FADD_H_FLOATDP2:
+			case ENC_FADD_S_FLOATDP2:
+			case ENC_FADD_D_FLOATDP2:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.FloatAdd(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+				break;
+			default:
+				il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FSUB:
+		switch(instr.encoding) {
+			case ENC_FSUB_H_FLOATDP2:
+			case ENC_FSUB_S_FLOATDP2:
+			case ENC_FSUB_D_FLOATDP2:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.FloatSub(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+				break;
+			default:
+				il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FMUL:
+		switch(instr.encoding) {
+			case ENC_FMUL_H_FLOATDP2:
+			case ENC_FMUL_S_FLOATDP2:
+			case ENC_FMUL_D_FLOATDP2:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.FloatMult(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+				break;
+			default:
+				il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FDIV:
+		switch(instr.encoding) {
+			case ENC_FDIV_H_FLOATDP2:
+			case ENC_FDIV_S_FLOATDP2:
+			case ENC_FDIV_D_FLOATDP2:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.FloatDiv(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+				break;
+			default:
+				il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_FMOV:
 		switch(instr.encoding) {
 			case ENC_FMOV_32H_FLOAT2INT:
