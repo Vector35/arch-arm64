@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\xe0\x03\x9f\xd6', 'LLIL_INTRINSIC([],_eret,LLIL_CALL_PARAM([])); LLIL_TRAP(0)'), # eret
 	(b'\x00\xc0\x1e\xd5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr vbar_el3, x0
 	(b'\x69\x01\x08\x4a', 'LLIL_SET_REG.d(w9,LLIL_XOR.d(LLIL_REG.d(w11),LLIL_REG.d(w8)))'), # eor w9, w11, w8
 	(b'\x2c\x09\xd5\x4a', 'LLIL_SET_REG.d(w12,LLIL_XOR.d(LLIL_REG.d(w9),LLIL_ROR.d(LLIL_REG.d(w21),LLIL_CONST.b(0x2))))'), # eor w12, w9, w21, ror #0x2
