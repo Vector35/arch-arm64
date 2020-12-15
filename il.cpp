@@ -120,6 +120,26 @@ static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operan
 	return res;
 }
 
+static ExprId GetFloat(LowLevelILFunction& il, Instruction& instr, InstructionOperand& operand)
+{
+	ExprId res;
+
+	switch(instr.datasize) {
+		case 16:
+			res = il.FloatConstRaw(2, operand.immediate);
+			break;
+		case 32:
+			res = il.FloatConstSingle(*(float *)&(operand.immediate));
+			break;
+		case 64:
+			res = il.FloatConstDouble(*(double *)&(operand.immediate));
+			break;
+		default:
+			res = il.Unimplemented();
+	}
+
+	return res;
+}
 
 static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t resultSize)
 {
@@ -1061,6 +1081,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			case ENC_FMOV_S32_FLOAT2INT:
 				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.FloatToInt(REGSZ(operand1), ILREG(instr.operands[1]))));
+				break;
+			case ENC_FMOV_H_FLOATIMM:
+			case ENC_FMOV_S_FLOATIMM:
+			case ENC_FMOV_D_FLOATIMM:
+				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					GetFloat(il, instr, operand2)));
 				break;
 			default:
 				il.AddInstruction(il.Unimplemented());
