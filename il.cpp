@@ -1000,6 +1000,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
+	case ARM64_CLZ:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))}, ARM64_INTRIN_CLZ, {ILREG(operand2)}));
+		break;
 	case ARM64_DMB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_DMB, {}));
 		break;
@@ -1314,6 +1317,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_RETAA:
 	case ARM64_RETAB:
 		il.AddInstruction(il.Return(il.Register(8, REG_X30)));
+		break;
+	case ARM64_REV:
+		// if LLIL_BSWAP ever gets added, replace
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))}, ARM64_INTRIN_REV, {ILREG(operand2)}));
+		break;
+	case ARM64_RBIT:
+		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))}, ARM64_INTRIN_RBIT, {ILREG(operand2)}));
 		break;
 	case ARM64_ROR:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
