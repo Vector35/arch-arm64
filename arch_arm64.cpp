@@ -970,7 +970,7 @@ public:
 		switch (intrinsic)
 		{
 		case ARM64_INTRIN_MRS:
-			return {NameAndType(Type::IntegerType(4, false))};
+			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AUTDA: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTDB: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTIA: // reads <Xn|SP>
@@ -1001,7 +1001,7 @@ public:
 		switch (intrinsic)
 		{
 		case ARM64_INTRIN_MSR:
-			return {Type::IntegerType(4, false)};
+			return {Type::IntegerType(8, false)};
 		case ARM64_INTRIN_AUTDA: // writes <Xd>
 		case ARM64_INTRIN_AUTDB: // writes <Xd>
 		case ARM64_INTRIN_AUTIA: // writes <Xd>
@@ -1773,7 +1773,7 @@ public:
 		}
 
 		if (reg > SYSREG_NONE && reg < SYSREG_END)
-			return RegisterInfo(reg, 0, 4);
+			return RegisterInfo(reg, 0, 8);
 
 		return RegisterInfo(0, 0, 0);
 	}
