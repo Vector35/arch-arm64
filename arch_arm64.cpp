@@ -936,17 +936,14 @@ public:
 			return "__xpaci";
 		case ARM64_INTRIN_XPACLRI:
 			return "__xpaclri";
-<<<<<<< HEAD
 		case ARM64_INTRIN_ERET:
 			return "_eret";
-=======
 		case ARM64_INTRIN_CLZ:
 			return "_CountLeadingZeros";
 		case ARM64_INTRIN_REV:
 			return "_byteswap";
 		case ARM64_INTRIN_RBIT:
 			return "__rbit";
->>>>>>> yrp604/clz-rbit-rev
 		default:
 			return "";
 		}
@@ -969,11 +966,7 @@ public:
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
 			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
 			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI,
-<<<<<<< HEAD
-			ARM64_INTRIN_ERET
-=======
-			ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT
->>>>>>> yrp604/clz-rbit-rev
+			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT
 		};
 	}
 

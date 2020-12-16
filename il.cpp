@@ -1024,7 +1024,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ESB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 		break;
-<<<<<<< HEAD
 	case ARM64_FADD:
 		switch(instr.encoding) {
 			case ENC_FADD_H_FLOATDP2:
@@ -1096,14 +1095,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 				il.AddInstruction(il.Unimplemented());
 		}
 		break;
-=======
 	case ARM64_ERET:
 	case ARM64_ERETAA:
 	case ARM64_ERETAB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ERET, {}));
 		il.AddInstruction(il.Trap(0));
 		return false;
->>>>>>> yrp604/eret
 	case ARM64_ISB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
