@@ -936,8 +936,17 @@ public:
 			return "__xpaci";
 		case ARM64_INTRIN_XPACLRI:
 			return "__xpaclri";
+<<<<<<< HEAD
 		case ARM64_INTRIN_ERET:
 			return "_eret";
+=======
+		case ARM64_INTRIN_CLZ:
+			return "_CountLeadingZeros";
+		case ARM64_INTRIN_REV:
+			return "_byteswap";
+		case ARM64_INTRIN_RBIT:
+			return "__rbit";
+>>>>>>> yrp604/clz-rbit-rev
 		default:
 			return "";
 		}
@@ -960,7 +969,11 @@ public:
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
 			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
 			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI,
+<<<<<<< HEAD
 			ARM64_INTRIN_ERET
+=======
+			ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT
+>>>>>>> yrp604/clz-rbit-rev
 		};
 	}
 
@@ -984,6 +997,9 @@ public:
 		case ARM64_INTRIN_PACIB: // reads <Xn>
 		case ARM64_INTRIN_PACIB1716: // reads x16
 		case ARM64_INTRIN_PRFM:
+		case ARM64_INTRIN_CLZ: // reads <Xn>
+		case ARM64_INTRIN_REV: // reads <Xn>
+		case ARM64_INTRIN_RBIT: // reads <Xn>
 			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AUTIBSP: // reads x30, sp
 		case ARM64_INTRIN_PACGA: // reads <Xn>, <Xm|SP>
@@ -1032,6 +1048,9 @@ public:
 		case ARM64_INTRIN_XPACD: // writes <Xd>
 		case ARM64_INTRIN_XPACI: // writes <Xd>
 		case ARM64_INTRIN_XPACLRI: // writes x30
+		case ARM64_INTRIN_CLZ: // writes <Xd>
+		case ARM64_INTRIN_REV: // writes <Xd>
+		case ARM64_INTRIN_RBIT: // writes <Xd>
 			return {Type::IntegerType(8, false)};
 		default:
 			return vector<Confidence<Ref<Type>>>();

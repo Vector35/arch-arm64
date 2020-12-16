@@ -3,6 +3,9 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\xc6\x0c\xc0\xda', 'LLIL_INTRINSIC([x6],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # rev x6, x6
+	(b'\xcb\x10\xc0\xda', 'LLIL_INTRINSIC([x11],_CountLeadingZeros,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # clz     x11, x6
+	(b'\x63\x00\xc0\xda', 'LLIL_INTRINSIC([x3],__rbit,LLIL_CALL_PARAM([LLIL_REG.q(x3)]))'), # rbit    x3, x3
 	# Unknown system register
 	(b'\x21\x00\x1b\xd5', 'LLIL_INTRINSIC([unknown_catchall],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
 	(b'\x23\x00\x3b\xd5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.d(unknown_catchall)]))'), # mrs x3, s3_3_c0_c0_1
