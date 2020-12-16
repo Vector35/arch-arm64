@@ -399,8 +399,7 @@ protected:
 			break;
 
 		case ARM64_SVC:
-			if (instr.operands[0].immediate == 0)
-				result.AddBranch(SystemCall);
+			result.AddBranch(SystemCall);
 			break;
 
 		default:
