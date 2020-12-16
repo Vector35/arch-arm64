@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <cstring>
 #include <inttypes.h>
 #include "lowlevelilinstruction.h"
 
