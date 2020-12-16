@@ -26,8 +26,14 @@ def disassemble(addr, insnum):
 
 def main():
 	if sys.argv[1:]:
-		insnum = int(sys.argv[1], 16)
-		print(disassemble(0, insnum))
+		if sys.argv[1] in ['strain', 'strainer', 'stress', 'stresser']:
+			for insnum in range(0, 2**32):
+				result = disassemble(0, insnum)
+				if insnum & 0xFFFFFF == 0:
+					print('%08X: %s' % (insnum, result))
+		else:
+			insnum = int(sys.argv[1], 16)
+			print(disassemble(0, insnum))
 
 	else:
 		with open('./disassembler/test_cases.txt') as fp:

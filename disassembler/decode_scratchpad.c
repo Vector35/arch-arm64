@@ -5879,8 +5879,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <Xt>, #<op1>,<Cn>,<Cm>, #<op2>
 			ADD_OPERAND_XT;
 			ADD_OPERAND_IMMEDIATE32(dec->op1, 0);
-			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crn]);
-			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crm]);
+			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crn & 0xF]);
+			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crm & 0xF]);
 			ADD_OPERAND_IMMEDIATE32(dec->op2, 0);
 			// SYNTAX-END
 			break;
@@ -7298,7 +7298,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 				"#8", "ishld", "ishst", "ish",
 				"#12", "ld", "st", "sy"
 			};
-			ADD_OPERAND_NAME(table_barrier_limitations[dec->CRm]);
+			ADD_OPERAND_NAME(table_barrier_limitations[dec->CRm & 0xF]);
 			break;
 		}
 		case ENC_PRFH_I_P_BR_S:
@@ -7604,7 +7604,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			uint64_t op1 = dec->op1;
 			uint64_t op2 = dec->op2;
 			uint64_t crm = dec->CRm;
-			const char *tlbi_op="";
+			const char *tlbi_op="error";
 			if(op1==0b000 && crm==0b0001 && op2==0b000 && HaveTLBI()) tlbi_op="vmalle1os";
 			else if(op1==0b000 && crm==0b0001 && op2==0b001 && HaveTLBI()) tlbi_op="vae1os";
 			else if(op1==0b000 && crm==0b0001 && op2==0b010 && HaveTLBI()) tlbi_op="aside1os";
@@ -9888,7 +9888,7 @@ break;
 		{
 			// NON-SYNTAX: {<targets>}
 			const char *table_indirection[4] = {"", "c", "j", "jc"};
-			const char *TARGETS = table_indirection[(dec->op2 & 6)>>1];
+			const char *TARGETS = table_indirection[(dec->op2 >> 1) & 3];
 			if(TARGETS) {
 				ADD_OPERAND_NAME(TARGETS)
 			}

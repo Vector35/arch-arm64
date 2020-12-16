@@ -13,6 +13,8 @@
 #include "encodings.h"
 #include "arm64dis.h"
 
+int verbose = 1;
+
 int disassemble(uint64_t address, uint32_t insword, char *result)
 {
 	int rc;
@@ -20,11 +22,13 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 	memset(&instr, 0, sizeof(instr));
 
 	rc = aarch64_decompose(insword, &instr, address);
-	printf("aarch64_decompose() returned %d\n", rc);
+	if(verbose)
+		printf("aarch64_decompose() returned %d\n", rc);
 	if(rc) return rc;
 
 	rc = aarch64_disassemble(&instr, result, 1024);
-	printf("aarch64_disassemble() returned %d\n", rc);
+	if(verbose)
+		printf("aarch64_disassemble() returned %d\n", rc);
 	if(rc) return rc;
 
 	return 0;
@@ -49,6 +53,20 @@ int main(int ac, char **av)
 			//printf("%08X: %s\n", 0, instxt);
 		}
 		return 0;
+	}
+
+	if(!strcmp(av[1], "strain") ||
+	  !strcmp(av[1], "strainer") ||
+	  !strcmp(av[1], "stress") ||
+	  !strcmp(av[1], "stresser"))
+	{
+		verbose = 0;
+		for(uint32_t insword=0; insword!=0xFFFFFFFF; insword++) {
+			disassemble(0, insword, instxt);
+
+			if((insword & 0xFFFFFF) == 0)
+				printf("%08X: %s\n", insword, instxt);
+		}
 	}
 
 	if(!strcmp(av[1], "test")) {
