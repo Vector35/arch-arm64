@@ -383,15 +383,17 @@ protected:
 			result.AddBranch(TrueBranch, instr.operands[1].immediate);
 			result.AddBranch(FalseBranch, addr + 4);
 			break;
-		case ARM64_ERET:
-		case ARM64_DRPS:
 		case ARM64_BR:
 		case ARM64_BRAA:
 		case ARM64_BRAAZ:
 		case ARM64_BRAB:
 		case ARM64_BRABZ:
+		case ARM64_DRPS:
 			result.AddBranch(UnresolvedBranch);
 			break;
+		case ARM64_ERET:
+		case ARM64_ERETAA:
+		case ARM64_ERETAB:
 		case ARM64_RET:
 		case ARM64_RETAA:
 		case ARM64_RETAB:
@@ -934,6 +936,8 @@ public:
 			return "__xpaci";
 		case ARM64_INTRIN_XPACLRI:
 			return "__xpaclri";
+		case ARM64_INTRIN_ERET:
+			return "_eret";
 		default:
 			return "";
 		}
@@ -955,7 +959,8 @@ public:
 			ARM64_INTRIN_PACIBZ, ARM64_INTRIN_PACIZB,
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
 			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
-			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI
+			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI,
+			ARM64_INTRIN_ERET
 		};
 	}
 
