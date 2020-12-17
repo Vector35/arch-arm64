@@ -1025,6 +1025,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ESB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ESB, {}));
 		break;
+	case ARM64_EXTR:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.LogicalShiftRight(REGSZ(operand1) * 2,
+						il.Or(REGSZ(operand1) * 2,
+							il.ShiftLeft(REGSZ(operand1) * 2, ILREG(operand2), il.Const(1, REGSZ(operand1) * 8)),
+							ILREG(operand3)),
+						il.Const(1, IMM(operand4)))));
+		break;
 	case ARM64_FADD:
 		switch(instr.encoding) {
 			case ENC_FADD_H_FLOATDP2:
