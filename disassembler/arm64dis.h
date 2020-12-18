@@ -309,7 +309,7 @@ struct InstructionOperand {
 	uint32_t signedImm;
 	char pred_qual; // predicate register qualifier ('z' or 'm')
 	char mul_vl; // whether MEM_OFFSET has the offset "mul vl"
-	char name[8];
+	char name[16];
 };
 
 #ifndef __cplusplus

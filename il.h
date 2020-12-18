@@ -5,10 +5,10 @@
 #include "disassembler/encodings.h"
 #include "disassembler/arm64dis.h"
 
-#define IL_FLAG_N 0
-#define IL_FLAG_Z 2
-#define IL_FLAG_C 4
-#define IL_FLAG_V 6
+#define IL_FLAG_N 31
+#define IL_FLAG_Z 30
+#define IL_FLAG_C 29
+#define IL_FLAG_V 28
 
 #define IL_FLAGWRITE_NONE       0
 #define IL_FLAGWRITE_ALL        1

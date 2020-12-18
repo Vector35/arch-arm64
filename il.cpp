@@ -1225,7 +1225,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			const char *name = get_system_register_name((SystemReg)operand2.reg[0]);
 
 			if (strlen(name) == 0) {
-				LogWarn("Unknown system register @ %#x: S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+				LogWarn("Unknown system register @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
 						addr, operand2.reg[0], operand2.reg[1], operand2.reg[2], operand2.reg[3], operand2.reg[4]);
 				reg = il.Register(4, SYSREG_UNKNOWN);
 			}
@@ -1245,7 +1245,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			const char *name = get_system_register_name((SystemReg)dst);
 
 			if (strlen(name) == 0) {
-				LogWarn("Unknown system register @ %#x: S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+				LogWarn("Unknown system register @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
 						addr, operand1.reg[0], operand1.reg[1], operand1.reg[2], operand1.reg[3], operand1.reg[4]);
 				dst = SYSREG_UNKNOWN;
 			}

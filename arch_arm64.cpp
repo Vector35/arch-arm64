@@ -1170,6 +1170,16 @@ public:
 	}
 
 
+	/* flags and their names */
+
+	virtual vector<uint32_t> GetAllFlags() override
+	{
+		return vector<uint32_t>{
+			IL_FLAG_N, IL_FLAG_Z, IL_FLAG_C, IL_FLAG_V
+		};
+	}
+
+
 	virtual string GetFlagName(uint32_t flag) override
 	{
 		char result[32];
@@ -1190,17 +1200,7 @@ public:
 	}
 
 
-	virtual string GetFlagWriteTypeName(uint32_t flags) override
-	{
-		switch (flags)
-		{
-		case IL_FLAGWRITE_ALL:
-			return "*";
-		default:
-			return "";
-		}
-	}
-
+	/* flag roles */
 
 	virtual BNFlagRole GetFlagRole(uint32_t flag, uint32_t) override
 	{
@@ -1220,6 +1220,28 @@ public:
 	}
 
 
+	/* flag write types */
+
+	virtual vector<uint32_t> GetAllFlagWriteTypes() override
+	{
+		return vector<uint32_t>{
+			IL_FLAGWRITE_ALL
+		};
+	}
+
+
+	virtual string GetFlagWriteTypeName(uint32_t flags) override
+	{
+		switch (flags)
+		{
+		case IL_FLAGWRITE_ALL:
+			return "*";
+		default:
+			return "";
+		}
+	}
+
+
 	virtual vector<uint32_t> GetFlagsWrittenByFlagWriteType(uint32_t flags) override
 	{
 		switch (flags)
@@ -1231,6 +1253,8 @@ public:
 		}
 	}
 
+
+	/* connect flags to conditional statements */
 
 	virtual vector<uint32_t> GetFlagsRequiredForFlagCondition(BNLowLevelILFlagCondition cond, uint32_t) override
 	{
@@ -1263,6 +1287,8 @@ public:
 	}
 
 
+	/* override default flag setting expressions */
+
 	virtual size_t GetFlagWriteLowLevelIL(BNLowLevelILOperation op, size_t size, uint32_t flagWriteType,
 		uint32_t flag, BNRegisterOrConstant* operands, size_t operandCount, LowLevelILFunction& il) override
 	{
@@ -1288,6 +1314,8 @@ public:
 				break;
 			case LLIL_SBB:
 				// XXX TODO
+				break;
+			default:
 				break;
 		}
 
@@ -1523,22 +1551,6 @@ public:
 		};
 
 		return r;
-	}
-
-
-	virtual vector<uint32_t> GetAllFlags() override
-	{
-		return vector<uint32_t>{
-			IL_FLAG_N, IL_FLAG_Z, IL_FLAG_C, IL_FLAG_V
-		};
-	}
-
-
-	virtual vector<uint32_t> GetAllFlagWriteTypes() override
-	{
-		return vector<uint32_t>{
-			IL_FLAGWRITE_ALL
-		};
 	}
 
 
