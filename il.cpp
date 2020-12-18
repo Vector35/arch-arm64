@@ -770,6 +770,15 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ReadILOperand(il, operand3, REGSZ(operand1)),
 						SETFLAGS)));
 		break;
+	case ARM64_ADC:
+	case ARM64_ADCS:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.AddCarry(REGSZ(operand1),
+						ILREG(operand2),
+						ReadILOperand(il, operand3, REGSZ(operand1)),
+						il.Flag(IL_FLAG_C),
+						SETFLAGS)));
+		break;
 	case ARM64_AND:
 	case ARM64_ANDS:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
