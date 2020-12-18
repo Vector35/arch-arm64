@@ -3,6 +3,8 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x20\x00\x02\x9a', 'LLIL_SET_REG.q(x0,LLIL_ADC.q(LLIL_REG.q(x1),LLIL_REG.q(x2),LLIL_FLAG(c)))'), # adc x0, x1, x2
+	(b'\x20\x00\x02\xba', 'LLIL_SET_REG.q(x0,LLIL_ADC.q(LLIL_REG.q(x1),LLIL_REG.q(x2),LLIL_FLAG(c)))'), # adcs x0, x1, x2
 	(b'\x08\x75\x93\x13', 'LLIL_SET_REG.d(w8,LLIL_LSR.q(LLIL_OR.q(LLIL_LSL.q(LLIL_REG.d(w8),LLIL_CONST.b(0x20)),LLIL_REG.d(w19)),LLIL_CONST.b(0x1D)))'), # extr    w8, w8, w19, #0x1d
 	(b'\x20\x28\xc2\x93', 'LLIL_SET_REG.q(x0,LLIL_LSR.128(LLIL_OR.128(LLIL_LSL.128(LLIL_REG.q(x1),LLIL_CONST.b(0x40)),LLIL_REG.q(x2)),LLIL_CONST.b(0xA)))'), # extr x0, x1, x2, #10
 	(b'\xc6\x0c\xc0\xda', 'LLIL_INTRINSIC([x6],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # rev x6, x6
