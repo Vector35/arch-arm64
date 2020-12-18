@@ -1263,6 +1263,39 @@ public:
 	}
 
 
+	virtual size_t GetFlagWriteLowLevelIL(BNLowLevelILOperation op, size_t size, uint32_t flagWriteType,
+		uint32_t flag, BNRegisterOrConstant* operands, size_t operandCount, LowLevelILFunction& il) override
+	{
+		// XXX is this needed? Does this function even get called with IL_FLAGWRITE_NONE?
+		if (flagWriteType == IL_FLAGWRITE_NONE) {
+			BNFlagRole role = GetFlagRole(flag, GetSemanticClassForFlagWriteType(flagWriteType));
+			return GetDefaultFlagWriteLowLevelIL(op, size, role, operands, operandCount, il);
+		}
+
+		switch (op)
+		{
+			case LLIL_AND:
+				switch (flag) {
+					case IL_FLAG_V:
+						return il.CompareNotEqual(size,
+								il.Xor(1,
+									il.CompareSignedLessThan(size,
+										il.GetExprForRegisterOrConstantOperation(op, size, operands, operandCount),
+										il.Const(size, 0)),
+									il.Flag(IL_FLAG_V)),
+								il.Const(size, 0));
+				}
+				break;
+			case LLIL_SBB:
+				// XXX TODO
+				break;
+		}
+
+		BNFlagRole role = GetFlagRole(flag, GetSemanticClassForFlagWriteType(flagWriteType));
+		return GetDefaultFlagWriteLowLevelIL(op, size, role, operands, operandCount, il);
+	}
+
+
 	virtual string GetRegisterName(uint32_t reg) override
 	{
 		switch (reg) {
