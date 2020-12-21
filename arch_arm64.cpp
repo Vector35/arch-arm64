@@ -1295,6 +1295,7 @@ public:
 		switch (op)
 		{
 			case LLIL_AND:
+			{
 				switch (flag) {
 					case IL_FLAG_V:
 						return il.CompareNotEqual(0,
@@ -1305,7 +1306,11 @@ public:
 									il.Flag(IL_FLAG_V)),
 								il.Const(0, 0));
 				}
+			}
+			break;
+
 			case LLIL_SBB:
+			{
 				switch (flag) {
 					case IL_FLAG_C:
 						return il.CompareUnsignedLessThan(size,
@@ -1316,6 +1321,11 @@ public:
 								il.GetExprForRegisterOrConstant(operands[0], size));
 
 				}
+			}
+			break;
+
+			default:
+			break;
 		}
 
 		BNFlagRole role = GetFlagRole(flag, GetSemanticClassForFlagWriteType(flagWriteType));

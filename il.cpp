@@ -1383,7 +1383,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.SubBorrow(REGSZ(operand1),
 						ILREG(operand2),
 						ReadILOperand(il, operand3, REGSZ(operand1)),
-						il.Flag(IL_FLAG_C),
+						il.Not(0, il.Flag(IL_FLAG_C)),
 						SETFLAGS)));
 		break;
 	case ARM64_SBFIZ:
