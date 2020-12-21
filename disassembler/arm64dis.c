@@ -216,7 +216,7 @@ static const char *ConditionString[] = {
 
 const char *get_condition(Condition cond)
 {
-	if (cond >= END_CONDITION)
+	if (cond < 0 || cond >= END_CONDITION)
 		return NULL;
 
 	return ConditionString[cond];
@@ -231,7 +231,7 @@ static const char *ShiftString[] = {
 
 const char *get_shift(ShiftType shift)
 {
-	if (shift == ShiftType_NONE || shift >= ShiftType_END)
+	if (shift <= ShiftType_NONE || shift >= ShiftType_END)
 		return NULL;
 
 	return ShiftString[shift];
@@ -254,7 +254,7 @@ static inline uint32_t get_shifted_register(
 	{
 		if (instructionOperand->shiftValueUsed != 0)
 		{
-			if (snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) < 0)
+			if (snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) >= sizeof(immBuff))
 			{
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 			}
@@ -298,12 +298,12 @@ uint32_t get_memory_operand(
 	switch (instructionOperand->operandClass)
 	{
 		case MEM_REG:
-			if (snprintf(outBuffer, outBufferSize, "[%s]", reg0) < 0)
+			if (snprintf(outBuffer, outBufferSize, "[%s]", reg0) >= outBufferSize)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 			break;
 
 		case MEM_PRE_IDX:
-			if (snprintf(outBuffer, outBufferSize, "[%s, #%s%#" PRIx64 "]!", reg0, sign, (uint64_t)imm) < 0)
+			if (snprintf(outBuffer, outBufferSize, "[%s, #%s%#" PRIx64 "]!", reg0, sign, (uint64_t)imm) >= outBufferSize)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 			break;
 
@@ -314,10 +314,10 @@ uint32_t get_memory_operand(
 
 				snprintf(paramBuff, sizeof(paramBuff), ", %s", reg1);
 			}
-			else if (snprintf(paramBuff, sizeof(paramBuff), ", #%s%#" PRIx64, sign, (uint64_t)imm) < 0)
+			else if (snprintf(paramBuff, sizeof(paramBuff), ", #%s%#" PRIx64, sign, (uint64_t)imm) >= sizeof(paramBuff))
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 
-			if (snprintf(outBuffer, outBufferSize, "[%s]%s", reg0, paramBuff) < 0)
+			if (snprintf(outBuffer, outBufferSize, "[%s]%s", reg0, paramBuff) >= outBufferSize)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			break;
@@ -325,12 +325,12 @@ uint32_t get_memory_operand(
 		case MEM_OFFSET: // [<reg> optional(imm)]
 			if (instructionOperand->immediate != 0) {
 				const char *mul_vl = instructionOperand->mul_vl ? ", mul vl" : "";
-				if(snprintf(immBuff, sizeof(immBuff), ", #%s%#" PRIx64 "%s", sign, (uint64_t)imm, mul_vl) < 0) {
+				if(snprintf(immBuff, sizeof(immBuff), ", #%s%#" PRIx64 "%s", sign, (uint64_t)imm, mul_vl) >= sizeof(immBuff)) {
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				}
 			}
 
-			if (snprintf(outBuffer, outBufferSize, "[%s%s]", reg0, immBuff) < 0)
+			if (snprintf(outBuffer, outBufferSize, "[%s%s]", reg0, immBuff) >= outBufferSize)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 			break;
 
@@ -344,21 +344,21 @@ uint32_t get_memory_operand(
 
 			// immBuff, like "#0x0"
 			if (instructionOperand->shiftValueUsed)
-				if(snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) < 0)
+				if(snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) >= sizeof(immBuff))
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			// extendBuff, like "lsl #0x0"
 			if (instructionOperand->shiftType != ShiftType_NONE)
 			{
 				if (snprintf(extendBuff, sizeof(extendBuff), ", %s%s",
-				  ShiftString[instructionOperand->shiftType], immBuff) < 0)
+							ShiftString[instructionOperand->shiftType], immBuff) >= sizeof(extendBuff))
 				{
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				}
 			}
 
 			// together, like "[x24, x30, lsl #0x0]"
-			if (snprintf(outBuffer, outBufferSize, "[%s, %s%s]", reg0, reg1, extendBuff) < 0)
+			if (snprintf(outBuffer, outBufferSize, "[%s, %s%s]", reg0, reg1, extendBuff) >= outBufferSize)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			break;
@@ -375,7 +375,7 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	if(operand->operandClass == SYS_REG)
 	{
 		if (snprintf(outBuffer, outBufferSize, "%s",
-		  get_system_register_name((SystemReg)operand->reg[registerNumber])) < 0)
+					get_system_register_name((SystemReg)operand->reg[registerNumber])) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_REGISTER;
 		return 0;
 	}
@@ -396,7 +396,7 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	/* 3) handle predicate registers */
 	if(operand->operandClass == REG && operand->pred_qual && operand->reg[0] >= REG_P0 && operand->reg[0] <= REG_P31)
 	{
-		if(snprintf(outBuffer, outBufferSize, "%s/%c", reg_buf, operand->pred_qual) < 0)
+		if(snprintf(outBuffer, outBufferSize, "%s/%c", reg_buf, operand->pred_qual) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_REGISTER;
 		return 0;
 	}
@@ -408,9 +408,9 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 
 	char index[32] = {0};
 	if(operand->operandClass == REG && operand->indexUsed)
-		snprintf(index, sizeof(scale), "[%u]", operand->index);
+		snprintf(index, sizeof(index), "[%u]", operand->index);
 
-	if(snprintf(outBuffer, outBufferSize, "%s%s%s", reg_buf, scale, index) < 0)
+	if(snprintf(outBuffer, outBufferSize, "%s%s%s", reg_buf, scale, index) >= outBufferSize)
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	return 0;
@@ -487,7 +487,7 @@ uint32_t get_shifted_immediate(const InstructionOperand *instructionOperand, cha
 	{
 		if (instructionOperand->shiftValueUsed != 0)
 		{
-			if (snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) < 0)
+			if (snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) >= sizeof(immBuff))
 			{
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 			}
@@ -505,22 +505,22 @@ uint32_t get_shifted_immediate(const InstructionOperand *instructionOperand, cha
 	if (type == FIMM32)
 	{
 		float f = *(const float*)&instructionOperand->immediate;
-		if (snprintf(outBuffer, outBufferSize, "#%.08f%s", f, shiftBuff) < 0)
+		if (snprintf(outBuffer, outBufferSize, "#%.08f%s", f, shiftBuff) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	else if (type == IMM32)
 	{
-		if (snprintf(outBuffer, outBufferSize, "#%s%#x%s", sign, (uint32_t)imm, shiftBuff) < 0)
+		if (snprintf(outBuffer, outBufferSize, "#%s%#x%s", sign, (uint32_t)imm, shiftBuff) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	else if (type == LABEL)
 	{
-		if (snprintf(outBuffer, outBufferSize, "0x%" PRIx64, (uint64_t)imm) < 0)
+		if (snprintf(outBuffer, outBufferSize, "0x%" PRIx64, (uint64_t)imm) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	else if (type == STR_IMM)
 	{
-		if (snprintf(outBuffer, outBufferSize, "%s #0x%" PRIx64, instructionOperand->name, (uint64_t)imm) < 0)
+		if (snprintf(outBuffer, outBufferSize, "%s #0x%" PRIx64, instructionOperand->name, (uint64_t)imm) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	else
@@ -528,7 +528,7 @@ uint32_t get_shifted_immediate(const InstructionOperand *instructionOperand, cha
 		if (snprintf(outBuffer, outBufferSize, "#%s%#" PRIx64 "%s",
 					sign,
 					imm,
-					shiftBuff) < 0)
+					shiftBuff) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	return DISASM_SUCCESS;
@@ -543,7 +543,7 @@ uint32_t get_implementation_specific(const InstructionOperand *operand, char *ou
 			operand->reg[1],
 			operand->reg[2],
 			operand->reg[3],
-			operand->reg[4]) < 0;
+			operand->reg[4]) >= outBufferSize;
 }
 
 const char *get_operation(const Instruction *inst)
@@ -636,7 +636,8 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 				operand = tmpOperandString;
 				break;
 			case CONDITION:
-				if (snprintf(tmpOperandString, sizeof(tmpOperandString), "%s", get_condition((Condition)instruction->operands[i].reg[0])) < 0)
+				if (snprintf(tmpOperandString, sizeof(tmpOperandString), "%s",
+							get_condition((Condition)instruction->operands[i].reg[0])) >= sizeof(tmpOperandString))
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				operand = tmpOperandString;
 				break;
@@ -650,12 +651,12 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 	}
 	memset(buf, 0, buf_sz);
 	if (snprintf(buf, buf_sz, "%s%s%s%s%s%s",
-			get_operation(instruction),
-			operandStrings[0],
-			operandStrings[1],
-			operandStrings[2],
-			operandStrings[3],
-			operandStrings[4]) < 0)
+				get_operation(instruction),
+				operandStrings[0],
+				operandStrings[1],
+				operandStrings[2],
+				operandStrings[3],
+				operandStrings[4]) >= buf_sz)
 		return OUTPUT_BUFFER_TOO_SMALL;
 	return DISASM_SUCCESS;
 }
