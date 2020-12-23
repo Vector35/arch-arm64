@@ -199,10 +199,8 @@ static const char *RegisterString[] =
 	"END"
 };
 
-const char *get_register_name(uint32_t reg)
+const char *get_register_name(Register r)
 {
-	Register r = REG_ENUM(reg);
-
 	if(r>REG_NONE && r<REG_END)
 		return RegisterString[r];
 
@@ -212,59 +210,70 @@ const char *get_register_name(uint32_t reg)
 	return "";
 }
 
-const char *get_register_arrspec(uint32_t reg)
+const char *arrspec_to_str(enum ArrangementSpec spec, bool truncated)
 {
-	switch(REG_ARRSPEC(reg)) {
-		case 0b00000000001: return ".b";
-		case 0b00000000010: return ".h";
-		case 0b00000000100: return ".s";
-		case 0b00000001000: return ".d";
-		case 0b00000010000: return ".q";
-		case 0b00001000001: return ".1b";
-		case 0b00010000001: return ".2b";
-		case 0b00100000001: return ".4b";
-		case 0b01000000001: return ".8b";
-		case 0b10000000001: return ".16b";
-		case 0b00001000010: return ".1h";
-		case 0b00010000010: return ".2h";
-		case 0b00100000010: return ".4h";
-		case 0b01000000010: return ".8h";
-		case 0b10000000010: return ".16h";
-		case 0b00001000100: return ".1s";
-		case 0b00010000100: return ".2s";
-		case 0b00100000100: return ".4s";
-		case 0b01000000100: return ".8s";
-		case 0b10000000100: return ".16s";
-		case 0b00001001000: return ".1d";
-		case 0b00010001000: return ".2d";
-		case 0b00100001000: return ".4d";
-		case 0b01000001000: return ".8d";
-		case 0b10000001000: return ".16d";
-		case 0b00001010000: return ".1q";
-		case 0b00010010000: return ".2q";
-		case 0b00100010000: return ".4q";
-		case 0b01000010000: return ".8q";
-		case 0b10000010000: return ".16q";
-		default:
-			return "";
+	if(truncated) {
+		switch(spec) {
+			case ARRSPEC_FULL: return ".q";
+			case ARRSPEC_2DOUBLES: return ".d";
+			case ARRSPEC_4SINGLES: return ".s";
+			case ARRSPEC_8HALVES: return ".h";
+			case ARRSPEC_16BYTES: return ".b";
+			case ARRSPEC_1DOUBLE: return ".d";
+			case ARRSPEC_2SINGLES: return ".s";
+			case ARRSPEC_4HALVES: return ".h";
+			case ARRSPEC_8BYTES: return ".b";
+			case ARRSPEC_1SINGLE: return ".s";
+			case ARRSPEC_2HALVES: return ".h";
+			case ARRSPEC_4BYTES: return ".b";
+			case ARRSPEC_1HALF: return ".h";
+			case ARRSPEC_1BYTE: return ".b";
+			default: return "";
+		}
+	}
+
+	switch(spec) {
+		case ARRSPEC_FULL: return ".1q";
+		case ARRSPEC_2DOUBLES: return ".2d";
+		case ARRSPEC_4SINGLES: return ".4s";
+		case ARRSPEC_8HALVES: return ".8h";
+		case ARRSPEC_16BYTES: return ".16b";
+		case ARRSPEC_1DOUBLE: return ".1d";
+		case ARRSPEC_2SINGLES: return ".2s";
+		case ARRSPEC_4HALVES: return ".4h";
+		case ARRSPEC_8BYTES: return ".8b";
+		case ARRSPEC_1SINGLE: return ".1s";
+		case ARRSPEC_2HALVES: return ".2h";
+		case ARRSPEC_4BYTES: return ".4b";
+		case ARRSPEC_1HALF: return ".1h";
+		case ARRSPEC_1BYTE: return ".1b";
+		default: return "";
 	}
 }
 
-int get_register_full(uint32_t reg, char *result)
+int get_register_full(const InstructionOperand *operand, Register reg, char *result)
 {
 	strcpy(result, get_register_name(reg));
 
 	if(result[0] == '\0')
 		return -1;
 
-	strcat(result, get_register_arrspec(reg));
+	if(operand->arrSpec != ARRSPEC_NONE) {
+		bool is_simd = reg >= REG_V0 && reg <= REG_V31;
+		bool is_sve = reg >= REG_Z0 && reg <= REG_Z31;
+		bool is_pred = reg >= REG_P0 && reg <= REG_P31;
+		//bool is_dot = operand->encoding == ENC_SDOT_ASIMDELEM_D || operand->encoding == ENC_SUDOT_ASIMDELEM_D ||
+		//	operand->encoding == ENC_UDOT_ASIMDELEM_D || operand->encoding == ENC_USDOT_ASIMDELEM_D;
+		if(is_simd || is_sve || is_pred) {
+			strcat(result, arrspec_to_str(operand->arrSpec, operand->laneUsed || is_sve || is_pred));
+		}
+	}
+
 	return 0;
 }
 
-unsigned get_register_size(uint32_t reg)
+unsigned get_register_size(Register r)
 {
-	Register r = REG_ENUM(reg);
-
 	//Comparison done in order of likelyhood to occur
 	if ((r >= REG_X0 && r <= REG_SP) || (r >= REG_D0 && r <= REG_D31))
 		return 8;
@@ -354,7 +363,7 @@ static inline uint32_t get_shifted_register(
 	char shiftBuff[64] = {0};
 
 	char reg[16];
-	if(get_register_full((Register)instructionOperand->reg[registerNumber], reg))
+	if(get_register_full(instructionOperand, (Register)instructionOperand->reg[registerNumber], reg))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	if (instructionOperand->shiftType != ShiftType_NONE)
@@ -382,7 +391,7 @@ static inline uint32_t get_shifted_register(
 }
 
 uint32_t get_memory_operand(
-	const InstructionOperand *instructionOperand,
+	const InstructionOperand *operand,
 	char *outBuffer,
 	uint32_t outBufferSize)
 {
@@ -391,18 +400,18 @@ uint32_t get_memory_operand(
 	char paramBuff[32] = {0};
 
 	char reg0[16]={'\0'}, reg1[16]={'\0'};
-	if(get_register_full((Register)instructionOperand->reg[0], reg0))
+	if(get_register_full(operand, (Register)operand->reg[0], reg0))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	const char *sign = "";
-	int64_t imm = instructionOperand->immediate;
-	if (instructionOperand->signedImm && (int64_t)imm < 0)
+	int64_t imm = operand->immediate;
+	if (operand->signedImm && (int64_t)imm < 0)
 	{
 		sign = "-";
 		imm = -imm;
 	}
 
-	switch (instructionOperand->operandClass)
+	switch (operand->operandClass)
 	{
 		case MEM_REG:
 			if (snprintf(outBuffer, outBufferSize, "[%s]", reg0) >= outBufferSize)
@@ -415,8 +424,8 @@ uint32_t get_memory_operand(
 			break;
 
 		case MEM_POST_IDX: // [<reg>], <reg|imm>
-			if (instructionOperand->reg[1] != REG_NONE) {
-				if(get_register_full((Register)instructionOperand->reg[1], reg1))
+			if (operand->reg[1] != REG_NONE) {
+				if(get_register_full(operand, (Register)operand->reg[1], reg1))
 					return FAILED_TO_DISASSEMBLE_REGISTER;
 
 				snprintf(paramBuff, sizeof(paramBuff), ", %s", reg1);
@@ -430,8 +439,8 @@ uint32_t get_memory_operand(
 			break;
 
 		case MEM_OFFSET: // [<reg> optional(imm)]
-			if (instructionOperand->immediate != 0) {
-				const char *mul_vl = instructionOperand->mul_vl ? ", mul vl" : "";
+			if (operand->immediate != 0) {
+				const char *mul_vl = operand->mul_vl ? ", mul vl" : "";
 				if(snprintf(immBuff, sizeof(immBuff), ", #%s%#" PRIx64 "%s", sign, (uint64_t)imm, mul_vl) >= sizeof(immBuff)) {
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				}
@@ -442,7 +451,7 @@ uint32_t get_memory_operand(
 			break;
 
 		case MEM_EXTENDED:
-			if(get_register_full((Register)instructionOperand->reg[1], reg1))
+			if(get_register_full(operand, (Register)operand->reg[1], reg1))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			if (reg0[0] == '\0' || reg1[0] == '\0') {
@@ -450,15 +459,15 @@ uint32_t get_memory_operand(
 			}
 
 			// immBuff, like "#0x0"
-			if (instructionOperand->shiftValueUsed)
-				if(snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) >= sizeof(immBuff))
+			if (operand->shiftValueUsed)
+				if(snprintf(immBuff, sizeof(immBuff), " #%#x", operand->shiftValue) >= sizeof(immBuff))
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			// extendBuff, like "lsl #0x0"
-			if (instructionOperand->shiftType != ShiftType_NONE)
+			if (operand->shiftType != ShiftType_NONE)
 			{
 				if (snprintf(extendBuff, sizeof(extendBuff), ", %s%s",
-							ShiftString[instructionOperand->shiftType], immBuff) >= sizeof(extendBuff))
+							ShiftString[operand->shiftType], immBuff) >= sizeof(extendBuff))
 				{
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				}
@@ -497,7 +506,7 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	}
 
 	char reg_buf[16];
-	if(get_register_full((Register)operand->reg[registerNumber], reg_buf))
+	if(get_register_full(operand, (Register)operand->reg[registerNumber], reg_buf))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	/* 3) handle predicate registers */

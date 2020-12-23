@@ -192,16 +192,6 @@ enum Register {
 	REG_END
 };
 
-/* DDDDDD EEEEEE XXXXXXXXXXXXXXXXXXXX
-	data_sz is 6 bits
-	elem_sz is 6 bits
-	enum    is 20 bits */
-#define REG_ENUM(x) ((enum Register)((x) & 0xFFFFF))
-#define REG_ESIZE(x) (((x)>>20) & 0x3F)
-#define REG_DSIZE(x) (((x)>>26) & 0x3F)
-#define REG_ARRSPEC(x) (((x)>>20) & 0xFFF)
-#define REG_CONSTRUCT(DSIZE,ESIZE,ENUM_ID) ( ((DSIZE)<<26) | ((ESIZE)<<20) | (ENUM_ID) )
-
 enum ArrangementSpec {
 	ARRSPEC_NONE=0,
 
@@ -226,6 +216,9 @@ enum ArrangementSpec {
 
 	/* low 16-bit of v-reg considered as... */
 	ARRSPEC_1HALF, /* (.h) one 16-bit half-precision: REG_V0_H0 */
+
+	/* low 8-bit of v-reg considered as... */
+	ARRSPEC_1BYTE, /* (.b) one 8-bit byte: REG_V0_B0 */
 };
 
 //-----------------------------------------------------------------------------
@@ -448,10 +441,12 @@ enum Group {
 	typedef enum FailureCodes FailureCodes;
 	typedef enum Operation Operation;
 	typedef enum Group Group;
+	typedef enum ArrangementSpec ArrangementSpec;
 #endif
 
 struct InstructionOperand {
 	OperandClass operandClass;
+	ArrangementSpec arrSpec;
 	uint32_t reg[5]; //registers or conditions
 	uint32_t scale;
 	bool laneUsed;
@@ -785,7 +780,6 @@ const char *get_operation(const Instruction *instruction);
 // includes data size and element size
 const char *get_register_name(uint32_t reg);
 const char *get_register_arrspec(uint32_t reg);
-int get_register_full(uint32_t reg, char *result);
 unsigned get_register_size(uint32_t reg);
 
 //Get the text value of a given shift type

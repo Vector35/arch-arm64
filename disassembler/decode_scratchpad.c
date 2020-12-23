@@ -155,9 +155,7 @@ static const Register regMap[2][11][32] = {
 
 int table_wbase_xbase[2] = {REG_W_BASE, REG_X_BASE};
 
-#define REG(SP_OR_ZR, REG_BASE, REG_NUM, DSIZE, ESIZE) \
-	REG_CONSTRUCT(DSIZE, ESIZE, regMap[SP_OR_ZR][REG_BASE][REG_NUM])
-	//regMap[SP_OR_ZR][REG_BASE][REG_NUM]
+#define REG(SP_OR_ZR, REG_BASE, REG_NUM) regMap[(SP_OR_ZR)][(REG_BASE)][(REG_NUM)]
 
 /* prefetch operation */
 const char *prfop_lookup(unsigned prfop)
@@ -251,38 +249,20 @@ const char *pattern_lookup(unsigned pattern, unsigned uimm5)
 // arrangement specifiers and lookups (usually fills in a ".<T>", ".<Ta>", "<.Tb>")
 //-----------------------------------------------------------------------------
 
-typedef struct _arrangement_spec
-{
-	unsigned data_sz;
-	unsigned elem_sz;
-} arrangement_spec;
-
-#define _ARR_SPEC_RESERVED {.data_sz=0, .elem_sz=0}
-#define _1B {.data_sz=1,.elem_sz=1}
-#define _1H {.data_sz=1,.elem_sz=2}
-#define _1S {.data_sz=1,.elem_sz=4}
-#define _1D {.data_sz=1,.elem_sz=8}
-#define _1Q {.data_sz=1,.elem_sz=16}
-#define _2B {.data_sz=2,.elem_sz=1}
-#define _2H {.data_sz=2,.elem_sz=2}
-#define _2S {.data_sz=2,.elem_sz=4}
-#define _2D {.data_sz=2,.elem_sz=8}
-#define _2Q {.data_sz=2,.elem_sz=16}
-#define _4B {.data_sz=4,.elem_sz=1}
-#define _4H {.data_sz=4,.elem_sz=2}
-#define _4S {.data_sz=4,.elem_sz=4}
-#define _4D {.data_sz=4,.elem_sz=8}
-#define _4Q {.data_sz=4,.elem_sz=16}
-#define _8B {.data_sz=8,.elem_sz=1}
-#define _8H {.data_sz=8,.elem_sz=2}
-#define _8S {.data_sz=8,.elem_sz=4}
-#define _8D {.data_sz=8,.elem_sz=8}
-#define _8Q {.data_sz=8,.elem_sz=16}
-#define _16B {.data_sz=16,.elem_sz=1}
-#define _16H {.data_sz=16,.elem_sz=2}
-#define _16S {.data_sz=16,.elem_sz=4}
-#define _16D {.data_sz=16,.elem_sz=8}
-#define _16Q {.data_sz=16,.elem_sz=16}
+#define _1B ARRSPEC_1BYTE
+#define _1H ARRSPEC_1HALF
+#define _1S ARRSPEC_1SINGLE
+#define _1D ARRSPEC_1DOUBLE
+#define _1Q ARRSPEC_FULL
+#define _2H ARRSPEC_2HALVES
+#define _2S ARRSPEC_2SINGLES
+#define _2D ARRSPEC_2DOUBLES
+#define _4B ARRSPEC_4BYTES
+#define _4H ARRSPEC_4HALVES
+#define _4S ARRSPEC_4SINGLES
+#define _8B ARRSPEC_8BYTES
+#define _8H ARRSPEC_8HALVES
+#define _16B ARRSPEC_16BYTES
 
 /* arrangement specifiers
 0000 x SEE Advanced SIMD modified immediate
@@ -294,60 +274,60 @@ typedef struct _arrangement_spec
 01xx 1 4S
 1xxx x RESERVED
 */
-arrangement_spec arr_spec_method0(uint32_t imm5, uint32_t Q)
+ArrangementSpec arr_spec_method0(uint32_t imm5, uint32_t Q)
 {
 	if(Q==0) {
-		if(imm5 & 1) return (arrangement_spec)_8B;
-		if(imm5 & 2) return (arrangement_spec)_4H;
-		if(imm5 & 4) return (arrangement_spec)_2S;
+		if(imm5 & 1) return _8B;
+		if(imm5 & 2) return _4H;
+		if(imm5 & 4) return _2S;
 	}
 	else {
-		if(imm5 & 1) return (arrangement_spec)_16B;
-		if(imm5 & 2) return (arrangement_spec)_8H;
-		if(imm5 & 4) return (arrangement_spec)_4S;
-		if(imm5 & 8) return (arrangement_spec)_2D;
+		if(imm5 & 1) return _16B;
+		if(imm5 & 2) return _8H;
+		if(imm5 & 4) return _4S;
+		if(imm5 & 8) return _2D;
 	}
-	return (arrangement_spec)_ARR_SPEC_RESERVED;
+	return ARRSPEC_NONE;
 }
 
-arrangement_spec arr_spec_method1(unsigned key)
+ArrangementSpec arr_spec_method1(unsigned key)
 {
-	//if((key & 0b01111) == 0b00000) return (arrangement_spec)_ARR_SPEC_RESERVED;	// x0000 RESERVED
-	if((key & 0b00001) == 0b00001) return (arrangement_spec)_1B;					// xxxx1 B
-	if((key & 0b00011) == 0b00010) return (arrangement_spec)_1H;					// xxx10 H
-	if((key & 0b00111) == 0b00100) return (arrangement_spec)_1S;					// xx100 S
-	if((key & 0b01111) == 0b01000) return (arrangement_spec)_1D;					// x1000 D
-	if((key & 0b11111) == 0b10000) return (arrangement_spec)_1Q;					// 10000 Q
-	return (arrangement_spec)_ARR_SPEC_RESERVED;
+	//if((key & 0b01111) == 0b00000) return ARRSPEC_NONE;	// x0000 RESERVED
+	if((key & 0b00001) == 0b00001) return _1B;					// xxxx1 B
+	if((key & 0b00011) == 0b00010) return _1H;					// xxx10 H
+	if((key & 0b00111) == 0b00100) return _1S;					// xx100 S
+	if((key & 0b01111) == 0b01000) return _1D;					// x1000 D
+	if((key & 0b11111) == 0b10000) return _1Q;					// 10000 Q
+	return ARRSPEC_NONE;
 }
 
-arrangement_spec arr_spec_method2(unsigned immh)
+ArrangementSpec arr_spec_method2(unsigned immh)
 {
 																	// 0000 SEE Advanced SIMD modified immediate
-	if(immh==1) return (arrangement_spec)_8H;						// 0001 8H
-	if((immh & 0b1110) == 0b0010) return (arrangement_spec)_4S;		// 001x 4S
-	if((immh & 0b1100) == 0b0100) return (arrangement_spec)_2D;		// 01xx 2D
-	return (arrangement_spec)_ARR_SPEC_RESERVED;					// 1xxx RESERVED
+	if(immh==1) return _8H;						// 0001 8H
+	if((immh & 0b1110) == 0b0010) return _4S;		// 001x 4S
+	if((immh & 0b1100) == 0b0100) return _2D;		// 01xx 2D
+	return ARRSPEC_NONE;					// 1xxx RESERVED
 }
 
-arrangement_spec arr_spec_method3(unsigned immh, unsigned q)
+ArrangementSpec arr_spec_method3(unsigned immh, unsigned q)
 {
 	switch((immh<<1)|q) {
 														// 0000 x SEE Advanced SIMD modified immediate
-		case 0b00010: return (arrangement_spec)_8B;		// 0001 0 8B
-		case 0b00011: return (arrangement_spec)_16B;	// 0001 1 16B
+		case 0b00010: return _8B;		// 0001 0 8B
+		case 0b00011: return _16B;	// 0001 1 16B
 		case 0b00100:
-		case 0b00110: return (arrangement_spec)_4H;		// 001x 0 4H
+		case 0b00110: return _4H;		// 001x 0 4H
 		case 0b00101:
-		case 0b00111: return (arrangement_spec)_8H;		// 001x 1 8H
+		case 0b00111: return _8H;		// 001x 1 8H
 		case 0b01000:
 		case 0b01010:
 		case 0b01100:
-		case 0b01110: return (arrangement_spec)_2S;		// 01xx 0 2S
+		case 0b01110: return _2S;		// 01xx 0 2S
 		case 0b01001:
 		case 0b01011:
 		case 0b01101:
-		case 0b01111: return (arrangement_spec)_4S;		// 01xx 1 4S
+		case 0b01111: return _4S;		// 01xx 1 4S
 		case 0b10001:
 		case 0b10011:
 		case 0b10101:
@@ -355,95 +335,91 @@ arrangement_spec arr_spec_method3(unsigned immh, unsigned q)
 		case 0b11001:
 		case 0b11011:
 		case 0b11101:
-		case 0b11111: return (arrangement_spec)_2D;
+		case 0b11111: return _2D;
 		default: break;									// 1xxx 1 RESERVED
 	}
-	return (arrangement_spec)_ARR_SPEC_RESERVED;
+	return ARRSPEC_NONE;
 }
 
-arrangement_spec arr_spec_method4(unsigned imm5, unsigned q)
+ArrangementSpec arr_spec_method4(unsigned imm5, unsigned q)
 {
 	unsigned key = (imm5<<1)|q;
 	//if((key & 0b011110) == 0b000000) return RESERVED;					// x0000 x RESERVED
-	if((key & 0b000011) == 0b000010) return (arrangement_spec)_8B;		// xxxx1 0 8B
-	if((key & 0b000011) == 0b000011) return (arrangement_spec)_16B;		// xxxx1 1 16B
-	if((key & 0b000111) == 0b000100) return (arrangement_spec)_4H;		// xxx10 0 4H
-	if((key & 0b000111) == 0b000101) return (arrangement_spec)_8H;		// xxx10 1 8H
-	if((key & 0b001111) == 0b001000) return (arrangement_spec)_2S;		// xx100 0 2S
-	if((key & 0b001111) == 0b001001) return (arrangement_spec)_4S;		// xx100 1 4S
+	if((key & 0b000011) == 0b000010) return _8B;		// xxxx1 0 8B
+	if((key & 0b000011) == 0b000011) return _16B;		// xxxx1 1 16B
+	if((key & 0b000111) == 0b000100) return _4H;		// xxx10 0 4H
+	if((key & 0b000111) == 0b000101) return _8H;		// xxx10 1 8H
+	if((key & 0b001111) == 0b001000) return _2S;		// xx100 0 2S
+	if((key & 0b001111) == 0b001001) return _4S;		// xx100 1 4S
 	//if((key & 0b011111) == 0b010000) return RESERVED;					// x1000 0 RESERVED
-	if((key & 0b011111) == 0b010001) return (arrangement_spec)_2D;		// x1000 1 2D
-	return (arrangement_spec)_ARR_SPEC_RESERVED;
+	if((key & 0b011111) == 0b010001) return _2D;		// x1000 1 2D
+	return ARRSPEC_NONE;
 }
 
-arrangement_spec table_1s_1d[2] = {_1S, _1D};
-arrangement_spec table_2s_4s[2] = {_2S, _4S};
-arrangement_spec table_2s_2d[2] = {_2S, _2D};
-arrangement_spec table_2h_4h[2] = {_2H, _4H};
-arrangement_spec table_4h_8h[2] = {_4H, _8H};
-arrangement_spec table_4s_2d[2] = {_4S, _2D};
-arrangement_spec table_8b_16b[2] = {_8B, _16B};
-arrangement_spec table_1b_1h_1s_1d[4] = {_1B, _1H, _1S, _1D};
-arrangement_spec table_1h_2s_4d_8q[4] = {_1H, _2S, _4D, _8Q};
-arrangement_spec table_1d_1b_1h_1s[4] = {_1D, _1B, _1H, _1S};
-arrangement_spec table_r_1h_1s_1d[4] = {_ARR_SPEC_RESERVED, _1H, _1S, _1D};
-arrangement_spec table_2s_r_4s_2d[4] = {_2S, _ARR_SPEC_RESERVED, _4S, _2D};
-arrangement_spec table_2s_4s_r_2d[4] = {_2S, _4S, _ARR_SPEC_RESERVED, _2D};
-arrangement_spec table_8h_4s_2d_1q[4] = {_8H, _4S, _2D, _1Q};
-arrangement_spec table_4h_8h_2s_4s_1d_2d_r_r[8] = {_4H, _8H, _2S, _4S, _1D, _2D, _ARR_SPEC_RESERVED, _ARR_SPEC_RESERVED};
-arrangement_spec table_8b_16b_4h_8h_2s_4s_1d_2d[8] = {_8B, _16B, _4H, _8H, _2S, _4S, _1D, _2D};
-arrangement_spec table16_r_b_h_s_d[16] = {_ARR_SPEC_RESERVED, _1B, _1H, _1H, _1S, _1S, _1S, _1S, _1D, _1D, _1D, _1D, _1D, _1D, _1D, _1D};
+ArrangementSpec table_1s_1d[2] = {_1S, _1D};
+ArrangementSpec table_2s_4s[2] = {_2S, _4S};
+ArrangementSpec table_2s_2d[2] = {_2S, _2D};
+ArrangementSpec table_2h_4h[2] = {_2H, _4H};
+ArrangementSpec table_4h_8h[2] = {_4H, _8H};
+ArrangementSpec table_4s_2d[2] = {_4S, _2D};
+ArrangementSpec table_8b_16b[2] = {_8B, _16B};
+ArrangementSpec table_2s_r_4s_2d[4] = {_2S, ARRSPEC_NONE, _4S, _2D};
+ArrangementSpec table_2s_4s_r_2d[4] = {_2S, _4S, ARRSPEC_NONE, _2D};
+ArrangementSpec table_8h_4s_2d_1q[4] = {_8H, _4S, _2D, _1Q};
+ArrangementSpec table_4h_8h_2s_4s_1d_2d_r_r[8] = {_4H, _8H, _2S, _4S, _1D, _2D, ARRSPEC_NONE, ARRSPEC_NONE};
+ArrangementSpec table_8b_16b_4h_8h_2s_4s_1d_2d[8] = {_8B, _16B, _4H, _8H, _2S, _4S, _1D, _2D};
+ArrangementSpec table16_r_b_h_s_d[16] = {ARRSPEC_NONE, _1B, _1H, _1H, _1S, _1S, _1S, _1S, _1D, _1D, _1D, _1D, _1D, _1D, _1D, _1D};
 
 //-----------------------------------------------------------------------------
 // element size (usually to fill in a ".<Ts>")
 //-----------------------------------------------------------------------------
 
-unsigned size_spec_method0(uint8_t /*bit*/ a, uint8_t /*bit(6)*/ b)
+ArrangementSpec size_spec_method0(uint8_t /*bit*/ a, uint8_t /*bit(6)*/ b)
 {
 	if(a == 0) {
-		if((b & 0x20) == 0) return 4;
-		if((b & 0x30) == 0x20) return 2;
-		if((b & 0x38) == 0x30) return 1;
-		if((b & 0x3C) == 0x38) return 1;
-		if((b & 0x3E) == 0x3C) return 1;
+		if((b & 0x20) == 0) return _1S;
+		if((b & 0x30) == 0x20) return _1H;
+		if((b & 0x38) == 0x30) return _1B;
+		if((b & 0x3C) == 0x38) return _1B;
+		if((b & 0x3E) == 0x3C) return _1B;
 		return 0;
 	}
 	else {
-		return 8;
+		return _1D;
 	}
 }
 
-unsigned size_spec_method1(unsigned imm13)
+ArrangementSpec size_spec_method1(unsigned imm13)
 {
 	unsigned key = (((imm13>>12)&1) << 6) | (imm13 & 0b111111);
 
-	if((key & 0b1100000) == 0b0000000) return 4;			// 0 0xxxxx	S
-	if((key & 0b1110000) == 0b0100000) return 2;			// 0 10xxxx	H
-	if((key & 0b1111000) == 0b0110000) return 1;			// 0 110xxx	B
-	if((key & 0b1111100) == 0b0111000) return 1;			// 0 1110xx	B
-	if((key & 0b1111110) == 0b0111100) return 1;			// 0 11110x	B
+	if((key & 0b1100000) == 0b0000000) return _1S;			// 0 0xxxxx	S
+	if((key & 0b1110000) == 0b0100000) return _1H;			// 0 10xxxx	H
+	if((key & 0b1111000) == 0b0110000) return _1B;			// 0 110xxx	B
+	if((key & 0b1111100) == 0b0111000) return _1B;			// 0 1110xx	B
+	if((key & 0b1111110) == 0b0111100) return _1B;			// 0 11110x	B
 	//if((key & 0b1111111) == 0b0111110) return "RESERVED";	// 0 111110	RESERVED
 	//if((key & 0b1111111) == 0b0111111) return "RESERVED";	// 0 111111	RESERVED
-	if((key & 0b1000000) == 0b1000000) return 8;			// 1 xxxxxx	D
+	if((key & 0b1000000) == 0b1000000) return _1D;			// 1 xxxxxx	D
 	return 0;
 }
 
-unsigned size_spec_method3(int x)
+ArrangementSpec size_spec_method3(int x)
 {
-	if((x & 0b01111) == 0b00000) return 0;					// x0000 RESERVED
-	if((x & 0b00001) == 0b00001) return 1;					// xxxx1 B
-	if((x & 0b00011) == 0b00010) return 2;					// xxx10 H
-	if((x & 0b00111) == 0b00100) return 4;					// xx100 S
-	if((x & 0b01111) == 0b01000) return 8;					// x1000 D
+	if((x & 0b01111) == 0b00000) return ARRSPEC_NONE;		// x0000 RESERVED
+	if((x & 0b00001) == 0b00001) return _1B;				// xxxx1 B
+	if((x & 0b00011) == 0b00010) return _1H;				// xxx10 H
+	if((x & 0b00111) == 0b00100) return _1S;				// xx100 S
+	if((x & 0b01111) == 0b01000) return _1D;				// x1000 D
 	return 0;
 }
 
-unsigned table_s_d[2] = {4, 8};
-unsigned table_b_d_h_s[4] = {1, 8, 2, 4};
-unsigned table_b_h_s_d[4] = {1, 2, 4, 8};
-unsigned table_d_b_h_s[4] = {8, 1, 2, 4};
-unsigned table_r_h_s_d[4] = {0, 2, 4, 8};
-unsigned table_r_s_d_r[4] = {0, 4, 8, 0};
+ArrangementSpec table_s_d[2] = {_1S, _1D};
+ArrangementSpec table_b_d_h_s[4] = {_1B, _1D, _1H, _1S};
+ArrangementSpec table_b_h_s_d[4] = {_1B, _1H, _1S, _1D};
+ArrangementSpec table_d_b_h_s[4] = {_1D, _1B, _1H, _1S};
+ArrangementSpec table_r_h_s_d[4] = {ARRSPEC_NONE, _1H, _1S, _1D};
+ArrangementSpec table_r_s_d_r[4] = {ARRSPEC_NONE, _1S, _1D, ARRSPEC_NONE};
 
 //-----------------------------------------------------------------------------
 // other tables
@@ -533,12 +509,7 @@ const char *reg_lookup_c[16] = {
 /* register operand macros */
 #define ADD_OPERAND_REG(REGSET, BASE, REGNUM) \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, 0, 0); \
-	i++;
-
-#define ADD_OPERAND_REG_SZ(REGSET, BASE, REGNUM, DSIZE, ESIZE) \
-	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
 	i++;
 
 #define ADD_OPERAND_BT ADD_OPERAND_REG(REGSET_ZR, REG_B_BASE, dec->t);
@@ -622,17 +593,18 @@ const char *reg_lookup_c[16] = {
 #define ADD_OPERAND_PRED_REG(REGNUM) \
 	ADD_OPERAND_REG(REGSET_ZR, REG_P_BASE, REGNUM);
 
-#define ADD_OPERAND_PRED_REG_ESIZE(REGNUM, ELEM_SZ) \
-	ADD_OPERAND_REG_SZ(REGSET_ZR, REG_P_BASE, REGNUM, 0, ELEM_SZ);
+#define ADD_OPERAND_PRED_REG_ESIZE(REGNUM, ARR_SPEC) \
+	ADD_OPERAND_PRED_REG(REGNUM); \
+	dec->operands[i-1].arrSpec = ARR_SPEC;
 
 #define ADD_OPERAND_PRED_REG_QUAL(REGNUM, QUALIFIER) \
-	ADD_OPERAND_REG(REGSET_ZR, REG_P_BASE, REGNUM); \
+	ADD_OPERAND_PRED_REG(REGNUM); \
 	dec->operands[i-1].pred_qual = QUALIFIER;
 
 /* register indirect adder */
 #define ADD_OPERAND_MEM_REG(REGSET, BASE, REGNUM) \
 	dec->operands[i].operandClass = MEM_REG; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, 0, 0); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
 	i++
 
 #define ADD_OPERAND_MEM_WA ADD_OPERAND_MEM_REG(REGSET_ZR, REG_W_BASE, dec->a);
@@ -662,14 +634,15 @@ const char *reg_lookup_c[16] = {
 /* general register indirect + offset adder */
 #define ADD_OPERAND_MEM_REG_OFFSET(REGSET, BASE, REGNUM, OFFSET) \
 	dec->operands[i].operandClass = MEM_OFFSET; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, 0, 0); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
 	dec->operands[i].immediate = OFFSET; \
 	dec->operands[i].signedImm = 1; \
 	i++;
 
-#define ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET, BASE, REGNUM, OFFSET, DSIZE, ESIZE) \
+#define ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET, BASE, REGNUM, OFFSET, ARR_SPEC) \
 	dec->operands[i].operandClass = MEM_OFFSET; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	dec->operands[i].immediate = OFFSET; \
 	dec->operands[i].signedImm = 1; \
 	i++;
@@ -681,14 +654,14 @@ const char *reg_lookup_c[16] = {
 /* general mem post index */
 #define ADD_OPERAND_MEM_POST_INDEX(REGSET, BASE, REGNUM, OFFSET) \
 	dec->operands[i].operandClass = MEM_POST_IDX; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, 0, 0); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
 	dec->operands[i].immediate = OFFSET; \
 	dec->operands[i].signedImm = 1;
 
 /* mem pre index */
 #define ADD_OPERAND_MEM_PRE_INDEX(REGSET, BASE, REGNUM, OFFSET) \
 	dec->operands[i].operandClass = MEM_PRE_IDX; \
-	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM, 0, 0); \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
 	dec->operands[i].immediate = OFFSET; \
 	dec->operands[i].signedImm = 1;
 
@@ -696,8 +669,8 @@ const char *reg_lookup_c[16] = {
 	ldrb w3, [x27, x18, lsl #0x0] */
 #define ADD_OPERAND_MEM_EXTENDED(BASE, REGNUM0, REGNUM1) \
 	dec->operands[i].operandClass = MEM_EXTENDED; \
-	dec->operands[i].reg[0] = REG(REGSET_SP, REG_X_BASE, REGNUM0, 0, 0); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE, REGNUM1, 0, 0); \
+	dec->operands[i].reg[0] = REG(REGSET_SP, REG_X_BASE, REGNUM0); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE, REGNUM1); \
 	i++;
 
 #define ADD_OPERAND_XN_SP ADD_OPERAND_REG(REGSET_SP, REG_X_BASE, dec->n);
@@ -709,16 +682,18 @@ const char *reg_lookup_c[16] = {
 #define ADD_OPERAND_WM_SP ADD_OPERAND_REG(REGSET_SP, REG_W_BASE, dec->m);
 #define ADD_OPERAND_WT_SP ADD_OPERAND_REG(REGSET_SP, REG_W_BASE, dec->n);
 
-#define ADD_OPERAND_MEM_EXTENDED_SZ(BASE0, REGNUM0, BASE1, REGNUM1, ELEM_SZ) \
+#define ADD_OPERAND_MEM_EXTENDED_SZ(BASE0, REGNUM0, BASE1, REGNUM1, ARR_SPEC) \
 	dec->operands[i].operandClass = MEM_EXTENDED; \
-	dec->operands[i].reg[0] = REG(REGSET_SP, BASE0, REGNUM0, 0, ELEM_SZ); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE1, REGNUM1, 0, ELEM_SZ); \
+	dec->operands[i].reg[0] = REG(REGSET_SP, BASE0, REGNUM0); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE1, REGNUM1); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
 #define ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(BASE0, REGNUM0, SZ0, BASE1, REGNUM1, SZ1, SHIFT_TYPE, SHIFT_AMT, SHIFT_USED) \
 	dec->operands[i].operandClass = MEM_EXTENDED; \
-	dec->operands[i].reg[0] = REG(REGSET_SP, BASE0, REGNUM0, 0, SZ0); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE1, REGNUM1, 0, SZ1); \
+	dec->operands[i].reg[0] = REG(REGSET_SP, BASE0, REGNUM0); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, BASE1, REGNUM1); \
+	dec->operands[i].arrSpec = SZ1; \
 	dec->operands[i].shiftType = SHIFT_TYPE; \
 	dec->operands[i].shiftValue = SHIFT_AMT; \
 	dec->operands[i].shiftValueUsed = SHIFT_USED; \
@@ -785,56 +760,61 @@ const char *reg_lookup_c[16] = {
 #define ADD_OPERAND_VT
 
 /* multi reg stuff, like {v0.b, v1.b} */
-#define ADD_OPERAND_MULTIREG_1(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_1(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = MULTI_REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_MULTIREG_2(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_2(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = MULTI_REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM, DSIZE, ESIZE); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_MULTIREG_3(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_3(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = MULTI_REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM, DSIZE, ESIZE); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32, DSIZE, ESIZE); \
-	dec->operands[i].reg[2] = REG(REGSET_ZR, REG_BASE, (REGNUM+2)%32, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32); \
+	dec->operands[i].reg[2] = REG(REGSET_ZR, REG_BASE, (REGNUM+2)%32); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_MULTIREG_4(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_4(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = MULTI_REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM, DSIZE, ESIZE); \
-	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32, DSIZE, ESIZE); \
-	dec->operands[i].reg[2] = REG(REGSET_ZR, REG_BASE, (REGNUM+2)%32, DSIZE, ESIZE); \
-	dec->operands[i].reg[3] = REG(REGSET_ZR, REG_BASE, (REGNUM+3)%32, DSIZE, ESIZE); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_BASE, REGNUM); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_BASE, (REGNUM+1)%32); \
+	dec->operands[i].reg[2] = REG(REGSET_ZR, REG_BASE, (REGNUM+2)%32); \
+	dec->operands[i].reg[3] = REG(REGSET_ZR, REG_BASE, (REGNUM+3)%32); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_MULTIREG_1_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	ADD_OPERAND_MULTIREG_1(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_1_LANED(REG_BASE, ARR_SPEC, REGNUM); \
+	ADD_OPERAND_MULTIREG_1(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i-1].laneUsed = 1; \
 	dec->operands[i-1].lane = dec->index;
 
-#define ADD_OPERAND_MULTIREG_2_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	ADD_OPERAND_MULTIREG_2(REG_BASE, DSIZE, ESIZE, REGNUM); \
+#define ADD_OPERAND_MULTIREG_2_LANED(REG_BASE, ARR_SPEC, REGNUM); \
+	ADD_OPERAND_MULTIREG_2(REG_BASE, ARR_SPEC, REGNUM); \
 	dec->operands[i-1].laneUsed = 1; \
 	dec->operands[i-1].lane = dec->index;
 
-#define ADD_OPERAND_MULTIREG_3_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	ADD_OPERAND_MULTIREG_3(REG_BASE, DSIZE, ESIZE, REGNUM) \
+#define ADD_OPERAND_MULTIREG_3_LANED(REG_BASE, ARR_SPEC, REGNUM); \
+	ADD_OPERAND_MULTIREG_3(REG_BASE, ARR_SPEC, REGNUM) \
 	dec->operands[i-1].laneUsed = 1; \
 	dec->operands[i-1].lane = dec->index;
 
-#define ADD_OPERAND_MULTIREG_4_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	ADD_OPERAND_MULTIREG_4(REG_BASE, DSIZE, ESIZE, REGNUM) \
+#define ADD_OPERAND_MULTIREG_4_LANED(REG_BASE, ARR_SPEC, REGNUM); \
+	ADD_OPERAND_MULTIREG_4(REG_BASE, ARR_SPEC, REGNUM) \
 	dec->operands[i-1].laneUsed = 1; \
 	dec->operands[i-1].lane = dec->index;
 
 /* v register plus ARRANGEMENT specifier: {1,2,4,8,16} x {b,h,s,d,q} */
 #define ADD_OPERAND_REG_T(BASE, ARR_SPEC, REGNUM) \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, BASE, REGNUM, ARR_SPEC.data_sz, ARR_SPEC.elem_sz); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
 #define ADD_OPERAND_VREG_T(ARR_SPEC, REGNUM) \
@@ -844,16 +824,18 @@ const char *reg_lookup_c[16] = {
 #define ADD_OPERAND_VREG_TB(REGNUM) ADD_OPERAND_VREG_T(arr_spec_b, REGNUM)
 #define ADD_OPERAND_VREG_TS(REGNUM) ADD_OPERAND_VREG_T(arr_spec_s, REGNUM)
 
-#define ADD_OPERAND_VREG_T_INDEXED(ARR_SPEC, REGNUM, INDEX) \
+#define ADD_OPERAND_VREG_T_LANED(ARR_SPEC, REGNUM, INDEX) \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_V_BASE, REGNUM, ARR_SPEC.data_sz, ARR_SPEC.elem_sz); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_V_BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	dec->operands[i].lane = INDEX; \
 	dec->operands[i].laneUsed = 1; \
 	i++;
 
-#define ADD_OPERAND_ZREG_T_INDEXED(ARR_SPEC, REGNUM, INDEX) \
+#define ADD_OPERAND_ZREG_T_LANED(ARR_SPEC, REGNUM, INDEX) \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_Z_BASE, REGNUM, ARR_SPEC.data_sz, ARR_SPEC.elem_sz); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_Z_BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	dec->operands[i].lane = INDEX; \
 	dec->operands[i].laneUsed = 1; \
 	i++;
@@ -862,29 +844,31 @@ const char *reg_lookup_c[16] = {
 	ADD_OPERAND_REG_T(REG_Z_BASE, ARR_SPEC, REGNUM)
 
 /* v register plus ELEMENT SIZE specifier: {b,h,s,d,q} */
-#define ADD_OPERAND_VREG_ESIZE(ELEM_SZ, REGNUM); \
+#define ADD_OPERAND_VREG_ESIZE(ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_V_BASE, REGNUM, 0, ELEM_SZ); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_V_BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_ZREG_ESIZE(ELEM_SZ, REGNUM); \
+#define ADD_OPERAND_ZREG_ESIZE(ARR_SPEC, REGNUM); \
 	dec->operands[i].operandClass = REG; \
-	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_Z_BASE, REGNUM, 0, ELEM_SZ); \
+	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_Z_BASE, REGNUM); \
+	dec->operands[i].arrSpec = ARR_SPEC; \
 	i++;
 
-#define ADD_OPERAND_VREG_ESIZE_INDEXED(ELEM_SZ, REGNUM, INDEX_VALUE) \
-	ADD_OPERAND_VREG_ESIZE(ELEM_SZ, REGNUM); \
+#define ADD_OPERAND_VREG_ESIZE_LANED(ARR_SPEC, REGNUM, INDEX_VALUE) \
+	ADD_OPERAND_VREG_ESIZE(ARR_SPEC, REGNUM); \
 	dec->operands[i-1].lane = INDEX_VALUE; \
 	dec->operands[i-1].laneUsed = 1;
 
-#define ADD_OPERAND_ZREG_ESIZE_INDEXED(ELEM_SZ, REGNUM, INDEX_VALUE) \
-	ADD_OPERAND_ZREG_ESIZE(ELEM_SZ, REGNUM); \
+#define ADD_OPERAND_ZREG_ESIZE_LANED(ARR_SPEC, REGNUM, INDEX_VALUE) \
+	ADD_OPERAND_ZREG_ESIZE(ARR_SPEC, REGNUM); \
 	dec->operands[i-1].lane = INDEX_VALUE; \
 	dec->operands[i-1].laneUsed = 1;
 
-#define ADD_OPERAND_VREG_TA_INDEXED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz_a,REGNUM,INDEX)
-#define ADD_OPERAND_VREG_TB_INDEXED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz_b,REGNUM,INDEX)
-#define ADD_OPERAND_VREG_TS_INDEXED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz_s,REGNUM,INDEX)
+#define ADD_OPERAND_VREG_TA_LANED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_LANED(arr_spec_a,REGNUM,INDEX)
+#define ADD_OPERAND_VREG_TB_LANED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_LANED(arr_spec_b,REGNUM,INDEX)
+#define ADD_OPERAND_VREG_TS_LANED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_LANED(arr_spec_s,REGNUM,INDEX)
 
 #define ADD_OPERAND_COND \
 	dec->operands[i].operandClass = CONDITION; \
@@ -1155,7 +1139,7 @@ unsigned rhsdr_0123x_reg(int v)
 /* convert the result of pcode execution to a human-friendly list of operands */
 int decode_scratchpad(context *ctx, Instruction *dec)
 {
-	arrangement_spec arr_spec = _1B;
+	ArrangementSpec arr_spec = _1B;
 
 	/* index of operand array, as it's built */
 	int i = 0;
@@ -1368,11 +1352,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SADDV_R_P_Z_:
 		case ENC_UADDV_R_P_Z_:
 		{
-			unsigned elem_sz = dec->esize/8;
+			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
 			// SYNTAX: <Dd>,<Pg>,<Zn>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -1664,7 +1648,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <Hd>,<Hn>,<Vm>.H[<index>]
 			ADD_OPERAND_HD;
 			ADD_OPERAND_HN;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -1804,12 +1788,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLE_FCMGE_P_P_ZZ_:
 		case ENC_FCMLT_FCMGT_P_P_ZZ_:
 		{
-			unsigned elem_sz = table_b_d_h_s[dec->size];
+			ArrangementSpec arr_spec = table_b_d_h_s[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zm>.<Ts>,<Zn>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -1820,11 +1804,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLT_P_P_Z0_:
 		case ENC_FCMNE_P_P_Z0_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zn>.<Ts>, #0.0
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			ADD_OPERAND_FLOAT32(0);
 			// SYNTAX-END
 			break;
@@ -1841,11 +1825,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMPNE_P_P_ZI_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zn>.<Ts>, #<imm>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			break;
@@ -1864,12 +1848,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMNE_P_P_ZZ_:
 		case ENC_FCMUO_P_P_ZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -1884,32 +1868,32 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMPLT_P_P_ZW_:
 		case ENC_CMPNE_P_P_ZW_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pg>/Z,<Zn>.<Ts>,<Zm>.D
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_REV_P_P_:
 		{
-			unsigned elem_sz = dec->esize / 8;
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pn>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, arr_spec);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_TRN1_P_PP_:
 		case ENC_TRN2_P_PP_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pn>.<Ts>,<Pm>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, elem_sz);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, arr_spec);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
 			// SYNTAX-END
 			break;
 		}
@@ -1918,11 +1902,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ZIP1_P_PP_:
 		case ENC_ZIP2_P_PP_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>,<Pn>.<Ts>,<Pm>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, elem_sz);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, arr_spec);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
 			// SYNTAX-END
 			break;
 		}
@@ -1931,11 +1915,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_WHILELS_P_P_RR_:
 		case ENC_WHILELT_P_P_RR_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = dec->sf ? REG_X_BASE : REG_W_BASE;
 			unsigned rm_base = rn_base;
 			// SYNTAX: <Pd>.<Ts>,<R><n>,<R><m>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			ADD_OPERAND_REG(REGSET_ZR, rm_base, dec->m);
 			// SYNTAX-END
@@ -1944,9 +1928,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_PTRUE_P_S_:
 		case ENC_PTRUES_P_S_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pd>.<Ts>{,<pattern>}
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, arr_spec);
 			ADD_OPERAND_OPTIONAL_PATTERN;
 			// SYNTAX-END
 			break;
@@ -1955,17 +1939,17 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_RDFFR_P_F_:
 		{
 			// SYNTAX: <Pd>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_SEL_P_P_PP_:
 		{
 			// SYNTAX: <Pd>.B,<Pg>,<Pn>.B,<Pm>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -1974,18 +1958,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			char pred_qual = dec->M ? 'm' : 'z';
 			// SYNTAX: <Pd>.B,<Pg>/<ZM>,<Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, pred_qual);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_MOV_SEL_P_P_PP_:
 		{
 			// SYNTAX: <Pd>.B,<Pg>/M,<Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -1993,7 +1977,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_RDFFRS_P_P_F_:
 		{
 			// SYNTAX: <Pd>.B,<Pg>/Z
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			// SYNTAX-END
 			break;
@@ -2006,9 +1990,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BRKBS_P_P_P_Z:
 		{
 			// SYNTAX: <Pd>.B,<Pg>/Z,<Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2032,10 +2016,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORRS_P_P_PP_Z:
 		{
 			// SYNTAX: <Pd>.B,<Pg>/Z,<Pn>.B,<Pm>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2043,8 +2027,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_ORR_P_P_PP_Z:
 		{
 			// SYNTAX: <Pd>.B,<Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 1);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1B);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2052,8 +2036,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_PUNPKLO_P_P_:
 		{
 			// SYNTAX: <Pd>.H,<Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->d, 2);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->d, _1H);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2061,29 +2045,29 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BRKNS_P_P_PP_:
 		{
 			// SYNTAX: <Pdm>.B,<Pg>/Z,<Pn>.B,<Pdm>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdm, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdm, _1B);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdm, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdm, _1B);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_PNEXT_P_P_P_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Pdn>.<Ts>,<Pg>,<Pdn>.<Ts>
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, arr_spec);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, arr_spec);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_PFIRST_P_P_P_:
 		{
 			// SYNTAX: <Pdn>.B,<Pg>,<Pdn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, _1B);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->Pdn, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2091,14 +2075,14 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: <Pg>,<Pn>.B
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_WRFFR_F_P_:
 		{
 			// SYNTAX: <Pn>.B
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, 1);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, _1B);
 			// SYNTAX-END
 			break;
 		}
@@ -2115,7 +2099,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SHA512H2_QQV_CRYPTOSHA512_3:
 		case ENC_SHA512H_QQV_CRYPTOSHA512_3:
 		{
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			// SYNTAX: <Qd>,<Qn>,<Vm>.2D
 			ADD_OPERAND_QD;
 			ADD_OPERAND_QN;
@@ -2126,7 +2110,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SHA256H2_QQV_CRYPTOSHA3:
 		case ENC_SHA256H_QQV_CRYPTOSHA3:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Qd>,<Qn>,<Vm>.4S
 			ADD_OPERAND_QD;
 			ADD_OPERAND_QN;
@@ -2138,7 +2122,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SHA1M_QSV_CRYPTOSHA3:
 		case ENC_SHA1P_QSV_CRYPTOSHA3:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Qd>,<Sn>,<Vm>.4S
 			ADD_OPERAND_QD;
 			ADD_OPERAND_SN;
@@ -2239,25 +2223,25 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LASTA_R_P_Z_:
 		case ENC_LASTB_R_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rd_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <R><d>,<Pg>,<Zn>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_CLASTA_R_P_Z_:
 		case ENC_CLASTB_R_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rdn_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <R><dn>,<Pg>,<R><dn>,<Zm>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, rdn_base, dec->Rdn);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_REG(REGSET_ZR, rdn_base, dec->Rdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -2548,12 +2532,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMAXV_R_P_Z_:
 		case ENC_UMINV_R_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rd_base = bhsd_0123_reg(dec->size);
 			// SYNTAX: <V><d>,<Pg>,<Zn>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -2737,11 +2721,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned rn_base = sd_01_reg(dec->sz);
 			unsigned rd_base = sd_01_reg(dec->sz);
-			unsigned elem_sz = table_s_d[dec->sz];
+			ArrangementSpec arr_spec = table_s_d[dec->sz];
 			// SYNTAX: <V><d>,<V><n>,<Vm>.<Ts>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -2752,18 +2736,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned rd_base = rhsd_0123_reg(dec->size);
 			unsigned rn_base = rhsd_0123_reg(dec->size);
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <V><d>,<V><n>,<Vm>.<Ts>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_ADDP_ASISDPAIR_ONLY:
 		{
 			unsigned rd_base = REG_D_BASE;
-			arrangement_spec arr_spec = _2D;
+			ArrangementSpec arr_spec = _2D;
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2783,7 +2767,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADDV_ASIMDALL_ONLY:
 		{
 			unsigned rd_base = bhsd_0123_reg(dec->size);
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2797,7 +2781,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FADDP_ASISDPAIR_ONLY_H:
 		{
 			unsigned rd_base = REG_H_BASE;
-			arr_spec = (arrangement_spec)_2H;
+			arr_spec = _2H;
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2810,7 +2794,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMINP_ASISDPAIR_ONLY_SD:
 		{
 			unsigned rd_base = sd_01_reg(dec->sz);
-			arrangement_spec arr_spec = table_2s_2d[dec->sz];
+			ArrangementSpec arr_spec = table_2s_2d[dec->sz];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2823,7 +2807,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMINV_ASIMDALL_ONLY_H:
 		{
 			unsigned rd_base = REG_H_BASE;
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2837,7 +2821,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMINV_ASIMDALL_ONLY_SD:
 		{
 			unsigned rd_base = REG_S_BASE;
-			arrangement_spec arr_spec = _4S;
+			ArrangementSpec arr_spec = _4S;
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2848,7 +2832,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SADDLV_ASIMDALL_ONLY:
 		{
 			unsigned rd_base = hsdr_0123_reg(dec->size);
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2861,7 +2845,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SMINV_ASIMDALL_ONLY:
 		{
 			unsigned rd_base = bhsd_0123_reg(dec->size);
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			// SYNTAX: <V><d>,<Vn>.<T>
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -2871,21 +2855,20 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_DUP_ASISDONE_ONLY:
 		{
 			unsigned rd_base = rbhsdq_5bit_reg(dec->imm5);
-			arrangement_spec arr_spec = arr_spec_method1(dec->imm5);
-			arr_spec.data_sz = 0;
+			ArrangementSpec arr_spec = arr_spec_method1(dec->imm5);
 			// SYNTAX: <V><d>,<Vn>.<T>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
-			ADD_OPERAND_VREG_T_INDEXED(arr_spec, dec->n, dec->index);
+			ADD_OPERAND_VREG_T_LANED(arr_spec, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_DUP_ASISDONE_ONLY:
 		{
 			unsigned rd_base = bhsd_0123_reg(dec->size);
-			unsigned elem_sz = table_b_d_h_s[dec->size];
+			ArrangementSpec arr_spec = table_b_d_h_s[dec->size];
 			// SYNTAX: <V><d>,<Vn>.<Ts>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -2893,13 +2876,13 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CLASTB_V_P_Z_:
 		case ENC_FADDA_V_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rdn_base = bhsd_0123_reg(dec->size);
 			// SYNTAX: <V><dn>,<Pg>,<V><dn>,<Zm>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, rdn_base, dec->Vdn);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_REG(REGSET_ZR, rdn_base, dec->Vdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -2923,11 +2906,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned rd_base = rsdr_0123_reg(dec->size);
 			unsigned rn_base = bhsd_0123_reg(dec->size);
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Va><d>,<Vb><n>,<Vm>.<Ts>[<index>]
 			ADD_OPERAND_REG(REGSET_ZR, rd_base, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -2976,7 +2959,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_AESIMC_B_CRYPTOAES:
 		case ENC_AESMC_B_CRYPTOAES:
 		{
-			arrangement_spec arr_spec_16b = _16B;
+			ArrangementSpec arr_spec_16b = _16B;
 			// SYNTAX: <Vd>.16B,<Vn>.16B
 			ADD_OPERAND_VREG_T(arr_spec_16b, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_16b, dec->n);
@@ -2986,7 +2969,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BCAX_VVV16_CRYPTO4:
 		case ENC_EOR3_VVV16_CRYPTO4:
 		{
-			arrangement_spec arr_spec_16b = _16B;
+			ArrangementSpec arr_spec_16b = _16B;
 			// SYNTAX: <Vd>.16B,<Vn>.16B,<Vm>.16B,<Va>.16B
 			ADD_OPERAND_VREG_T(arr_spec_16b, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_16b, dec->n);
@@ -2998,7 +2981,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOVI_ASIMDIMM_D2_D: // display as int
 		{
 			uint64_t imm = dec->imm;
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D, #<imm64>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->rd);
 			ADD_OPERAND_UIMM64;
@@ -3008,7 +2991,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_ASIMDIMM_D2_D: // display as float
 		{
 			float fimm = table_imm8_to_float[ABCDEFGH];
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->rd);
 			ADD_OPERAND_FIMM;
@@ -3017,7 +3000,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_SHA512SU0_VV2_CRYPTOSHA512_2:
 		{
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D,<Vn>.2D
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->n);
@@ -3027,7 +3010,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_RAX1_VVV2_CRYPTOSHA512_3:
 		case ENC_SHA512SU1_VVV2_CRYPTOSHA512_3:
 		{
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			// SYNTAX: <Vd>.2D,<Vn>.2D,<Vm>.2D
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->n);
@@ -3037,7 +3020,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_XAR_VVV2_CRYPTO3_IMM6:
 		{
-			arrangement_spec arr_spec_2d = _2D;
+			ArrangementSpec arr_spec_2d = _2D;
 			uint64_t imm6 = dec->imm6;
 			// SYNTAX: <Vd>.2D,<Vn>.2D,<Vm>.2D, #<imm6>
 			ADD_OPERAND_VREG_T(arr_spec_2d, dec->d);
@@ -3051,8 +3034,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMMLA_ASIMDSAME2_G:
 		case ENC_USMMLA_ASIMDSAME2_G:
 		{
-			arrangement_spec arr_spec_4s = _4S;
-			arrangement_spec arr_spec_16b = _16B;
+			ArrangementSpec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_16b = _16B;
 			// SYNTAX: <Vd>.4S,<Vn>.16B,<Vm>.16B
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_16b, dec->n);
@@ -3064,7 +3047,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SHA256SU0_VV_CRYPTOSHA2:
 		case ENC_SM4E_VV4_CRYPTOSHA512_2:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Vd>.4S,<Vn>.4S
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
@@ -3077,7 +3060,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SM3PARTW2_VVV4_CRYPTOSHA512_3:
 		case ENC_SM4EKEY_VVV4_CRYPTOSHA512_3:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Vd>.4S,<Vn>.4S,<Vm>.4S
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
@@ -3087,7 +3070,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_SM3SS1_VVV4_CRYPTO4:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Vd>.4S,<Vn>.4S,<Vm>.4S,<Va>.4S
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
@@ -3101,18 +3084,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SM3TT2A_VVV4_CRYPTO3_IMM2:
 		case ENC_SM3TT2B_VVV_CRYPTO3_IMM2:
 		{
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Vd>.4S,<Vn>.4S,<Vm>.S[<imm2>]
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(4, dec->m, dec->imm2);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1S, dec->m, dec->imm2);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_BFMMLA_ASIMDSAME2_E:
 		{
-			arrangement_spec arr_spec_8h = _8H;
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_8h = _8H;
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: <Vd>.4S,<Vn>.8H,<Vm>.8H
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->d);
 			ADD_OPERAND_VN;
@@ -3124,7 +3107,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MVNI_ASIMDIMM_M_SM: // 32-bit shifting ones (cmode == 110x)
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s[dec->Q];
 			// SYNTAX: <Vd>.<T>, #<imm8>, MSL #<amount>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
 			ADD_OPERAND_IMM8;
@@ -3136,7 +3119,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_MOVI_ASIMDIMM_N_B:
 		{
-			arrangement_spec arr_spec = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b[dec->Q];
 			uint64_t imm8 = dec->imm & 0xFF;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #0}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3147,7 +3130,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORR_ASIMDIMM_L_SL:
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s[dec->Q];
 			int AMOUNT = 8*((dec->cmode>>1) & 0b11);
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3161,7 +3144,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORR_ASIMDIMM_L_HL:
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			int AMOUNT = (dec->cmode & 2) ? 8 : 0;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3177,7 +3160,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MVNI_ASIMDIMM_L_HL: // 16-bit shifted immediate (cmode == 10x0)
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			unsigned AMOUNT = (dec->cmode & 0b10)<<2;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3192,7 +3175,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MVNI_ASIMDIMM_L_SL: // cmode == '0xx0' (32-bit shifted immediate)
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s[dec->Q];
 			unsigned AMOUNT = (dec->cmode & 0b0110)<<2;
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3207,7 +3190,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BIC_ASIMDIMM_L_SL:
 		{
 			uint64_t imm8 = ABCDEFGH;
-			arrangement_spec arr_spec;
+			ArrangementSpec arr_spec;
 			unsigned AMOUNT = 0;
 			if((dec->cmode & 0b1101) == 0b1001) { // 16-bit (cmode == 10x1)
 				arr_spec = table_4h_8h[dec->Q];
@@ -3235,7 +3218,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t imm8 = ABCDEFGH;
 			unsigned AMOUNT = (dec->cmode & 0b110) << 2;
-			arrangement_spec arr_spec = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s[dec->Q];
 			// SYNTAX: <Vd>.<T>, #<imm8>{, LSL #<amount>}
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
 			ADD_OPERAND_IMM8;
@@ -3248,7 +3231,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_ASIMDIMM_H_H:
 		{
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			float fimm = table_imm8_to_float[ABCDEFGH];
 			// SYNTAX: <Vd>.<T>, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3258,7 +3241,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_ASIMDIMM_S_S:
 		{
-			arrangement_spec arr_spec = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s[dec->Q];
 			float fimm = table_imm8_to_float[ABCDEFGH];
 			// SYNTAX: <Vd>.<T>, #<fimm>
 			ADD_OPERAND_VREG_T(arr_spec, dec->rd);
@@ -3268,7 +3251,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_DUP_ASIMDINS_DR_R:
 		{
-			arrangement_spec arr_spec = arr_spec_method4(dec->imm5, dec->Q);
+			ArrangementSpec arr_spec = arr_spec_method4(dec->imm5, dec->Q);
 			unsigned rn_base = rwwwx_0123x_reg(dec->imm5, dec->Rn);
 			// SYNTAX: <Vd>.<T>,<R><n>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
@@ -3301,7 +3284,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FRINTZ_ASIMDMISCFP16_R:
 		case ENC_FRSQRTE_ASIMDMISCFP16_R:
 		{
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3320,7 +3303,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTNS_ASIMDMISC_R:
 		case ENC_FCVTZU_ASIMDMISC_R:
 		{
-			arrangement_spec arr_spec = table_2s_4s_r_2d[(dec->sz<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s_r_2d[(dec->sz<<1)|dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3341,7 +3324,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USQADD_ASIMDMISC_R:
 		case ENC_SUQADD_ASIMDMISC_R:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3379,7 +3362,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_URECPE_ASIMDMISC_R:
 		case ENC_URSQRTE_ASIMDMISC_R:
 		{
-			arrangement_spec arr_spec = table_2s_4s_r_2d[(dec->sz<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s_r_2d[(dec->sz<<1) | dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3392,7 +3375,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLE_ASIMDMISC_FZ:
 		case ENC_FCMLT_ASIMDMISC_FZ:
 		{
-			arrangement_spec arr_spec = table_2s_4s_r_2d[(dec->sz<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_2s_4s_r_2d[(dec->sz<<1) | dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #0.0
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3406,7 +3389,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCMLE_ASIMDMISCFP16_FZ:
 		case ENC_FCMLT_ASIMDMISCFP16_FZ:
 		{
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #0.0
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3420,7 +3403,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CMLE_ASIMDMISC_Z:
 		case ENC_CMLT_ASIMDMISC_Z:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #0
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3433,7 +3416,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SCVTF_ASIMDSHF_C:
 		case ENC_UCVTF_ASIMDSHF_C:
 		{
-			arrangement_spec arr_spec = arr_spec_method3(dec->immh, dec->Q);
+			ArrangementSpec arr_spec = arr_spec_method3(dec->immh, dec->Q);
 			uint64_t fbits = dec->fracbits;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #<fbits>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
@@ -3458,7 +3441,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USRA_ASIMDSHF_R:
 		{
 			unsigned shift = dec->shift;
-			arrangement_spec arr_spec = arr_spec_method3(dec->immh, dec->Q);
+			ArrangementSpec arr_spec = arr_spec_method3(dec->immh, dec->Q);
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>, #<shift>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3603,7 +3586,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORN_ASIMDSAME_ONLY:
 		case ENC_BIC_ASIMDSAME_ONLY:
 		{
-			arrangement_spec arr_spec = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<T>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
@@ -3613,7 +3596,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_EXT_ASIMDEXT_ONLY:
 		{
-			arrangement_spec arr_spec = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b[dec->Q];
 			uint64_t const_ = dec->imm4;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<T>, #<const>
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
@@ -3626,7 +3609,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCADD_ASIMDSAME2_C:
 		case ENC_FCMLA_ASIMDSAME2_C:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
 			uint64_t rotate;
 			if(dec->encoding == ENC_FCADD_ASIMDSAME2_C)
 				rotate = dec->rot ? 270 : 90;
@@ -3645,12 +3628,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMULX_ASIMDELEM_R_SD:
 		case ENC_FMUL_ASIMDELEM_R_SD:
 		{
-			arrangement_spec arr_spec = table_2s_r_4s_2d[(dec->Q<<1) | dec->sz];
-			unsigned elem_sz = table_s_d[dec->sz];
+			ArrangementSpec arr_spec0 = table_2s_r_4s_2d[(dec->Q<<1) | dec->sz];
+			ArrangementSpec arr_spec1 = table_s_d[dec->sz];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<Ts>[<index>]
-			ADD_OPERAND_VREG_T(arr_spec, dec->d);
-			ADD_OPERAND_VREG_T(arr_spec, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->d);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->n);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec1, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -3662,25 +3645,25 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SQRDMLSH_ASIMDELEM_R:
 		case ENC_SQRDMULH_ASIMDELEM_R:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
-			unsigned elem_sz = table_r_h_s_d[dec->size];
+			ArrangementSpec arr_spec0 = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec1 = table_r_h_s_d[dec->size];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<Ts>[<index>]
-			ADD_OPERAND_VREG_T(arr_spec, dec->d);
-			ADD_OPERAND_VREG_T(arr_spec, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->d);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->n);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec1, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FCMLA_ASIMDELEM_C_H:
 		case ENC_FCMLA_ASIMDELEM_C_S:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
-			unsigned elem_sz = table_r_h_s_d[dec->size];
+			ArrangementSpec arr_spec0 = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec1 = table_r_h_s_d[dec->size];
 			uint64_t rotate = 90*dec->rot;
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.<Ts>[<index>], #<rotate>
-			ADD_OPERAND_VREG_T(arr_spec, dec->d);
-			ADD_OPERAND_VREG_T(arr_spec, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->d);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->n);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec1, dec->m, dec->index);
 			ADD_OPERAND_ROTATE;
 			// SYNTAX-END
 			break;
@@ -3690,21 +3673,21 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMULX_ASIMDELEM_RH_H:
 		case ENC_FMUL_ASIMDELEM_RH_H:
 		{
-			arrangement_spec arr_spec = table_4h_8h[dec->Q];
+			ArrangementSpec arr_spec = table_4h_8h[dec->Q];
 			// SYNTAX: <Vd>.<T>,<Vn>.<T>,<Vm>.H[<index>]
 			ADD_OPERAND_VREG_T(arr_spec, dec->d);
 			ADD_OPERAND_VREG_T(arr_spec, dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_DUP_ASIMDINS_DV_V:
 		{
-			arrangement_spec arr_spec = arr_spec_method4(dec->imm5, dec->Q);
-			unsigned elem_sz = size_spec_method3(dec->imm5);
+			ArrangementSpec arr_spec0 = arr_spec_method4(dec->imm5, dec->Q);
+			ArrangementSpec arr_spec1 = size_spec_method3(dec->imm5);
 			// SYNTAX: <Vd>.<T>,<Vn>.<Ts>[<index>]
-			ADD_OPERAND_VREG_T(arr_spec, dec->d);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
+			ADD_OPERAND_VREG_T(arr_spec0, dec->d);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec1, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -3713,8 +3696,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UADALP_ASIMDMISC_P:
 		case ENC_UADDLP_ASIMDMISC_P:
 		{
-			arrangement_spec arr_spec_a = table_4h_8h_2s_4s_1d_2d_r_r[(dec->size<<1)|dec->Q];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_4h_8h_2s_4s_1d_2d_r_r[(dec->size<<1)|dec->Q];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -3723,9 +3706,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_BFDOT_ASIMDELEM_E:
 		{
-			arrangement_spec arr_spec_2h = _2H;
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_2h = _2H;
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.2H[<index>]
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -3739,21 +3722,21 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UDOT_ASIMDELEM_D:
 		case ENC_USDOT_ASIMDELEM_D:
 		{
-			arrangement_spec arr_spec_4b = _4B;
-			arrangement_spec arr_spec_a = table_2s_4s[dec->Q];
-			arrangement_spec arr_spec_b = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_4b = _4B;
+			ArrangementSpec arr_spec_a = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec_b = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.4B[<index>]
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
-			ADD_OPERAND_VREG_T_INDEXED(arr_spec_4b, dec->m, dec->index);
+			ADD_OPERAND_VREG_T_LANED(arr_spec_4b, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMLSL2_ASIMDSAME_F:
 		case ENC_FMLAL2_ASIMDSAME_F:
 		{
-			arrangement_spec arr_spec_a = table_2s_4s[dec->Q];
-			arrangement_spec arr_spec_b = table_2h_4h[dec->Q];
+			ArrangementSpec arr_spec_a = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec_b = table_2h_4h[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -3765,8 +3748,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLAL_ASIMDSAME_F:
 		case ENC_FMLSL_ASIMDSAME_F:
 		{
-			arrangement_spec arr_spec_a = table_2s_4s[dec->Q];
-			arrangement_spec arr_spec_b = table_2h_4h[dec->Q];
+			ArrangementSpec arr_spec_a = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec_b = table_2h_4h[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -3778,8 +3761,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UDOT_ASIMDSAME2_D:
 		case ENC_USDOT_ASIMDSAME2_D:
 		{
-			arrangement_spec arr_spec_a = table_2s_4s[dec->Q];
-			arrangement_spec arr_spec_b = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_a = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec_b = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -3792,22 +3775,22 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLSL2_ASIMDELEM_LH:
 		case ENC_FMLSL_ASIMDELEM_LH:
 		{
-			arrangement_spec arr_spec_a = table_2s_4s[dec->Q];
-			arrangement_spec arr_spec_b = table_2h_4h[dec->Q];
+			ArrangementSpec arr_spec_a = table_2s_4s[dec->Q];
+			ArrangementSpec arr_spec_b = table_2h_4h[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,<Vn>.<Tb>,<Vm>.H[<index>]
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_TBL_ASIMDTBL_L4_4:
 		case ENC_TBX_ASIMDTBL_L4_4:
 		{
-			arrangement_spec arr_spec_a = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_a = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,{<Vn>.16B,<Vn+1>.16B,<Vn+2>.16B,<Vn+3>.16B},<Vm>.<Ta>
 			ADD_OPERAND_VREG_TA(dec->d);
-			ADD_OPERAND_MULTIREG_4(REG_V_BASE, 16, 1, dec->n);
+			ADD_OPERAND_MULTIREG_4(REG_V_BASE, _16B, dec->n);
 			ADD_OPERAND_VREG_TA(dec->m);
 			// SYNTAX-END
 			break;
@@ -3815,10 +3798,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_TBL_ASIMDTBL_L3_3:
 		case ENC_TBX_ASIMDTBL_L3_3:
 		{
-			arrangement_spec arr_spec_a = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_a = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,{<Vn>.16B,<Vn+1>.16B,<Vn+2>.16B},<Vm>.<Ta>
 			ADD_OPERAND_VREG_TA(dec->d);
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, 16, 1, dec->n);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, _16B, dec->n);
 			ADD_OPERAND_VREG_TA(dec->m);
 			// SYNTAX-END
 			break;
@@ -3826,10 +3809,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_TBL_ASIMDTBL_L2_2:
 		case ENC_TBX_ASIMDTBL_L2_2:
 		{
-			arrangement_spec arr_spec_a = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_a = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,{<Vn>.16B,<Vn+1>.16B},<Vm>.<Ta>
 			ADD_OPERAND_VREG_TA(dec->d);
-			ADD_OPERAND_MULTIREG_2(REG_V_BASE, 16, 1, dec->n);
+			ADD_OPERAND_MULTIREG_2(REG_V_BASE, _16B, dec->n);
 			ADD_OPERAND_VREG_TA(dec->m);
 			// SYNTAX-END
 			break;
@@ -3837,10 +3820,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_TBL_ASIMDTBL_L1_1:
 		case ENC_TBX_ASIMDTBL_L1_1:
 		{
-			arrangement_spec arr_spec_a = table_8b_16b[dec->Q];
+			ArrangementSpec arr_spec_a = table_8b_16b[dec->Q];
 			// SYNTAX: <Vd>.<Ta>,{<Vn>.16B},<Vm>.<Ta>
 			ADD_OPERAND_VREG_TA(dec->d);
-			ADD_OPERAND_MULTIREG_1(REG_V_BASE, 16, 1, dec->n);
+			ADD_OPERAND_MULTIREG_1(REG_V_BASE, _16B, dec->n);
 			ADD_OPERAND_VREG_TA(dec->m);
 			// SYNTAX-END
 			break;
@@ -3848,7 +3831,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_INS_ASIMDINS_IV_V:
 		case ENC_MOV_INS_ASIMDINS_IV_V:
 		{
-			unsigned elem_sz = size_spec_method3(dec->imm5);
+			ArrangementSpec arr_spec = size_spec_method3(dec->imm5);
 
 			uint64_t INDEX1=0, INDEX2=0;
 			if((dec->imm5 & 1) == 1) {
@@ -3869,8 +3852,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			}
 
 			// SYNTAX: <Vd>.<Ts>[<index1>],<Vn>.<Ts>[<index2>]
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->d, dec->dst_index);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->src_index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->d, dec->dst_index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->n, dec->src_index);
 			// SYNTAX-END
 			break;
 		}
@@ -3878,9 +3861,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_INS_ASIMDINS_IR_R:
 		{
 			unsigned rn_base = rwwwx_0123x_reg(dec->imm5, dec->Rn);
-			unsigned elem_sz = size_spec_method3(dec->imm5);
+			ArrangementSpec arr_spec = size_spec_method3(dec->imm5);
 			// SYNTAX: <Vd>.<Ts>[<index>],<R><n>
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->d, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->d, dec->index);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			// SYNTAX-END
 			break;
@@ -3888,7 +3871,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_V64I_FLOAT2INT:
 		{
 			// SYNTAX: <Vd>.D[1],<Xn>
-			ADD_OPERAND_VREG_ESIZE_INDEXED(8, dec->d, 1);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1D, dec->d, 1);
 			ADD_OPERAND_XN;
 			// SYNTAX-END
 			break;
@@ -4023,10 +4006,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SMOV_ASIMDINS_W_W:
 		case ENC_UMOV_ASIMDINS_W_W:
 		{
-			unsigned elem_sz = dec->esize/8;
+			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
 			// SYNTAX: <Wd>,<Vn>.<Ts>[<index>]
 			ADD_OPERAND_WD;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -4034,7 +4017,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: <Wd>,<Vn>.S[<index>]
 			ADD_OPERAND_WD;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(4, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1S, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -4303,10 +4286,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECP_R_P_R_UW:
 		case ENC_UQINCP_R_P_R_UW:
 		{
-			unsigned elem_sz = dec->esize / 8;
+			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
 			// SYNTAX: <Wdn>,<Pm>.<Ts>
 			ADD_OPERAND_WDN;
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
 			// SYNTAX-END
 			break;
 		}
@@ -5016,11 +4999,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_CNTP_R_P_P_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Xd>,<Pg>,<Pn>.<Ts>
 			ADD_OPERAND_XD;
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_PRED_REG_ESIZE(dec->n, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->n, arr_spec);
 			// SYNTAX-END
 			break;
 		}
@@ -5055,10 +5038,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SMOV_ASIMDINS_X_X:
 		case ENC_UMOV_ASIMDINS_X_X:
 		{
-			unsigned elem_sz = dec->esize/8;
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Xd>,<Vn>.<Ts>[<index>]
 			ADD_OPERAND_XD;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -5066,7 +5049,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: <Xd>,<Vn>.D[1]
 			ADD_OPERAND_XD;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(8, dec->n, 1);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1D, dec->n, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -5074,7 +5057,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: <Xd>,<Vn>.D[<index>]
 			ADD_OPERAND_XD;
-			ADD_OPERAND_VREG_ESIZE_INDEXED(8, dec->n, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(_1D, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -5421,20 +5404,20 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECP_R_P_R_X:
 		case ENC_UQINCP_R_P_R_X:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Xdn>,<Pm>.<Ts>
 			ADD_OPERAND_XDN;
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_SQDECP_R_P_R_SX:
 		case ENC_SQINCP_R_P_R_SX:
 		{
-			unsigned elem_sz = dec->esize/8;
+			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
 			// SYNTAX: <Xdn>,<Pm>.<Ts>,<Wdn>
 			ADD_OPERAND_XDN;
-			ADD_OPERAND_PRED_REG_ESIZE(dec->m, elem_sz);
+			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
 			ADD_OPERAND_WDN;
 			// SYNTAX-END
 			break;
@@ -6076,7 +6059,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_FMOV_DUP_Z_I_:
 		{
-			arrangement_spec arr_spec = arr_spec_method0(dec->immh, dec->Q);
+			ArrangementSpec arr_spec = arr_spec_method0(dec->immh, dec->Q);
 			// SYNTAX: <Zd>.<T>, #0.0
 			ADD_OPERAND_ZREG_T(arr_spec, dec->d);
 			ADD_OPERAND_FLOAT32(0);
@@ -6086,10 +6069,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_FDUP_Z_I_:
 		case ENC_FDUP_Z_I_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Zd>.<Ts>, #<fimm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_FIMM;
 			// SYNTAX-END
 			break;
@@ -6098,24 +6081,24 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_DUPM_Z_I_:
 		case ENC_DUPM_Z_I_:
 		{
-			unsigned elem_sz = size_spec_method1(dec->imm13);
+			ArrangementSpec arr_spec = size_spec_method1(dec->imm13);
 			uint64_t const_ = dec->imm;
-			if(elem_sz==1) const_ &= 0xFF;
-			if(elem_sz==2) const_ &= 0xFFFF;
-			if(elem_sz==4) const_ &= 0xFFFFFFFF;
+			if(arr_spec==_1B) const_ &= 0xFF;
+			if(arr_spec==_1H) const_ &= 0xFFFF;
+			if(arr_spec==_1S) const_ &= 0xFFFFFFFF;
 			// SYNTAX: <Zd>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
 		}
 		case ENC_INDEX_Z_II_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			uint64_t imm1 = dec->imm1;
 			uint64_t imm2 = dec->imm2;
 			// SYNTAX: <Zd>.<Ts>, #<imm1>, #<imm2>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_IMM1;
 			ADD_OPERAND_IMM2;
 			// SYNTAX-END
@@ -6124,10 +6107,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_INDEX_Z_IR_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rm_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <Zd>.<Ts>, #<imm>,<R><m>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_UIMM32;
 			ADD_OPERAND_REG(REGSET_ZR, rm_base, dec->m);
 			// SYNTAX-END
@@ -6137,9 +6120,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_DUP_Z_I_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>, #<imm>{,<shift>}
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			// imm is the imm8 with shift applied, no need to print
@@ -6147,10 +6130,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ADR_Z_AZ_SD_SAME_SCALED:
 		{
-			unsigned elem_sz = dec->sz ? 8 : 4;
+			ArrangementSpec arr_spec = dec->sz ? _1D : _1S;
 			// SYNTAX: <Zd>.<Ts>, [<Zn>.<Ts>,<Zm>.<Ts>{,<mod><amount>}]
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, elem_sz);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, arr_spec);
 			// SYNTAX-END
 			if(dec->msz) {
 				LAST_OPERAND_SHIFT(ShiftType_LSL, dec->msz)
@@ -6159,42 +6142,41 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_COMPACT_Z_P_Z_:
 		{
-			arrangement_spec arr_spec = table_1s_1d[dec->size & 1];
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec0 = table_1s_1d[dec->size & 1];
 			// SYNTAX: <Zd>.<Ts>,<Pg>,<Zn>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec0, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec0, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_SEL_Z_P_ZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>,<Zn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_MOVPRFX_Z_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			char pred_qual = dec->M ? 'm' : 'z';
 			// SYNTAX: <Zd>.<Ts>,<Pg>/<ZM>,<Zn>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, pred_qual);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMOV_CPY_Z_P_I_:
 		{
-			unsigned elem_sz = table_b_d_h_s[dec->size];
+			ArrangementSpec arr_spec = table_b_d_h_s[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M, #0.0
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
 			ADD_OPERAND_FLOAT32(0);
 			// SYNTAX-END
@@ -6203,10 +6185,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMOV_FCPY_Z_P_I_:
 		case ENC_FCPY_Z_P_I_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			float fimm = table_imm8_to_float[dec->imm8];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M, #<fimm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
 			ADD_OPERAND_FIMM;
 			// SYNTAX-END
@@ -6216,9 +6198,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CPY_Z_P_I_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M, #<imm>{,<shift>}
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -6228,10 +6210,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_CPY_Z_P_R_:
 		case ENC_CPY_Z_P_R_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = dec->size==3 ? REG_X_BASE : REG_W_BASE;
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M,<R><n|SP>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
 			ADD_OPERAND_REG(REGSET_SP, rn_base, dec->n);
 			// SYNTAX-END
@@ -6240,10 +6222,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_CPY_Z_P_V_:
 		case ENC_CPY_Z_P_V_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = bhsd_0123_reg(dec->size);
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M,<V><n>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			// SYNTAX-END
@@ -6276,11 +6258,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UXTB_Z_P_Z_:
 		case ENC_UXTH_Z_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/M,<Zn>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6288,9 +6270,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CPY_Z_O_I_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Pg>/Z, #<imm>{,<shift>}
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -6300,10 +6282,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_INDEX_Z_RI_: // checked bhsd, on 04b346fd
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = wwwx_0123_reg(dec->size);
 			// SYNTAX: <Zd>.<Ts>,<R><n>, #<imm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -6311,11 +6293,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_INDEX_Z_RR_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = (dec->size & 0x3) == 3 ? REG_X_BASE : REG_W_BASE;
 			unsigned rm_base = (dec->size & 0x3) == 3 ? REG_X_BASE : REG_W_BASE;
 			// SYNTAX: <Zd>.<Ts>,<R><n>,<R><m>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			ADD_OPERAND_REG(REGSET_ZR, rm_base, dec->m);
 			// SYNTAX-END
@@ -6324,21 +6306,20 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MOV_DUP_Z_R_:
 		case ENC_DUP_Z_R_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rn_base = (dec->size & 0x3) == 3 ? REG_X_BASE : REG_W_BASE;
 			// SYNTAX: <Zd>.<Ts>,<R><n|SP>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_REG(REGSET_SP, rn_base, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_MOV_DUP_Z_ZI_:
 		{
-			arr_spec = arr_spec_method1(dec->tsz);
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec = arr_spec_method1(dec->tsz);
 			unsigned rn_base = rbhsdq_5bit_reg(dec->tsz);
 			// SYNTAX: <Zd>.<Ts>,<V><n>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			// SYNTAX-END
 			break;
@@ -6348,10 +6329,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FRSQRTE_Z_Z_:
 		case ENC_REV_Z_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6359,12 +6340,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_Z_ZI_:
 		case ENC_LSR_Z_ZI_:
 		{
-			arrangement_spec arr_spec = table16_r_b_h_s_d[(dec->tszh<<2)|dec->tszl];
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec = table16_r_b_h_s_d[(dec->tszh<<2)|dec->tszl];
 			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6389,11 +6369,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ZIP1_Z_ZZ_:
 		case ENC_ZIP2_Z_ZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6401,32 +6381,30 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_Z_ZW_:
 		case ENC_LSR_Z_ZW_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_DUP_Z_ZI_:
 		{
-			arrangement_spec arr_spec = arr_spec_method1(dec->tsz);
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec = arr_spec_method1(dec->tsz);
 			unsigned rn_base = rbhsdq_5bit_reg(dec->tsz);
 			// SYNTAX: <Zd>.<Ts>,<V><n>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
 			ADD_OPERAND_REG(REGSET_ZR, rn_base, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_MOV_DUP_Z_ZI_2:
 		{
-			arrangement_spec arr_spec = arr_spec_method1(dec->tsz);
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec = arr_spec_method1(dec->tsz);
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Ts>[<imm>]
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(elem_sz, dec->n, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE_LANED(arr_spec, dec->n, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6435,29 +6413,29 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UUNPKHI_Z_Z_:
 		case ENC_UUNPKLO_Z_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
-			unsigned elem_sz_b = table_d_b_h_s[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec_b = table_d_b_h_s[dec->size];
 			// SYNTAX: <Zd>.<Ts>,<Zn>.<Tb>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz_b, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec_b, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_TBL_Z_ZZ_1:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zd>.<Ts>,{<Zn>.<Ts>},<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->d);
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->d);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_ADR_Z_AZ_D_S32_SCALED:
 		{
 			// SYNTAX: <Zd>.D, [<Zn>.D,<Zm>.D, SXTW{<amount>}]
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, 8);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, _1D);
 			// SYNTAX-END
 			if(dec->msz) {
 				LAST_OPERAND_SHIFT(ShiftType_SXTW, dec->msz)
@@ -6467,8 +6445,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ADR_Z_AZ_D_U32_SCALED:
 		{
 			// SYNTAX: <Zd>.D, [<Zn>.D,<Zm>.D, UXTW{<amount>}]
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, 8);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_Z_BASE, dec->n, REG_Z_BASE, dec->m, _1D);
 			// SYNTAX-END
 			if(dec->msz) {
 				LAST_OPERAND_SHIFT(ShiftType_UXTW, dec->msz)
@@ -6484,9 +6462,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UXTW_Z_P_Z_:
 		{
 			// SYNTAX: <Zd>.D,<Pg>/M,<Zn>.D
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6495,9 +6473,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZU_Z_P_Z_FP162X:
 		{
 			// SYNTAX: <Zd>.D,<Pg>/M,<Zn>.H
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6508,17 +6486,17 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_W2D:
 		{
 			// SYNTAX: <Zd>.D,<Pg>/M,<Zn>.S
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_MOV_ORR_Z_ZZ_:
 		{
 			// SYNTAX: <Zd>.D,<Zn>.D
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6528,18 +6506,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ORR_Z_ZZ_:
 		{
 			// SYNTAX: <Zd>.D,<Zn>.D,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMUL_Z_ZZI_D:
 		{
 			// SYNTAX: <Zd>.D,<Zn>.D,<Zm>.D[<index>]
-			ADD_OPERAND_ZREG_ESIZE(8, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(8, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1D, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6548,9 +6526,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_X2FP16:
 		{
 			// SYNTAX: <Zd>.H,<Pg>/M,<Zn>.D
-			ADD_OPERAND_ZREG_ESIZE(2, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6560,9 +6538,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_H2FP16:
 		{
 			// SYNTAX: <Zd>.H,<Pg>/M,<Zn>.H
-			ADD_OPERAND_ZREG_ESIZE(2, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6573,18 +6551,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_W2FP16:
 		{
 			// SYNTAX: <Zd>.H,<Pg>/M,<Zn>.S
-			ADD_OPERAND_ZREG_ESIZE(2, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMUL_Z_ZZI_H:
 		{
 			// SYNTAX: <Zd>.H,<Zn>.H,<Zm>.H[<index>]
-			ADD_OPERAND_ZREG_ESIZE(2, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6596,9 +6574,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ZIP2_Z_ZZ_Q:
 		{
 			// SYNTAX: <Zd>.Q,<Zn>.Q,<Zm>.Q
-			ADD_OPERAND_ZREG_ESIZE(16, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(16, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(16, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1Q, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1Q, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1Q, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6609,9 +6587,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_X2S:
 		{
 			// SYNTAX: <Zd>.S,<Pg>/M,<Zn>.D
-			ADD_OPERAND_ZREG_ESIZE(4, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6620,9 +6598,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTZU_Z_P_Z_FP162W:
 		{
 			// SYNTAX: <Zd>.S,<Pg>/M,<Zn>.H
-			ADD_OPERAND_ZREG_ESIZE(4, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
 			// SYNTAX-END
 			break;
 		}
@@ -6632,18 +6610,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UCVTF_Z_P_Z_W2S:
 		{
 			// SYNTAX: <Zd>.S,<Pg>/M,<Zn>.S
-			ADD_OPERAND_ZREG_ESIZE(4, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->d);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMUL_Z_ZZI_S:
 		{
 			// SYNTAX: <Zd>.S,<Zn>.S,<Zm>.S[<index>]
-			ADD_OPERAND_ZREG_ESIZE(4, dec->d);
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(4, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->d);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1S, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6654,24 +6632,24 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MLA_Z_P_ZZZ_:
 		case ENC_MLS_Z_P_ZZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zda>.<Ts>,<Pg>/M,<Zn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zda);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FCMLA_Z_P_ZZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.<Ts>,<Pg>/M,<Zn>.<Ts>,<Zm>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zda);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6679,21 +6657,21 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SDOT_Z_ZZZ_:
 		case ENC_UDOT_Z_ZZZ_:
 		{
-			unsigned elem_sz = (dec->size & 1) ? 8 : 4;
-			unsigned elem_sz_b = (dec->size & 1) ? 2 : 1;
+			ArrangementSpec arr_spec = (dec->size & 1) ? _1D : _1S;
+			ArrangementSpec arr_spec_b = (dec->size & 1) ? _1H : _1B;
 			// SYNTAX: <Zda>.<Ts>,<Zn>.<Tb>,<Zm>.<Tb>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz_b, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz_b, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec_b, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec_b, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMMLA_Z_ZZZ_D:
 		{
 			// SYNTAX: <Zda>.D,<Zn>.D,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(8, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6701,9 +6679,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLS_Z_ZZZI_D:
 		{
 			// SYNTAX: <Zda>.D,<Zn>.D,<Zm>.D[<index>]
-			ADD_OPERAND_ZREG_ESIZE(8, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(8, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1D, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6711,9 +6689,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UDOT_Z_ZZZI_D:
 		{
 			// SYNTAX: <Zda>.D,<Zn>.H,<Zm>.H[<index>]
-			ADD_OPERAND_ZREG_ESIZE(8, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6721,9 +6699,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLS_Z_ZZZI_H:
 		{
 			// SYNTAX: <Zda>.H,<Zn>.H,<Zm>.H[<index>]
-			ADD_OPERAND_ZREG_ESIZE(2, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6731,9 +6709,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.H,<Zn>.H,<Zm>.H[<index>], #<const>
-			ADD_OPERAND_ZREG_ESIZE(2, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6744,9 +6722,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USMMLA_Z_ZZZ_:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.B,<Zm>.B
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(1, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(1, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6756,9 +6734,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USDOT_Z_ZZZI_S:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.B,<Zm>.B[<index>]
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(1, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(1, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1B, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6768,9 +6746,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BFMMLA_Z_ZZZ_:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.H,<Zm>.H
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6779,18 +6757,18 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BFMLALT_Z_ZZZI_:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.H,<Zm>.H[<index>]
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(2, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(2, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FMMLA_Z_ZZZ_S:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
-			ADD_OPERAND_ZREG_ESIZE(4, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6798,9 +6776,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FMLS_Z_ZZZI_S:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S[<index>]
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(4, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1S, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -6808,9 +6786,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t const_ = 90*dec->rot;
 			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S[<index>], #<const>
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zda);
-			ADD_OPERAND_ZREG_ESIZE(4, dec->n);
-			ADD_OPERAND_ZREG_ESIZE_INDEXED(4, dec->m, dec->index);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zda);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1S, dec->m, dec->index);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6819,24 +6797,24 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_CLASTB_Z_P_ZZ_:
 		case ENC_SPLICE_Z_P_ZZ_DES:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Pg>,<Zdn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_LSL_Z_P_ZI_:
 		case ENC_LSR_Z_P_ZI_:
 		{
-			unsigned elem_sz = dec->esize / 8;
+			ArrangementSpec arr_spec = table16_r_b_h_s_d[dec->esize/8];
 			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6844,13 +6822,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ASR_Z_P_ZI_:
 		case ENC_ASRD_Z_P_ZI_:
 		{
-			arrangement_spec arr_spec = table16_r_b_h_s_d[(dec->tszh<<2)|dec->tszl];
-			unsigned elem_sz = arr_spec.elem_sz;
+			ArrangementSpec arr_spec = table16_r_b_h_s_d[dec->esize/8];
 			uint64_t const_ = dec->shift;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6895,24 +6872,24 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMIN_Z_P_ZZ_:
 		case ENC_UMULH_Z_P_ZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>,<Zm>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_FCADD_Z_P_ZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			uint64_t const_ = dec->rot ? 270 : 90;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>,<Zm>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -6921,12 +6898,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LSL_Z_P_ZW_:
 		case ENC_LSR_Z_P_ZW_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(8, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6939,7 +6916,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FSUB_Z_P_ZS_:
 		case ENC_FSUBR_Z_P_ZS_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			float fimm;
 			if(dec->encoding == ENC_FADD_Z_P_ZS_ || dec->encoding == ENC_FSUB_Z_P_ZS_ || dec->encoding == ENC_FSUBR_Z_P_ZS_)
 				fimm = dec->i1 ? 1.0 : 0.5;
@@ -6948,9 +6925,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else
 				fimm = dec->i1 ? 1.0 : 0;
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zdn>.<Ts>, #<fimm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_FIMM;
 			// SYNTAX-END
 			break;
@@ -6962,12 +6939,12 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_MAD_Z_P_ZZZ_:
 		case ENC_MSB_Z_P_ZZZ_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Pg>/M,<Zm>.<Ts>,<Za>.<Ts>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'm');
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->a);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->a);
 			// SYNTAX-END
 			break;
 		}
@@ -6978,29 +6955,29 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECP_Z_P_Z_:
 		case ENC_UQINCP_Z_P_Z_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Pm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_PRED_REG(dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_INSR_Z_R_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rm_base = (dec->size & 0x3) == 3 ? REG_X_BASE : REG_W_BASE;
 			// SYNTAX: <Zdn>.<Ts>,<R><m>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_REG(REGSET_ZR, rm_base, dec->m);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_INSR_Z_V_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			unsigned rm_base = bhsd_0123_reg(dec->size);
 			// SYNTAX: <Zdn>.<Ts>,<V><m>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_REG(REGSET_ZR, rm_base, dec->m);
 			// SYNTAX-END
 			break;
@@ -7012,17 +6989,17 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_EOR_Z_ZI_:
 		case ENC_ORR_Z_ZI_:
 		{
-			unsigned elem_sz = size_spec_method0((dec->imm13>>12)&1, dec->imm13&0x3F);
+			ArrangementSpec arr_spec = size_spec_method0((dec->imm13>>12)&1, dec->imm13&0x3F);
 			uint64_t const_ = dec->imm;
-			switch(elem_sz) {
-				case 1: const_ &= 0xFF; break;
-				case 2: const_ &= 0xFFFF; break;
-				case 4: const_ &= 0xFFFFFFFF; break;
+			switch(arr_spec) {
+				case _1B: const_ &= 0xFF; break;
+				case _1H: const_ &= 0xFFFF; break;
+				case _1S: const_ &= 0xFFFFFFFF; break;
 				default: break;
 			}
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<const>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_CONST;
 			// SYNTAX-END
 			break;
@@ -7034,10 +7011,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMIN_Z_ZI_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<imm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			break;
@@ -7051,10 +7028,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQADD_Z_ZI_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>, #<imm>{,<shift>}
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			if(dec->encoding == ENC_UQADD_Z_ZI_ && dec->sh && !imm) {
@@ -7066,11 +7043,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FTMAD_Z_ZZI_:
 		{
 			uint64_t imm = dec->imm;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Zdn>.<Ts>,<Zdn>.<Ts>,<Zm>.<Ts>, #<imm>
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(elem_sz, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(arr_spec, dec->m);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			break;
@@ -7079,9 +7056,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			uint64_t imm = dec->position;
 			// SYNTAX: <Zdn>.B,<Zdn>.B,<Zm>.B, #<imm>
-			ADD_OPERAND_ZREG_ESIZE(1, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(1, dec->Zdn);
-			ADD_OPERAND_ZREG_ESIZE(1, dec->m);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1B, dec->m);
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
 			break;
@@ -7094,7 +7071,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQINCD_Z_ZS_:
 		{
 			// SYNTAX: <Zdn>.D{,<pattern>{, MUL #<imm>}}
-			ADD_OPERAND_ZREG_ESIZE(8, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1D, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
 			// SYNTAX-END
 			break;
@@ -7107,7 +7084,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQINCH_Z_ZS_:
 		{
 			// SYNTAX: <Zdn>.H{,<pattern>{, MUL #<imm>}}
-			ADD_OPERAND_ZREG_ESIZE(2, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1H, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
 			// SYNTAX-END
 			break;
@@ -7120,7 +7097,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQINCW_Z_ZS_:
 		{
 			// SYNTAX: <Zdn>.S{,<pattern>{, MUL #<imm>}}
-			ADD_OPERAND_ZREG_ESIZE(4, dec->Zdn);
+			ADD_OPERAND_ZREG_ESIZE(_1S, dec->Zdn);
 			ADD_OPERAND_OPTIONAL_PATTERN_MUL;
 			// SYNTAX-END
 			break;
@@ -7347,7 +7324,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D, LSL #1]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7357,7 +7334,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D, LSL #2]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7367,7 +7344,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D, LSL #3]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7378,7 +7355,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D,<mod>#1]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7389,7 +7366,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D,<mod>#2]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7400,7 +7377,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D,<mod>#3]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7411,7 +7388,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D,<mod>]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -7421,7 +7398,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.D]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, 8);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, _1D);
 			// SYNTAX-END
 			break;
 		}
@@ -7432,7 +7409,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.S,<mod>#1]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7443,7 +7420,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.S,<mod>#2]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7454,7 +7431,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.S,<mod>#3]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -7465,7 +7442,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Xn|SP>,<Zm>.S,<mod>]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -7506,7 +7483,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Zn>.D{, #<imm>}]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 8);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1D);
 			// SYNTAX-END
 			break;
 		}
@@ -7526,7 +7503,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			// SYNTAX: <prfop>,<Pg>, [<Zn>.S{, #<imm>}]
 			ADD_OPERAND_NAME(prfop);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 4);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1S);
 			// SYNTAX-END
 			break;
 		}
@@ -7714,8 +7691,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BFCVTN_ASIMDMISC_4S:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_4s = _4S;
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_4s = _4S;
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.4S
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_T(arr_spec_4s, dec->n);
@@ -7728,8 +7705,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USUBW_ASIMDDIFF_W:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Ta>,<Vm>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TA(dec->n);
@@ -7740,8 +7717,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTL_ASIMDMISC_L:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_4s_2d[dec->sz];
-			arrangement_spec arr_spec_b = table_4h_8h_2s_4s_1d_2d_r_r[(dec->sz<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_4s_2d[dec->sz];
+			ArrangementSpec arr_spec_b = table_4h_8h_2s_4s_1d_2d_r_r[(dec->sz<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -7752,8 +7729,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UXTL_USHLL_ASIMDSHF_L:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = arr_spec_method2(dec->immh);
-			arrangement_spec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
+			ArrangementSpec arr_spec_a = arr_spec_method2(dec->immh);
+			ArrangementSpec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -7764,8 +7741,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned shift = dec->shift;
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>, #<shift>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -7778,8 +7755,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned shift = dec->shift;
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = arr_spec_method2(dec->immh);
-			arrangement_spec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
+			ArrangementSpec arr_spec_a = arr_spec_method2(dec->immh);
+			ArrangementSpec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>, #<shift>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -7807,8 +7784,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_USUBL_ASIMDDIFF_L:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>,<Vm>.<Tb>
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
@@ -7827,13 +7804,13 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UMULL_ASIMDELEM_L:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
-			unsigned elem_sz = table_r_h_s_d[dec->size];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_r_h_s_d[dec->size];
 			// SYNTAX: {2}<Vd>.<Ta>,<Vn>.<Tb>,<Vm>.<Ts>[<index>]
 			ADD_OPERAND_VREG_TA(dec->d);
 			ADD_OPERAND_VREG_TB(dec->n);
-			ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz, dec->m, dec->index);
+			ADD_OPERAND_VREG_ESIZE_LANED(arr_spec, dec->m, dec->index);
 			// SYNTAX-END
 			break;
 		}
@@ -7841,8 +7818,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_FCVTXN_ASIMDMISC_N:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_4s_2d[dec->sz];
-			arrangement_spec arr_spec_b = table_4h_8h_2s_4s_1d_2d_r_r[(dec->sz<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_4s_2d[dec->sz];
+			ArrangementSpec arr_spec_b = table_4h_8h_2s_4s_1d_2d_r_r[(dec->sz<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Tb>,<Vn>.<Ta>
 			ADD_OPERAND_VREG_TB(dec->d);
 			ADD_OPERAND_VREG_TA(dec->n);
@@ -7855,8 +7832,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_XTN_ASIMDMISC_N:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Tb>,<Vn>.<Ta>
 			ADD_OPERAND_VREG_TB(dec->d);
 			ADD_OPERAND_VREG_TA(dec->n);
@@ -7874,8 +7851,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			unsigned shift = dec->shift;
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = arr_spec_method2(dec->immh);
-			arrangement_spec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
+			ArrangementSpec arr_spec_a = arr_spec_method2(dec->immh);
+			ArrangementSpec arr_spec_b = arr_spec_method3(dec->immh, dec->Q);
 			// SYNTAX: {2}<Vd>.<Tb>,<Vn>.<Ta>, #<shift>
 			ADD_OPERAND_VREG_TB(dec->d);
 			ADD_OPERAND_VREG_TA(dec->n);
@@ -7889,8 +7866,8 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SUBHN_ASIMDDIFF_N:
 		{
 			if(dec->Q) dec->operation = enc_to_oper2(dec->encoding);
-			arrangement_spec arr_spec_a = table_8h_4s_2d_1q[dec->size];
-			arrangement_spec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec_a = table_8h_4s_2d_1q[dec->size];
+			ArrangementSpec arr_spec_b = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {2}<Vd>.<Tb>,<Vn>.<Ta>,<Vm>.<Ta>
 			ADD_OPERAND_VREG_TB(dec->d);
 			ADD_OPERAND_VREG_TA(dec->n);
@@ -7904,9 +7881,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSE_R4_4V:
 		case ENC_ST4_ASISDLSE_R4:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>,<Vt4>.<T>}, [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -7917,9 +7894,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_R4_R4:
 		case ENC_ST4_ASISDLSEP_R4_R:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>,<Vt4>.<T>}, [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -7936,9 +7913,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 				imm = 4 << (dec->size);
 			else
 				imm = dec->Q ? 64 : 32;
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>,<Vt4>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -7949,9 +7926,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSE_R3_3V:
 		case ENC_ST3_ASISDLSE_R3:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -7962,9 +7939,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_R3_R3:
 		case ENC_ST3_ASISDLSEP_R3_R:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -7973,10 +7950,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD1_ASISDLSEP_I3_I3:
 		case ENC_ST1_ASISDLSEP_I3_I3:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			unsigned imm = dec->Q ? 48 : 24;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -7984,10 +7961,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3_ASISDLSEP_I3_I:
 		case ENC_ST3_ASISDLSEP_I3_I:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			unsigned imm = dec->Q ? 48 : 24;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -7996,9 +7973,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3R_ASISDLSOP_R3_I:
 		{
 			uint32_t imm = 3 << dec->size;
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -8010,9 +7987,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSE_R2_2V:
 		case ENC_ST2_ASISDLSE_R2:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8023,9 +8000,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_R2_R2:
 		case ENC_ST2_ASISDLSEP_R2_R:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8033,10 +8010,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_LD2R_ASISDLSOP_R2_I:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			unsigned imm = 2<<dec->size;
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -8047,9 +8024,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSEP_I2_I:
 		{
 			unsigned imm = dec->Q ? 32 : 16;
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>], #<imm>
-			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
 			break;
@@ -8058,9 +8035,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD1_ASISDLSE_R1_1V:
 		case ENC_ST1_ASISDLSE_R1_1V:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8069,9 +8046,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD1_ASISDLSEP_R1_R1:
 		case ENC_ST1_ASISDLSEP_R1_R1:
 		{
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8080,9 +8057,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD1R_ASISDLSOP_R1_I:
 		{
 			unsigned imm = 1<<dec->size;
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],#<imm>
-			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -8092,9 +8069,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSEP_I1_I1:
 		{
 			unsigned imm = dec->Q ? 16 : 8;
-			arrangement_spec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
+			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],<imm>
-			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec.data_sz, arr_spec.elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_UIMM32;
 			// SYNTAX-END
@@ -8104,7 +8081,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSO_B4_4B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B,<Vt4>.B}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8113,7 +8090,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_B4_I4B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B,<Vt4>.B}[<index>], [<Xn|SP>], #4
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 4);
 			// SYNTAX-END
 			break;
@@ -8122,7 +8099,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_BX4_R4B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B,<Vt4>.B}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8132,7 +8109,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSO_B3_3B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8141,7 +8118,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_B3_I3B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B}[<index>], [<Xn|SP>], #3
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 3);
 			// SYNTAX-END
 			break;
@@ -8150,7 +8127,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_BX3_R3B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8160,7 +8137,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSO_B2_2B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8169,7 +8146,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_B2_I2B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B}[<index>], [<Xn|SP>], #2
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 2);
 			// SYNTAX-END
 			break;
@@ -8178,7 +8155,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_BX2_R2B:
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8188,7 +8165,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSO_B1_1B:
 		{
 			// SYNTAX: {<Vt>.B}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8197,7 +8174,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_B1_I1B:
 		{
 			// SYNTAX: {<Vt>.B}[<index>], [<Xn|SP>], #1
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 1);
 			// SYNTAX-END
 			break;
@@ -8206,7 +8183,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_BX1_R1B:
 		{
 			// SYNTAX: {<Vt>.B}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1B, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8216,7 +8193,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSO_D4_4D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D,<Vt4>.D}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8225,7 +8202,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_D4_I4D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D,<Vt4>.D}[<index>], [<Xn|SP>], #32
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 32);
 			// SYNTAX-END
 			break;
@@ -8234,7 +8211,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_DX4_R4D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D,<Vt4>.D}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8244,7 +8221,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSO_D3_3D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8253,7 +8230,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_D3_I3D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D}[<index>], [<Xn|SP>], #24
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 24);
 			// SYNTAX-END
 			break;
@@ -8262,7 +8239,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_DX3_R3D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8272,7 +8249,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSO_D2_2D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8281,7 +8258,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_D2_I2D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D}[<index>], [<Xn|SP>], #16
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 16);
 			// SYNTAX-END
 			break;
@@ -8290,7 +8267,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_DX2_R2D:
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8300,7 +8277,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSO_D1_1D:
 		{
 			// SYNTAX: {<Vt>.D}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8309,7 +8286,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_D1_I1D:
 		{
 			// SYNTAX: {<Vt>.D}[<index>], [<Xn|SP>], #8
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 8);
 			// SYNTAX-END
 			break;
@@ -8318,7 +8295,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_DX1_R1D:
 		{
 			// SYNTAX: {<Vt>.D}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1D, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8328,7 +8305,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSO_H4_4H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H,<Vt4>.H}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8337,7 +8314,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_H4_I4H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H,<Vt4>.H}[<index>], [<Xn|SP>], #8
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 8);
 			// SYNTAX-END
 			break;
@@ -8346,7 +8323,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_HX4_R4H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H,<Vt4>.H}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8356,7 +8333,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSO_H3_3H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8365,7 +8342,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_H3_I3H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H}[<index>], [<Xn|SP>], #6
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_IMMEDIATE32(6, 0);
 			// SYNTAX-END
@@ -8375,7 +8352,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_HX3_R3H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8385,7 +8362,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSO_H2_2H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8394,7 +8371,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_H2_I2H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H}[<index>], [<Xn|SP>], #4
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 4);
 			// SYNTAX-END
 			break;
@@ -8403,7 +8380,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_HX2_R2H:
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8413,7 +8390,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSO_H1_1H:
 		{
 			// SYNTAX: {<Vt>.H}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8422,7 +8399,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_H1_I1H:
 		{
 			// SYNTAX: {<Vt>.H}[<index>], [<Xn|SP>], #2
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 2);
 			// SYNTAX-END
 			break;
@@ -8431,7 +8408,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_HX1_R1H:
 		{
 			// SYNTAX: {<Vt>.H}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1H, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8441,7 +8418,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSO_S4_4S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S,<Vt4>.S}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8450,7 +8427,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_S4_I4S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S,<Vt4>.S}[<index>], [<Xn|SP>], #16
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 16);
 			// SYNTAX-END
 			break;
@@ -8459,7 +8436,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4_ASISDLSOP_SX4_R4S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S,<Vt4>.S}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_4_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8469,7 +8446,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSO_S3_3S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8478,7 +8455,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_S3_I3S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S}[<index>], [<Xn|SP>], #12
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 12);
 			// SYNTAX-END
 			break;
@@ -8487,7 +8464,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3_ASISDLSOP_SX3_R3S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_3_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8497,7 +8474,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSO_S2_2S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8506,7 +8483,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_S2_I2S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S}[<index>], [<Xn|SP>], #8
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 8);
 			// SYNTAX-END
 			break;
@@ -8515,7 +8492,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2_ASISDLSOP_SX2_R2S:
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_2_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8525,7 +8502,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSO_S1_1S:
 		{
 			// SYNTAX: {<Vt>.S}[<index>], [<Xn|SP>]
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			// SYNTAX-END
 			break;
@@ -8534,7 +8511,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_S1_I1S:
 		{
 			// SYNTAX: {<Vt>.S}[<index>], [<Xn|SP>], #4
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_POST_INDEX(REGSET_SP, REG_X_BASE, dec->n, 4);
 			// SYNTAX-END
 			break;
@@ -8543,7 +8520,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1_ASISDLSOP_SX1_R1S:
 		{
 			// SYNTAX: {<Vt>.S}[<index>], [<Xn|SP>],<Xm>
-			ADD_OPERAND_MULTIREG_1_INDEXED(REG_V_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1S, dec->t);
 			ADD_OPERAND_MEM_XN_SP;
 			ADD_OPERAND_XM;
 			// SYNTAX-END
@@ -8560,7 +8537,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B,<Zt4>.B},<Pg>, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8570,7 +8547,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B,<Zt4>.B},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8579,7 +8556,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD4B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B,<Zt4>.B},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8589,7 +8566,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B,<Zt4>.B},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8598,7 +8575,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B},<Pg>, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8608,7 +8585,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8617,7 +8594,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8627,7 +8604,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B,<Zt3>.B},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8636,7 +8613,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B},<Pg>, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8646,7 +8623,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8655,7 +8632,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD2B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.B,<Zt2>.B},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -8665,7 +8642,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.B,<Zt2>.B},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8674,9 +8651,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D,<Zt4>.D},<Pg>, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, _1Q, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -8684,7 +8661,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D,<Zt4>.D},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8693,7 +8670,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD4D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D,<Zt4>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -8703,7 +8680,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D,<Zt4>.D},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8712,7 +8689,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D},<Pg>, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -8722,7 +8699,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8731,7 +8708,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -8741,7 +8718,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D,<Zt3>.D},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8750,7 +8727,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D},<Pg>, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -8760,7 +8737,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8769,7 +8746,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD2D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.D,<Zt2>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -8779,7 +8756,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.D,<Zt2>.D},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8788,7 +8765,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H,<Zt4>.H},<Pg>, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8798,7 +8775,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H,<Zt4>.H},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8807,7 +8784,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD4H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H,<Zt4>.H},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8817,7 +8794,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H,<Zt4>.H},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8826,7 +8803,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H},<Pg>, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8836,7 +8813,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8845,7 +8822,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8855,7 +8832,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H,<Zt3>.H},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8864,7 +8841,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H},<Pg>, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8874,7 +8851,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8883,7 +8860,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD2H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.H,<Zt2>.H},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -8893,7 +8870,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.H,<Zt2>.H},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8902,7 +8879,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST4W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S,<Zt4>.S},<Pg>, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -8912,7 +8889,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S,<Zt4>.S},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8921,7 +8898,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD4W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S,<Zt4>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -8931,7 +8908,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 4*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S,<Zt4>.S},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_4(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8940,7 +8917,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST3W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S},<Pg>, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -8950,7 +8927,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8959,7 +8936,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD3W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -8969,7 +8946,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 3*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S,<Zt3>.S},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_3(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8978,7 +8955,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST2W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S},<Pg>, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -8988,7 +8965,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -8997,7 +8974,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LD2W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt1>.S,<Zt2>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9007,7 +8984,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = 2*dec->offset;
 			// SYNTAX: {<Zt1>.S,<Zt2>.S},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_2(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9015,9 +8992,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ST1H_Z_P_BR_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: {<Zt>.<Ts>},<Pg>, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, arr_spec, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9025,9 +9002,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ST1W_Z_P_BR_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: {<Zt>.<Ts>},<Pg>, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, arr_spec, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9035,9 +9012,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		}
 		case ENC_ST1B_Z_P_BR_:
 		{
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: {<Zt>.<Ts>},<Pg>, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, arr_spec, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9048,9 +9025,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1W_Z_P_BI_:
 		{
 			signed imm = dec->offset;
-			unsigned elem_sz = table_b_h_s_d[dec->size];
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: {<Zt>.<Ts>},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, elem_sz, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, arr_spec, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9059,7 +9036,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STNT1B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.B},<Pg>, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9069,7 +9046,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.B},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9081,7 +9058,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDNT1B_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9093,7 +9070,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9105,7 +9082,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			signed imm = (dec->encoding == ENC_LD1RQB_Z_P_BI_U8) ? 16*(dec->offset) : dec->offset;
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9114,7 +9091,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_LDFF1B_Z_P_BR_U8:
 		{
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>{,<Xm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 1, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9124,7 +9101,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_STNT1D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -9133,27 +9110,27 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_ST1H_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_ST1W_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_ST1D_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D, LSL #3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9161,9 +9138,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D,<mod>#1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 1, 1);
 			// SYNTAX-END
 break;
 		}
@@ -9171,9 +9148,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D,<mod>#2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9181,9 +9158,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D,<mod>#3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9194,9 +9171,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D,<mod>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -9206,9 +9183,9 @@ break;
 		case ENC_ST1W_Z_P_BZ_D_64_UNSCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>,<Zm>.D]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, 8);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, _1D);
 			// SYNTAX-END
 			break;
 		}
@@ -9217,7 +9194,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.D},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9236,9 +9213,9 @@ break;
 				default: break;
 			}
 			// SYNTAX: {<Zt>.D},<Pg>, [<Zn>.D{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 8);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1D);
 			// SYNTAX-END
 			break;
 		}
@@ -9246,7 +9223,7 @@ break;
 		case ENC_LD1SH_Z_P_BR_S64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9256,7 +9233,7 @@ break;
 		case ENC_LD1W_Z_P_BR_U64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9268,7 +9245,7 @@ break;
 		case ENC_LDNT1D_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -9278,7 +9255,7 @@ break;
 		case ENC_LD1SB_Z_P_BR_S64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9290,9 +9267,9 @@ break;
 		case ENC_LDFF1SH_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9302,9 +9279,9 @@ break;
 		case ENC_LDFF1W_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9312,9 +9289,9 @@ break;
 		case ENC_LDFF1D_Z_P_BZ_D_64_SCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D, LSL #3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, ShiftType_LSL, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9325,9 +9302,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D,<mod>#1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9338,9 +9315,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D,<mod>#2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9349,9 +9326,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D,<mod>#3]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 3, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 3, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9372,9 +9349,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D,<mod>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 8, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1D, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -9394,9 +9371,9 @@ break;
 		case ENC_LDFF1W_Z_P_BZ_D_64_UNSCALED:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>,<Zm>.D]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, 8);
+			ADD_OPERAND_MEM_EXTENDED_SZ(REG_X_BASE, dec->n, REG_Z_BASE, dec->m, _1D);
 			// SYNTAX-END
 			break;
 		}
@@ -9418,7 +9395,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9451,7 +9428,7 @@ break;
 					imm = 16*dec->offset; break;
 			}
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9461,7 +9438,7 @@ break;
 		case ENC_LDFF1SH_Z_P_BR_S64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #1}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9471,7 +9448,7 @@ break;
 		case ENC_LDFF1W_Z_P_BR_U64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #2}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9480,7 +9457,7 @@ break;
 		case ENC_LDFF1D_Z_P_BR_U64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #3}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 3, 1);
 			// SYNTAX-END
@@ -9490,7 +9467,7 @@ break;
 		case ENC_LDFF1SB_Z_P_BR_S64:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{,<Xm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9530,16 +9507,16 @@ break;
 					imm = 1 * dec->offset;
 			}
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Zn>.D{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 8, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 8);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1D);
 			// SYNTAX-END
 			break;
 		}
 		case ENC_STNT1H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9549,7 +9526,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.H},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9561,7 +9538,7 @@ break;
 		case ENC_LDNT1H_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9571,7 +9548,7 @@ break;
 		case ENC_LD1SB_Z_P_BR_S16:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9587,7 +9564,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9610,7 +9587,7 @@ break;
 					imm = dec->offset; break;
 			}
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9619,7 +9596,7 @@ break;
 		case ENC_LDFF1H_Z_P_BR_U16:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #1}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9629,7 +9606,7 @@ break;
 		case ENC_LDFF1SB_Z_P_BR_S16:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>{,<Xm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 2, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9638,7 +9615,7 @@ break;
 		case ENC_STNT1W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9648,9 +9625,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>, [<Xn|SP>,<Zm>.S,<mod>#1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9658,9 +9635,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>, [<Xn|SP>,<Zm>.S,<mod>#2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9670,9 +9647,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>, [<Xn|SP>,<Zm>.S,<mod>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -9680,7 +9657,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.S},<Pg>, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9697,9 +9674,9 @@ break;
 				default: imm *= 1; break;
 			}
 			// SYNTAX: {<Zt>.S},<Pg>, [<Zn>.S{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG(dec->g);
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 4);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1S);
 			// SYNTAX-END
 			break;
 		}
@@ -9707,7 +9684,7 @@ break;
 		case ENC_LD1SH_Z_P_BR_S32:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9719,7 +9696,7 @@ break;
 		case ENC_LDNT1W_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9729,7 +9706,7 @@ break;
 		case ENC_LD1SB_Z_P_BR_S32:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Xm>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9742,9 +9719,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Zm>.S,<mod>#1]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 1, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 1, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9753,9 +9730,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Zm>.S,<mod>#2]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 2, 1);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 2, 1);
 			// SYNTAX-END
 			break;
 		}
@@ -9772,9 +9749,9 @@ break;
 		{
 			ShiftType mod = dec->xs==0 ? ShiftType_UXTW : ShiftType_SXTW;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Zm>.S,<mod>]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, 4, mod, 0, 0);
+			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_Z_BASE, dec->m, _1S, mod, 0, 0);
 			// SYNTAX-END
 			break;
 		}
@@ -9792,7 +9769,7 @@ break;
 		{
 			signed imm = dec->offset;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{, #<imm>, MUL VL}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9821,7 +9798,7 @@ break;
 			}
 			signed imm = factor * dec->offset;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, dec->n, imm);
 			// SYNTAX-END
@@ -9831,7 +9808,7 @@ break;
 		case ENC_LDFF1SH_Z_P_BR_S32:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #1}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 1, 1);
 			// SYNTAX-END
@@ -9840,7 +9817,7 @@ break;
 		case ENC_LDFF1W_Z_P_BR_U32:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #2}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED_SZ_SHIFT(REG_X_BASE, dec->n, 0, REG_X_BASE, dec->m, 0, ShiftType_LSL, 2, 1);
 			// SYNTAX-END
@@ -9850,7 +9827,7 @@ break;
 		case ENC_LDFF1SB_Z_P_BR_S32:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{,<Xm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
 			ADD_OPERAND_MEM_EXTENDED(REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
@@ -9869,9 +9846,9 @@ break;
 		{
 			unsigned imm = dec->msize/8 * dec->offset;
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Zn>.S{, #<imm>}]
-			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, 0, 4, dec->t);
+			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, dec->t);
 			ADD_OPERAND_PRED_REG_QUAL(dec->g, 'z');
-			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, 0, 4);
+			ADD_OPERAND_MEM_REG_OFFSET_SZ(REGSET_ZR, REG_Z_BASE, dec->n, imm, _1S);
 			// SYNTAX-END
 			break;
 		}
