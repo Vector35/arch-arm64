@@ -1308,9 +1308,16 @@ public:
 			case LLIL_SBB:
 				switch (flag) {
 					case IL_FLAG_C:
-						return il.CompareUnsignedGreaterThan(size,
-								il.GetExprForRegisterOrConstantOperation(op, size, operands, operandCount),
-								il.GetExprForRegisterOrConstant(operands[0], size));
+						// r u< a || (r == a && flag_c)
+						return il.Or(0,
+								il.CompareUnsignedLessThan(size,
+									il.GetExprForRegisterOrConstantOperation(op, size, operands, operandCount),
+									il.GetExprForRegisterOrConstant(operands[0], size)),
+								il.And(0,
+									il.CompareEqual(size,
+										il.GetExprForRegisterOrConstantOperation(op, size, operands, operandCount),
+										il.GetExprForRegisterOrConstant(operands[0], size)),
+									il.Flag(IL_FLAG_C)));
 
 				}
 		}
