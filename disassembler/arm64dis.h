@@ -202,6 +202,32 @@ enum Register {
 #define REG_ARRSPEC(x) (((x)>>20) & 0xFFF)
 #define REG_CONSTRUCT(DSIZE,ESIZE,ENUM_ID) ( ((DSIZE)<<26) | ((ESIZE)<<20) | (ENUM_ID) )
 
+enum ArrangementSpec {
+	ARRSPEC_NONE=0,
+
+	ARRSPEC_FULL, /* 128-bit v-reg unsplit, eg: REG_V0_Q0 */
+
+	/* 128 bit v-reg considered as... */
+	ARRSPEC_2DOUBLES, /* (.2d) two 64-bit double-precision: REG_V0_D1, REG_V0_D0 */
+	ARRSPEC_4SINGLES, /* (.4s) four 32-bit single-precision: REG_V0_S3, REG_V0_S2, REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_8HALVES, /* (.8h) eight 16-bit half-precision: REG_V0_H7, REG_V0_H6, (..., REG_V0_H0 */
+	ARRSPEC_16BYTES, /* (.16b) sixteen 8-bit values: REG_V0_B15, REG_V0_B14, (..., REG_V0_B01 */
+
+	/* low 64-bit of v-reg considered as... */
+	ARRSPEC_1DOUBLE, /* (.d) one 64-bit double-precision: REG_V0_D0 */
+	ARRSPEC_2SINGLES, /* (.2s) two 32-bit single-precision: REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_4HALVES, /* (.4h) four 16-bit half-precision: REG_V0_H3, REG_V0_H2, REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_8BYTES, /* (.8b) eight 8-bit values: REG_V0_B7, REG_V0_B6, (..., REG_V0_B0 */
+
+	/* low 32-bit of v-reg considered as... */
+	ARRSPEC_1SINGLE, /* (.s) one 32-bit single-precision: REG_V0_S0 */
+	ARRSPEC_2HALVES, /* (.2h) two 16-bit half-precision: REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_4BYTES, /* (.4b) four 8-bit values: REG_V0_B3, REG_V0_B2, REG_V0_B1, REG_V0_B0 */
+
+	/* low 16-bit of v-reg considered as... */
+	ARRSPEC_1HALF, /* (.h) one 16-bit half-precision: REG_V0_H0 */
+};
+
 //-----------------------------------------------------------------------------
 // disassembly target features
 //-----------------------------------------------------------------------------
@@ -428,8 +454,8 @@ struct InstructionOperand {
 	OperandClass operandClass;
 	uint32_t reg[5]; //registers or conditions
 	uint32_t scale;
-	uint32_t indexUsed;
-	uint32_t index;
+	bool laneUsed;
+	uint32_t lane;
 	uint64_t immediate;
 	ShiftType shiftType;
 	uint32_t shiftValueUsed;
@@ -438,7 +464,7 @@ struct InstructionOperand {
 	uint32_t signedImm;
 	char pred_qual; // predicate register qualifier ('z' or 'm')
 	char mul_vl; // whether MEM_OFFSET has the offset "mul vl"
-	char name[16];
+	char name[16]; // for operand class NAME
 };
 
 #ifndef __cplusplus

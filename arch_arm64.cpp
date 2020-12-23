@@ -548,8 +548,8 @@ protected:
 		}
 
 		/* only use index if this is isolated REG (not, for example, MULTIREG */
-		if(instructionOperand->operandClass == REG && instructionOperand->indexUsed) {
-			sprintf(buf, "%u", instructionOperand->index);
+		if(instructionOperand->operandClass == REG && instructionOperand->laneUsed) {
+			sprintf(buf, "%u", instructionOperand->lane);
 			result.emplace_back(TextToken, "[");
 			result.emplace_back(IntegerToken, buf);
 			result.emplace_back(TextToken, "]");
@@ -654,11 +654,11 @@ protected:
 		}
 		result.emplace_back(TextToken, "}");
 
-		if(operand->indexUsed)
+		if(operand->laneUsed)
 		{
 			result.emplace_back(TextToken, "[");
-			snprintf(index, sizeof(index), "%d", operand->index);
-			result.emplace_back(IntegerToken, index, operand->index);
+			snprintf(index, sizeof(index), "%d", operand->lane);
+			result.emplace_back(IntegerToken, index, operand->lane);
 			result.emplace_back(TextToken, "]");
 		}
 		return DISASM_SUCCESS;

@@ -813,23 +813,23 @@ const char *reg_lookup_c[16] = {
 
 #define ADD_OPERAND_MULTIREG_1_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
 	ADD_OPERAND_MULTIREG_1(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	dec->operands[i-1].indexUsed = 1; \
-	dec->operands[i-1].index = dec->index;
+	dec->operands[i-1].laneUsed = 1; \
+	dec->operands[i-1].lane = dec->index;
 
 #define ADD_OPERAND_MULTIREG_2_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
 	ADD_OPERAND_MULTIREG_2(REG_BASE, DSIZE, ESIZE, REGNUM); \
-	dec->operands[i-1].indexUsed = 1; \
-	dec->operands[i-1].index = dec->index;
+	dec->operands[i-1].laneUsed = 1; \
+	dec->operands[i-1].lane = dec->index;
 
 #define ADD_OPERAND_MULTIREG_3_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
 	ADD_OPERAND_MULTIREG_3(REG_BASE, DSIZE, ESIZE, REGNUM) \
-	dec->operands[i-1].indexUsed = 1; \
-	dec->operands[i-1].index = dec->index;
+	dec->operands[i-1].laneUsed = 1; \
+	dec->operands[i-1].lane = dec->index;
 
 #define ADD_OPERAND_MULTIREG_4_INDEXED(REG_BASE, DSIZE, ESIZE, REGNUM); \
 	ADD_OPERAND_MULTIREG_4(REG_BASE, DSIZE, ESIZE, REGNUM) \
-	dec->operands[i-1].indexUsed = 1; \
-	dec->operands[i-1].index = dec->index;
+	dec->operands[i-1].laneUsed = 1; \
+	dec->operands[i-1].lane = dec->index;
 
 /* v register plus ARRANGEMENT specifier: {1,2,4,8,16} x {b,h,s,d,q} */
 #define ADD_OPERAND_REG_T(BASE, ARR_SPEC, REGNUM) \
@@ -847,15 +847,15 @@ const char *reg_lookup_c[16] = {
 #define ADD_OPERAND_VREG_T_INDEXED(ARR_SPEC, REGNUM, INDEX) \
 	dec->operands[i].operandClass = REG; \
 	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_V_BASE, REGNUM, ARR_SPEC.data_sz, ARR_SPEC.elem_sz); \
-	dec->operands[i].index = INDEX; \
-	dec->operands[i].indexUsed = 1; \
+	dec->operands[i].lane = INDEX; \
+	dec->operands[i].laneUsed = 1; \
 	i++;
 
 #define ADD_OPERAND_ZREG_T_INDEXED(ARR_SPEC, REGNUM, INDEX) \
 	dec->operands[i].operandClass = REG; \
 	dec->operands[i].reg[0] = REG(REGSET_ZR, REG_Z_BASE, REGNUM, ARR_SPEC.data_sz, ARR_SPEC.elem_sz); \
-	dec->operands[i].index = INDEX; \
-	dec->operands[i].indexUsed = 1; \
+	dec->operands[i].lane = INDEX; \
+	dec->operands[i].laneUsed = 1; \
 	i++;
 
 #define ADD_OPERAND_ZREG_T(ARR_SPEC, REGNUM) \
@@ -874,13 +874,13 @@ const char *reg_lookup_c[16] = {
 
 #define ADD_OPERAND_VREG_ESIZE_INDEXED(ELEM_SZ, REGNUM, INDEX_VALUE) \
 	ADD_OPERAND_VREG_ESIZE(ELEM_SZ, REGNUM); \
-	dec->operands[i-1].index = INDEX_VALUE; \
-	dec->operands[i-1].indexUsed = 1;
+	dec->operands[i-1].lane = INDEX_VALUE; \
+	dec->operands[i-1].laneUsed = 1;
 
 #define ADD_OPERAND_ZREG_ESIZE_INDEXED(ELEM_SZ, REGNUM, INDEX_VALUE) \
 	ADD_OPERAND_ZREG_ESIZE(ELEM_SZ, REGNUM); \
-	dec->operands[i-1].index = INDEX_VALUE; \
-	dec->operands[i-1].indexUsed = 1;
+	dec->operands[i-1].lane = INDEX_VALUE; \
+	dec->operands[i-1].laneUsed = 1;
 
 #define ADD_OPERAND_VREG_TA_INDEXED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz_a,REGNUM,INDEX)
 #define ADD_OPERAND_VREG_TB_INDEXED(REGNUM,INDEX) ADD_OPERAND_VREG_ESIZE_INDEXED(elem_sz_b,REGNUM,INDEX)

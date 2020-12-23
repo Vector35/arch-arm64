@@ -10,28 +10,6 @@
 #include "arm64dis.h"
 #include "pcode.h"
 
-void print_decoded_struct(Instruction *dec)
-{
-	//printf("sizeof(struct decoded): 0x%lX\n", sizeof(*dec));
-	//printf(" insword: 0x%08X\n", dec->insword);
-	printf("encoding: %d (%s)\n", dec->encoding, enc_to_str(dec->encoding));
-	//printf("operation: %d (%s)\n", dec->operation, get_operation(dec->operation));
-
-	char buf[256];
-	strcpy(buf, enc_to_xml(dec->encoding));
-	//printf("      xml: /Users/andrewl/Downloads/A64_ISA_xml_v86A-2020-03/ISA_A64_xml_v86A-2020-03/%s\n", buf);
-	strcpy(buf + strlen(buf)-3, "html");
-	printf("     html: /Users/andrewl/Downloads/A64_ISA_xml_v86A-2020-03/ISA_A64_xml_v86A-2020-03/xhtml/%s\n", buf);
-
-//	if(1) {
-//		for(auto it=dec->dec->begin(); it!=dec->dec->end(); it++) {
-//			string key = it->first;
-//			uint64_t value = it->second;
-//			printf("fields->%s: 0x%llx\n", key.c_str(), value);
-//		}
-//	}
-}
-
 //-----------------------------------------------------------------------------
 // registers (non-system)
 //-----------------------------------------------------------------------------
@@ -536,8 +514,8 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 		snprintf(scale, sizeof(scale), "[%u]", 0x7fffffff & operand->scale);
 
 	char index[32] = {0};
-	if(operand->operandClass == REG && operand->indexUsed)
-		snprintf(index, sizeof(index), "[%u]", operand->index);
+	if(operand->operandClass == REG && operand->laneUsed)
+		snprintf(index, sizeof(index), "[%u]", operand->lane);
 
 	if(snprintf(outBuffer, outBufferSize, "%s%s%s", reg_buf, scale, index) >= outBufferSize)
 		return FAILED_TO_DISASSEMBLE_REGISTER;
@@ -558,9 +536,9 @@ uint32_t get_multireg_operand(const InstructionOperand *operand, char *outBuffer
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 
-	if(operand->indexUsed)
+	if(operand->laneUsed)
 	{
-		snprintf(indexBuff, sizeof(indexBuff), "[%d]", operand->index);
+		snprintf(indexBuff, sizeof(indexBuff), "[%d]", operand->lane);
 	}
 	int32_t result = 0;
 	switch (elementCount)
