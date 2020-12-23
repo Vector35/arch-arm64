@@ -794,6 +794,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ASR:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1), il.ArithShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), IMM(operand3)))));
 		break;
+	case ARM64_BTI:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_BTI, {}));
+		break;
 	case ARM64_B:
 		il.AddInstruction(DirectJump(arch, il, IMM(operand1), addrSize));
 		break;
