@@ -944,6 +944,10 @@ public:
 			return "_byteswap";
 		case ARM64_INTRIN_RBIT:
 			return "__rbit";
+		case ARM64_INTRIN_AESD:
+			return "__aesd";
+		case ARM64_INTRIN_AESE:
+			return "__aese";
 		default:
 			return "";
 		}
@@ -966,7 +970,8 @@ public:
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
 			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
 			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI,
-			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT
+			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
+			ARM64_INTRIN_AESD, ARM64_INTRIN_AESE
 		};
 	}
 
@@ -999,6 +1004,9 @@ public:
 		case ARM64_INTRIN_PACIASP: // reads x30, sp
 		case ARM64_INTRIN_PACIBSP: // reads x30, sp
 			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))};
+		case ARM64_INTRIN_AESD:
+		case ARM64_INTRIN_AESE:
+			return {NameAndType(Type::IntegerType(16, false)), NameAndType(Type::IntegerType(16, false))};
 		default:
 			return vector<NameAndType>();
 		}
@@ -1010,7 +1018,6 @@ public:
 		switch (intrinsic)
 		{
 		case ARM64_INTRIN_MSR:
-			return {Type::IntegerType(8, false)};
 		case ARM64_INTRIN_AUTDA: // writes <Xd>
 		case ARM64_INTRIN_AUTDB: // writes <Xd>
 		case ARM64_INTRIN_AUTIA: // writes <Xd>
@@ -1045,6 +1052,9 @@ public:
 		case ARM64_INTRIN_REV: // writes <Xd>
 		case ARM64_INTRIN_RBIT: // writes <Xd>
 			return {Type::IntegerType(8, false)};
+		case ARM64_INTRIN_AESD:
+		case ARM64_INTRIN_AESE:
+			return {Type::IntegerType(16, false)};
 		default:
 			return vector<Confidence<Ref<Type>>>();
 		}
