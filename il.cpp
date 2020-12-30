@@ -1239,6 +1239,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.Sub(REGSZ(operand1), ILREG(operand4), il.Mult(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
 		break;
+	case ARM64_MNEG:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Sub(REGSZ(operand1),
+						il.Const(8, 0),
+						il.Mult(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
 	case ARM64_MSR:
 		{
 			uint32_t dst = REG(operand1);
