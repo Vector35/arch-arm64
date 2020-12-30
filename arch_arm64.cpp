@@ -1304,6 +1304,8 @@ public:
 										il.Const(size, 0)),
 									il.Flag(IL_FLAG_V)),
 								il.Const(0, 0));
+					case IL_FLAG_C:
+						return il.Const(0, 0);
 				}
 			case LLIL_SBB:
 				switch (flag) {
