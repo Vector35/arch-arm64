@@ -872,12 +872,12 @@ const char *reg_lookup_c[16] = {
 
 #define ADD_OPERAND_COND \
 	dec->operands[i].operandClass = CONDITION; \
-	dec->operands[i].reg[0] = table_cond[dec->condition]; \
+	dec->operands[i].cond = table_cond[dec->condition]; \
 	i++;
 
 #define ADD_OPERAND_COND_NEG \
 	dec->operands[i].operandClass = CONDITION; \
-	dec->operands[i].reg[0] = table_cond_neg[dec->condition]; \
+	dec->operands[i].cond = table_cond_neg[dec->condition]; \
 	i++;
 
 #define ADD_OPERAND_IMMR

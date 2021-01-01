@@ -447,7 +447,8 @@ enum Group {
 struct InstructionOperand {
 	OperandClass operandClass;
 	ArrangementSpec arrSpec;
-	Register reg[5]; //registers or conditions
+	Register reg[5];
+	Condition cond;
 	uint32_t scale;
 	bool laneUsed;
 	uint32_t lane;

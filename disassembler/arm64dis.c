@@ -742,7 +742,7 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 				break;
 			case CONDITION:
 				if (snprintf(tmpOperandString, sizeof(tmpOperandString), "%s",
-							get_condition((Condition)instruction->operands[i].reg[0])) >= sizeof(tmpOperandString))
+							get_condition((Condition)instruction->operands[i].cond)) >= sizeof(tmpOperandString))
 					return FAILED_TO_DISASSEMBLE_OPERAND;
 				operand = tmpOperandString;
 				break;
