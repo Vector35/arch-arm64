@@ -204,9 +204,6 @@ const char *get_register_name(Register r)
 	if(r>REG_NONE && r<REG_END)
 		return RegisterString[r];
 
-	if(r>SYSREG_NONE && r<SYSREG_END)
-		return get_system_register_name((enum SystemReg)r);
-
 	return "";
 }
 
@@ -493,7 +490,7 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	if(operand->operandClass == SYS_REG)
 	{
 		if (snprintf(outBuffer, outBufferSize, "%s",
-					get_system_register_name((SystemReg)operand->reg[registerNumber])) >= outBufferSize)
+			get_system_register_name(operand->sysreg)) >= outBufferSize)
 			return FAILED_TO_DISASSEMBLE_REGISTER;
 		return 0;
 	}
@@ -644,11 +641,11 @@ uint32_t get_implementation_specific(const InstructionOperand *operand, char *ou
 	return snprintf(outBuffer,
 			outBufferSize,
 			"s%d_%d_c%d_c%d_%d",
-			operand->reg[0],
-			operand->reg[1],
-			operand->reg[2],
-			operand->reg[3],
-			operand->reg[4]) >= outBufferSize;
+			operand->implspec[0],
+			operand->implspec[1],
+			operand->implspec[2],
+			operand->implspec[3],
+			operand->implspec[4]) >= outBufferSize;
 }
 
 const char *get_operation(const Instruction *inst)
@@ -703,7 +700,7 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz)
 				operand = tmpOperandString;
 				break;
 			case SYS_REG:
-				operand = get_system_register_name((SystemReg)instruction->operands[i].reg[0]);
+				operand = get_system_register_name(instruction->operands[i].sysreg);
 				if (operand == NULL)
 				{
 					return FAILED_TO_DISASSEMBLE_OPERAND;

@@ -1,3 +1,5 @@
+#pragma once
+
 enum SystemReg {
 	SYSREG_NONE=32769,
 	REG_OSDTRRX_EL1=32770,

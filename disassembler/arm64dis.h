@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "sysregs.h"
+
 #ifdef _MSC_VER
 #undef REG_NONE // collides with winnt's define
 #endif
@@ -448,7 +450,16 @@ struct InstructionOperand {
 	OperandClass operandClass;
 	ArrangementSpec arrSpec;
 	Register reg[5];
+
+	/* for class CONDITION */
 	Condition cond;
+
+	/* for class IMPLEMENTATION_SPECIFIC */
+	uint8_t implspec[5];
+
+	/* for class SYS_REG */
+	SystemReg sysreg;
+
 	uint32_t scale;
 	bool laneUsed;
 	uint32_t lane;
@@ -460,7 +471,9 @@ struct InstructionOperand {
 	uint32_t signedImm;
 	char pred_qual; // predicate register qualifier ('z' or 'm')
 	char mul_vl; // whether MEM_OFFSET has the offset "mul vl"
-	char name[16]; // for operand class NAME
+
+	/* for class NAME */
+	char name[16];
 };
 
 #ifndef __cplusplus

@@ -891,16 +891,16 @@ const char *reg_lookup_c[16] = {
 
 #define ADD_OPERAND_SYSTEMREG_IMPL_SPEC \
 	dec->operands[i].operandClass = IMPLEMENTATION_SPECIFIC; \
-	dec->operands[i].reg[0] = dec->sys_op0; \
-	dec->operands[i].reg[1] = dec->sys_op1; \
-	dec->operands[i].reg[2] = dec->sys_crn; \
-	dec->operands[i].reg[3] = dec->sys_crm; \
-	dec->operands[i].reg[4] = dec->sys_op2; \
+	dec->operands[i].implspec[0] = dec->sys_op0; \
+	dec->operands[i].implspec[1] = dec->sys_op1; \
+	dec->operands[i].implspec[2] = dec->sys_crn; \
+	dec->operands[i].implspec[3] = dec->sys_crm; \
+	dec->operands[i].implspec[4] = dec->sys_op2; \
 	i++;
 
 #define ADD_OPERAND_SYSTEMREG(R) \
 	dec->operands[i].operandClass = SYS_REG; \
-	dec->operands[i].reg[0] = (R); \
+	dec->operands[i].sysreg = (R); \
 	i++; \
 
 #define ADD_OPERAND_SYSTEMREG_SENSE \
