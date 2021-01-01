@@ -447,7 +447,7 @@ enum Group {
 struct InstructionOperand {
 	OperandClass operandClass;
 	ArrangementSpec arrSpec;
-	uint32_t reg[5]; //registers or conditions
+	Register reg[5]; //registers or conditions
 	uint32_t scale;
 	bool laneUsed;
 	uint32_t lane;
@@ -778,9 +778,10 @@ const char *get_operation(const Instruction *instruction);
 
 // get the text value of a given register enumeration (including prefetch registers)
 // includes data size and element size
-const char *get_register_name(uint32_t reg);
-const char *get_register_arrspec(uint32_t reg);
-unsigned get_register_size(uint32_t reg);
+const char *get_register_name(enum Register);
+const char *get_register_arrspec(enum Register, const InstructionOperand *);
+int get_register_full(enum Register, const InstructionOperand *, char *result);
+unsigned get_register_size(enum Register);
 
 //Get the text value of a given shift type
 const char *get_shift(ShiftType shift);

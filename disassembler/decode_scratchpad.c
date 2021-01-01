@@ -1352,7 +1352,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SADDV_R_P_Z_:
 		case ENC_UADDV_R_P_Z_:
 		{
-			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Dd>,<Pg>,<Zn>.<Ts>
 			ADD_OPERAND_REG(REGSET_ZR, REG_D_BASE, dec->d);
 			ADD_OPERAND_PRED_REG(dec->g);
@@ -4286,7 +4286,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_UQDECP_R_P_R_UW:
 		case ENC_UQINCP_R_P_R_UW:
 		{
-			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Wdn>,<Pm>.<Ts>
 			ADD_OPERAND_WDN;
 			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);
@@ -5414,7 +5414,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SQDECP_R_P_R_SX:
 		case ENC_SQINCP_R_P_R_SX:
 		{
-			ArrangementSpec arr_spec = dec->esize == 16 ? _1H : _1B;
+			ArrangementSpec arr_spec = table_b_h_s_d[dec->size];
 			// SYNTAX: <Xdn>,<Pm>.<Ts>,<Wdn>
 			ADD_OPERAND_XDN;
 			ADD_OPERAND_PRED_REG_ESIZE(dec->m, arr_spec);

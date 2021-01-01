@@ -210,10 +210,21 @@ const char *get_register_name(Register r)
 	return "";
 }
 
-const char *arrspec_to_str(enum ArrangementSpec spec, bool truncated)
+const char *get_register_arrspec(Register reg, const InstructionOperand *operand)
 {
-	if(truncated) {
-		switch(spec) {
+	if(operand->arrSpec == ARRSPEC_NONE)
+		return "";
+
+	bool is_simd = reg >= REG_V0 && reg <= REG_V31;
+	bool is_sve = reg >= REG_Z0 && reg <= REG_Z31;
+	bool is_pred = reg >= REG_P0 && reg <= REG_P31;
+
+	if(!is_simd && !is_sve && !is_pred)
+		return "";
+
+	/* truncated form */
+	if(operand->laneUsed || is_sve || is_pred) {
+		switch(operand->arrSpec) {
 			case ARRSPEC_FULL: return ".q";
 			case ARRSPEC_2DOUBLES: return ".d";
 			case ARRSPEC_4SINGLES: return ".s";
@@ -232,7 +243,8 @@ const char *arrspec_to_str(enum ArrangementSpec spec, bool truncated)
 		}
 	}
 
-	switch(spec) {
+	/* non-truncated */
+	switch(operand->arrSpec) {
 		case ARRSPEC_FULL: return ".1q";
 		case ARRSPEC_2DOUBLES: return ".2d";
 		case ARRSPEC_4SINGLES: return ".4s";
@@ -251,23 +263,13 @@ const char *arrspec_to_str(enum ArrangementSpec spec, bool truncated)
 	}
 }
 
-int get_register_full(const InstructionOperand *operand, Register reg, char *result)
+int get_register_full(Register reg, const InstructionOperand *operand, char *result)
 {
 	strcpy(result, get_register_name(reg));
-
 	if(result[0] == '\0')
 		return -1;
 
-	if(operand->arrSpec != ARRSPEC_NONE) {
-		bool is_simd = reg >= REG_V0 && reg <= REG_V31;
-		bool is_sve = reg >= REG_Z0 && reg <= REG_Z31;
-		bool is_pred = reg >= REG_P0 && reg <= REG_P31;
-		//bool is_dot = operand->encoding == ENC_SDOT_ASIMDELEM_D || operand->encoding == ENC_SUDOT_ASIMDELEM_D ||
-		//	operand->encoding == ENC_UDOT_ASIMDELEM_D || operand->encoding == ENC_USDOT_ASIMDELEM_D;
-		if(is_simd || is_sve || is_pred) {
-			strcat(result, arrspec_to_str(operand->arrSpec, operand->laneUsed || is_sve || is_pred));
-		}
-	}
+	strcat(result, get_register_arrspec(reg, operand));
 
 	return 0;
 }
@@ -354,7 +356,7 @@ const char *get_shift(ShiftType shift)
 }
 
 static inline uint32_t get_shifted_register(
-	const InstructionOperand *instructionOperand,
+	const InstructionOperand *operand,
 	uint32_t registerNumber,
 	char *outBuffer,
 	uint32_t outBufferSize)
@@ -363,19 +365,19 @@ static inline uint32_t get_shifted_register(
 	char shiftBuff[64] = {0};
 
 	char reg[16];
-	if(get_register_full(instructionOperand, (Register)instructionOperand->reg[registerNumber], reg))
+	if(get_register_full(operand->reg[registerNumber], operand, reg))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
-	if (instructionOperand->shiftType != ShiftType_NONE)
+	if (operand->shiftType != ShiftType_NONE)
 	{
-		if (instructionOperand->shiftValueUsed != 0)
+		if (operand->shiftValueUsed != 0)
 		{
-			if (snprintf(immBuff, sizeof(immBuff), " #%#x", instructionOperand->shiftValue) >= sizeof(immBuff))
+			if (snprintf(immBuff, sizeof(immBuff), " #%#x", operand->shiftValue) >= sizeof(immBuff))
 			{
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 			}
 		}
-		const char *shiftStr = get_shift(instructionOperand->shiftType);
+		const char *shiftStr = get_shift(operand->shiftType);
 		if (shiftStr == NULL)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 		snprintf(
@@ -400,7 +402,7 @@ uint32_t get_memory_operand(
 	char paramBuff[32] = {0};
 
 	char reg0[16]={'\0'}, reg1[16]={'\0'};
-	if(get_register_full(operand, (Register)operand->reg[0], reg0))
+	if(get_register_full(operand->reg[0], operand, reg0))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	const char *sign = "";
@@ -425,7 +427,7 @@ uint32_t get_memory_operand(
 
 		case MEM_POST_IDX: // [<reg>], <reg|imm>
 			if (operand->reg[1] != REG_NONE) {
-				if(get_register_full(operand, (Register)operand->reg[1], reg1))
+				if(get_register_full((Register)operand->reg[1], operand, reg1))
 					return FAILED_TO_DISASSEMBLE_REGISTER;
 
 				snprintf(paramBuff, sizeof(paramBuff), ", %s", reg1);
@@ -451,7 +453,7 @@ uint32_t get_memory_operand(
 			break;
 
 		case MEM_EXTENDED:
-			if(get_register_full(operand, (Register)operand->reg[1], reg1))
+			if(get_register_full(operand->reg[1], operand, reg1))
 				return FAILED_TO_DISASSEMBLE_REGISTER;
 
 			if (reg0[0] == '\0' || reg1[0] == '\0') {
@@ -506,7 +508,7 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	}
 
 	char reg_buf[16];
-	if(get_register_full(operand, (Register)operand->reg[registerNumber], reg_buf))
+	if(get_register_full(operand->reg[registerNumber], operand, reg_buf))
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	/* 3) handle predicate registers */
@@ -532,57 +534,44 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	return 0;
 }
 
-uint32_t get_multireg_operand(const InstructionOperand *operand, char *outBuffer, uint32_t outBufferSize)
+uint32_t get_multireg_operand(const InstructionOperand *operand, char *result, uint32_t result_sz)
 {
-	char indexBuff[32] = {0};
-	char regBuff[4][32];
-	uint32_t elementCount = 0;
-	memset(&regBuff, 0, sizeof(regBuff));
+	char lane_str[32] = {0};
+	char reg_str[4][32];
+	uint32_t elem_n;
+	int rc;
+	memset(&reg_str, 0, sizeof(reg_str));
 
-	for (; elementCount < 4 && operand->reg[elementCount] != REG_NONE; elementCount++)
-	{
-		if (get_register(operand, elementCount, regBuff[elementCount], 32) != 0)
+	for (elem_n = 0; elem_n < 4 && operand->reg[elem_n] != REG_NONE; elem_n++)
+		if (get_register(operand, elem_n, reg_str[elem_n], 32) != 0)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
-	}
 
 	if(operand->laneUsed)
-	{
-		snprintf(indexBuff, sizeof(indexBuff), "[%d]", operand->lane);
-	}
-	int32_t result = 0;
-	switch (elementCount)
+		snprintf(lane_str, sizeof(lane_str), "[%d]", operand->lane);
+
+	switch (elem_n)
 	{
 		case 1:
-			result = snprintf(outBuffer, outBufferSize, "{%s}%s",
-				regBuff[0],
-				indexBuff);
+			rc = snprintf(result, result_sz, "{%s}%s",
+				reg_str[0], lane_str);
 			break;
 		case 2:
-			result = snprintf(outBuffer, outBufferSize, "{%s, %s}%s",
-				regBuff[0],
-				regBuff[1],
-				indexBuff);
+			rc = snprintf(result, result_sz, "{%s, %s}%s",
+				reg_str[0], reg_str[1], lane_str);
 			break;
 		case 3:
-			result = snprintf(outBuffer, outBufferSize, "{%s, %s, %s}%s",
-				regBuff[0],
-				regBuff[1],
-				regBuff[2],
-				indexBuff);
+			rc = snprintf(result, result_sz, "{%s, %s, %s}%s",
+				reg_str[0], reg_str[1], reg_str[2], lane_str);
 			break;
 		case 4:
-			result = snprintf(outBuffer, outBufferSize, "{%s, %s, %s, %s}%s",
-				regBuff[0],
-				regBuff[1],
-				regBuff[2],
-				regBuff[3],
-				indexBuff);
+			rc = snprintf(result, result_sz, "{%s, %s, %s, %s}%s",
+				reg_str[0], reg_str[1], reg_str[2], reg_str[3], lane_str);
 			break;
 		default:
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 
-	return result < 0 ? FAILED_TO_DISASSEMBLE_OPERAND : DISASM_SUCCESS;
+	return rc < 0 ? FAILED_TO_DISASSEMBLE_OPERAND : DISASM_SUCCESS;
 }
 
 uint32_t get_shifted_immediate(const InstructionOperand *instructionOperand, char *outBuffer, uint32_t outBufferSize, uint32_t type)

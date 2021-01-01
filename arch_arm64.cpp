@@ -410,43 +410,43 @@ protected:
 	}
 
 
-	uint32_t tokenize_shift(const InstructionOperand* __restrict instructionOperand, vector<InstructionTextToken>& result)
+	uint32_t tokenize_shift(const InstructionOperand* __restrict operand, vector<InstructionTextToken>& result)
 	{
 		char operand[64] = {0};
-		if (instructionOperand->shiftType != ShiftType_NONE)
+		if (operand->shiftType != ShiftType_NONE)
 		{
-			const char* shiftStr = get_shift(instructionOperand->shiftType);
+			const char* shiftStr = get_shift(operand->shiftType);
 			if (shiftStr == NULL)
 				return FAILED_TO_DISASSEMBLE_OPERAND;
 
 			result.emplace_back(TextToken, ", ");
 			result.emplace_back(TextToken, shiftStr);
-			if (instructionOperand->shiftValueUsed != 0)
+			if (operand->shiftValueUsed != 0)
 			{
-				snprintf(operand, sizeof(operand), "%#x", (uint32_t)instructionOperand->shiftValue);
+				snprintf(operand, sizeof(operand), "%#x", (uint32_t)operand->shiftValue);
 				result.emplace_back(TextToken, " #");
-				result.emplace_back(IntegerToken, operand, instructionOperand->shiftValue);
+				result.emplace_back(IntegerToken, operand, operand->shiftValue);
 			}
 		}
 		return DISASM_SUCCESS;
 	}
 
 
-	uint32_t tokenize_shifted_immediate(const InstructionOperand* __restrict instructionOperand,	vector<InstructionTextToken>& result)
+	uint32_t tokenize_shifted_immediate(const InstructionOperand* __restrict operand,	vector<InstructionTextToken>& result)
 	{
 		char operand[64] = {0};
 		const char* sign = "";
-		if (instructionOperand == NULL)
+		if (operand == NULL)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 
-		uint64_t imm = instructionOperand->immediate;
-		if (instructionOperand->signedImm == 1 && ((int64_t)imm) < 0)
+		uint64_t imm = operand->immediate;
+		if (operand->signedImm == 1 && ((int64_t)imm) < 0)
 		{
 			sign = "-";
 			imm = -(int64_t)imm;
 		}
 
-		switch (instructionOperand->operandClass)
+		switch (operand->operandClass)
 		{
 		case FIMM32:
 			{
@@ -455,7 +455,7 @@ protected:
 				uint32_t intValue;
 				float floatValue;
 			} f;
-			f.intValue = (uint32_t)instructionOperand->immediate;
+			f.intValue = (uint32_t)operand->immediate;
 			snprintf(operand, sizeof(operand), "%.08f", f.floatValue);
 			result.emplace_back(TextToken, "#");
 			result.emplace_back(FloatingPointToken, operand);
@@ -464,92 +464,92 @@ protected:
 		case IMM32:
 			snprintf(operand, sizeof(operand), "%s%#x", sign, (uint32_t)imm);
 			result.emplace_back(TextToken, "#");
-			result.emplace_back(IntegerToken, operand, instructionOperand->immediate);
+			result.emplace_back(IntegerToken, operand, operand->immediate);
 			break;
 		case IMM64:
 			snprintf(operand, sizeof(operand), "%s%#" PRIx64 , sign, imm);
 			result.emplace_back(TextToken, "#");
-			result.emplace_back(IntegerToken, operand, instructionOperand->immediate);
+			result.emplace_back(IntegerToken, operand, operand->immediate);
 			break;
 		case LABEL:
-			snprintf(operand, sizeof(operand), "%#" PRIx64 , instructionOperand->immediate);
-			result.emplace_back(PossibleAddressToken, operand, instructionOperand->immediate);
+			snprintf(operand, sizeof(operand), "%#" PRIx64 , operand->immediate);
+			result.emplace_back(PossibleAddressToken, operand, operand->immediate);
 			break;
 		default:
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 		}
 
-		tokenize_shift(instructionOperand, result);
+		tokenize_shift(operand, result);
 		return DISASM_SUCCESS;
 	}
 
 
 	uint32_t tokenize_shifted_register(
-		const InstructionOperand* restrict instructionOperand,
+		const InstructionOperand* restrict operand,
 		uint32_t registerNumber,
 		vector<InstructionTextToken>& result)
 	{
-		const char *reg = get_register_name(instructionOperand->reg[registerNumber]);
+		const char *reg = get_register_name(operand->reg[registerNumber]);
 		if(EMPTY(reg)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		result.emplace_back(RegisterToken, reg);
-		tokenize_shift(instructionOperand, result);
+		tokenize_shift(operand, result);
 		return DISASM_SUCCESS;
 	}
 
 	uint32_t tokenize_register(
-			const InstructionOperand* restrict instructionOperand,
+			const InstructionOperand* restrict operand,
 			uint32_t registerNumber,
 			vector<InstructionTextToken>& result)
 	{
 		char buf[64] = {0};
 
 		/* case: system registers */
-		if (instructionOperand->operandClass == SYS_REG)
+		if (operand->operandClass == SYS_REG)
 		{
 			snprintf(buf, sizeof(buf), "%s",
-			  get_system_register_name((SystemReg)instructionOperand->reg[registerNumber]));
+			  get_system_register_name((SystemReg)operand->reg[registerNumber]));
 			result.emplace_back(RegisterToken, buf);
 			return DISASM_SUCCESS;
 		}
 
-		if (instructionOperand->operandClass != REG && instructionOperand->operandClass != MULTI_REG)
+		if (operand->operandClass != REG && operand->operandClass != MULTI_REG)
 			return OPERAND_IS_NOT_REGISTER;
 
 		/* case: shifted registers */
-		if (instructionOperand->shiftType != ShiftType_NONE)
+		if (operand->shiftType != ShiftType_NONE)
 		{
-			return tokenize_shifted_register(instructionOperand, registerNumber, result);
+			return tokenize_shifted_register(operand, registerNumber, result);
 		}
 
-		const char *reg = get_register_name(instructionOperand->reg[registerNumber]);
+		const char *reg = get_register_name(operand->reg[registerNumber]);
 		if(EMPTY(reg)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		/* case: predicate registers */
-		if(instructionOperand->pred_qual && instructionOperand->reg[registerNumber] >= REG_P0 && instructionOperand->reg[registerNumber] <= REG_P31)
+		if(operand->pred_qual && operand->reg[registerNumber] >= REG_P0 && operand->reg[registerNumber] <= REG_P31)
 		{
 			result.emplace_back(RegisterToken, reg);
 			result.emplace_back(TextToken, "/");
-			result.emplace_back(TextToken, string(1, instructionOperand->pred_qual));
+			result.emplace_back(TextToken, string(1, operand->pred_qual));
 			return DISASM_SUCCESS;
 		}
 
 		/* case other regs */
 		result.emplace_back(RegisterToken, reg);
-		const char *arrspec = get_register_arrspec(instructionOperand->reg[registerNumber]);
+		const char *arrspec = get_register_arrspec(operand->reg[registerNumber], operand);
 		if(arrspec)
 			result.emplace_back(TextToken, arrspec);
 
-		if (instructionOperand->scale) {
-			sprintf(buf, "%u", 0x7fffffff & instructionOperand->scale);
+		if (operand->scale) {
+			sprintf(buf, "%u", 0x7fffffff & operand->scale);
 			result.emplace_back(TextToken, "[");
 			result.emplace_back(IntegerToken, buf);
 			result.emplace_back(TextToken, "]");
 		}
 
 		/* only use index if this is isolated REG (not, for example, MULTIREG */
-		if(instructionOperand->operandClass == REG && instructionOperand->laneUsed) {
-			sprintf(buf, "%u", instructionOperand->lane);
+		if(operand->operandClass == REG && operand->laneUsed) {
+			sprintf(buf, "%u", operand->lane);
 			result.emplace_back(TextToken, "[");
 			result.emplace_back(IntegerToken, buf);
 			result.emplace_back(TextToken, "]");
@@ -560,19 +560,19 @@ protected:
 
 
 	uint32_t tokenize_memory_operand(
-		const InstructionOperand* restrict instructionOperand,
+		const InstructionOperand* restrict operand,
 		vector<InstructionTextToken>& result)
 	{
 		char immBuff[32] = {0};
 		char paramBuff[32] = {0};
 		const char *reg0, *reg1;
 
-		reg0 = get_register_name(instructionOperand->reg[0]);
+		reg0 = get_register_name(operand->reg[0]);
 		if(EMPTY(reg0)) return FAILED_TO_DISASSEMBLE_REGISTER;
 
 		const char* sign = "";
-		int64_t imm = instructionOperand->immediate;
-		if (instructionOperand->signedImm && (int64_t)imm < 0)
+		int64_t imm = operand->immediate;
+		if (operand->signedImm && (int64_t)imm < 0)
 		{
 			sign = "-";
 			imm = -imm;
@@ -581,52 +581,52 @@ protected:
 		const char *endToken = "]";
 		result.emplace_back(BeginMemoryOperandToken, startToken);
 		result.emplace_back(RegisterToken, reg0);
-		result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[0]));
+		result.emplace_back(TextToken, get_register_arrspec(operand->reg[0], operand));
 
-		switch (instructionOperand->operandClass)
+		switch (operand->operandClass)
 		{
 		case MEM_REG: break;
 		case MEM_PRE_IDX:
 			endToken = "]!";
 			snprintf(immBuff, sizeof(immBuff), "%s%#" PRIx64, sign, (uint64_t)imm);
 			result.emplace_back(TextToken, ", #");
-			result.emplace_back(IntegerToken, immBuff, instructionOperand->immediate);
+			result.emplace_back(IntegerToken, immBuff, operand->immediate);
 			break;
 		case MEM_POST_IDX: // [<reg>], <reg|imm>
 			endToken = NULL;
-			if(instructionOperand->reg[1] == REG_NONE)
+			if(operand->reg[1] == REG_NONE)
 			{
 				snprintf(paramBuff, sizeof(paramBuff), "%s%#" PRIx64, sign, (uint64_t)imm);
 				result.emplace_back(EndMemoryOperandToken, "], #");
-				result.emplace_back(IntegerToken, paramBuff, instructionOperand->immediate);
+				result.emplace_back(IntegerToken, paramBuff, operand->immediate);
 			}
 			else
 			{
-				reg1 = get_register_name(instructionOperand->reg[1]);
+				reg1 = get_register_name(operand->reg[1]);
 				if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
 				result.emplace_back(EndMemoryOperandToken, "], ");
 				result.emplace_back(RegisterToken, reg1);
-				result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[1]));
+				result.emplace_back(TextToken, get_register_arrspec(operand->reg[1], operand));
 			}
 			break;
 		case MEM_OFFSET: // [<reg> optional(imm)]
-			if (instructionOperand->immediate != 0)
+			if (operand->immediate != 0)
 			{
 				snprintf(immBuff, sizeof(immBuff), "%s%#" PRIx64, sign, (uint64_t)imm);
 				result.emplace_back(TextToken, ", #");
-				result.emplace_back(IntegerToken, immBuff, instructionOperand->immediate);
+				result.emplace_back(IntegerToken, immBuff, operand->immediate);
 
-				if(instructionOperand->mul_vl)
+				if(operand->mul_vl)
 					result.emplace_back(TextToken, ", mul vl");
 			}
 			break;
 		case MEM_EXTENDED: // [<reg>, <reg> optional(shift optional(imm))]
 			result.emplace_back(TextToken, ", ");
-			reg1 = get_register_name(instructionOperand->reg[1]);
+			reg1 = get_register_name(operand->reg[1]);
 			if(EMPTY(reg1)) return FAILED_TO_DISASSEMBLE_REGISTER;
 			result.emplace_back(RegisterToken, reg1);
-			result.emplace_back(TextToken, get_register_arrspec(instructionOperand->reg[1]));
-			tokenize_shift(instructionOperand, result);
+			result.emplace_back(TextToken, get_register_arrspec(operand->reg[1], operand));
+			tokenize_shift(operand, result);
 			break;
 		default:
 			return NOT_MEMORY_OPERAND;
@@ -665,10 +665,10 @@ protected:
 	}
 
 
-	uint32_t tokenize_condition(const InstructionOperand* restrict instructionOperand,
+	uint32_t tokenize_condition(const InstructionOperand* restrict operand,
 		vector<InstructionTextToken>& result)
 	{
-		const char* condStr = get_condition((Condition)instructionOperand->reg[0]);
+		const char* condStr = get_condition((Condition)operand->reg[0]);
 		if (condStr == NULL)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 
@@ -677,11 +677,11 @@ protected:
 	}
 
 
-	uint32_t tokenize_implementation_specific(const InstructionOperand* restrict instructionOperand,
+	uint32_t tokenize_implementation_specific(const InstructionOperand* restrict operand,
 		vector<InstructionTextToken>& result)
 	{
 		char operand[32] = {0};
-		get_implementation_specific(instructionOperand, operand, sizeof(operand));
+		get_implementation_specific(operand, operand, sizeof(operand));
 		result.emplace_back(RegisterToken, operand);
 		return DISASM_SUCCESS;
 	}
