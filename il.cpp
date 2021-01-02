@@ -1484,13 +1484,49 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand1),
 						ReadILOperand(il, operand2, REGSZ(operand1)), SETFLAGS));
 		break;
+	case ARM64_UMADDL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Add(REGSZ(operand1),
+						ILREG(operand4),
+						il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
 	case ARM64_UMULL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
 		break;
+	case ARM64_UMSUBL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Sub(REGSZ(operand1),
+						ILREG(operand4),
+						il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
+	case ARM64_UMNEGL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Sub(REGSZ(operand1),
+						il.Const(8, 0),
+						il.MultDoublePrecUnsigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
+	case ARM64_SMADDL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Add(REGSZ(operand1),
+						ILREG(operand4),
+						il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
 	case ARM64_SMULL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
+		break;
+	case ARM64_SMSUBL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Sub(REGSZ(operand1),
+						ILREG(operand4),
+						il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
+		break;
+	case ARM64_SMNEGL:
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
+					il.Sub(REGSZ(operand1),
+						il.Const(8, 0),
+						il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
 		break;
 	case ARM64_UMULH:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
