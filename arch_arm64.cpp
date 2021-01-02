@@ -412,7 +412,6 @@ protected:
 
 	uint32_t tokenize_shift(const InstructionOperand* __restrict operand, vector<InstructionTextToken>& result)
 	{
-		char operand[64] = {0};
 		if (operand->shiftType != ShiftType_NONE)
 		{
 			const char* shiftStr = get_shift(operand->shiftType);
@@ -423,9 +422,10 @@ protected:
 			result.emplace_back(TextToken, shiftStr);
 			if (operand->shiftValueUsed != 0)
 			{
-				snprintf(operand, sizeof(operand), "%#x", (uint32_t)operand->shiftValue);
+				char buf[64] = {0};
+				snprintf(buf, sizeof(buf), "%#x", (uint32_t)operand->shiftValue);
 				result.emplace_back(TextToken, " #");
-				result.emplace_back(IntegerToken, operand, operand->shiftValue);
+				result.emplace_back(IntegerToken, buf, operand->shiftValue);
 			}
 		}
 		return DISASM_SUCCESS;
@@ -434,7 +434,7 @@ protected:
 
 	uint32_t tokenize_shifted_immediate(const InstructionOperand* __restrict operand,	vector<InstructionTextToken>& result)
 	{
-		char operand[64] = {0};
+		char buf[64] = {0};
 		const char* sign = "";
 		if (operand == NULL)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
@@ -456,24 +456,24 @@ protected:
 				float floatValue;
 			} f;
 			f.intValue = (uint32_t)operand->immediate;
-			snprintf(operand, sizeof(operand), "%.08f", f.floatValue);
+			snprintf(buf, sizeof(buf), "%.08f", f.floatValue);
 			result.emplace_back(TextToken, "#");
-			result.emplace_back(FloatingPointToken, operand);
+			result.emplace_back(FloatingPointToken, buf);
 			break;
 			}
 		case IMM32:
-			snprintf(operand, sizeof(operand), "%s%#x", sign, (uint32_t)imm);
+			snprintf(buf, sizeof(buf), "%s%#x", sign, (uint32_t)imm);
 			result.emplace_back(TextToken, "#");
-			result.emplace_back(IntegerToken, operand, operand->immediate);
+			result.emplace_back(IntegerToken, buf, operand->immediate);
 			break;
 		case IMM64:
-			snprintf(operand, sizeof(operand), "%s%#" PRIx64 , sign, imm);
+			snprintf(buf, sizeof(buf), "%s%#" PRIx64 , sign, imm);
 			result.emplace_back(TextToken, "#");
-			result.emplace_back(IntegerToken, operand, operand->immediate);
+			result.emplace_back(IntegerToken, buf, operand->immediate);
 			break;
 		case LABEL:
-			snprintf(operand, sizeof(operand), "%#" PRIx64 , operand->immediate);
-			result.emplace_back(PossibleAddressToken, operand, operand->immediate);
+			snprintf(buf, sizeof(buf), "%#" PRIx64 , operand->immediate);
+			result.emplace_back(PossibleAddressToken, buf, operand->immediate);
 			break;
 		default:
 			return FAILED_TO_DISASSEMBLE_OPERAND;
@@ -508,7 +508,7 @@ protected:
 		if (operand->operandClass == SYS_REG)
 		{
 			snprintf(buf, sizeof(buf), "%s",
-			  get_system_register_name((SystemReg)operand->reg[registerNumber]));
+				get_system_register_name((SystemReg)operand->sysreg));
 			result.emplace_back(RegisterToken, buf);
 			return DISASM_SUCCESS;
 		}
@@ -668,7 +668,7 @@ protected:
 	uint32_t tokenize_condition(const InstructionOperand* restrict operand,
 		vector<InstructionTextToken>& result)
 	{
-		const char* condStr = get_condition((Condition)operand->reg[0]);
+		const char* condStr = get_condition((Condition)operand->cond);
 		if (condStr == NULL)
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 
@@ -680,9 +680,9 @@ protected:
 	uint32_t tokenize_implementation_specific(const InstructionOperand* restrict operand,
 		vector<InstructionTextToken>& result)
 	{
-		char operand[32] = {0};
-		get_implementation_specific(operand, operand, sizeof(operand));
-		result.emplace_back(RegisterToken, operand);
+		char buf[32] = {0};
+		get_implementation_specific(operand, buf, sizeof(buf));
+		result.emplace_back(RegisterToken, buf);
 		return DISASM_SUCCESS;
 	}
 
@@ -1333,16 +1333,18 @@ public:
 	}
 
 
-	virtual string GetRegisterName(uint32_t reg) override
+	virtual string GetRegisterName(uint32_t reg_) override
 	{
-		switch (reg) {
-		case REG_NONE:
-			return "";
-		case FAKEREG_SYSCALL_IMM:
-			return "syscall_imm";
-		}
+		if(reg_ > REG_NONE && reg_ < REG_END)
+			return get_register_name((enum Register)reg_);
 
-		return get_register_name(reg);
+		if(reg_ > SYSREG_NONE && reg_ < SYSREG_END)
+			return get_system_register_name((enum SystemReg)reg_);
+
+		if(reg_ == FAKEREG_SYSCALL_IMM)
+			return "syscall_imm";
+
+		return "";
 	}
 
 
