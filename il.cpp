@@ -892,8 +892,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					il.And(REGSZ(operand2),
 						ILREG(operand2),
 						il.Not(REGSZ(operand2),
-							ReadILOperand(il, operand3, REGSZ(operand2)), SETFLAGS)
-							)));
+							ReadILOperand(il, operand3, REGSZ(operand2))), SETFLAGS)
+							));
 		break;
 	case ARM64_CBNZ:
 		ConditionalJump(arch, il,
