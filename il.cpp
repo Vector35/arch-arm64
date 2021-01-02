@@ -8,6 +8,7 @@
 
 using namespace BinaryNinja;
 
+#define COND(X) ((Condition)(X).cond)
 #define IMM(X) X.immediate
 #define REG(X) (X).reg[0]
 #define REGSZ(X) get_register_size(REG(X))
@@ -105,7 +106,17 @@ static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operan
 			break;
 	}
 
-	ExprId res = il.Register(opsz, operand.reg[regNum]);
+	ExprId res = NULL;
+
+	switch (operand.operandClass) {
+	case SYS_REG:
+		res = il.Register(opsz, operand.sysreg);
+		break;
+	case REG:
+	default:
+		res = il.Register(opsz, operand.reg[regNum]);
+		break;
+	}
 
 	if (extractSize < opsz)
 		res = il.LowPart(extractSize, res);
@@ -1231,12 +1242,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_MRS:
 		{
 			ExprId reg = ILREG(operand2);
-			const char *name = get_system_register_name((SystemReg)operand2.reg[0]);
+			const char *name = get_system_register_name((SystemReg)operand2.sysreg);
 
 			if (strlen(name) == 0) {
-				LogWarn("Unknown system register @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
-						addr, operand2.reg[0], operand2.reg[1], operand2.reg[2], operand2.reg[3], operand2.reg[4]);
-				reg = il.Register(4, SYSREG_UNKNOWN);
+				LogWarn("Unknown system register %d @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+						operand2.sysreg, addr, operand2.implspec[0], operand2.implspec[1], operand2.implspec[2],
+						operand2.implspec[3], operand2.implspec[4]);
+				reg = il.Register(8, SYSREG_UNKNOWN);
 			}
 
 			il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))},
@@ -1256,12 +1268,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_MSR:
 		{
-			uint32_t dst = REG(operand1);
+			uint32_t dst = operand1.sysreg;
 			const char *name = get_system_register_name((SystemReg)dst);
 
 			if (strlen(name) == 0) {
-				LogWarn("Unknown system register @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
-						addr, operand1.reg[0], operand1.reg[1], operand1.reg[2], operand1.reg[3], operand1.reg[4]);
+				LogWarn("Unknown system register %d @ 0x%" PRIx64 ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+						dst, addr, operand1.implspec[0], operand1.implspec[1], operand1.implspec[2],
+						operand1.implspec[3], operand1.implspec[4]);
 				dst = SYSREG_UNKNOWN;
 			}
 
