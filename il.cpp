@@ -938,7 +938,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		{
 			LowLevelILLabel trueCode, falseCode, done;
 
-			il.AddInstruction(il.If(GetCondition(il, (Condition)REG(operand4)), trueCode, falseCode));
+			il.AddInstruction(il.If(GetCondition(il, COND(operand4)), trueCode, falseCode));
 
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Add(REGSZ(operand1),
@@ -966,7 +966,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		{
 			LowLevelILLabel trueCode, falseCode, done;
 
-			il.AddInstruction(il.If(GetCondition(il, (Condition)REG(operand4)), trueCode, falseCode));
+			il.AddInstruction(il.If(GetCondition(il, COND(operand4)), trueCode, falseCode));
 
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Sub(REGSZ(operand1),
