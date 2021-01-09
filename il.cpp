@@ -106,7 +106,7 @@ static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operan
 			break;
 	}
 
-	ExprId res = NULL;
+	ExprId res = 0;
 
 	switch (operand.operandClass) {
 	case SYS_REG:

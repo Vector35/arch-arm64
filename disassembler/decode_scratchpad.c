@@ -3190,7 +3190,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_BIC_ASIMDIMM_L_SL:
 		{
 			uint64_t imm8 = ABCDEFGH;
-			ArrangementSpec arr_spec;
+			ArrangementSpec arr_spec = ARRSPEC_NONE;
 			unsigned AMOUNT = 0;
 			if((dec->cmode & 0b1101) == 0b1001) { // 16-bit (cmode == 10x1)
 				arr_spec = table_4h_8h[dec->Q];

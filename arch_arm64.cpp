@@ -1332,6 +1332,8 @@ public:
 									il.Flag(IL_FLAG_C)));
 
 				}
+			default:
+				break;
 		}
 
 		BNFlagRole role = GetFlagRole(flag, GetSemanticClassForFlagWriteType(flagWriteType));
