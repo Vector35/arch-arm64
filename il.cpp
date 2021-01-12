@@ -1229,11 +1229,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDP:
-		//No support for SIMD
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2]);
+		LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_LDR:
 	case ARM64_LDUR:
@@ -1243,38 +1239,23 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_LDRB:
 	case ARM64_LDURB:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, true, false, 1, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, true, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRH:
 	case ARM64_LDURH:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRSB:
 	case ARM64_LDURSB:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, true, true, 1, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, true, true, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRSH:
 	case ARM64_LDURSH:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, true, true, 2, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, true, true, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRSW:
 	case ARM64_LDURSW:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LD1:
 		{
@@ -1543,10 +1524,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEVL, {}));
 		break;
 	case ARM64_STP:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
+		LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_STR:
 	case ARM64_STUR:
@@ -1554,17 +1532,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_STRB:
 	case ARM64_STURB:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, false, false, 1, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, false, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_STRH:
 	case ARM64_STURH:
-		if (instr.operands[0].reg[0] >= REG_B0 && instr.operands[0].reg[0] <= REG_Q31)
-			il.AddInstruction(il.Unimplemented());
-		else
-			LoadStoreOperandSize(il, false, false, 2, instr.operands[0], instr.operands[1]);
+		LoadStoreOperandSize(il, false, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_SUB:
 	case ARM64_SUBS:
