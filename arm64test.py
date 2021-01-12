@@ -3,6 +3,10 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 test_cases = [
+	(b'\x00\x70\x40\x4c', 'LLIL_SET_REG.128(v0,LLIL_LOAD.128(LLIL_REG.q(x0)))'), # ld1 {v0.16b}, [x0]
+	(b'\x00\xa0\x40\x4c', 'LLIL_SET_REG.128(v0,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v1,LLIL_LOAD.128(LLIL_REG.q(x0)))'), # ld1 {v0.16b, v1.16b}, [x0]
+	(b'\x00\x60\x40\x4c', 'LLIL_SET_REG.128(v0,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v1,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v2,LLIL_LOAD.128(LLIL_REG.q(x0)))'), # ld1 {v0.16b, v1.16b, v2.16b}, [x0]
+	(b'\x00\x20\x40\x4c', 'LLIL_SET_REG.128(v0,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v1,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v2,LLIL_LOAD.128(LLIL_REG.q(x0))); LLIL_SET_REG.128(v3,LLIL_LOAD.128(LLIL_REG.q(x0)))'), # ld1 {v0.16b, v1.16b, v2.16b, v3.16b}, [x0]
 	(b'\x63\x86\xa3\x9b', 'LLIL_SET_REG.q(x3,LLIL_SUB.q(LLIL_REG.q(x1),LLIL_MULU_DP.q(LLIL_REG.d(w19),LLIL_REG.d(w3))))'), # umsubl  x3, w19, w3, x1
 	(b'\x63\xfe\xa3\x9b', 'LLIL_SET_REG.q(x3,LLIL_SUB.q(LLIL_CONST.q(0x0),LLIL_MULU_DP.q(LLIL_REG.d(w19),LLIL_REG.d(w3))))'), # umnegl  x3, w19, w3
 	(b'\x63\x86\x23\x9b', 'LLIL_SET_REG.q(x3,LLIL_SUB.q(LLIL_REG.q(x1),LLIL_MULS_DP.q(LLIL_REG.d(w19),LLIL_REG.d(w3))))'), # smsubl  x3, w19, w3, x1

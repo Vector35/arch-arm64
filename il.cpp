@@ -519,6 +519,80 @@ static void LoadStoreOperand(
 	}
 }
 
+static void LoadStoreOperandSingleReg(
+		LowLevelILFunction& il,
+		bool load,
+		uint32_t reg_num,
+		size_t reg_sz,
+		InstructionOperand& operand2)
+{
+	ExprId tmp;
+	if (load)
+	{
+		switch (operand2.operandClass)
+		{
+		case MEM_REG:
+			//operand1.reg = [operand2.reg]
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
+						il.Operand(1, il.Load(reg_sz, ILREG(operand2)))));
+			break;
+		case MEM_OFFSET:
+			//operand1.reg = [operand2.reg + operand2.imm]
+			if (IMM(operand2) == 0)
+				tmp = ILREG(operand2);
+			else
+				tmp = il.Add(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), IMM(operand2)));
+
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
+						il.Operand(1, il.Load(reg_sz, tmp))));
+			break;
+		case MEM_PRE_IDX:
+			//operand2.reg += operand2.imm
+			if (IMM(operand2) != 0)
+				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
+							il.Add(REGSZ(operand2),
+								ILREG(operand2),
+								il.Const(REGSZ(operand2), IMM(operand2)))));
+			//operand1.reg = [operand2.reg]
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
+						il.Operand(1, il.Load(reg_sz, ILREG(operand2)))));
+			break;
+		case MEM_POST_IDX:
+			//operand1.reg = [operand2.reg]
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
+						il.Operand(1, il.Load(reg_sz, ILREG(operand2)))));
+			//operand2.reg += operand2.imm
+			if (IMM(operand2) != 0)
+				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
+							il.Add(REGSZ(operand2),
+								ILREG(operand2),
+								il.Const(REGSZ(operand2), IMM(operand2)))));
+			break;
+		case MEM_EXTENDED:
+			il.AddInstruction(
+					il.SetRegister(reg_sz, reg_num,
+						il.Operand(1,
+							il.Load(reg_sz,
+								il.Add(REGSZ(operand2),
+									ILREG(operand2),
+									GetShiftedRegister(il, operand2, 1, REGSZ(operand2))
+									)))));
+			break;
+		case LABEL:
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
+						il.Operand(1, il.Load(reg_sz, il.ConstPointer(8, IMM(operand2))))));
+			break;
+		case IMM32:
+		case IMM64:
+			il.AddInstruction(il.SetRegister(reg_sz, reg_num, il.Const(reg_sz, IMM(operand2))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+			break;
+		}
+	}
+}
+
 
 static void LoadStoreOperandSize(
 		LowLevelILFunction& il,
@@ -1201,6 +1275,34 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.AddInstruction(il.Unimplemented());
 		else
 			LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
+		break;
+	case ARM64_LD1:
+		{
+			uint32_t num_regs = 0;
+			switch (instr.encoding) {
+				case ENC_LD1_ASISDLSE_R1_1V:
+					num_regs = 1;
+					break;
+				case ENC_LD1_ASISDLSE_R2_2V:
+					num_regs = 2;
+					break;
+				case ENC_LD1_ASISDLSE_R3_3V:
+					num_regs = 3;
+					break;
+				case ENC_LD1_ASISDLSE_R4_4V:
+					num_regs = 4;
+					break;
+			}
+			for (uint32_t ii = 0; ii < num_regs; ++ii)
+				LoadStoreOperandSingleReg(il,
+						true,
+					instr.operands[0].reg[ii],
+					get_register_size(instr.operands[0].reg[ii]),
+					instr.operands[1]);
+		break;
+		}
+	case ARM64_ST1:
+		LoadStoreOperand(il, false, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LSL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
