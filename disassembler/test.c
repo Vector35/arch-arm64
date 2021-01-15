@@ -15,6 +15,30 @@
 
 int verbose = 1;
 
+char *oper_class_to_str(enum OperandClass c)
+{
+	switch(c) {
+		case NONE: return "NONE";
+		case IMM32: return "IMM32";
+		case IMM64: return "IMM64";
+		case FIMM32: return "FIMM32";
+		case STR_IMM: return "STR_IMM";
+		case REG: return "REG";
+		case MULTI_REG: return "MULTIREG";
+		case SYS_REG: return "SYS_REG";
+		case MEM_REG: return "MEM_REG";
+		case MEM_PRE_IDX: return "MEM_PRE_IDX";
+		case MEM_POST_IDX: return "MEM_POST_IDX";
+		case MEM_OFFSET: return "MEM_OFFSET";
+		case MEM_EXTENDED: return "MEM_EXTENDED";
+		case LABEL: return "LABEL";
+		case CONDITION: return "CONDITION";
+		case NAME: return "NAME";
+		case IMPLEMENTATION_SPECIFIC: return "IMPLEMENTATION_SPECIFIC";
+		default: return "ERROR";
+	}
+}
+
 int disassemble(uint64_t address, uint32_t insword, char *result)
 {
 	int rc;
@@ -25,6 +49,16 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 	if(verbose)
 		printf("aarch64_decompose() returned %d\n", rc);
 	if(rc) return rc;
+
+	if(verbose) {
+		printf("  instr.insword: %08X\n", instr.insword);
+		printf(" instr.encoding: %d %s\n", instr.encoding, enc_to_str(instr.encoding));
+		printf("instr.operation: %d %s\n", instr.operation, operation_to_str(instr.operation));
+		for(int i=0; i<MAX_OPERANDS && instr.operands[i].operandClass!=NONE; i++) {
+			printf("instr.operands[%d]\n", i);
+			printf("\t.class: %s\n", oper_class_to_str(instr.operands[i].operandClass));
+		}
+	}
 
 	rc = aarch64_disassemble(&instr, result, 1024);
 	if(verbose)

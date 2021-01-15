@@ -22,6 +22,12 @@ using namespace BinaryNinja;
 #define ONES(N) (-1ULL >> (64-N))
 #define SETFLAGS (instr.setflags ? IL_FLAGWRITE_ALL : IL_FLAGWRITE_NONE)
 
+#define ABORT_LIFT \
+{ \
+	il.AddInstruction(il.Unimplemented()); \
+	break; \
+}
+
 static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 {
 	switch(cond)
@@ -537,7 +543,6 @@ static void LoadStoreOperandSingleReg(
 
 	if (load)
 	{
-
 		switch (operand2.operandClass)
 		{
 		case MEM_REG:
@@ -1313,6 +1318,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_LD1:
 	case ARM64_ST1:
 		{
+			if(instr.operands[0].operandClass != MULTI_REG)
+				ABORT_LIFT
+
 			uint32_t num_regs = 0;
 			switch (instr.encoding) {
 				case ENC_LD1_ASISDLSE_R1_1V:
@@ -1331,15 +1339,24 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 				case ENC_ST1_ASISDLSE_R4_4V:
 					num_regs = 4;
 					break;
+				default:
+					break;
 			}
+
+			if(num_regs == 0)
+				ABORT_LIFT
+
 			const size_t reg_sz = REGSZ(instr.operands[0]);
 			for (uint32_t ii = 0; ii < num_regs; ++ii)
+			{
 				LoadStoreOperandSingleReg(il,
-						instr.operation == ARM64_LD1,
-					instr.operands[0].reg[ii],
-					reg_sz,
-					instr.operands[1],
-					ii * reg_sz);
+					instr.operation == ARM64_LD1, /* {T,F} = {load,store} */
+					instr.operands[0].reg[ii], /* register number */
+					reg_sz, /* register size */
+					instr.operands[1] /* operand2 */,
+					ii * reg_sz /* slide */
+				);
+			}
 		break;
 		}
 	case ARM64_LSL:
