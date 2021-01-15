@@ -201,14 +201,47 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 	return res;
 }
 
+static ExprId GetILOperandPreOrPostIndex(LowLevelILFunction& il, InstructionOperand& operand)
+{
+	if(IMM(operand) == 0)
+		return 0;
+
+	if(operand.operandClass!=MEM_PRE_IDX && operand.operandClass!=MEM_POST_IDX)
+		return 0;
+
+	return il.SetRegister(REGSZ(operand), REG(operand),
+		il.Add(REGSZ(operand), ILREG(operand),
+			il.Const(REGSZ(operand), IMM(operand))));
+}
+
+/* Returns an expression that does any pre-incrementing on an operand, if it exists */
+static ExprId GetILOperandPreIndex(LowLevelILFunction& il, InstructionOperand& operand)
+{
+	if(operand.operandClass != MEM_PRE_IDX)
+		return 0;
+
+	return GetILOperandPreOrPostIndex(il, operand);
+}
+
+/* Returns an expression that does any post-incrementing on an operand, if it exists */
+static ExprId GetILOperandPostIndex(LowLevelILFunction& il, InstructionOperand& operand)
+{
+	if(operand.operandClass != MEM_POST_IDX)
+		return 0;
+
+	return GetILOperandPreOrPostIndex(il, operand);
+}
+
 /* Returns an IL expression that reads (and only reads) from the operand.
 	It accounts for, but does not generate IL that executes, pre and post indexing.
+	The operand class can be overridden.
 	An additional offset can be applied, convenient for calculating sequential loads and stores. */
-static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOperand& operand, size_t extra_offset, size_t addrSize)
+static ExprId GetILOperandEffectiveAddress(LowLevelILFunction& il, InstructionOperand& operand, size_t addrSize, OperandClass oclass, size_t extra_offset)
 {
 	ExprId addr = 0;
-	switch (operand.operandClass)
-	{
+	if(oclass == NONE)
+		oclass = operand.operandClass;
+	switch (oclass) {
 		case MEM_REG: // ldr x0, [x1]
 		case MEM_POST_IDX: // ldr w0, [x1], #4
 			addr = il.Register(addrSize, operand.reg[0]);
@@ -269,7 +302,7 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 		else
 			return il.Load(resultSize, il.Register(8, operand.reg[0]));
 	case MEM_EXTENDED:
-		return il.Load(resultSize, GetILOperandMemoryAddress(il, operand, 0, resultSize));
+		return il.Load(resultSize, GetILOperandEffectiveAddress(il, operand, resultSize, NONE, 0));
 	case MEM_PRE_IDX:
 	case MEM_POST_IDX:
 	case MULTI_REG:
@@ -293,129 +326,30 @@ static void LoadStoreOperandPair(
 		InstructionOperand& operand2,
 		InstructionOperand& operand3)
 {
-	ExprId tmp;
-	if (load)
-	{
-		switch (operand3.operandClass)
-		{
-		case MEM_REG:
-			//operand1.reg = [operand3.reg]
-			SETREG(operand1, il.Operand(2, LOADREG(operand3)));
-			//operand2.reg = [operand3.reg + operand1.size]
-			SETREG(operand2, il.Operand(2, LOADVAL(operand3, ADDREGOFS(operand3, IMM(operand1)))));
-			break;
-		case MEM_OFFSET:
-			//operand1.reg = [operand3.reg + operand3.imm]
-			if (IMM(operand3) == 0)
-				tmp = ILREG(operand3);
-			else
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3)));
+	unsigned sz = REGSZ(operand1);
 
-			SETREG(operand1, il.Operand(2, il.Load(REGSZ(operand1), tmp)));
+	/* do pre-indexing */
+	ExprId tmp = GetILOperandPreIndex(il, operand3);
+	if(tmp) il.AddInstruction(tmp);
 
-			if (IMM(operand3) == 0)
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), REGSZ(operand1)));
-			else
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3) + REGSZ(operand1)));
-			//operand2.reg = [operand3.reg + operand3.imm + operand1.size]
-			il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
-					il.Operand(2, il.Load(REGSZ(operand1), tmp))));
-			break;
-		case MEM_PRE_IDX:
-			//operand3.reg += operand3.imm
-			if (IMM(operand3) != 0)
-				SETREG(operand3, il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3))));
-			//operand1.reg = [operand3.reg]
-			SETREG(operand1, il.Operand(2, il.Load(REGSZ(operand1), ILREG(operand3))));
-			//operand2.reg = [operand3.reg + operand1.size]
-			SETREG(operand2, il.Operand(2, il.Load(REGSZ(operand1),
-							il.Add(REGSZ(operand1), il.Const(REGSZ(operand1), REGSZ(operand1)), ILREG(operand3)))));
-			break;
-		case MEM_POST_IDX:
-			//operand1.reg = [operand3.reg]
-			SETREG(operand1, il.Operand(2, il.Load(REGSZ(operand1), ILREG(operand3))));
-			//operand2.reg = [operand3.reg + operand1.size]
-			SETREG(operand2, il.Operand(2, il.Load(REGSZ(operand1),
-						il.Add(REGSZ(operand1), il.Const(REGSZ(operand1), REGSZ(operand1)), ILREG(operand3)))));
-			if (IMM(operand3) != 0)
-			//operand3.reg += operand3.imm
-				SETREG(operand3,
-					il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3))));
-			break;
-		default:
-			il.AddInstruction(il.Unimplemented());
-			break;
-		}
+	/* compute addresses */
+	OperandClass oclass = (operand3.operandClass == MEM_PRE_IDX) ? MEM_REG : NONE;
+	ExprId addr0 = GetILOperandEffectiveAddress(il, operand3, sz, oclass, 0);
+	ExprId addr1 = GetILOperandEffectiveAddress(il, operand3, sz, oclass, sz);
+
+	/* load/store */
+	if(load) {
+		il.AddInstruction(il.SetRegister(sz, REG(operand1), il.Load(sz, addr0)));
+		il.AddInstruction(il.SetRegister(sz, REG(operand2), il.Load(sz, addr1)));
 	}
-	else //store
-	{
-		switch (operand3.operandClass)
-		{
-		case MEM_REG:
-			//[operand3.reg] = operand1.reg
-			il.AddInstruction(il.Operand(2, il.Store(REGSZ(operand1), ILREG(operand3), ILREG(operand1))));
-			//[operand3.reg + operand1.size] = operand2.reg
-			il.AddInstruction(il.Operand(2,
-					il.Store(REGSZ(operand2),
-						il.Add(REGSZ(operand3),
-							ILREG(operand3),
-							il.Const(1, REGSZ(operand1))),
-						ILREG(operand2))));
-			break;
-		case MEM_OFFSET:
-			if (IMM(operand3) == 0)
-				tmp = ILREG(operand3);
-			else
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3)));
-			//[operand3.reg + operand3.immediate] = operand1.reg
-			il.AddInstruction(il.Operand(2, il.Store(REGSZ(operand1), tmp, ILREG(operand1))));
-
-			if (IMM(operand3) == 0)
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), REGSZ(operand1)));
-			else
-				tmp = il.Add(REGSZ(operand3), ILREG(operand3), il.Const(REGSZ(operand3), IMM(operand3) + REGSZ(operand1)));
-			//[operand3.reg + operand3.immediate + operand1.size] = operand2.reg
-			il.AddInstruction(il.Operand(2, il.Store(REGSZ(operand2), tmp, ILREG(operand2))));
-			break;
-		case MEM_PRE_IDX:
-			//operand3.reg = operand3.reg + operand3.immediate
-			if (IMM(operand3) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand3), REG(operand3),
-					il.Add(REGSZ(operand3),
-						ILREG(operand3),
-						il.Const(REGSZ(operand3), IMM(operand3)))));
-			//[operand3.reg] = operand1.reg
-			il.AddInstruction(il.Operand(2, il.Store(REGSZ(operand1), ILREG(operand3), ILREG(operand1))));
-			//[operand3.reg + operand3.size] = operand2.reg
-			il.AddInstruction(il.Operand(2,
-					il.Store(REGSZ(operand2),
-						il.Add(REGSZ(operand3),
-							ILREG(operand3),
-							il.Const(REGSZ(operand3), REGSZ(operand1))),
-						ILREG(operand2))));
-			break;
-		case MEM_POST_IDX:
-			//[operand3.reg] = operand1.reg
-			il.AddInstruction(il.Operand(2, il.Store(REGSZ(operand1), ILREG(operand3), ILREG(operand1))));
-			//[operand3.reg + operand3.size] = operand2.reg
-			il.AddInstruction(il.Operand(2,
-					il.Store(REGSZ(operand2),
-						il.Add(REGSZ(operand3),
-							ILREG(operand3),
-							il.Const(REGSZ(operand3), REGSZ(operand1))),
-						ILREG(operand2))));
-			//operand3.reg = operand3.reg + operand3.immediate
-			if (IMM(operand3) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand3), REG(operand3),
-					il.Add(REGSZ(operand3),
-						ILREG(operand3),
-						il.Const(REGSZ(operand3), IMM(operand3)))));
-			break;
-		default:
-			il.AddInstruction(il.Unimplemented());
-			break;
-		}
+	else {
+		il.AddInstruction(il.Store(sz, addr0, ILREG(operand1)));
+		il.AddInstruction(il.Store(sz, addr1, ILREG(operand2)));
 	}
+
+	/* do post-indexing */
+	tmp = GetILOperandPostIndex(il, operand3);
+	if(tmp) il.AddInstruction(tmp);
 }
 
 
