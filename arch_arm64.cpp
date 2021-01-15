@@ -2371,6 +2371,12 @@ public:
 	{
 		return REG_X0;
 	}
+
+
+	virtual bool IsEligibleForHeuristics() override
+	{
+		return false;
+	}
 };
 
 class WindowsArm64SystemCallConvention: public CallingConvention
@@ -2402,6 +2408,12 @@ public:
 	virtual uint32_t GetIntegerReturnValueRegister() override
 	{
 		return REG_X0;
+	}
+
+
+	virtual bool IsEligibleForHeuristics() override
+	{
+		return false;
 	}
 };
 
@@ -2435,6 +2447,12 @@ public:
 	virtual uint32_t GetIntegerReturnValueRegister() override
 	{
 		return REG_X0;
+	}
+
+
+	virtual bool IsEligibleForHeuristics() override
+	{
+		return false;
 	}
 };
 
