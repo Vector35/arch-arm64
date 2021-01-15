@@ -69,37 +69,6 @@ static void ConditionExecute(LowLevelILFunction& il, Condition cond, ExprId true
 }
 
 
-static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOperand& operand, size_t offset, size_t addrSize)
-{
-	(void)offset;
-	ExprId addr = 0;
-	switch (operand.operandClass)
-	{
-	case MEM_REG:
-		addr = il.Register(addrSize, operand.reg[0]);
-		break;
-	case MEM_PRE_IDX:
-		break;
-	case MEM_POST_IDX:
-		break;
-	case MEM_OFFSET:
-		addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate));
-		break;
-	case MEM_EXTENDED:
-		if	(operand.shiftType == ShiftType_NONE)
-			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate));
-		else if (operand.shiftType == ShiftType_LSL)
-			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
-					il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
-		break;
-	default:
-		il.AddInstruction(il.Unimplemented());
-		break;
-	}
-	return addr;
-}
-
-
 static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
 {
 	size_t opsz = get_register_size(operand.reg[regNum]);
@@ -231,6 +200,49 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 				il.Const(1, operand.shiftValue));
 
 	return res;
+}
+
+/* Returns an IL expression that reads (and only reads) from the operand.
+	It accounts for, but does not generate IL that executes, pre and post indexing.
+	An additional offset can be applied, convenient for calculating sequential loads and stores. */
+static ExprId GetILOperandMemoryAddress(LowLevelILFunction& il, InstructionOperand& operand, size_t extra_offset, size_t addrSize)
+{
+	ExprId addr = 0;
+	switch (operand.operandClass)
+	{
+		case MEM_REG: // ldr x0, [x1]
+		case MEM_POST_IDX: // ldr w0, [x1], #4
+			addr = il.Register(addrSize, operand.reg[0]);
+			if(extra_offset)
+				addr = il.Add(addrSize, addr, il.Const(addrSize, extra_offset));
+			break;
+		case MEM_OFFSET: // ldr w0, [x1, #4]
+		case MEM_PRE_IDX: // ldr w0, [x1, #4]!
+			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate + extra_offset));
+			break;
+		case MEM_EXTENDED:
+			if(operand.shiftType == ShiftType_NONE) {
+				addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate + extra_offset));
+			}
+			else if (operand.shiftType == ShiftType_LSL) {
+				if(extra_offset) {
+					addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
+						il.Add(addrSize, il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)),
+							il.Const(addrSize, extra_offset)));
+				}
+				else {
+					addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
+						il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
+				}
+			}
+			else {
+				ABORT_LIFT
+			}
+			break;
+		default:
+			ABORT_LIFT
+	}
+	return addr;
 }
 
 
