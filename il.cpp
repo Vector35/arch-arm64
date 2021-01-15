@@ -8,7 +8,6 @@
 
 using namespace BinaryNinja;
 
-#define COND(X) ((Condition)(X).cond)
 #define IMM(X) X.immediate
 #define REG(X) (X).reg[0]
 #define REGSZ(X) get_register_size(REG(X))
@@ -824,13 +823,17 @@ static size_t DirectJump(Architecture* arch, LowLevelILFunction& il, uint64_t ta
 }
 
 
-static ExprId Extract(LowLevelILFunction& il, InstructionOperand& reg, size_t nbits, size_t rightMostBit)
+static ExprId ExtractBits(LowLevelILFunction& il, InstructionOperand& reg, size_t nbits, size_t rightMostBit)
 {
 //Get N set bits at offset O
 #define BITMASK(N,O) (((1LL << nbits) - 1) << O)
 	return il.And(REGSZ(reg), ILREG(reg), il.Const(REGSZ(reg), BITMASK(nbits, rightMostBit)));
 }
 
+static ExprId ExtractBit(LowLevelILFunction& il, InstructionOperand& reg, size_t bit)
+{
+	return il.And(REGSZ(reg), ILREG(reg), il.Const(REGSZ(reg), (1<<bit)));
+}
 
 static void ConditionalJump(Architecture* arch, LowLevelILFunction& il, size_t cond, size_t addrSize, uint64_t t, uint64_t f)
 {
@@ -1082,7 +1085,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		{
 			LowLevelILLabel trueCode, falseCode, done;
 
-			il.AddInstruction(il.If(GetCondition(il, COND(operand4)), trueCode, falseCode));
+			il.AddInstruction(il.If(GetCondition(il, operand4.cond), trueCode, falseCode));
 
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Add(REGSZ(operand1),
@@ -1110,7 +1113,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		{
 			LowLevelILLabel trueCode, falseCode, done;
 
-			il.AddInstruction(il.If(GetCondition(il, COND(operand4)), trueCode, falseCode));
+			il.AddInstruction(il.If(GetCondition(il, operand4.cond), trueCode, falseCode));
 
 			il.MarkLabel(trueCode);
 			il.AddInstruction(il.Sub(REGSZ(operand1),
@@ -1130,47 +1133,47 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		}
 		break;
 	case ARM64_CSEL:
-		ConditionExecute(il, (Condition)REG(operand4),
+		ConditionExecute(il, operand4.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand3)));
 		break;
 	case ARM64_CSINC:
-		ConditionExecute(il, (Condition)REG(operand4),
+		ConditionExecute(il, operand4.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Add(REGSZ(operand1), ILREG(operand3), il.Const(REGSZ(operand1), 1))));
 		break;
 	case ARM64_CSINV:
-		ConditionExecute(il, (Condition)REG(operand4),
+		ConditionExecute(il, operand4.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Not(REGSZ(operand1), ILREG(operand3))));
 		break;
 	case ARM64_CSNEG:
-		ConditionExecute(il, (Condition)REG(operand4),
+		ConditionExecute(il, operand4.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand3))));
 		break;
 	case ARM64_CSET:
-		ConditionExecute(il, (Condition)REG(operand2),
+		ConditionExecute(il, operand2.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 1)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 0)));
 		break;
 	case ARM64_CSETM:
-		ConditionExecute(il, (Condition)REG(operand2),
+		ConditionExecute(il, operand2.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), -1)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 0)));
 		break;
 	case ARM64_CINC:
-		ConditionExecute(il, (Condition)REG(operand3),
+		ConditionExecute(il, operand3.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Add(REGSZ(operand1), ILREG(operand2), il.Const(REGSZ(operand1), 1))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
 	case ARM64_CINV:
-		ConditionExecute(il, (Condition)REG(operand3),
+		ConditionExecute(il, operand3.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Not(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
 	case ARM64_CNEG:
-		ConditionExecute(il, (Condition)REG(operand3),
+		ConditionExecute(il, operand3.cond,
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
@@ -1587,7 +1590,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 						il.ArithShiftRight(REGSZ(operand1),
 							il.ShiftLeft(REGSZ(operand1),
-								Extract(il, operand2, IMM(operand4), 0),
+								ExtractBits(il, operand2, IMM(operand4), 0),
 								il.Const(1, (REGSZ(operand1)*8)-IMM(operand4))),
 							il.Const(1, (REGSZ(operand1)*8)-IMM(operand3)-IMM(operand4)))));
 		break;
@@ -1595,7 +1598,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 						il.ArithShiftRight(REGSZ(operand1),
 							il.ShiftLeft(REGSZ(operand1),
-								Extract(il, operand2, IMM(operand4), IMM(operand3)),
+								ExtractBits(il, operand2, IMM(operand4), IMM(operand3)),
 								il.Const(1, (REGSZ(operand1)*8)-IMM(operand4)-IMM(operand3))),
 							il.Const(1, (REGSZ(operand1)*8)-IMM(operand4)))));
 		break;
@@ -1647,16 +1650,18 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					ExtractRegister(il, operand2, 0, 4, true, REGSZ(operand1))));
 		break;
 	case ARM64_TBNZ:
-		ConditionalJump(arch, il, il.CompareNotEqual(REGSZ(operand1),
-					Extract(il, operand1, 1, IMM(operand2)),
-					il.Const(REGSZ(operand1), 0)),
-				addrSize, IMM(operand3), addr + 4);
+		ConditionalJump(arch, il,
+			il.CompareNotEqual(REGSZ(operand1),
+				ExtractBit(il, operand1, IMM(operand2)),
+				il.Const(REGSZ(operand1), 0)),
+			addrSize, IMM(operand3), addr + 4);
 		return false;
 	case ARM64_TBZ:
-		ConditionalJump(arch, il, il.CompareEqual(REGSZ(operand1),
-					Extract(il, operand1, 1, IMM(operand2)),
-					il.Const(REGSZ(operand1), 0)),
-				addrSize, IMM(operand3), addr + 4);
+		ConditionalJump(arch, il,
+			il.CompareEqual(REGSZ(operand1),
+				ExtractBit(il, operand1, IMM(operand2)),
+				il.Const(REGSZ(operand1), 0)),
+			addrSize, IMM(operand3), addr + 4);
 		return false;
 	case ARM64_TST:
 		il.AddInstruction(il.And(REGSZ(operand1),

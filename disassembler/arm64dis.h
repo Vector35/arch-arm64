@@ -545,7 +545,7 @@ struct Instruction {
 	uint64_t cmp, cmph, cmpl, cmp_eq, cmp_with_zero;
 	uint64_t comment;
 	uint64_t comparison;
-	uint64_t cond;
+	uint64_t cond; /* careful! this is the pcode scratchpad .cond, NOT the .cond field of a struct InstructionOperand */
 	uint64_t condition;
 	uint64_t container_size;
 	uint64_t containers;

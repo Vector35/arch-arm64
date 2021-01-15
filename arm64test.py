@@ -8,6 +8,8 @@ test_cases = [
 	#(b'\x0c\x40\xa4\x04', ''), # ld1 {v4.4h, v5.4h}, [x0]
 	#(b'\x0c\x40\xa8\x08', ''), # ld1 {v8.2s, v9.2s}, [x0]
 	#(b'\x0c\x40\xac\x0c', ''), # ld1 {v12.1d, v13.1d}, [x0]
+	#
+	(b'\xe8\x07\x9f\x1a', 'LLIL_IF(LLIL_NOT(LLIL_FLAG(z)),1,3); LLIL_SET_REG.d(w8,LLIL_CONST.d(0x1)); LLIL_GOTO(5); LLIL_SET_REG.d(w8,LLIL_CONST.d(0x0)); LLIL_GOTO(5)'), # cset w8, ne
 	# some vector loads/stores
 	(b'\x00\x70\x00\x4c', 'LLIL_STORE.o(LLIL_REG.q(x0),LLIL_REG.o(v0))'), # st1 {v0.16b}, [x0]
 	(b'\x00\xa0\x00\x4c', 'LLIL_STORE.o(LLIL_REG.q(x0),LLIL_REG.o(v0)); LLIL_STORE.o(LLIL_ADD.q(LLIL_REG.q(x0),LLIL_CONST.b(0x10)),LLIL_REG.o(v1))'), # st1 {v0.16b, v1.16b}, [x0]
