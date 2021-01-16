@@ -1013,8 +1013,16 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.Store(REGSZ(operand1), ILREG(operand3), ILREG(operand2)),
 			0
 		);
-
-
+		break;
+	case ARM64_CASAH: // these compare-and-swaps are 16 bit
+	case ARM64_CASALH:
+	case ARM64_CASH:
+	case ARM64_CASLH:
+		GenIfElse(il,
+			il.CompareEqual(REGSZ(operand1), ExtractRegister(il, operand1, 0, 2, false, 2), il.Load(2, ILREG(operand3))),
+			il.Store(2, ILREG(operand3), ExtractRegister(il, operand2, 0, 2, false, 2)),
+			0
+		);
 		break;
 	case ARM64_CBNZ:
 		ConditionalJump(arch, il,
