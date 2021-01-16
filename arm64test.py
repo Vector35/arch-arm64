@@ -17,6 +17,10 @@ test_cases = [
 	(b'\xDE\xFC\xF2\x48', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.w(LLIL_REG.d(w18)),LLIL_LOAD.w(LLIL_REG.q(x6))),1,3); LLIL_STORE.w(LLIL_REG.q(x6),LLIL_LOW_PART.w(LLIL_REG.d(w30))); LLIL_GOTO(3)'), # casalh w18, w30, [x6]
 	(b'\x80\x7F\xB5\x48', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.w(LLIL_REG.d(w21)),LLIL_LOAD.w(LLIL_REG.q(x28))),1,3); LLIL_STORE.w(LLIL_REG.q(x28),LLIL_LOW_PART.w(LLIL_REG.d(w0))); LLIL_GOTO(3)'), # cash w21, w0, [x28]
 	(b'\xEB\xFD\xA5\x48', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.w(LLIL_REG.d(w5)),LLIL_LOAD.w(LLIL_REG.q(x15))),1,3); LLIL_STORE.w(LLIL_REG.q(x15),LLIL_LOW_PART.w(LLIL_REG.d(w11))); LLIL_GOTO(3)'), # caslh w5, w11, [x15]
+	(b'\x2E\x7C\xF7\x08', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.b(LLIL_REG.d(w23)),LLIL_LOAD.b(LLIL_REG.q(x1))),1,3); LLIL_STORE.b(LLIL_REG.q(x1),LLIL_LOW_PART.b(LLIL_REG.d(w14))); LLIL_GOTO(3)'), # casab w23, w14, [x1]
+	(b'\x27\xFF\xE6\x08', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.b(LLIL_REG.d(w6)),LLIL_LOAD.b(LLIL_REG.q(x25))),1,3); LLIL_STORE.b(LLIL_REG.q(x25),LLIL_LOW_PART.b(LLIL_REG.d(w7))); LLIL_GOTO(3)'), # casalb w6, w7, [x25]
+	(b'\x1E\x7E\xB8\x08', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.b(LLIL_REG.d(w24)),LLIL_LOAD.b(LLIL_REG.q(x16))),1,3); LLIL_STORE.b(LLIL_REG.q(x16),LLIL_LOW_PART.b(LLIL_REG.d(w30))); LLIL_GOTO(3)'), # casb w24, w30, [x16]
+	(b'\xA6\xFD\xAE\x08', 'LLIL_IF(LLIL_CMP_E.d(LLIL_LOW_PART.b(LLIL_REG.d(w14)),LLIL_LOAD.b(LLIL_REG.q(x13))),1,3); LLIL_STORE.b(LLIL_REG.q(x13),LLIL_LOW_PART.b(LLIL_REG.d(w6))); LLIL_GOTO(3)'), # caslb w14, w6, [x13]
 	# store pair
 	(b'\xfd\x7b\x01\xa9', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0x10)),LLIL_REG.q(x29)); ' + \
 						  'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0x18)),LLIL_REG.q(x30))'), # stp x29, x30, [sp, #0x10]
