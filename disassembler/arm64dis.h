@@ -174,11 +174,8 @@ enum Register {
 	REG_V20_D0, REG_V20_D1, REG_V21_D0, REG_V21_D1, REG_V22_D0, REG_V22_D1, REG_V23_D0, REG_V23_D1,
 	REG_V24_D0, REG_V24_D1, REG_V25_D0, REG_V25_D1, REG_V26_D0, REG_V26_D1, REG_V27_D0, REG_V27_D1,
 	REG_V28_D0, REG_V28_D1, REG_V29_D0, REG_V29_D1, REG_V30_D0, REG_V30_D1, REG_V31_D0, REG_V31_D1,
-	// Q vector
-	REG_V0_Q0, REG_V1_Q0, REG_V2_Q0, REG_V3_Q0, REG_V4_Q0, REG_V5_Q0, REG_V6_Q0, REG_V7_Q0,
-	REG_V8_Q0, REG_V9_Q0, REG_V10_Q0, REG_V11_Q0, REG_V12_Q0, REG_V13_Q0, REG_V14_Q0, REG_V15_Q0,
-	REG_V16_Q0, REG_V17_Q0, REG_V18_Q0, REG_V19_Q0, REG_V20_Q0, REG_V21_Q0, REG_V22_Q0, REG_V23_Q0,
-	REG_V24_Q0, REG_V25_Q0, REG_V26_Q0, REG_V27_Q0, REG_V28_Q0, REG_V29_Q0, REG_V30_Q0, REG_V31_Q0,
+	// Q vector is already defined REG_V0, REG_V1, ..., REG_V31
+	// SVE
 	REG_Z0,  REG_Z1,  REG_Z2,  REG_Z3,  REG_Z4,  REG_Z5,  REG_Z6,  REG_Z7,
 	REG_Z8,  REG_Z9,  REG_Z10, REG_Z11, REG_Z12, REG_Z13, REG_Z14, REG_Z15,
 	REG_Z16, REG_Z17, REG_Z18, REG_Z19, REG_Z20, REG_Z21, REG_Z22, REG_Z23,
@@ -194,33 +191,34 @@ enum Register {
 	REG_END
 };
 
+/* these are used in lookup tables elsewhere, modify with caution */
 enum ArrangementSpec {
 	ARRSPEC_NONE=0,
 
-	ARRSPEC_FULL, /* 128-bit v-reg unsplit, eg: REG_V0_Q0 */
+	ARRSPEC_FULL=1, /* 128-bit v-reg unsplit, eg: REG_V0_Q0 */
 
 	/* 128 bit v-reg considered as... */
-	ARRSPEC_2DOUBLES, /* (.2d) two 64-bit double-precision: REG_V0_D1, REG_V0_D0 */
-	ARRSPEC_4SINGLES, /* (.4s) four 32-bit single-precision: REG_V0_S3, REG_V0_S2, REG_V0_S1, REG_V0_S0 */
-	ARRSPEC_8HALVES, /* (.8h) eight 16-bit half-precision: REG_V0_H7, REG_V0_H6, (..., REG_V0_H0 */
-	ARRSPEC_16BYTES, /* (.16b) sixteen 8-bit values: REG_V0_B15, REG_V0_B14, (..., REG_V0_B01 */
+	ARRSPEC_2DOUBLES=2, /* (.2d) two 64-bit double-precision: REG_V0_D1, REG_V0_D0 */
+	ARRSPEC_4SINGLES=3, /* (.4s) four 32-bit single-precision: REG_V0_S3, REG_V0_S2, REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_8HALVES=4, /* (.8h) eight 16-bit half-precision: REG_V0_H7, REG_V0_H6, (..., REG_V0_H0 */
+	ARRSPEC_16BYTES=5, /* (.16b) sixteen 8-bit values: REG_V0_B15, REG_V0_B14, (..., REG_V0_B01 */
 
 	/* low 64-bit of v-reg considered as... */
-	ARRSPEC_1DOUBLE, /* (.d) one 64-bit double-precision: REG_V0_D0 */
-	ARRSPEC_2SINGLES, /* (.2s) two 32-bit single-precision: REG_V0_S1, REG_V0_S0 */
-	ARRSPEC_4HALVES, /* (.4h) four 16-bit half-precision: REG_V0_H3, REG_V0_H2, REG_V0_H1, REG_V0_H0 */
-	ARRSPEC_8BYTES, /* (.8b) eight 8-bit values: REG_V0_B7, REG_V0_B6, (..., REG_V0_B0 */
+	ARRSPEC_1DOUBLE=6, /* (.d) one 64-bit double-precision: REG_V0_D0 */
+	ARRSPEC_2SINGLES=7, /* (.2s) two 32-bit single-precision: REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_4HALVES=8, /* (.4h) four 16-bit half-precision: REG_V0_H3, REG_V0_H2, REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_8BYTES=9, /* (.8b) eight 8-bit values: REG_V0_B7, REG_V0_B6, (..., REG_V0_B0 */
 
 	/* low 32-bit of v-reg considered as... */
-	ARRSPEC_1SINGLE, /* (.s) one 32-bit single-precision: REG_V0_S0 */
-	ARRSPEC_2HALVES, /* (.2h) two 16-bit half-precision: REG_V0_H1, REG_V0_H0 */
-	ARRSPEC_4BYTES, /* (.4b) four 8-bit values: REG_V0_B3, REG_V0_B2, REG_V0_B1, REG_V0_B0 */
+	ARRSPEC_1SINGLE=10, /* (.s) one 32-bit single-precision: REG_V0_S0 */
+	ARRSPEC_2HALVES=11, /* (.2h) two 16-bit half-precision: REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_4BYTES=12, /* (.4b) four 8-bit values: REG_V0_B3, REG_V0_B2, REG_V0_B1, REG_V0_B0 */
 
 	/* low 16-bit of v-reg considered as... */
-	ARRSPEC_1HALF, /* (.h) one 16-bit half-precision: REG_V0_H0 */
+	ARRSPEC_1HALF=13, /* (.h) one 16-bit half-precision: REG_V0_H0 */
 
 	/* low 8-bit of v-reg considered as... */
-	ARRSPEC_1BYTE, /* (.b) one 8-bit byte: REG_V0_B0 */
+	ARRSPEC_1BYTE=14, /* (.b) one 8-bit byte: REG_V0_B0 */
 };
 
 //-----------------------------------------------------------------------------
