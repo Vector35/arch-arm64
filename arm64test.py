@@ -8,6 +8,11 @@ test_cases = [
 	#(b'\x0c\x40\xa4\x04', ''), # ld1 {v4.4h, v5.4h}, [x0]
 	#(b'\x0c\x40\xa8\x08', ''), # ld1 {v8.2s, v9.2s}, [x0]
 	#(b'\x0c\x40\xac\x0c', ''), # ld1 {v12.1d, v13.1d}, [x0]
+	#
+	(b'\x3B\x7F\xB6\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w22),LLIL_LOAD.d(LLIL_REG.q(x25))),1,3); LLIL_STORE.d(LLIL_REG.q(x25),LLIL_REG.d(w27)); LLIL_GOTO(3)'), # cas w22, w27, [x25]
+	(b'\x0C\x7D\xF1\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w17),LLIL_LOAD.d(LLIL_REG.q(x8))),1,3); LLIL_STORE.d(LLIL_REG.q(x8),LLIL_REG.d(w12)); LLIL_GOTO(3)'), # casa w17, w12, [x8]
+	(b'\xC6\xFF\xBB\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w27),LLIL_LOAD.d(LLIL_REG.q(x30))),1,3); LLIL_STORE.d(LLIL_REG.q(x30),LLIL_REG.d(w6)); LLIL_GOTO(3)'), # casl w27, w6, [x30]
+	(b'\x7E\xFC\xED\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w13),LLIL_LOAD.d(LLIL_REG.q(x3))),1,3); LLIL_STORE.d(LLIL_REG.q(x3),LLIL_REG.d(w30)); LLIL_GOTO(3)'), # casal w13, w30, [x3]
 	# store pair
 	(b'\xfd\x7b\x01\xa9', 'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0x10)),LLIL_REG.q(x29)); ' + \
 						  'LLIL_STORE.q(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0x18)),LLIL_REG.q(x30))'), # stp x29, x30, [sp, #0x10]

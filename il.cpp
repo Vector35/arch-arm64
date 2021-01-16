@@ -17,7 +17,6 @@ using namespace BinaryNinja;
 #define ADDREGOFS(R,O) il.Add(REGSZ(R), ILREG(R), il.Const(REGSZ(R), O))
 #define ADDREGREG(R1,R2) il.Add(REGSZ(R1), ILREG(R1), ILREG(R2))
 #define LOADVAL(R1, O) il.Load(REGSZ(R1), O)
-#define LOADREG(R1) il.Load(REGSZ(R1), ILREG(R1))
 #define ONES(N) (-1ULL >> (64-N))
 #define SETFLAGS (instr.setflags ? IL_FLAGWRITE_ALL : IL_FLAGWRITE_NONE)
 
@@ -53,17 +52,26 @@ static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 }
 
 
-static void ConditionExecute(LowLevelILFunction& il, Condition cond, ExprId trueCase, ExprId falseCase)
+static void GenIfElse(LowLevelILFunction& il, ExprId clause, ExprId trueCase, ExprId falseCase)
 {
-	LowLevelILLabel trueCode, falseCode, done;
-	il.AddInstruction(il.If(GetCondition(il, cond), trueCode, falseCode));
-	il.MarkLabel(trueCode);
-	il.AddInstruction(trueCase);
-	il.AddInstruction(il.Goto(done));
-	il.MarkLabel(falseCode);
-	il.AddInstruction(falseCase);
-	il.AddInstruction(il.Goto(done));
-	il.MarkLabel(done);
+	if(falseCase) {
+		LowLevelILLabel trueCode, falseCode, done;
+		il.AddInstruction(il.If(clause, trueCode, falseCode));
+		il.MarkLabel(trueCode);
+		il.AddInstruction(trueCase);
+		il.AddInstruction(il.Goto(done));
+		il.MarkLabel(falseCode);
+		il.AddInstruction(falseCase);
+		il.AddInstruction(il.Goto(done));
+		il.MarkLabel(done);
+	}
+	else {
+		LowLevelILLabel trueCode, done;
+		il.AddInstruction(il.If(clause, trueCode, done));
+		il.MarkLabel(trueCode);
+		il.AddInstruction(trueCase);
+		il.MarkLabel(done);
+	}
 	return;
 }
 
@@ -268,11 +276,11 @@ static ExprId GetILOperandEffectiveAddress(LowLevelILFunction& il, InstructionOp
 				}
 			}
 			else {
-				ABORT_LIFT
+				ABORT_LIFT;
 			}
 			break;
 		default:
-			ABORT_LIFT
+			ABORT_LIFT;
 	}
 	return addr;
 }
@@ -996,6 +1004,18 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 							ReadILOperand(il, operand3, REGSZ(operand2))), SETFLAGS)
 							));
 		break;
+	case ARM64_CAS: // these compare-and-swaps can be 32 or 64 bit
+	case ARM64_CASA:
+	case ARM64_CASAL:
+	case ARM64_CASL:
+		GenIfElse(il,
+			il.CompareEqual(REGSZ(operand1), ILREG(operand1), il.Load(REGSZ(operand1), ILREG(operand3))),
+			il.Store(REGSZ(operand1), ILREG(operand3), ILREG(operand2)),
+			0
+		);
+
+
+		break;
 	case ARM64_CBNZ:
 		ConditionalJump(arch, il,
 				il.CompareNotEqual(REGSZ(operand1),
@@ -1067,47 +1087,47 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		}
 		break;
 	case ARM64_CSEL:
-		ConditionExecute(il, operand4.cond,
+		GenIfElse(il, GetCondition(il, operand4.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand3)));
 		break;
 	case ARM64_CSINC:
-		ConditionExecute(il, operand4.cond,
+		GenIfElse(il, GetCondition(il, operand4.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Add(REGSZ(operand1), ILREG(operand3), il.Const(REGSZ(operand1), 1))));
 		break;
 	case ARM64_CSINV:
-		ConditionExecute(il, operand4.cond,
+		GenIfElse(il, GetCondition(il, operand4.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Not(REGSZ(operand1), ILREG(operand3))));
 		break;
 	case ARM64_CSNEG:
-		ConditionExecute(il, operand4.cond,
+		GenIfElse(il, GetCondition(il, operand4.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand3))));
 		break;
 	case ARM64_CSET:
-		ConditionExecute(il, operand2.cond,
+		GenIfElse(il, GetCondition(il, operand2.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 1)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 0)));
 		break;
 	case ARM64_CSETM:
-		ConditionExecute(il, operand2.cond,
+		GenIfElse(il, GetCondition(il, operand2.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), -1)),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Const(REGSZ(operand1), 0)));
 		break;
 	case ARM64_CINC:
-		ConditionExecute(il, operand3.cond,
+		GenIfElse(il, GetCondition(il, operand3.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Add(REGSZ(operand1), ILREG(operand2), il.Const(REGSZ(operand1), 1))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
 	case ARM64_CINV:
-		ConditionExecute(il, operand3.cond,
+		GenIfElse(il, GetCondition(il, operand3.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Not(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
 	case ARM64_CNEG:
-		ConditionExecute(il, operand3.cond,
+		GenIfElse(il, GetCondition(il, operand3.cond),
 			il.SetRegister(REGSZ(operand1), REG(operand1), il.Neg(REGSZ(operand1), ILREG(operand2))),
 			il.SetRegister(REGSZ(operand1), REG(operand1), ILREG(operand2)));
 		break;
@@ -1268,7 +1288,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_ST1:
 		{
 			if(instr.operands[0].operandClass != MULTI_REG)
-				ABORT_LIFT
+				ABORT_LIFT;
 
 			uint32_t num_regs = 0;
 			switch (instr.encoding) {
@@ -1293,7 +1313,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			}
 
 			if(num_regs == 0)
-				ABORT_LIFT
+				ABORT_LIFT;
 
 			const size_t reg_sz = REGSZ(instr.operands[0]);
 			for (uint32_t ii = 0; ii < num_regs; ++ii)
