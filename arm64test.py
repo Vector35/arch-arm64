@@ -23,6 +23,27 @@ test_cases = [
 	(b'\xD2\x54\x7E\x5F', 'LLIL_SET_REG.q(d18,LLIL_LSL.q(LLIL_REG.q(d6),LLIL_CONST(62)))'),
 	# shl d27, d3, #0x30
 	(b'\x7B\x54\x70\x5F', 'LLIL_SET_REG.q(d27,LLIL_LSL.q(LLIL_REG.q(d3),LLIL_CONST(48)))'),
+	# ushr v25.4h, v11.4h, #0x4
+	(b'\x79\x05\x1C\x2F', 'LLIL_SET_REG(v25.h[0],LLIL_LSR(LLIL_REG(v11.h[0]),LLIL_CONST(4))); ' + \
+						  'LLIL_SET_REG(v25.h[1],LLIL_LSR(LLIL_REG(v11.h[1]),LLIL_CONST(4))); ' + \
+						  'LLIL_SET_REG(v25.h[2],LLIL_LSR(LLIL_REG(v11.h[2]),LLIL_CONST(4))); ' + \
+						  'LLIL_SET_REG(v25.h[3],LLIL_LSR(LLIL_REG(v11.h[3]),LLIL_CONST(4)))'),
+	# ushr v23.2s, v29.2s, #0x8
+	(b'\xB7\x07\x38\x2F', 'LLIL_SET_REG(v23.s[0],LLIL_LSR(LLIL_REG(v29.s[0]),LLIL_CONST(8))); ' + \
+						  'LLIL_SET_REG(v23.s[1],LLIL_LSR(LLIL_REG(v29.s[1]),LLIL_CONST(8)))'),
+	# ushr v21.8b, v15.8b, #0x7
+	(b'\xF5\x05\x09\x2F', 'LLIL_SET_REG(v21.b[0],LLIL_LSR(LLIL_REG(v15.b[0]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[1],LLIL_LSR(LLIL_REG(v15.b[1]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[2],LLIL_LSR(LLIL_REG(v15.b[2]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[3],LLIL_LSR(LLIL_REG(v15.b[3]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[4],LLIL_LSR(LLIL_REG(v15.b[4]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[5],LLIL_LSR(LLIL_REG(v15.b[5]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[6],LLIL_LSR(LLIL_REG(v15.b[6]),LLIL_CONST(7))); '
+						  'LLIL_SET_REG(v21.b[7],LLIL_LSR(LLIL_REG(v15.b[7]),LLIL_CONST(7)))'),
+	# ushr d2, d25, #0x26
+	(b'\x22\x07\x5A\x7F', 'LLIL_SET_REG.q(d2,LLIL_LSR.q(LLIL_REG.q(d25),LLIL_CONST(38)))'),
+	# ushr d31, d13, #0x8
+	(b'\xBF\x05\x78\x7F', 'LLIL_SET_REG.q(d31,LLIL_LSR.q(LLIL_REG.q(d13),LLIL_CONST(8)))'),
 	#
 	(b'\x3B\x7F\xB6\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w22),LLIL_LOAD.d(LLIL_REG.q(x25))),1,3); LLIL_STORE.d(LLIL_REG.q(x25),LLIL_REG.d(w27)); LLIL_GOTO(3)'), # cas w22, w27, [x25]
 	(b'\x0C\x7D\xF1\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w17),LLIL_LOAD.d(LLIL_REG.q(x8))),1,3); LLIL_STORE.d(LLIL_REG.q(x8),LLIL_REG.d(w12)); LLIL_GOTO(3)'), # casa w17, w12, [x8]

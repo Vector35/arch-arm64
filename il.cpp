@@ -2017,6 +2017,23 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ILREG(operand4),
 						il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3)))));
 		break;
+	case ARM64_USHR:
+	{
+		Register srcs[16], dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
+		int src_n = unpack_vector(operand2, srcs);
+
+		if((dst_n != src_n) || dst_n==0)
+			ABORT_LIFT;
+
+		int rsize = get_register_size(dsts[0]);
+		for(int i=0; i<dst_n; ++i) {
+			il.AddInstruction(il.SetRegister(rsize, dsts[i],
+				il.LogicalShiftRight(rsize, il.Register(rsize, srcs[i]), il.Const(0, IMM(operand3)))));
+		}
+
+		break;
+	}
 	case ARM64_SMULL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.MultDoublePrecSigned(REGSZ(operand1), ILREG(operand2), ILREG(operand3))));
