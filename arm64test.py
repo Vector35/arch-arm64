@@ -8,6 +8,17 @@ test_cases = [
 	#(b'\x0c\x40\xa4\x04', ''), # ld1 {v4.4h, v5.4h}, [x0]
 	#(b'\x0c\x40\xa8\x08', ''), # ld1 {v8.2s, v9.2s}, [x0]
 	#(b'\x0c\x40\xac\x0c', ''), # ld1 {v12.1d, v13.1d}, [x0]
+	# shl v19.2d, v21.2d, #0x2
+	(b'\xB3\x56\x42\x4F', 'LLIL_SET_REG(v19.d[0],LLIL_LSL(LLIL_REG(v21.d[0]),LLIL_CONST(2))); ' + \
+						  'LLIL_SET_REG(v19.d[1],LLIL_LSL(LLIL_REG(v21.d[1]),LLIL_CONST(2)))'),
+	# shl v7.4h, v8.4h, #0x7
+	(b'\x07\x55\x17\x0F', 'LLIL_SET_REG(v7.h[0],LLIL_LSL(LLIL_REG(v8.h[0]),LLIL_CONST(7))); ' + \
+						  'LLIL_SET_REG(v7.h[1],LLIL_LSL(LLIL_REG(v8.h[1]),LLIL_CONST(7))); ' + \
+						  'LLIL_SET_REG(v7.h[2],LLIL_LSL(LLIL_REG(v8.h[2]),LLIL_CONST(7))); ' + \
+						  'LLIL_SET_REG(v7.h[3],LLIL_LSL(LLIL_REG(v8.h[3]),LLIL_CONST(7)))'),
+	# shl v17.2s, v9.2s, #0x5
+	(b'\x31\x55\x25\x0F', 'LLIL_SET_REG(v17.s[0],LLIL_LSL(LLIL_REG(v9.s[0]),LLIL_CONST(5))); ' + \
+						  'LLIL_SET_REG(v17.s[1],LLIL_LSL(LLIL_REG(v9.s[1]),LLIL_CONST(5)))'),
 	#
 	(b'\x3B\x7F\xB6\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w22),LLIL_LOAD.d(LLIL_REG.q(x25))),1,3); LLIL_STORE.d(LLIL_REG.q(x25),LLIL_REG.d(w27)); LLIL_GOTO(3)'), # cas w22, w27, [x25]
 	(b'\x0C\x7D\xF1\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w17),LLIL_LOAD.d(LLIL_REG.q(x8))),1,3); LLIL_STORE.d(LLIL_REG.q(x8),LLIL_REG.d(w12)); LLIL_GOTO(3)'), # casa w17, w12, [x8]

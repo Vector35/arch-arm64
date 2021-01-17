@@ -1164,7 +1164,7 @@ int unpack_vector(InstructionOperand& oper, enum Register **result)
 			return 0;
 		if(oper.arrSpec<=ARRSPEC_NONE || oper.arrSpec>=ARRSPEC_1BYTE)
 			return 0;
-		*result = v_unpack_lookup[oper.arrSpec][oper.reg[0]];
+		*result = v_unpack_lookup[oper.arrSpec][oper.reg[0]-REG_V0];
 		return v_unpack_lookup_sz[oper.arrSpec];
 	}
 	// else if(oper.operandClass == MULTI_REG) { ...
@@ -1905,6 +1905,24 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_SEVL:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_SEVL, {}));
 		break;
+	case ARM64_SHL:
+	{
+		Register *srcs=NULL, *dsts=NULL;
+		int dst_n = unpack_vector(operand1, &dsts);
+		int src_n = unpack_vector(operand2, &srcs);
+
+		if((dst_n != src_n) || (dst_n==0) || !srcs || !dsts)
+			ABORT_LIFT;
+
+		int rsize = get_register_size(dsts[0]);
+
+		for(int i=0; i<dst_n; ++i) {
+			il.AddInstruction(il.SetRegister(rsize, dsts[i],
+				il.ShiftLeft(rsize, il.Register(rsize, srcs[i]), il.Const(0, IMM(operand3)))));
+		}
+
+		break;
+	}
 	case ARM64_STP:
 		LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
