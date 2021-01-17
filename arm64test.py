@@ -19,6 +19,10 @@ test_cases = [
 	# shl v17.2s, v9.2s, #0x5
 	(b'\x31\x55\x25\x0F', 'LLIL_SET_REG(v17.s[0],LLIL_LSL(LLIL_REG(v9.s[0]),LLIL_CONST(5))); ' + \
 						  'LLIL_SET_REG(v17.s[1],LLIL_LSL(LLIL_REG(v9.s[1]),LLIL_CONST(5)))'),
+	# shl d18, d6, #0x3e
+	(b'\xD2\x54\x7E\x5F', 'LLIL_SET_REG.q(d18,LLIL_LSL.q(LLIL_REG.q(d6),LLIL_CONST(62)))'),
+	# shl d27, d3, #0x30
+	(b'\x7B\x54\x70\x5F', 'LLIL_SET_REG.q(d27,LLIL_LSL.q(LLIL_REG.q(d3),LLIL_CONST(48)))'),
 	#
 	(b'\x3B\x7F\xB6\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w22),LLIL_LOAD.d(LLIL_REG.q(x25))),1,3); LLIL_STORE.d(LLIL_REG.q(x25),LLIL_REG.d(w27)); LLIL_GOTO(3)'), # cas w22, w27, [x25]
 	(b'\x0C\x7D\xF1\x88', 'LLIL_IF(LLIL_CMP_E.d(LLIL_REG.d(w17),LLIL_LOAD.d(LLIL_REG.q(x8))),1,3); LLIL_STORE.d(LLIL_REG.q(x8),LLIL_REG.d(w12)); LLIL_GOTO(3)'), # casa w17, w12, [x8]

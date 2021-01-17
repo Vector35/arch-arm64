@@ -1157,15 +1157,26 @@ Register *v_unpack_lookup[15][32] =
 	}
 };
 
-int unpack_vector(InstructionOperand& oper, enum Register **result)
+int unpack_vector(InstructionOperand& oper, Register *result)
 {
 	if(oper.operandClass == REG) {
+		/* register without an arrangement specification */
+		if(oper.arrSpec==ARRSPEC_NONE) {
+			result[0] = oper.reg[0];
+			return 1;
+		}
+
+		/* require V register with valid arrangement spec */
 		if(oper.reg[0]<REG_V0 || oper.reg[0]>REG_V31)
 			return 0;
 		if(oper.arrSpec<=ARRSPEC_NONE || oper.arrSpec>=ARRSPEC_1BYTE)
 			return 0;
-		*result = v_unpack_lookup[oper.arrSpec][oper.reg[0]-REG_V0];
-		return v_unpack_lookup_sz[oper.arrSpec];
+
+		/* look it up and copy result */
+		int n = v_unpack_lookup_sz[oper.arrSpec];
+		for(int i=0; i<n; ++i)
+			result[i] = v_unpack_lookup[oper.arrSpec][oper.reg[0]-REG_V0][i];
+		return n;
 	}
 	// else if(oper.operandClass == MULTI_REG) { ...
 	// check lanes, etc.
@@ -1907,15 +1918,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_SHL:
 	{
-		Register *srcs=NULL, *dsts=NULL;
-		int dst_n = unpack_vector(operand1, &dsts);
-		int src_n = unpack_vector(operand2, &srcs);
+		Register srcs[16], dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
+		int src_n = unpack_vector(operand2, srcs);
 
-		if((dst_n != src_n) || (dst_n==0) || !srcs || !dsts)
+		if((dst_n != src_n) || dst_n==0)
 			ABORT_LIFT;
 
 		int rsize = get_register_size(dsts[0]);
-
 		for(int i=0; i<dst_n; ++i) {
 			il.AddInstruction(il.SetRegister(rsize, dsts[i],
 				il.ShiftLeft(rsize, il.Register(rsize, srcs[i]), il.Const(0, IMM(operand3)))));
