@@ -16,7 +16,6 @@ using namespace BinaryNinja;
 #define SETREG(R,V) il.AddInstruction(il.SetRegister(REGSZ(R), REG(R), V))
 #define ADDREGOFS(R,O) il.Add(REGSZ(R), ILREG(R), il.Const(REGSZ(R), O))
 #define ADDREGREG(R1,R2) il.Add(REGSZ(R1), ILREG(R1), ILREG(R2))
-#define LOADVAL(R1, O) il.Load(REGSZ(R1), O)
 #define ONES(N) (-1ULL >> (64-N))
 #define SETFLAGS (instr.setflags ? IL_FLAGWRITE_ALL : IL_FLAGWRITE_NONE)
 
@@ -477,133 +476,6 @@ static void LoadStoreOperand(
 		}
 	}
 }
-
-static void LoadStoreOperandSingleReg(
-		LowLevelILFunction& il,
-		bool load,
-		uint32_t reg_num,
-		size_t reg_sz,
-		InstructionOperand& operand2,
-		size_t slide)
-{
-	ExprId tmp;
-
-	ExprId base = 0;
-	if (slide == 0)
-		base = ILREG(operand2);
-	else
-		base = il.Add(REGSZ(operand2), ILREG(operand2), il.Const(1, slide));
-
-	if (load)
-	{
-		switch (operand2.operandClass)
-		{
-		case MEM_REG:
-			//operand1.reg = [operand2.reg]
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
-						il.Operand(1, il.Load(reg_sz, base))));
-			break;
-		case MEM_OFFSET:
-			//operand1.reg = [operand2.reg + operand2.imm]
-			if (IMM(operand2) == 0)
-				tmp = base;
-			else
-				tmp = il.Add(REGSZ(operand2), base, il.Const(REGSZ(operand2), IMM(operand2)));
-
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
-						il.Operand(1, il.Load(reg_sz, tmp))));
-			break;
-		case MEM_PRE_IDX:
-			//operand2.reg += operand2.imm
-			if (IMM(operand2) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
-							il.Add(REGSZ(operand2),
-								base,
-								il.Const(REGSZ(operand2), IMM(operand2)))));
-			//operand1.reg = [operand2.reg]
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
-						il.Operand(1, il.Load(reg_sz, base))));
-			break;
-		case MEM_POST_IDX:
-			//operand1.reg = [operand2.reg]
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
-						il.Operand(1, il.Load(reg_sz, base))));
-			//operand2.reg += operand2.imm
-			if (IMM(operand2) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
-							il.Add(REGSZ(operand2),
-								base,
-								il.Const(REGSZ(operand2), IMM(operand2)))));
-			break;
-		case MEM_EXTENDED:
-			il.AddInstruction(
-					il.SetRegister(reg_sz, reg_num,
-						il.Operand(1,
-							il.Load(reg_sz,
-								il.Add(REGSZ(operand2),
-									base,
-									GetShiftedRegister(il, operand2, 1, REGSZ(operand2))
-									)))));
-			break;
-		case LABEL:
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num,
-						il.Operand(1, il.Load(reg_sz, il.ConstPointer(8, IMM(operand2))))));
-			break;
-		case IMM32:
-		case IMM64:
-			il.AddInstruction(il.SetRegister(reg_sz, reg_num, il.Const(reg_sz, IMM(operand2))));
-			break;
-		default:
-			il.AddInstruction(il.Unimplemented());
-			break;
-		}
-	}
-	else //store
-	{
-		switch (operand2.operandClass)
-		{
-		case MEM_REG:
-			il.AddInstruction(il.Operand(1, il.Store(reg_sz, base, il.Register(reg_sz, reg_num))));
-			break;
-		case MEM_OFFSET:
-			//[operand2.reg + operand2.immediate] = operand1.reg
-			if (IMM(operand2) == 0)
-				tmp = base;
-			else
-				tmp = il.Add(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), IMM(operand2)));
-
-			il.AddInstruction(il.Operand(1, il.Store(reg_sz, tmp, il.Register(reg_sz, reg_num))));
-			break;
-		case MEM_PRE_IDX:
-			//operand2.reg = operand2.reg + operand2.immediate
-			if (IMM(operand2) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
-					il.Add(REGSZ(operand2), base, il.Const(REGSZ(operand2), IMM(operand2)))));
-			//[operand2.reg] = operand1.reg
-			il.AddInstruction(il.Operand(1, il.Store(reg_sz, base, il.Register(reg_sz, reg_num))));
-			break;
-		case MEM_POST_IDX:
-			//[operand2.reg] = operand1.reg
-			il.AddInstruction(il.Operand(1, il.Store(reg_sz, base, il.Register(reg_sz, reg_num))));
-			//operand2.reg = operand2.reg + operand2.immediate
-			if (IMM(operand2) != 0)
-				il.AddInstruction(il.SetRegister(REGSZ(operand2), REG(operand2),
-					il.Add(REGSZ(operand2), base, il.Const(REGSZ(operand2), IMM(operand2)))));
-			break;
-		case MEM_EXTENDED:
-			il.AddInstruction(il.Operand(1, il.Store(reg_sz,
-					il.Add(REGSZ(operand2),
-						il.Register(REGSZ(operand2), operand2.reg[0]),
-						GetShiftedRegister(il, operand2, 1, REGSZ(operand2))),
-					il.Register(reg_sz, reg_num))));
-			break;
-		default:
-			il.AddInstruction(il.Unimplemented());
-			break;
-		}
-	}
-}
-
 
 static void LoadStoreOperandSize(
 		LowLevelILFunction& il,
@@ -1157,29 +1029,84 @@ Register *v_unpack_lookup[15][32] =
 	}
 };
 
+Register v_consolidate_lookup[32][15] =
+{ /* NONE .q .2d .4s .8h .16b .d .2s .4h .8b .s .2h .4b .h .b */
+	{REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0_D0, REG_V0_D0, REG_V0_D0, REG_V0_D0, REG_V0_S0, REG_V0_S0, REG_V0_S0, REG_V0_H0, REG_V0_B0},
+	{REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1_D0, REG_V1_D0, REG_V1_D0, REG_V1_D0, REG_V1_S0, REG_V1_S0, REG_V1_S0, REG_V1_H0, REG_V1_B0},
+	{REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2_D0, REG_V2_D0, REG_V2_D0, REG_V2_D0, REG_V2_S0, REG_V2_S0, REG_V2_S0, REG_V2_H0, REG_V2_B0},
+	{REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3_D0, REG_V3_D0, REG_V3_D0, REG_V3_D0, REG_V3_S0, REG_V3_S0, REG_V3_S0, REG_V3_H0, REG_V3_B0},
+	{REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4_D0, REG_V4_D0, REG_V4_D0, REG_V4_D0, REG_V4_S0, REG_V4_S0, REG_V4_S0, REG_V4_H0, REG_V4_B0},
+	{REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5_D0, REG_V5_D0, REG_V5_D0, REG_V5_D0, REG_V5_S0, REG_V5_S0, REG_V5_S0, REG_V5_H0, REG_V5_B0},
+	{REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6_D0, REG_V6_D0, REG_V6_D0, REG_V6_D0, REG_V6_S0, REG_V6_S0, REG_V6_S0, REG_V6_H0, REG_V6_B0},
+	{REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7_D0, REG_V7_D0, REG_V7_D0, REG_V7_D0, REG_V7_S0, REG_V7_S0, REG_V7_S0, REG_V7_H0, REG_V7_B0},
+	{REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8_D0, REG_V8_D0, REG_V8_D0, REG_V8_D0, REG_V8_S0, REG_V8_S0, REG_V8_S0, REG_V8_H0, REG_V8_B0},
+	{REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9_D0, REG_V9_D0, REG_V9_D0, REG_V9_D0, REG_V9_S0, REG_V9_S0, REG_V9_S0, REG_V9_H0, REG_V9_B0},
+	{REG_V10, REG_V10, REG_V10, REG_V10, REG_V10, REG_V10, REG_V10_D0, REG_V10_D0, REG_V10_D0, REG_V10_D0, REG_V10_S0, REG_V10_S0, REG_V10_S0, REG_V10_H0, REG_V10_B0},
+	{REG_V11, REG_V11, REG_V11, REG_V11, REG_V11, REG_V11, REG_V11_D0, REG_V11_D0, REG_V11_D0, REG_V11_D0, REG_V11_S0, REG_V11_S0, REG_V11_S0, REG_V11_H0, REG_V11_B0},
+	{REG_V12, REG_V12, REG_V12, REG_V12, REG_V12, REG_V12, REG_V12_D0, REG_V12_D0, REG_V12_D0, REG_V12_D0, REG_V12_S0, REG_V12_S0, REG_V12_S0, REG_V12_H0, REG_V12_B0},
+	{REG_V13, REG_V13, REG_V13, REG_V13, REG_V13, REG_V13, REG_V13_D0, REG_V13_D0, REG_V13_D0, REG_V13_D0, REG_V13_S0, REG_V13_S0, REG_V13_S0, REG_V13_H0, REG_V13_B0},
+	{REG_V14, REG_V14, REG_V14, REG_V14, REG_V14, REG_V14, REG_V14_D0, REG_V14_D0, REG_V14_D0, REG_V14_D0, REG_V14_S0, REG_V14_S0, REG_V14_S0, REG_V14_H0, REG_V14_B0},
+	{REG_V15, REG_V15, REG_V15, REG_V15, REG_V15, REG_V15, REG_V15_D0, REG_V15_D0, REG_V15_D0, REG_V15_D0, REG_V15_S0, REG_V15_S0, REG_V15_S0, REG_V15_H0, REG_V15_B0},
+	{REG_V16, REG_V16, REG_V16, REG_V16, REG_V16, REG_V16, REG_V16_D0, REG_V16_D0, REG_V16_D0, REG_V16_D0, REG_V16_S0, REG_V16_S0, REG_V16_S0, REG_V16_H0, REG_V16_B0},
+	{REG_V17, REG_V17, REG_V17, REG_V17, REG_V17, REG_V17, REG_V17_D0, REG_V17_D0, REG_V17_D0, REG_V17_D0, REG_V17_S0, REG_V17_S0, REG_V17_S0, REG_V17_H0, REG_V17_B0},
+	{REG_V18, REG_V18, REG_V18, REG_V18, REG_V18, REG_V18, REG_V18_D0, REG_V18_D0, REG_V18_D0, REG_V18_D0, REG_V18_S0, REG_V18_S0, REG_V18_S0, REG_V18_H0, REG_V18_B0},
+	{REG_V19, REG_V19, REG_V19, REG_V19, REG_V19, REG_V19, REG_V19_D0, REG_V19_D0, REG_V19_D0, REG_V19_D0, REG_V19_S0, REG_V19_S0, REG_V19_S0, REG_V19_H0, REG_V19_B0},
+	{REG_V20, REG_V20, REG_V20, REG_V20, REG_V20, REG_V20, REG_V20_D0, REG_V20_D0, REG_V20_D0, REG_V20_D0, REG_V20_S0, REG_V20_S0, REG_V20_S0, REG_V20_H0, REG_V20_B0},
+	{REG_V21, REG_V21, REG_V21, REG_V21, REG_V21, REG_V21, REG_V21_D0, REG_V21_D0, REG_V21_D0, REG_V21_D0, REG_V21_S0, REG_V21_S0, REG_V21_S0, REG_V21_H0, REG_V21_B0},
+	{REG_V22, REG_V22, REG_V22, REG_V22, REG_V22, REG_V22, REG_V22_D0, REG_V22_D0, REG_V22_D0, REG_V22_D0, REG_V22_S0, REG_V22_S0, REG_V22_S0, REG_V22_H0, REG_V22_B0},
+	{REG_V23, REG_V23, REG_V23, REG_V23, REG_V23, REG_V23, REG_V23_D0, REG_V23_D0, REG_V23_D0, REG_V23_D0, REG_V23_S0, REG_V23_S0, REG_V23_S0, REG_V23_H0, REG_V23_B0},
+	{REG_V24, REG_V24, REG_V24, REG_V24, REG_V24, REG_V24, REG_V24_D0, REG_V24_D0, REG_V24_D0, REG_V24_D0, REG_V24_S0, REG_V24_S0, REG_V24_S0, REG_V24_H0, REG_V24_B0},
+	{REG_V25, REG_V25, REG_V25, REG_V25, REG_V25, REG_V25, REG_V25_D0, REG_V25_D0, REG_V25_D0, REG_V25_D0, REG_V25_S0, REG_V25_S0, REG_V25_S0, REG_V25_H0, REG_V25_B0},
+	{REG_V26, REG_V26, REG_V26, REG_V26, REG_V26, REG_V26, REG_V26_D0, REG_V26_D0, REG_V26_D0, REG_V26_D0, REG_V26_S0, REG_V26_S0, REG_V26_S0, REG_V26_H0, REG_V26_B0},
+	{REG_V27, REG_V27, REG_V27, REG_V27, REG_V27, REG_V27, REG_V27_D0, REG_V27_D0, REG_V27_D0, REG_V27_D0, REG_V27_S0, REG_V27_S0, REG_V27_S0, REG_V27_H0, REG_V27_B0},
+	{REG_V28, REG_V28, REG_V28, REG_V28, REG_V28, REG_V28, REG_V28_D0, REG_V28_D0, REG_V28_D0, REG_V28_D0, REG_V28_S0, REG_V28_S0, REG_V28_S0, REG_V28_H0, REG_V28_B0},
+	{REG_V29, REG_V29, REG_V29, REG_V29, REG_V29, REG_V29, REG_V29_D0, REG_V29_D0, REG_V29_D0, REG_V29_D0, REG_V29_S0, REG_V29_S0, REG_V29_S0, REG_V29_H0, REG_V29_B0},
+	{REG_V30, REG_V30, REG_V30, REG_V30, REG_V30, REG_V30, REG_V30_D0, REG_V30_D0, REG_V30_D0, REG_V30_D0, REG_V30_S0, REG_V30_S0, REG_V30_S0, REG_V30_H0, REG_V30_B0},
+	{REG_V31, REG_V31, REG_V31, REG_V31, REG_V31, REG_V31, REG_V31_D0, REG_V31_D0, REG_V31_D0, REG_V31_D0, REG_V31_S0, REG_V31_S0, REG_V31_S0, REG_V31_H0, REG_V31_B0},
+};
+
 int unpack_vector(InstructionOperand& oper, Register *result)
 {
 	if(oper.operandClass == REG) {
-		/* register without an arrangement specification */
+		/* register without an arrangement specification is just a register
+			examples: "d18", "d6", "v7" */
 		if(oper.arrSpec==ARRSPEC_NONE) {
 			result[0] = oper.reg[0];
 			return 1;
 		}
 
-		/* require V register with valid arrangement spec */
+		/* require V register with valid arrangement spec
+			examples: "v17.2s", "v8.4h", "v21.8b" */
 		if(oper.reg[0]<REG_V0 || oper.reg[0]>REG_V31)
 			return 0;
-		if(oper.arrSpec<=ARRSPEC_NONE || oper.arrSpec>=ARRSPEC_1BYTE)
+		if(oper.arrSpec<=ARRSPEC_NONE || oper.arrSpec>ARRSPEC_1BYTE)
 			return 0;
 
-		/* look it up and copy result */
+		/* lookup, copy result */
 		int n = v_unpack_lookup_sz[oper.arrSpec];
 		for(int i=0; i<n; ++i)
 			result[i] = v_unpack_lookup[oper.arrSpec][oper.reg[0]-REG_V0][i];
 		return n;
 	}
-	// else if(oper.operandClass == MULTI_REG) { ...
-	// check lanes, etc.
+	else if(oper.operandClass == MULTI_REG) {
+		if(oper.laneUsed) {
+			// TODO: multireg with a lane
+			return 0;
+		}
+		else {
+			/* multireg without a lane
+				examples: "{v0.8b, v1.8b}", "{v8.2s, v9.2s}" */
+			if(oper.arrSpec<ARRSPEC_NONE || oper.arrSpec>ARRSPEC_1BYTE)
+				return 0;
+
+			int n = 0;
+			for(int i=0; i<4 && oper.reg[i]!=REG_NONE; i++) {
+				result[i] = v_consolidate_lookup[oper.reg[i]-REG_V0][oper.arrSpec];
+				n += 1;
+			}
+			return n;
+		}
+	}
 
 	return 0;
 }
@@ -1635,49 +1562,36 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LD1:
-	case ARM64_ST1:
-		{
-			if(instr.operands[0].operandClass != MULTI_REG)
-				ABORT_LIFT;
+	{
+		Register dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
 
-			uint32_t num_regs = 0;
-			switch (instr.encoding) {
-				case ENC_LD1_ASISDLSE_R1_1V:
-				case ENC_ST1_ASISDLSE_R1_1V:
-					num_regs = 1;
-					break;
-				case ENC_LD1_ASISDLSE_R2_2V:
-				case ENC_ST1_ASISDLSE_R2_2V:
-					num_regs = 2;
-					break;
-				case ENC_LD1_ASISDLSE_R3_3V:
-				case ENC_ST1_ASISDLSE_R3_3V:
-					num_regs = 3;
-					break;
-				case ENC_LD1_ASISDLSE_R4_4V:
-				case ENC_ST1_ASISDLSE_R4_4V:
-					num_regs = 4;
-					break;
-				default:
-					break;
-			}
-
-			if(num_regs == 0)
-				ABORT_LIFT;
-
-			const size_t reg_sz = REGSZ(instr.operands[0]);
-			for (uint32_t ii = 0; ii < num_regs; ++ii)
-			{
-				LoadStoreOperandSingleReg(il,
-					instr.operation == ARM64_LD1, /* {T,F} = {load,store} */
-					instr.operands[0].reg[ii], /* register number */
-					reg_sz, /* register size */
-					instr.operands[1] /* operand2 */,
-					ii * reg_sz /* slide */
-				);
-			}
-		break;
+		int offset = 0;
+		for(int i=0; i<dst_n; ++i) {
+			int rsize = get_register_size(dsts[i]);
+			il.AddInstruction(il.SetRegister(rsize, dsts[i],
+				il.Load(rsize, GetILOperandEffectiveAddress(il, operand2, 8, NONE, offset))));
+			offset += rsize;
 		}
+
+		break;
+	}
+	case ARM64_ST1:
+	{
+		Register srcs[16];
+		int src_n = unpack_vector(operand1, srcs);
+
+		int offset = 0;
+		for(int i=0; i<src_n; ++i) {
+			int rsize = get_register_size(srcs[i]);
+			il.AddInstruction(il.Store(rsize,
+				GetILOperandEffectiveAddress(il, operand2, 8, NONE, offset),
+				il.Register(rsize, srcs[i])));
+			offset += rsize;
+		}
+
+		break;
+	}
 	case ARM64_LSL:
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
 					il.ShiftLeft(REGSZ(operand2),

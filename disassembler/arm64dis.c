@@ -280,6 +280,14 @@ unsigned get_register_size(Register r)
 		return 2;
 	else if ((r >= REG_Q0 && r <= REG_Q31) || (r >= REG_V0 && r <= REG_V31))
 		return 16;
+	else if (r >= REG_V0_B0 && r <= REG_V31_B15)
+		return 1;
+	else if (r >= REG_V0_H0 && r <= REG_V31_H7)
+		return 2;
+	else if (r >= REG_V0_S0 && r <= REG_V31_S3)
+		return 4;
+	else if (r >= REG_V0_D0 && r <= REG_V31_D1)
+		return 8;
 	return 0;
 }
 
