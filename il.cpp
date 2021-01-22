@@ -19,6 +19,13 @@ using namespace BinaryNinja;
 #define ONES(N) (-1ULL >> (64-N))
 #define SETFLAGS (instr.setflags ? IL_FLAGWRITE_ALL : IL_FLAGWRITE_NONE)
 
+#define IS_V_REG(R) ((R) >= REG_V0 && (R) <= REG_V31)
+#define IS_ASIMD_OPERAND(O) ((O).operandClass==REG && IS_V_REG((O).reg[0]))
+#define IS_Z_REG(R) ((R) >= REG_Z0 && (R) <= REG_Z31)
+#define IS_P_REG(R) ((R) >= REG_P0 && (R) <= REG_P15)
+#define IS_SVE_REG(R) (IS_Z_REG(R) || IS_P_REG(R))
+#define IS_SVE_OPERAND(O) ((O).operandClass==REG && IS_SVE_REG((O).reg[0]))
+
 #define ABORT_LIFT \
 { \
 	il.AddInstruction(il.Unimplemented()); \
@@ -329,7 +336,6 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 		return il.Unimplemented();
 	}
 }
-
 
 unsigned v_unpack_lookup_sz[15] = { 0, 1, 2, 4, 8, 16, 1, 2, 4, 8, 1, 2, 4, 1, 1 };
 
@@ -1838,7 +1844,19 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_RETAB:
 		il.AddInstruction(il.Return(il.Register(8, REG_X30)));
 		break;
+	case ARM64_REVB: // SVE only
+	case ARM64_REVH:
+	case ARM64_REVW:
+		il.AddInstruction(il.Unimplemented());
+		break;
+	case ARM64_REV16:
+	case ARM64_REV32:
+	case ARM64_REV64:
 	case ARM64_REV:
+		if(IS_SVE_OPERAND(operand1)) {
+			il.AddInstruction(il.Unimplemented());
+			break;
+		}
 		// if LLIL_BSWAP ever gets added, replace
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))}, ARM64_INTRIN_REV, {ILREG(operand2)}));
 		break;

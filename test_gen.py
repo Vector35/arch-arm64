@@ -35,7 +35,8 @@ if sys.argv[1] == 'mnemonic':
 				continue
 			(b0, b1, b2, b3, instxt) = m.group(1,2,3,4,5)
 			data = codecs.decode(b3+b2+b1+b0, 'hex_codec')
-			if not (instxt==mnem or instxt.startswith(mnem+' ')):
+			#if not (instxt==mnem or instxt.startswith(mnem+' ')):
+			if not instxt.startswith(mnem):
 				continue
 			#if samples == 0:
 			#	print('\t# %s' % encoding)

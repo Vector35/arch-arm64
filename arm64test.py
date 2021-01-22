@@ -2,6 +2,61 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_rev = [
+	# rev16 w25, w2
+	(b'\x59\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w2)]))'),
+	# rev16 w25, w6
+	(b'\xD9\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w6)]))'),
+	# rev16 x23, x3
+	(b'\x77\x04\xC0\xDA', 'LLIL_INTRINSIC([x23],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x3)]))'),
+	# rev16 x14, x17
+	(b'\x2E\x06\xC0\xDA', 'LLIL_INTRINSIC([x14],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x17)]))'),
+	# rev16 v8.16b, v26.16b
+	(b'\x48\x1B\x20\x4E', 'LLIL_INTRINSIC([v8],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	# rev16 v4.8b, v27.8b
+	(b'\x64\x1B\x20\x0E', 'LLIL_INTRINSIC([v4],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v27)]))'),
+	# rev32 x29, x8
+	(b'\x1D\x09\xC0\xDA', 'LLIL_INTRINSIC([x29],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x8)]))'),
+	# rev32 x18, x26
+	(b'\x52\x0B\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x26)]))'),
+	# rev32 v18.4h, v15.4h
+	(b'\xF2\x09\x60\x2E', 'LLIL_INTRINSIC([v18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v15)]))'),
+	# rev32 v20.8h, v26.8h
+	(b'\x54\x0B\x60\x6E', 'LLIL_INTRINSIC([v20],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	# rev64 v9.2s, v26.2s
+	(b'\x49\x0B\xA0\x0E', 'LLIL_INTRINSIC([v9],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	# rev64 v17.16b, v18.16b
+	(b'\x51\x0A\x20\x4E', 'LLIL_INTRINSIC([v17],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v18)]))'),
+	# rev w14, w21
+	(b'\xAE\x0A\xC0\x5A', 'LLIL_INTRINSIC([w14],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w21)]))'),
+	# rev w23, w3
+	(b'\x77\x08\xC0\x5A', 'LLIL_INTRINSIC([w23],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w3)]))'),
+	# rev x11, x6
+	(b'\xCB\x0C\xC0\xDA', 'LLIL_INTRINSIC([x11],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'),
+	# rev x18, x0
+	(b'\x12\x0C\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'),
+	# rev p1.s, p8.s
+	(b'\x01\x41\xB4\x05', 'LLIL_UNIMPL()'),
+	# rev p15.d, p11.d
+	(b'\x6F\x41\xF4\x05', 'LLIL_UNIMPL()'),
+	# rev z27.d, z28.d
+	(b'\x9B\x3B\xF8\x05', 'LLIL_UNIMPL()'),
+	# rev z15.h, z12.h
+	(b'\x8F\x39\x78\x05', 'LLIL_UNIMPL()'),
+	# revb z17.d, p7/m, z17.d
+	(b'\x31\x9E\xE4\x05', 'LLIL_UNIMPL()'),
+	# revb z28.d, p7/m, z27.d
+	(b'\x7C\x9F\xE4\x05', 'LLIL_UNIMPL()'),
+	# revh z7.s, p3/m, z6.s
+	(b'\xC7\x8C\xA5\x05', 'LLIL_UNIMPL()'),
+	# revh z13.s, p3/m, z12.s
+	(b'\x8D\x8D\xA5\x05', 'LLIL_UNIMPL()'),
+	# revw z3.d, p1/m, z25.d
+	(b'\x23\x87\xE6\x05', 'LLIL_UNIMPL()'),
+	# revw z29.d, p7/m, z12.d
+	(b'\x9D\x9D\xE6\x05', 'LLIL_UNIMPL()')
+]
+
 tests_ld1 = [
 	# ld1 {v14.1d}, [sp]
 	(b'\xEE\x7F\x40\x0C', 'LLIL_SET_REG.q(v14.d[0],LLIL_LOAD.q(LLIL_REG.q(sp)))'),
@@ -333,6 +388,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_rev + \
 	tests_ld1 + \
 	tests_st1 + \
 	[
