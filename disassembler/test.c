@@ -46,7 +46,7 @@ char *oper_class_to_str(enum OperandClass c)
 		case FIMM32: return "FIMM32";
 		case STR_IMM: return "STR_IMM";
 		case REG: return "REG";
-		case MULTI_REG: return "MULTIREG";
+		case MULTI_REG: return "MULTI_REG";
 		case SYS_REG: return "SYS_REG";
 		case MEM_REG: return "MEM_REG";
 		case MEM_PRE_IDX: return "MEM_PRE_IDX";
@@ -110,6 +110,9 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 				case CONDITION:
 					printf("\t\t%d %s\n", operand.cond, cond_to_str(operand.cond));
 					break;
+				case MULTI_REG:
+					printf("\t\t.lane: %d\n", operand.lane);
+					printf("\t\t.laneUsed: %d\n", operand.laneUsed);
 				default:
 					break;
 			}

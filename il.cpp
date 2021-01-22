@@ -699,8 +699,42 @@ static int unpack_vector(InstructionOperand& oper, Register *result)
 	}
 	else if(oper.operandClass == MULTI_REG) {
 		if(oper.laneUsed) {
-			// TODO: multireg with a lane
-			return 0;
+			/* multireg with a lane
+				examples: "ld2 {v17.d, v18.d}[1], [x20]" */
+
+			/* "promote" the spec to full width so lane can select any */
+			ArrangementSpec spec = oper.arrSpec;
+			switch(spec) {
+				case ARRSPEC_1DOUBLE:
+					spec = ARRSPEC_2DOUBLES;
+					break;
+				case ARRSPEC_1SINGLE:
+				case ARRSPEC_2SINGLES:
+					spec = ARRSPEC_4SINGLES;
+					break;
+				case ARRSPEC_1HALF:
+				case ARRSPEC_2HALVES:
+				case ARRSPEC_4HALVES:
+					spec = ARRSPEC_8HALVES;
+					break;
+				case ARRSPEC_1BYTE:
+				case ARRSPEC_4BYTES:
+				case ARRSPEC_8BYTES:
+					spec = ARRSPEC_16BYTES;
+					break;
+				default:
+					break;
+			}
+
+			int n = 0;
+			for(int i=0; i<4 && oper.reg[i]!=REG_NONE; i++) {
+				int n_lanes = v_unpack_lookup_sz[spec];
+				if(oper.lane >= n_lanes)
+					return 0;
+				result[i] = v_unpack_lookup[spec][oper.reg[i]-REG_V0][oper.lane];
+				n += 1;
+			}
+			return n;
 		}
 		else {
 			/* multireg without a lane
