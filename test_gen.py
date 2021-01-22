@@ -29,7 +29,7 @@ if sys.argv[1] == 'mnemonic':
 			samples = 0
 			continue
 
-		m = re.match(r'^(..)(..)(..)(..) (.*)', line)
+		m = re.match(r'^(..)(..)(..)(..) (.*)$', line)
 		if m:
 			if samples >= N_SAMPLES:
 				continue
@@ -39,7 +39,7 @@ if sys.argv[1] == 'mnemonic':
 				continue
 			#if samples == 0:
 			#	print('\t# %s' % encoding)
-			print('\t# %s ' % instxt)
+			print('\t# %s' % instxt)
 			ilstr = instr_to_il(data)
 			il_lines = ilstr.split(';')
 			print('\t(b\'\\x%s\\x%s\\x%s\\x%s\', ' % (b3, b2, b1, b0), end='')
@@ -49,7 +49,7 @@ if sys.argv[1] == 'mnemonic':
 				print(line, end='')
 				if i!=len(il_lines)-1:
 					print()
-				
+
 			print('),')
 			samples += 1
 			continue

@@ -275,10 +275,12 @@ static ExprId GetILOperandEffectiveAddress(LowLevelILFunction& il, InstructionOp
 				}
 			}
 			else {
+				//printf("ERROR: dunno how to handle MEM_EXTENDED shiftType %d\n", operand.shiftType);
 				ABORT_LIFT;
 			}
 			break;
 		default:
+			//printf("ERROR: dunno how to handle operand class %d\n", oclass);
 			ABORT_LIFT;
 	}
 	return addr;
@@ -316,11 +318,8 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 	case FIMM32:
 	case NONE:
 	default:
-		il.AddInstruction(il.Unimplemented());
-		break;
+		return il.Unimplemented();
 	}
-
-	return il.Unimplemented();
 }
 
 
@@ -761,7 +760,7 @@ static void LoadVector(
 	int regs_n = unpack_vector(oper0, regs);
 
 	/* if we pre-indexed, base sequential effective addresses off the base register */
-	OperandClass oclass = (oper0.operandClass == MEM_PRE_IDX) ? MEM_REG : oper0.operandClass;
+	OperandClass oclass = (oper1.operandClass == MEM_PRE_IDX) ? MEM_REG : oper1.operandClass;
 
 	/* generate loads */
 	int offset = 0;
