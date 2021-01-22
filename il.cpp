@@ -210,15 +210,23 @@ static ExprId GetShiftedRegister(LowLevelILFunction& il, InstructionOperand& ope
 
 static ExprId GetILOperandPreOrPostIndex(LowLevelILFunction& il, InstructionOperand& operand)
 {
-	if(IMM(operand) == 0)
-		return 0;
-
 	if(operand.operandClass!=MEM_PRE_IDX && operand.operandClass!=MEM_POST_IDX)
 		return 0;
 
-	return il.SetRegister(REGSZ(operand), REG(operand),
-		il.Add(REGSZ(operand), ILREG(operand),
-			il.Const(REGSZ(operand), IMM(operand))));
+	if(operand.reg[1] == REG_NONE) {
+		// ..., [Xn], #imm
+		if(IMM(operand) == 0)
+			return 0;
+
+		return il.SetRegister(REGSZ(operand), REG(operand),
+			il.Add(REGSZ(operand), ILREG(operand),
+				il.Const(REGSZ(operand), IMM(operand))));
+	}
+	else {
+		// ..., [Xn], <Xm>
+		return il.SetRegister(REGSZ(operand), REG(operand),
+			il.Add(REGSZ(operand), ILREG(operand), il.Register(8, operand.reg[1])));
+	}
 }
 
 /* Returns an expression that does any pre-incrementing on an operand, if it exists */
