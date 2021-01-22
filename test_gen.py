@@ -37,8 +37,8 @@ if sys.argv[1] == 'mnemonic':
 			data = codecs.decode(b3+b2+b1+b0, 'hex_codec')
 			if not (instxt==mnem or instxt.startswith(mnem+' ')):
 				continue
-			if samples == 0:
-				print('\t# %s' % encoding)
+			#if samples == 0:
+			#	print('\t# %s' % encoding)
 			print('\t# %s ' % instxt)
 			ilstr = instr_to_il(data)
 			il_lines = ilstr.split(';')
