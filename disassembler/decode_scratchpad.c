@@ -658,6 +658,11 @@ const char *reg_lookup_c[16] = {
 	dec->operands[i].immediate = OFFSET; \
 	dec->operands[i].signedImm = 1;
 
+#define ADD_OPERAND_MEM_POST_INDEX_REG(REGSET, BASE, REGNUM, REG_PIDX) \
+	dec->operands[i].operandClass = MEM_POST_IDX; \
+	dec->operands[i].reg[0] = REG(REGSET, BASE, REGNUM); \
+	dec->operands[i].reg[1] = REG(REGSET_ZR, REG_X_BASE, REG_PIDX); \
+
 /* mem pre index */
 #define ADD_OPERAND_MEM_PRE_INDEX(REGSET, BASE, REGNUM, OFFSET) \
 	dec->operands[i].operandClass = MEM_PRE_IDX; \
@@ -7897,8 +7902,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>,<Vt4>.<T>}, [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_4(REG_V_BASE, arr_spec, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -7942,8 +7946,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>,<Vt3>.<T>}, [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_3(REG_V_BASE, arr_spec, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8003,8 +8006,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>,<Vt2>.<T>}, [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_2(REG_V_BASE, arr_spec, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8049,8 +8051,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			ArrangementSpec arr_spec = table_8b_16b_4h_8h_2s_4s_1d_2d[(dec->size<<1) | dec->Q];
 			// SYNTAX: {<Vt>.<T>}, [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_1(REG_V_BASE, arr_spec, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8100,8 +8101,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B,<Vt4>.B}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1B, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8128,8 +8128,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B,<Vt3>.B}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1B, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8156,8 +8155,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.B,<Vt2>.B}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1B, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8184,8 +8182,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.B}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1B, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8212,8 +8209,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D,<Vt4>.D}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1D, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8240,8 +8236,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D,<Vt3>.D}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1D, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8268,8 +8263,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.D,<Vt2>.D}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1D, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8296,8 +8290,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.D}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1D, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8324,8 +8317,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H,<Vt4>.H}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1H, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8353,8 +8345,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H,<Vt3>.H}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1H, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8381,8 +8372,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.H,<Vt2>.H}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1H, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8409,8 +8399,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.H}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1H, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8437,8 +8426,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S,<Vt4>.S}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_4_LANED(REG_V_BASE, _1S, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8465,8 +8453,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S,<Vt3>.S}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_3_LANED(REG_V_BASE, _1S, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8493,8 +8480,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.S,<Vt2>.S}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_2_LANED(REG_V_BASE, _1S, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
@@ -8521,8 +8507,7 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		{
 			// SYNTAX: {<Vt>.S}[<index>], [<Xn|SP>],<Xm>
 			ADD_OPERAND_MULTIREG_1_LANED(REG_V_BASE, _1S, dec->t);
-			ADD_OPERAND_MEM_XN_SP;
-			ADD_OPERAND_XM;
+			ADD_OPERAND_MEM_POST_INDEX_REG(REGSET_SP, REG_X_BASE, dec->n, dec->m);
 			// SYNTAX-END
 			break;
 		}
