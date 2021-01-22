@@ -45,12 +45,12 @@ if sys.argv[1] == 'mnemonic':
 			print('\t(b\'\\x%s\\x%s\\x%s\\x%s\', ' % (b3, b2, b1, b0), end='')
 			for (i,line) in enumerate(il_lines):
 				if i!=0:
-					print('\t\t\t     ', end='')
-				print(line, end='')
+					print('\t\t\t\t\t\t ', end='')
+				print('\'%s' % line, end='')
 				if i!=len(il_lines)-1:
-					print()
+					print(';\' + \\')
 
-			print('),')
+			print('\'),')
 			samples += 1
 			continue
 

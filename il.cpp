@@ -788,8 +788,10 @@ static void LoadStoreOperandPair(
 	if(tmp) il.AddInstruction(tmp);
 }
 
-static void LoadVector(
+
+static void LoadStoreVector(
 		LowLevelILFunction& il,
+		bool is_load,
 		InstructionOperand& oper0,
 		InstructionOperand& oper1
 )
@@ -804,12 +806,16 @@ static void LoadVector(
 	/* if we pre-indexed, base sequential effective addresses off the base register */
 	OperandClass oclass = (oper1.operandClass == MEM_PRE_IDX) ? MEM_REG : oper1.operandClass;
 
-	/* generate loads */
 	int offset = 0;
 	for(int i=0; i<regs_n; ++i) {
 		int rsize = get_register_size(regs[i]);
-		il.AddInstruction(il.SetRegister(rsize, regs[i],
-			il.Load(rsize, GetILOperandEffectiveAddress(il, oper1, 8, oclass, offset))));
+		ExprId eaddr = GetILOperandEffectiveAddress(il, oper1, 8, oclass, offset);
+
+		if(is_load)
+			il.AddInstruction(il.SetRegister(rsize, regs[i], il.Load(rsize, eaddr)));
+		else
+			il.AddInstruction(il.Store(rsize, eaddr, il.Register(rsize, regs[i])));
+
 		offset += rsize;
 	}
 
@@ -1634,23 +1640,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	case ARM64_LD1:
 	{
-		LoadVector(il, instr.operands[0], instr.operands[1]);
+		LoadStoreVector(il, true, instr.operands[0], instr.operands[1]);
 		break;
 	}
 	case ARM64_ST1:
 	{
-		Register srcs[16];
-		int src_n = unpack_vector(operand1, srcs);
-
-		int offset = 0;
-		for(int i=0; i<src_n; ++i) {
-			int rsize = get_register_size(srcs[i]);
-			il.AddInstruction(il.Store(rsize,
-				GetILOperandEffectiveAddress(il, operand2, 8, NONE, offset),
-				il.Register(rsize, srcs[i])));
-			offset += rsize;
-		}
-
+		LoadStoreVector(il, false, instr.operands[0], instr.operands[1]);
 		break;
 	}
 	case ARM64_LSL:
