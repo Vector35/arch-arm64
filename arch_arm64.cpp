@@ -2807,6 +2807,8 @@ public:
 
 extern "C"
 {
+	BN_DECLARE_CORE_ABI_VERSION
+
 #ifdef DEMO_VERSION
 	bool Arm64PluginInit()
 #else
