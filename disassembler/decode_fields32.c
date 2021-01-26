@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "operations.h"
-#include "encodings.h"
 #include "arm64dis.h"
 
 void decode_fields32(enum ENCODING enc, Instruction *dec)

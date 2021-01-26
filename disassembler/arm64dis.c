@@ -4,9 +4,6 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#include "sysregs.h"
-#include "operations.h"
-#include "encodings.h"
 #include "arm64dis.h"
 #include "pcode.h"
 

@@ -4,8 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "operations.h"
-#include "encodings.h"
 #include "arm64dis.h"
 
 void disassemble(uint64_t addr, uint8_t *data, int len, char *result, bool verbose)

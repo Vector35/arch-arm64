@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "disassembler/arm64dis.h"
 
 Register* v_unpack_lookup[15][32] =

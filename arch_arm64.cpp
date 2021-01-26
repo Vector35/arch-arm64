@@ -9,9 +9,6 @@
 
 #include "binaryninjaapi.h"
 #include "lowlevelilinstruction.h"
-#include "operations.h"
-#include "encodings.h"
-#include "sysregs.h"
 #include "arm64dis.h"
 #include "il.h"
 
