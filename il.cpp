@@ -932,7 +932,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1), il.ConstPointer(REGSZ(operand1), IMM(operand2))));
 		break;
 	case ARM64_ASR:
-		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1), il.ArithShiftRight(REGSZ(operand2), ILREG(operand2), il.Const(REGSZ(operand2), IMM(operand3)))));
+		il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1), il.ArithShiftRight(REGSZ(operand2), ILREG(operand2), ReadILOperand(il, operand3, REGSZ(operand2)))));
 		break;
 	case ARM64_AESD:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG(operand1))}, ARM64_INTRIN_AESD, {ILREG(operand1), ILREG(operand2)}));
