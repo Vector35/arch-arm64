@@ -3,6 +3,7 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 tests_rev = [
+	(b'\x49\x29\xc8\x9a', 'LLIL_SET_REG.q(x9,LLIL_ASR.q(LLIL_REG.q(x10),LLIL_REG.q(x8)))'), # asr     x9, x10, x8
 	# rev16 w25, w2
 	(b'\x59\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w2)]))'),
 	# rev16 w25, w6
