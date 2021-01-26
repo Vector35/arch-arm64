@@ -14,6 +14,7 @@ endif()
 
 file(GLOB SOURCES
 	*.cpp
+	*.c
 	*.h
 	disassembler/arm64dis.c
 	disassembler/sysregs.c
