@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 #include "decode.h"
-#include "format.h"
 #include "pcode.h"
 
 int BitCount(uint32_t x)
