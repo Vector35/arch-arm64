@@ -5,8 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "encodings.h"
 #include "operations.h"
+#include "encodings.h"
 #include "sysregs.h"
 
 #ifdef _MSC_VER
@@ -772,9 +772,6 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 
 int decode_spec(context *ctx, Instruction *dec); // decode0.cpp
 int decode_scratchpad(context *ctx, Instruction *dec); // decode_scratchpad.cpp
-
-// get the text value of the instruction mnemonic
-const char *get_operation(const Instruction *instruction);
 
 // get the text value of a given register enumeration (including prefetch registers)
 // includes data size and element size

@@ -39,6 +39,9 @@ uint32_t get_implementation_specific(
 		char *outBuffer,
 		uint32_t outBufferSize);
 
+// get the text value of the instruction mnemonic
+const char *get_operation(const Instruction *instruction);
+
 /* undocumented: */
 void print_instruction(Instruction *instr);
 
