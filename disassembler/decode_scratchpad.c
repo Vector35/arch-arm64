@@ -7247,20 +7247,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 		case ENC_SYS_CR_SYSTEMINSTRS:
 		{
 			// sys #<op1>,<Cn>,<Cm>, #<op2>{,<Xt>}
-			// #<op1>
-			dec->operands[i].operandClass = IMM32;
-			dec->operands[i].signedImm = 0;
-			dec->operands[i++].immediate = dec->sys_op1;
-			// C7
-			dec->operands[i].operandClass = NAME;
-			sprintf(dec->operands[i++].name, "c%llu", dec->sys_crn);
-			// <Cm>
-			dec->operands[i].operandClass = NAME;
-			sprintf(dec->operands[i++].name, "c%llu", dec->sys_crm);
-			// #<op2>
-			dec->operands[i].operandClass = IMM32;
-			dec->operands[i].signedImm = 0;
-			dec->operands[i++].immediate = dec->sys_op2;
+			ADD_OPERAND_IMMEDIATE32(dec->op1, 0);
+			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crn & 0xF]);
+			ADD_OPERAND_NAME(reg_lookup_c[dec->sys_crm & 0xF]);
+			ADD_OPERAND_IMMEDIATE32(dec->op2, 0);
 			// {,<Xt>}
 			if(dec->Rt != 31) {
 				ADD_OPERAND_XT
