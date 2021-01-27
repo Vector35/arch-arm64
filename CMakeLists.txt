@@ -16,7 +16,8 @@ file(GLOB SOURCES
 	*.cpp
 	*.c
 	*.h
-	disassembler/arm64dis.c
+	disassembler/decode.c
+	disassembler/format.c
 	disassembler/sysregs.c
 	disassembler/encodings.c
 	disassembler/operations.c

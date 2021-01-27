@@ -9,7 +9,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "arm64dis.h"
+#include "decode.h"
+#include "format.h"
 
 int verbose = 1;
 

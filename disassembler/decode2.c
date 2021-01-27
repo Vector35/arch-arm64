@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "arm64dis.h"
+#include "decode.h"
 #include "decode2.h"
 #include "pcode.h"
 #include "decode_fields32.h"

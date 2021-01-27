@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "arm64dis.h"
+#include "decode.h"
 #include "pcode.h"
 
 //-----------------------------------------------------------------------------

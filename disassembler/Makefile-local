@@ -1,8 +1,8 @@
 # $ make -f Makefile-local
 
-LIB_OBJS = arm64dis.o pcode.o decode0.o decode1.o decode_fields32.o decode_scratchpad.o decode2.o operations.o encodings.o sysregs.o
+LIB_OBJS = format.o pcode.o decode.o decode0.o decode1.o decode_fields32.o decode_scratchpad.o decode2.o operations.o encodings.o sysregs.o
 
-HEADERS = decode1.h decode2.h arm64dis.h pcode.h operations.h sysregs.h decode_fields32.h encodings.h
+HEADERS = decode.h decode1.h decode2.h format.h pcode.h operations.h sysregs.h decode_fields32.h encodings.h
 
 CFLAGS = -g -Wunused
 #CFLAGS = -g -Wpedantic
