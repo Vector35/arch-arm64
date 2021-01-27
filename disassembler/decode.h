@@ -471,12 +471,12 @@ struct InstructionOperand {
 	uint32_t lane;
 	uint64_t immediate;
 	ShiftType shiftType;
-	uint32_t shiftValueUsed;
+	bool shiftValueUsed;
 	uint32_t shiftValue;
 	ShiftType extend;
-	uint32_t signedImm;
+	bool signedImm;
 	char pred_qual; // predicate register qualifier ('z' or 'm')
-	char mul_vl; // whether MEM_OFFSET has the offset "mul vl"
+	bool mul_vl; // whether MEM_OFFSET has the offset "mul vl"
 
 	/* for class NAME */
 	char name[MAX_NAME];
