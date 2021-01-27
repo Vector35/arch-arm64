@@ -247,7 +247,7 @@ const char *get_register_arrspec(Register reg, const InstructionOperand *operand
 }
 
 
-unsigned get_register_size(Register r)
+size_t get_register_size(Register r)
 {
 	//Comparison done in order of likelyhood to occur
 	if ((r >= REG_X0 && r <= REG_SP) || (r >= REG_D0 && r <= REG_D31))

@@ -781,7 +781,7 @@ const char *get_operation(const Instruction *instruction);
 const char *get_register_name(enum Register);
 const char *get_register_arrspec(enum Register, const InstructionOperand *);
 
-unsigned get_register_size(enum Register);
+size_t get_register_size(enum Register);
 
 //Get the text value of a given shift type
 const char *get_shift(ShiftType shift);
