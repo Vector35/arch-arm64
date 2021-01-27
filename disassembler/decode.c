@@ -271,10 +271,14 @@ size_t get_register_size(Register r)
 	return 0;
 }
 
+const char *get_operation(const Instruction *inst)
+{
+	return operation_to_str(inst->operation);
+}
+
 //-----------------------------------------------------------------------------
 // decode or decompose
 //-----------------------------------------------------------------------------
-
 
 int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t address)
 {
