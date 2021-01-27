@@ -1,10 +1,13 @@
 # $ make -f Makefile-local
 
-LIB_OBJS = format.o pcode.o decode.o decode0.o decode1.o decode_fields32.o decode_scratchpad.o decode2.o operations.o encodings.o sysregs.o
+DECODE_OBJS = pcode.o decode.o decode0.o decode1.o decode2.o decode_fields32.o decode_scratchpad.o encodings_dec.o
 
-HEADERS = decode.h decode1.h decode2.h format.h pcode.h operations.h sysregs.h decode_fields32.h encodings.h
+FORMAT_OBJS = format.o encodings_fmt.o operations.o sysregs.o
 
-CFLAGS = -g -Wunused
+HEADERS = decode.h decode1.h decode2.h format.h pcode.h operations.h sysregs.h decode_fields32.h encodings_dec.h encodings_fmt.h
+
+#CFLAGS = -g -Wunused
+CFLAGS = -Os
 #CFLAGS = -g -Wpedantic
 #CFLAGS = -ofast
 
@@ -12,32 +15,31 @@ CFLAGS = -g -Wunused
 
 .PHONY: all clean
 
-all: libdisasm.a gofer.so test
+all: libdecode.a libformat.a gofer.so test
 
-# operations.o, encodings.o, sysregs.o
 %.o: %.c $(HEADERS)
 	gcc -c $(CFLAGS) $< -o $@
 
-libdisasm.a: $(LIB_OBJS)
-	ar rvs libdisasm.a $(LIB_OBJS)
+libdecode.a: $(DECODE_OBJS)
+	ar rvs libdecode.a $(DECODE_OBJS)
 
-disasm.dylib: $(LIB_OBJS)
-	gcc -shared $(LIB_OBJS) -o disasm.dylib
+libformat.a: $(FORMAT_OBJS)
+	ar rvs libformat.a $(FORMAT_OBJS)
 
 #------------------------------------------------------------------------------
 # test tools
 #------------------------------------------------------------------------------
 
-gofer.so: gofer.c libdisasm.a
+gofer.so: gofer.c libdecode.a
 	gcc $(CFLAGS) \
-		libdisasm.a \
+		libdecode.a libformat.a \
 		-shared -o gofer.so gofer.c \
 		-Wl,-headerpad_max_install_names
 	#install_name_tool -change libcapstone.3.dylib gofer.so
 	#install_name_tool -add_rpath `pwd` gofer.so
 
-test: test.c libdisasm.a
-	gcc $(CFLAGS) test.c libdisasm.a -o test
+test: test.c libdecode.a
+	gcc $(CFLAGS) test.c libdecode.a libformat.a -o test
 
 #------------------------------------------------------------------------------
 # 

@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "operations.h"
-#include "encodings.h"
+#include "encodings_dec.h"
 #include "sysregs.h"
 
 #ifdef _MSC_VER
@@ -768,22 +768,10 @@ typedef struct Instruction Instruction;
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t address);
-
-int decode_spec(context *ctx, Instruction *dec); // decode0.cpp
-int decode_scratchpad(context *ctx, Instruction *dec); // decode_scratchpad.cpp
-
-// get the text value of a given register enumeration (including prefetch registers)
-// includes data size and element size
-const char *get_register_name(enum Register);
-const char *get_register_arrspec(enum Register, const InstructionOperand *);
-
 size_t get_register_size(enum Register);
 
-//Get the text value of a given shift type
-const char *get_shift(ShiftType shift);
-
-const char *get_condition(Condition cond);
 #ifdef __cplusplus
 }
 #endif

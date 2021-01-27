@@ -4,7 +4,8 @@
 #include <stdbool.h>
 
 #include "decode.h"
-#include "encodings.h"
+#include "encodings_dec.h"
+#include "encodings_fmt.h"
 #include "operations.h"
 #include "sysregs.h"
 
@@ -28,22 +29,23 @@ enum FailureCode {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 // get a text representation of the decomposed instruction
-// into outBuffer
 int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz);
 
+// register (and related) to string
 int get_register_full(enum Register, const InstructionOperand *, char *result);
+const char *get_register_name(enum Register);
+const char *get_register_arrspec(enum Register, const InstructionOperand *);
 
+// miscellany to string
+const char *get_operation(const Instruction *instruction);
+const char *get_shift(ShiftType shift);
+const char *get_condition(Condition cond);
 uint32_t get_implementation_specific(
 		const InstructionOperand *operand,
 		char *outBuffer,
 		uint32_t outBufferSize);
-
-// get the text value of the instruction mnemonic
-const char *get_operation(const Instruction *instruction);
-
-/* undocumented: */
-void print_instruction(Instruction *instr);
 
 #ifdef __cplusplus
 }

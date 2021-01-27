@@ -19,7 +19,8 @@ file(GLOB SOURCES
 	disassembler/decode.c
 	disassembler/format.c
 	disassembler/sysregs.c
-	disassembler/encodings.c
+	disassembler/encodings_dec.c
+	disassembler/encodings_fmt.c
 	disassembler/operations.c
 	disassembler/pcode.c
 	disassembler/decode0.c

@@ -2,7 +2,8 @@
 
 #include "binaryninjaapi.h"
 #include "disassembler/operations.h"
-#include "disassembler/encodings.h"
+#include "disassembler/encodings_dec.h"
+#include "disassembler/encodings_fmt.h"
 #include "disassembler/arm64dis.h"
 
 #define IL_FLAG_N 31
