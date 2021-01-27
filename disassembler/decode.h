@@ -449,16 +449,19 @@ enum Group {
 	typedef enum ArrangementSpec ArrangementSpec;
 #endif
 
+#define MAX_REGISTERS 5
+#define MAX_NAME 16
+
 struct InstructionOperand {
 	OperandClass operandClass;
 	ArrangementSpec arrSpec;
-	Register reg[5];
+	Register reg[MAX_REGISTERS];
 
 	/* for class CONDITION */
 	Condition cond;
 
 	/* for class IMPLEMENTATION_SPECIFIC */
-	uint8_t implspec[5];
+	uint8_t implspec[MAX_REGISTERS];
 
 	/* for class SYS_REG */
 	SystemReg sysreg;
@@ -476,7 +479,7 @@ struct InstructionOperand {
 	char mul_vl; // whether MEM_OFFSET has the offset "mul vl"
 
 	/* for class NAME */
-	char name[16];
+	char name[MAX_NAME];
 };
 
 #ifndef __cplusplus
