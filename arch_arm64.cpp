@@ -11,6 +11,7 @@
 #include "lowlevelilinstruction.h"
 #include "arm64dis.h"
 #include "il.h"
+#include "neon_intrinsics.h"
 
 using namespace BinaryNinja;
 using namespace std;
@@ -946,14 +947,18 @@ public:
 		case ARM64_INTRIN_AESE:
 			return "__aese";
 		default:
-			return "";
+			break;
 		}
+
+		return NeonGetIntrinsicName(intrinsic);
 	}
 
 
 	virtual vector<uint32_t> GetAllIntrinsics() override
 	{
-		return vector<uint32_t> {
+		vector<uint32_t> result = NeonGetAllIntrinsics();
+
+		vector<uint32_t> tmp = {
 			ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTDZA, ARM64_INTRIN_AUTDZB,
 			ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB, ARM64_INTRIN_AUTIZA, ARM64_INTRIN_AUTIZB,
 			ARM64_INTRIN_AUTIB1716, ARM64_INTRIN_AUTIBSP, ARM64_INTRIN_AUTIBZ,
@@ -970,6 +975,9 @@ public:
 			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
 			ARM64_INTRIN_AESD, ARM64_INTRIN_AESE
 		};
+
+		result.insert(result.end(), tmp.begin(), tmp.end());
+		return result;
 	}
 
 
