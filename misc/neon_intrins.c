@@ -1975,20 +1975,20 @@ poly16x4_t vdup_laneq_p16(poly16x8_t vec, const int lane); // DUP Vd.4H,Vn.H[lan
 poly16x8_t vdupq_laneq_p16(poly16x8_t vec, const int lane); // DUP Vd.8H,Vn.H[lane]
 float64x1_t vdup_laneq_f64(float64x2_t vec, const int lane); // DUP Dd,Vn.D[lane]
 float64x2_t vdupq_laneq_f64(float64x2_t vec, const int lane); // DUP Vd.2D,Vn.D[lane]
-int8x16_t vcombine_s8(int8x8_t low, int8x8_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-int16x8_t vcombine_s16(int16x4_t low, int16x4_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-int32x4_t vcombine_s32(int32x2_t low, int32x2_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-int64x2_t vcombine_s64(int64x1_t low, int64x1_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-uint8x16_t vcombine_u8(uint8x8_t low, uint8x8_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-uint16x8_t vcombine_u16(uint16x4_t low, uint16x4_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-uint32x4_t vcombine_u32(uint32x2_t low, uint32x2_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-uint64x2_t vcombine_u64(uint64x1_t low, uint64x1_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-poly64x2_t vcombine_p64(poly64x1_t low, poly64x1_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-float16x8_t vcombine_f16(float16x4_t low, float16x4_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-float32x4_t vcombine_f32(float32x2_t low, float32x2_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-poly8x16_t vcombine_p8(poly8x8_t low, poly8x8_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-poly16x8_t vcombine_p16(poly16x4_t low, poly16x4_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
-float64x2_t vcombine_f64(float64x1_t low, float64x1_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
+int8x16_t vcombine_s8(int8x8_t low, int8x8_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+int16x8_t vcombine_s16(int16x4_t low, int16x4_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+int32x4_t vcombine_s32(int32x2_t low, int32x2_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+int64x2_t vcombine_s64(int64x1_t low, int64x1_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+uint8x16_t vcombine_u8(uint8x8_t low, uint8x8_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+uint16x8_t vcombine_u16(uint16x4_t low, uint16x4_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+uint32x4_t vcombine_u32(uint32x2_t low, uint32x2_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+uint64x2_t vcombine_u64(uint64x1_t low, uint64x1_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+poly64x2_t vcombine_p64(poly64x1_t low, poly64x1_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+float16x8_t vcombine_f16(float16x4_t low, float16x4_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+float32x4_t vcombine_f32(float32x2_t low, float32x2_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+poly8x16_t vcombine_p8(poly8x8_t low, poly8x8_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+poly16x8_t vcombine_p16(poly16x4_t low, poly16x4_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
+float64x2_t vcombine_f64(float64x1_t low, float64x1_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
 int8x8_t vget_high_s8(int8x16_t a); // DUP Vd.1D,Vn.D[1]
 int16x4_t vget_high_s16(int16x8_t a); // DUP Vd.1D,Vn.D[1]
 int32x2_t vget_high_s32(int32x4_t a); // DUP Vd.1D,Vn.D[1]
@@ -2862,18 +2862,18 @@ int8_t vaddv_s8(int8x8_t a); // ADDV Bd,Vn.8B
 int8_t vaddvq_s8(int8x16_t a); // ADDV Bd,Vn.16B
 int16_t vaddv_s16(int16x4_t a); // ADDV Hd,Vn.4H
 int16_t vaddvq_s16(int16x8_t a); // ADDV Hd,Vn.8H
-int32_t vaddv_s32(int32x2_t a); // ADDP  Vd.2S,Vn.2S,Vm.2S
+int32_t vaddv_s32(int32x2_t a); // ADDP Vd.2S,Vn.2S,Vm.2S
 int32_t vaddvq_s32(int32x4_t a); // ADDV Sd,Vn.4S
 int64_t vaddvq_s64(int64x2_t a); // ADDP Dd,Vn.2D
 uint8_t vaddv_u8(uint8x8_t a); // ADDV Bd,Vn.8B
 uint8_t vaddvq_u8(uint8x16_t a); // ADDV Bd,Vn.16B
 uint16_t vaddv_u16(uint16x4_t a); // ADDV Hd,Vn.4H
 uint16_t vaddvq_u16(uint16x8_t a); // ADDV Hd,Vn.8H
-uint32_t vaddv_u32(uint32x2_t a); // ADDP  Vd.2S,Vn.2S,Vm.2S
+uint32_t vaddv_u32(uint32x2_t a); // ADDP Vd.2S,Vn.2S,Vm.2S
 uint32_t vaddvq_u32(uint32x4_t a); // ADDV Sd,Vn.4S
 uint64_t vaddvq_u64(uint64x2_t a); // ADDP Dd,Vn.2D
 float32_t vaddv_f32(float32x2_t a); // FADDP Sd,Vn.2S
-float32_t vaddvq_f32(float32x4_t a); // FADDP Vt.4S,Vn.4S,Vm.4S            FADDP Sd,Vt.2S
+float32_t vaddvq_f32(float32x4_t a); // FADDP Vt.4S,Vn.4S,Vm.4S; FADDP Sd,Vt.2S
 float64_t vaddvq_f64(float64x2_t a); // FADDP Dd,Vn.2D
 int16_t vaddlv_s8(int8x8_t a); // SADDLV Hd,Vn.8B
 int16_t vaddlvq_s8(int8x16_t a); // SADDLV Hd,Vn.16B
@@ -2891,13 +2891,13 @@ int8_t vmaxv_s8(int8x8_t a); // SMAXV Bd,Vn.8B
 int8_t vmaxvq_s8(int8x16_t a); // SMAXV Bd,Vn.16B
 int16_t vmaxv_s16(int16x4_t a); // SMAXV Hd,Vn.4H
 int16_t vmaxvq_s16(int16x8_t a); // SMAXV Hd,Vn.8H
-int32_t vmaxv_s32(int32x2_t a); // SMAXP  Vd.2S,Vn.2S,Vm.2S
+int32_t vmaxv_s32(int32x2_t a); // SMAXP Vd.2S,Vn.2S,Vm.2S
 int32_t vmaxvq_s32(int32x4_t a); // SMAXV Sd,Vn.4S
 uint8_t vmaxv_u8(uint8x8_t a); // UMAXV Bd,Vn.8B
 uint8_t vmaxvq_u8(uint8x16_t a); // UMAXV Bd,Vn.16B
 uint16_t vmaxv_u16(uint16x4_t a); // UMAXV Hd,Vn.4H
 uint16_t vmaxvq_u16(uint16x8_t a); // UMAXV Hd,Vn.8H
-uint32_t vmaxv_u32(uint32x2_t a); // UMAXP  Vd.2S,Vn.2S,Vm.2S
+uint32_t vmaxv_u32(uint32x2_t a); // UMAXP Vd.2S,Vn.2S,Vm.2S
 uint32_t vmaxvq_u32(uint32x4_t a); // UMAXV Sd,Vn.4S
 float32_t vmaxv_f32(float32x2_t a); // FMAXP Sd,Vn.2S
 float32_t vmaxvq_f32(float32x4_t a); // FMAXV Sd,Vn.4S
@@ -2906,23 +2906,23 @@ int8_t vminv_s8(int8x8_t a); // SMINV Bd,Vn.8B
 int8_t vminvq_s8(int8x16_t a); // SMINV Bd,Vn.16B
 int16_t vminv_s16(int16x4_t a); // SMINV Hd,Vn.4H
 int16_t vminvq_s16(int16x8_t a); // SMINV Hd,Vn.8H
-int32_t vminv_s32(int32x2_t a); // SMINP  Vd.2S,Vn.2S,Vm.2S
+int32_t vminv_s32(int32x2_t a); // SMINP Vd.2S,Vn.2S,Vm.2S
 int32_t vminvq_s32(int32x4_t a); // SMINV Sd,Vn.4S
 uint8_t vminv_u8(uint8x8_t a); // UMINV Bd,Vn.8B
 uint8_t vminvq_u8(uint8x16_t a); // UMINV Bd,Vn.16B
 uint16_t vminv_u16(uint16x4_t a); // UMINV Hd,Vn.4H
 uint16_t vminvq_u16(uint16x8_t a); // UMINV Hd,Vn.8H
-uint32_t vminv_u32(uint32x2_t a); // UMINP  Vd.2S,Vn.2S,Vm.2S
+uint32_t vminv_u32(uint32x2_t a); // UMINP Vd.2S,Vn.2S,Vm.2S
 uint32_t vminvq_u32(uint32x4_t a); // UMINV Sd,Vn.4S
 float32_t vminv_f32(float32x2_t a); // FMINP Sd,Vn.2S
 float32_t vminvq_f32(float32x4_t a); // FMINV Sd,Vn.4S
 float64_t vminvq_f64(float64x2_t a); // FMINP Dd,Vn.2D
 float32_t vmaxnmv_f32(float32x2_t a); // FMAXNMP Sd,Vn.2S
 float32_t vmaxnmvq_f32(float32x4_t a); // FMAXNMV Sd,Vn.4S
-float64_t vmaxnmvq_f64(float64x2_t a); // FMAXNMP  Dd,Vn.2D
-float32_t vminnmv_f32(float32x2_t a); // FMINNMP  Sd,Vn.2S
+float64_t vmaxnmvq_f64(float64x2_t a); // FMAXNMP Dd,Vn.2D
+float32_t vminnmv_f32(float32x2_t a); // FMINNMP Sd,Vn.2S
 float32_t vminnmvq_f32(float32x4_t a); // FMINNMV Sd,Vn.4S
-float64_t vminnmvq_f64(float64x2_t a); // FMINNMP  Dd,Vn.2D
+float64_t vminnmvq_f64(float64x2_t a); // FMINNMP Dd,Vn.2D
 int8x8_t vext_s8(int8x8_t a, int8x8_t b, const int n); // EXT Vd.8B,Vn.8B,Vm.8B,#n
 int8x16_t vextq_s8(int8x16_t a, int8x16_t b, const int n); // EXT Vd.16B,Vn.16B,Vm.16B,#n
 int16x4_t vext_s16(int16x4_t a, int16x4_t b, const int n); // EXT Vd.8B,Vn.8B,Vm.8B,#(n<<1)
@@ -3120,9 +3120,9 @@ poly16x8_t vtrn2q_p16(poly16x8_t a, poly16x8_t b); // TRN2 Vd.8H,Vn.8H,Vm.8H
 int8x8_t vtbl1_s8(int8x8_t a, int8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
 uint8x8_t vtbl1_u8(uint8x8_t a, uint8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
 poly8x8_t vtbl1_p8(poly8x8_t a, uint8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
-int8x8_t vtbx1_s8(int8x8_t a, int8x8_t b, int8x8_t idx); // MOVI Vtmp.8B,#8            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B},Vm.8B            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
-uint8x8_t vtbx1_u8(uint8x8_t a, uint8x8_t b, uint8x8_t idx); // MOVI Vtmp.8B,#8            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B},Vm.8B            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
-poly8x8_t vtbx1_p8(poly8x8_t a, poly8x8_t b, uint8x8_t idx); // MOVI Vtmp.8B,#8            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B},Vm.8B            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+int8x8_t vtbx1_s8(int8x8_t a, int8x8_t b, int8x8_t idx); // MOVI Vtmp.8B,#8; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B},Vm.8B; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+uint8x8_t vtbx1_u8(uint8x8_t a, uint8x8_t b, uint8x8_t idx); // MOVI Vtmp.8B,#8; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B},Vm.8B; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+poly8x8_t vtbx1_p8(poly8x8_t a, poly8x8_t b, uint8x8_t idx); // MOVI Vtmp.8B,#8; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B},Vm.8B; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
 int8x8_t vtbl2_s8(int8x8x2_t a, int8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
 uint8x8_t vtbl2_u8(uint8x8x2_t a, uint8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
 poly8x8_t vtbl2_p8(poly8x8x2_t a, uint8x8_t idx); // TBL Vd.8B,{Vn.16B},Vm.8B
@@ -3135,9 +3135,9 @@ poly8x8_t vtbl4_p8(poly8x8x4_t a, uint8x8_t idx); // TBL Vd.8B,{Vn.16B,Vn+1.16B}
 int8x8_t vtbx2_s8(int8x8_t a, int8x8x2_t b, int8x8_t idx); // TBX Vd.8B,{Vn.16B},Vm.8B
 uint8x8_t vtbx2_u8(uint8x8_t a, uint8x8x2_t b, uint8x8_t idx); // TBX Vd.8B,{Vn.16B},Vm.8B
 poly8x8_t vtbx2_p8(poly8x8_t a, poly8x8x2_t b, uint8x8_t idx); // TBX Vd.8B,{Vn.16B},Vm.8B
-int8x8_t vtbx3_s8(int8x8_t a, int8x8x3_t b, int8x8_t idx); // MOVI Vtmp.8B,#24            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
-uint8x8_t vtbx3_u8(uint8x8_t a, uint8x8x3_t b, uint8x8_t idx); // MOVI Vtmp.8B,#24            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8B            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
-poly8x8_t vtbx3_p8(poly8x8_t a, poly8x8x3_t b, uint8x8_t idx); // MOVI Vtmp.8B,#24            CMHS Vtmp.8B,Vm.8B,Vtmp.8B            TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8B            BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+int8x8_t vtbx3_s8(int8x8_t a, int8x8x3_t b, int8x8_t idx); // MOVI Vtmp.8B,#24; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+uint8x8_t vtbx3_u8(uint8x8_t a, uint8x8x3_t b, uint8x8_t idx); // MOVI Vtmp.8B,#24; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8B; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
+poly8x8_t vtbx3_p8(poly8x8_t a, poly8x8x3_t b, uint8x8_t idx); // MOVI Vtmp.8B,#24; CMHS Vtmp.8B,Vm.8B,Vtmp.8B; TBL Vtmp1.8B,{Vn.16B,Vn+1.16B},Vm.8B; BIF Vd.8B,Vtmp1.8B,Vtmp.8B
 int8x8_t vtbx4_s8(int8x8_t a, int8x8x4_t b, int8x8_t idx); // TBX Vd.8B,{Vn.16B,Vn+1.16B},Vm.8B
 uint8x8_t vtbx4_u8(uint8x8_t a, uint8x8x4_t b, uint8x8_t idx); // TBX Vd.8B,{Vn.16B,Vn+1.16B},Vm.8B
 poly8x8_t vtbx4_p8(poly8x8_t a, poly8x8x4_t b, uint8x8_t idx); // TBX Vd.8B,{Vn.16B,Vn+1.16B},Vm.8B
@@ -3255,60 +3255,60 @@ float64x1_t vfma_n_f64(float64x1_t a, float64x1_t b, float64_t n); // FMADD Dd,D
 float64x2_t vfmaq_n_f64(float64x2_t a, float64x2_t b, float64_t n); // FMLA Vd.2D,Vn.2D,Vm.D[0]
 float64x1_t vfms_n_f64(float64x1_t a, float64x1_t b, float64_t n); // FMSUB Dd,Dn,Dm,Da
 float64x2_t vfmsq_n_f64(float64x2_t a, float64x2_t b, float64_t n); // FMLS Vd.2D,Vn.2D,Vm.D[0]
-int8x8x2_t vtrn_s8(int8x8_t a, int8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B            TRN2 Vd2.8B,Vn.8B,Vm.8B
-int16x4x2_t vtrn_s16(int16x4_t a, int16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H            TRN2 Vd2.4H,Vn.4H,Vm.4H
-uint8x8x2_t vtrn_u8(uint8x8_t a, uint8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B            TRN2 Vd2.8B,Vn.8B,Vm.8B
-uint16x4x2_t vtrn_u16(uint16x4_t a, uint16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H            TRN2 Vd2.4H,Vn.4H,Vm.4H
-poly8x8x2_t vtrn_p8(poly8x8_t a, poly8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B            TRN2 Vd2.8B,Vn.8B,Vm.8B
-poly16x4x2_t vtrn_p16(poly16x4_t a, poly16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H            TRN2 Vd2.4H,Vn.4H,Vm.4H
-int32x2x2_t vtrn_s32(int32x2_t a, int32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S            TRN2 Vd2.2S,Vn.2S,Vm.2S
-float32x2x2_t vtrn_f32(float32x2_t a, float32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S            TRN2 Vd2.2S,Vn.2S,Vm.2S
-uint32x2x2_t vtrn_u32(uint32x2_t a, uint32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S            TRN2 Vd2.2S,Vn.2S,Vm.2S
-int8x16x2_t vtrnq_s8(int8x16_t a, int8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B            TRN2 Vd2.16B,Vn.16B,Vm.16B
-int16x8x2_t vtrnq_s16(int16x8_t a, int16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H            TRN2 Vd2.8H,Vn.8H,Vm.8H
-int32x4x2_t vtrnq_s32(int32x4_t a, int32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S            TRN2 Vd2.4S,Vn.4S,Vm.4S
-float32x4x2_t vtrnq_f32(float32x4_t a, float32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S            TRN2 Vd2.4S,Vn.4S,Vm.4S
-uint8x16x2_t vtrnq_u8(uint8x16_t a, uint8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B            TRN2 Vd2.16B,Vn.16B,Vm.16B
-uint16x8x2_t vtrnq_u16(uint16x8_t a, uint16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H            TRN2 Vd2.8H,Vn.8H,Vm.8H
-uint32x4x2_t vtrnq_u32(uint32x4_t a, uint32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S            TRN2 Vd2.4S,Vn.4S,Vm.4S
-poly8x16x2_t vtrnq_p8(poly8x16_t a, poly8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B            TRN2 Vd2.16B,Vn.16B,Vm.16B
-poly16x8x2_t vtrnq_p16(poly16x8_t a, poly16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H            TRN2 Vd2.8H,Vn.8H,Vm.8H
-int8x8x2_t vzip_s8(int8x8_t a, int8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B            ZIP2 Vd2.8B,Vn.8B,Vm.8B
-int16x4x2_t vzip_s16(int16x4_t a, int16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H            ZIP2 Vd2.4H,Vn.4H,Vm.4H
-uint8x8x2_t vzip_u8(uint8x8_t a, uint8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B            ZIP2 Vd2.8B,Vn.8B,Vm.8B
-uint16x4x2_t vzip_u16(uint16x4_t a, uint16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H            ZIP2 Vd2.4H,Vn.4H,Vm.4H
-poly8x8x2_t vzip_p8(poly8x8_t a, poly8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B            ZIP2 Vd2.8B,Vn.8B,Vm.8B
-poly16x4x2_t vzip_p16(poly16x4_t a, poly16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H            ZIP2 Vd2.4H,Vn.4H,Vm.4H
-int32x2x2_t vzip_s32(int32x2_t a, int32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S            ZIP2 Vd2.2S,Vn.2S,Vm.2S
-float32x2x2_t vzip_f32(float32x2_t a, float32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S            ZIP2 Vd2.2S,Vn.2S,Vm.2S
-uint32x2x2_t vzip_u32(uint32x2_t a, uint32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S            ZIP2 Vd2.2S,Vn.2S,Vm.2S
-int8x16x2_t vzipq_s8(int8x16_t a, int8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B            ZIP2 Vd2.16B,Vn.16B,Vm.16B
-int16x8x2_t vzipq_s16(int16x8_t a, int16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H            ZIP2 Vd2.8H,Vn.8H,Vm.8H
-int32x4x2_t vzipq_s32(int32x4_t a, int32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S            ZIP2 Vd2.4S,Vn.4S,Vm.4S
-float32x4x2_t vzipq_f32(float32x4_t a, float32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S            ZIP2 Vd2.4S,Vn.4S,Vm.4S
-uint8x16x2_t vzipq_u8(uint8x16_t a, uint8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B            ZIP2 Vd2.16B,Vn.16B,Vm.16B
-uint16x8x2_t vzipq_u16(uint16x8_t a, uint16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H            ZIP2 Vd2.8H,Vn.8H,Vm.8H
-uint32x4x2_t vzipq_u32(uint32x4_t a, uint32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S            ZIP2 Vd2.4S,Vn.4S,Vm.4S
-poly8x16x2_t vzipq_p8(poly8x16_t a, poly8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B            ZIP2 Vd2.16B,Vn.16B,Vm.16B
-poly16x8x2_t vzipq_p16(poly16x8_t a, poly16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H            ZIP2 Vd2.8H,Vn.8H,Vm.8H
-int8x8x2_t vuzp_s8(int8x8_t a, int8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B            UZP2 Vd2.8B,Vn.8B,Vm.8B
-int16x4x2_t vuzp_s16(int16x4_t a, int16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H            UZP2 Vd2.4H,Vn.4H,Vm.4H
-int32x2x2_t vuzp_s32(int32x2_t a, int32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S            UZP2 Vd2.2S,Vn.2S,Vm.2S
-float32x2x2_t vuzp_f32(float32x2_t a, float32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S            UZP2 Vd2.2S,Vn.2S,Vm.2S
-uint8x8x2_t vuzp_u8(uint8x8_t a, uint8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B            UZP2 Vd2.8B,Vn.8B,Vm.8B
-uint16x4x2_t vuzp_u16(uint16x4_t a, uint16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H            UZP2 Vd2.4H,Vn.4H,Vm.4H
-uint32x2x2_t vuzp_u32(uint32x2_t a, uint32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S            UZP2 Vd2.2S,Vn.2S,Vm.2S
-poly8x8x2_t vuzp_p8(poly8x8_t a, poly8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B            UZP2 Vd2.8B,Vn.8B,Vm.8B
-poly16x4x2_t vuzp_p16(poly16x4_t a, poly16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H            UZP2 Vd2.4H,Vn.4H,Vm.4H
-int8x16x2_t vuzpq_s8(int8x16_t a, int8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B            UZP2 Vd2.16B,Vn.16B,Vm.16B
-int16x8x2_t vuzpq_s16(int16x8_t a, int16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H            UZP2 Vd2.8H,Vn.8H,Vm.8H
-int32x4x2_t vuzpq_s32(int32x4_t a, int32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S            UZP2 Vd2.4S,Vn.4S,Vm.4S
-float32x4x2_t vuzpq_f32(float32x4_t a, float32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S            UZP2 Vd2.4S,Vn.4S,Vm.4S
-uint8x16x2_t vuzpq_u8(uint8x16_t a, uint8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B            UZP2 Vd2.16B,Vn.16B,Vm.16B
-uint16x8x2_t vuzpq_u16(uint16x8_t a, uint16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H            UZP2 Vd2.8H,Vn.8H,Vm.8H
-uint32x4x2_t vuzpq_u32(uint32x4_t a, uint32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S            UZP2 Vd2.4S,Vn.4S,Vm.4S
-poly8x16x2_t vuzpq_p8(poly8x16_t a, poly8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B            UZP2 Vd2.16B,Vn.16B,Vm.16B
-poly16x8x2_t vuzpq_p16(poly16x8_t a, poly16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H            UZP2 Vd2.8H,Vn.8H,Vm.8H
+int8x8x2_t vtrn_s8(int8x8_t a, int8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B; TRN2 Vd2.8B,Vn.8B,Vm.8B
+int16x4x2_t vtrn_s16(int16x4_t a, int16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H; TRN2 Vd2.4H,Vn.4H,Vm.4H
+uint8x8x2_t vtrn_u8(uint8x8_t a, uint8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B; TRN2 Vd2.8B,Vn.8B,Vm.8B
+uint16x4x2_t vtrn_u16(uint16x4_t a, uint16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H; TRN2 Vd2.4H,Vn.4H,Vm.4H
+poly8x8x2_t vtrn_p8(poly8x8_t a, poly8x8_t b); // TRN1 Vd1.8B,Vn.8B,Vm.8B; TRN2 Vd2.8B,Vn.8B,Vm.8B
+poly16x4x2_t vtrn_p16(poly16x4_t a, poly16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H; TRN2 Vd2.4H,Vn.4H,Vm.4H
+int32x2x2_t vtrn_s32(int32x2_t a, int32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S; TRN2 Vd2.2S,Vn.2S,Vm.2S
+float32x2x2_t vtrn_f32(float32x2_t a, float32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S; TRN2 Vd2.2S,Vn.2S,Vm.2S
+uint32x2x2_t vtrn_u32(uint32x2_t a, uint32x2_t b); // TRN1 Vd1.2S,Vn.2S,Vm.2S; TRN2 Vd2.2S,Vn.2S,Vm.2S
+int8x16x2_t vtrnq_s8(int8x16_t a, int8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B; TRN2 Vd2.16B,Vn.16B,Vm.16B
+int16x8x2_t vtrnq_s16(int16x8_t a, int16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H; TRN2 Vd2.8H,Vn.8H,Vm.8H
+int32x4x2_t vtrnq_s32(int32x4_t a, int32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S; TRN2 Vd2.4S,Vn.4S,Vm.4S
+float32x4x2_t vtrnq_f32(float32x4_t a, float32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S; TRN2 Vd2.4S,Vn.4S,Vm.4S
+uint8x16x2_t vtrnq_u8(uint8x16_t a, uint8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B; TRN2 Vd2.16B,Vn.16B,Vm.16B
+uint16x8x2_t vtrnq_u16(uint16x8_t a, uint16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H; TRN2 Vd2.8H,Vn.8H,Vm.8H
+uint32x4x2_t vtrnq_u32(uint32x4_t a, uint32x4_t b); // TRN1 Vd1.4S,Vn.4S,Vm.4S; TRN2 Vd2.4S,Vn.4S,Vm.4S
+poly8x16x2_t vtrnq_p8(poly8x16_t a, poly8x16_t b); // TRN1 Vd1.16B,Vn.16B,Vm.16B; TRN2 Vd2.16B,Vn.16B,Vm.16B
+poly16x8x2_t vtrnq_p16(poly16x8_t a, poly16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H; TRN2 Vd2.8H,Vn.8H,Vm.8H
+int8x8x2_t vzip_s8(int8x8_t a, int8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B; ZIP2 Vd2.8B,Vn.8B,Vm.8B
+int16x4x2_t vzip_s16(int16x4_t a, int16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H; ZIP2 Vd2.4H,Vn.4H,Vm.4H
+uint8x8x2_t vzip_u8(uint8x8_t a, uint8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B; ZIP2 Vd2.8B,Vn.8B,Vm.8B
+uint16x4x2_t vzip_u16(uint16x4_t a, uint16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H; ZIP2 Vd2.4H,Vn.4H,Vm.4H
+poly8x8x2_t vzip_p8(poly8x8_t a, poly8x8_t b); // ZIP1 Vd1.8B,Vn.8B,Vm.8B; ZIP2 Vd2.8B,Vn.8B,Vm.8B
+poly16x4x2_t vzip_p16(poly16x4_t a, poly16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H; ZIP2 Vd2.4H,Vn.4H,Vm.4H
+int32x2x2_t vzip_s32(int32x2_t a, int32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S; ZIP2 Vd2.2S,Vn.2S,Vm.2S
+float32x2x2_t vzip_f32(float32x2_t a, float32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S; ZIP2 Vd2.2S,Vn.2S,Vm.2S
+uint32x2x2_t vzip_u32(uint32x2_t a, uint32x2_t b); // ZIP1 Vd1.2S,Vn.2S,Vm.2S; ZIP2 Vd2.2S,Vn.2S,Vm.2S
+int8x16x2_t vzipq_s8(int8x16_t a, int8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B; ZIP2 Vd2.16B,Vn.16B,Vm.16B
+int16x8x2_t vzipq_s16(int16x8_t a, int16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H; ZIP2 Vd2.8H,Vn.8H,Vm.8H
+int32x4x2_t vzipq_s32(int32x4_t a, int32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S; ZIP2 Vd2.4S,Vn.4S,Vm.4S
+float32x4x2_t vzipq_f32(float32x4_t a, float32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S; ZIP2 Vd2.4S,Vn.4S,Vm.4S
+uint8x16x2_t vzipq_u8(uint8x16_t a, uint8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B; ZIP2 Vd2.16B,Vn.16B,Vm.16B
+uint16x8x2_t vzipq_u16(uint16x8_t a, uint16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H; ZIP2 Vd2.8H,Vn.8H,Vm.8H
+uint32x4x2_t vzipq_u32(uint32x4_t a, uint32x4_t b); // ZIP1 Vd1.4S,Vn.4S,Vm.4S; ZIP2 Vd2.4S,Vn.4S,Vm.4S
+poly8x16x2_t vzipq_p8(poly8x16_t a, poly8x16_t b); // ZIP1 Vd1.16B,Vn.16B,Vm.16B; ZIP2 Vd2.16B,Vn.16B,Vm.16B
+poly16x8x2_t vzipq_p16(poly16x8_t a, poly16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H; ZIP2 Vd2.8H,Vn.8H,Vm.8H
+int8x8x2_t vuzp_s8(int8x8_t a, int8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B; UZP2 Vd2.8B,Vn.8B,Vm.8B
+int16x4x2_t vuzp_s16(int16x4_t a, int16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H; UZP2 Vd2.4H,Vn.4H,Vm.4H
+int32x2x2_t vuzp_s32(int32x2_t a, int32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S; UZP2 Vd2.2S,Vn.2S,Vm.2S
+float32x2x2_t vuzp_f32(float32x2_t a, float32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S; UZP2 Vd2.2S,Vn.2S,Vm.2S
+uint8x8x2_t vuzp_u8(uint8x8_t a, uint8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B; UZP2 Vd2.8B,Vn.8B,Vm.8B
+uint16x4x2_t vuzp_u16(uint16x4_t a, uint16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H; UZP2 Vd2.4H,Vn.4H,Vm.4H
+uint32x2x2_t vuzp_u32(uint32x2_t a, uint32x2_t b); // UZP1 Vd1.2S,Vn.2S,Vm.2S; UZP2 Vd2.2S,Vn.2S,Vm.2S
+poly8x8x2_t vuzp_p8(poly8x8_t a, poly8x8_t b); // UZP1 Vd1.8B,Vn.8B,Vm.8B; UZP2 Vd2.8B,Vn.8B,Vm.8B
+poly16x4x2_t vuzp_p16(poly16x4_t a, poly16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H; UZP2 Vd2.4H,Vn.4H,Vm.4H
+int8x16x2_t vuzpq_s8(int8x16_t a, int8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B; UZP2 Vd2.16B,Vn.16B,Vm.16B
+int16x8x2_t vuzpq_s16(int16x8_t a, int16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H; UZP2 Vd2.8H,Vn.8H,Vm.8H
+int32x4x2_t vuzpq_s32(int32x4_t a, int32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S; UZP2 Vd2.4S,Vn.4S,Vm.4S
+float32x4x2_t vuzpq_f32(float32x4_t a, float32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S; UZP2 Vd2.4S,Vn.4S,Vm.4S
+uint8x16x2_t vuzpq_u8(uint8x16_t a, uint8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B; UZP2 Vd2.16B,Vn.16B,Vm.16B
+uint16x8x2_t vuzpq_u16(uint16x8_t a, uint16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H; UZP2 Vd2.8H,Vn.8H,Vm.8H
+uint32x4x2_t vuzpq_u32(uint32x4_t a, uint32x4_t b); // UZP1 Vd1.4S,Vn.4S,Vm.4S; UZP2 Vd2.4S,Vn.4S,Vm.4S
+poly8x16x2_t vuzpq_p8(poly8x16_t a, poly8x16_t b); // UZP1 Vd1.16B,Vn.16B,Vm.16B; UZP2 Vd2.16B,Vn.16B,Vm.16B
+poly16x8x2_t vuzpq_p16(poly16x8_t a, poly16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H; UZP2 Vd2.8H,Vn.8H,Vm.8H
 int16x4_t vreinterpret_s16_s8(int8x8_t a); // 
 int32x2_t vreinterpret_s32_s8(int8x8_t a); // 
 float32x2_t vreinterpret_f32_s8(int8x8_t a); // 
@@ -3819,7 +3819,7 @@ float16_t vrndxh_f16(float16_t a); // FRINTX Hd,Hn
 float16_t vrsqrteh_f16(float16_t a); // FRSQRTE Hd,Hn
 float16_t vsqrth_f16(float16_t a); // FSQRT Hd,Hn
 float16_t vaddh_f16(float16_t a, float16_t b); // FADD Hd,Hn,Hm
-float16_t vabdh_f16(float16_t a, float16_t b); // FABD (scalar) Hd,Hn,Hm
+float16_t vabdh_f16(float16_t a, float16_t b); // FABD Hd,Hn,Hm
 uint16_t vcageh_f16(float16_t a, float16_t b); // FACGE Hd,Hn,Hm
 uint16_t vcagth_f16(float16_t a, float16_t b); // FACGT Hd,Hn,Hm
 uint16_t vcaleh_f16(float16_t a, float16_t b); // FACGE Hd,Hn,Hm
@@ -4017,12 +4017,12 @@ float16_t vminnmv_f16(float16x4_t a); // FMINNMP Hd,Vn.4H
 float16_t vminnmvq_f16(float16x8_t a); // FMINNMP Hd,Vn.8H
 float16x4_t vbsl_f16(uint16x4_t a, float16x4_t b, float16x4_t c); // BSL Vd.8B,Vn.8B,Vm.8B
 float16x8_t vbslq_f16(uint16x8_t a, float16x8_t b, float16x8_t c); // BSL Vd.16B,Vn.16B,Vm.16B
-float16x4x2_t vzip_f16(float16x4_t a, float16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H            ZIP2 Vd2.4H,Vn.4H,Vm.4H
-float16x8x2_t vzipq_f16(float16x8_t a, float16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H            ZIP2 Vd2.8H,Vn.8H,Vm.8H
-float16x4x2_t vuzp_f16(float16x4_t a, float16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H            UZP2 Vd2.4H,Vn.4H,Vm.4H
-float16x8x2_t vuzpq_f16(float16x8_t a, float16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H            UZP2 Vd2.8H,Vn.8H,Vm.8H
-float16x4x2_t vtrn_f16(float16x4_t a, float16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H            TRN2 Vd2.4H,Vn.4H,Vm.4H
-float16x8x2_t vtrnq_f16(float16x8_t a, float16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H            TRN2 Vd2.8H,Vn.8H,Vm.8H
+float16x4x2_t vzip_f16(float16x4_t a, float16x4_t b); // ZIP1 Vd1.4H,Vn.4H,Vm.4H; ZIP2 Vd2.4H,Vn.4H,Vm.4H
+float16x8x2_t vzipq_f16(float16x8_t a, float16x8_t b); // ZIP1 Vd1.8H,Vn.8H,Vm.8H; ZIP2 Vd2.8H,Vn.8H,Vm.8H
+float16x4x2_t vuzp_f16(float16x4_t a, float16x4_t b); // UZP1 Vd1.4H,Vn.4H,Vm.4H; UZP2 Vd2.4H,Vn.4H,Vm.4H
+float16x8x2_t vuzpq_f16(float16x8_t a, float16x8_t b); // UZP1 Vd1.8H,Vn.8H,Vm.8H; UZP2 Vd2.8H,Vn.8H,Vm.8H
+float16x4x2_t vtrn_f16(float16x4_t a, float16x4_t b); // TRN1 Vd1.4H,Vn.4H,Vm.4H; TRN2 Vd2.4H,Vn.4H,Vm.4H
+float16x8x2_t vtrnq_f16(float16x8_t a, float16x8_t b); // TRN1 Vd1.8H,Vn.8H,Vm.8H; TRN2 Vd2.8H,Vn.8H,Vm.8H
 float16x4_t vmov_n_f16(float16_t value); // DUP Vd.4H,rn
 float16x8_t vmovq_n_f16(float16_t value); // DUP Vd.8H,rn
 float16x4_t vdup_n_f16(float16_t value); // DUP Vd.4H,rn
@@ -4131,8 +4131,8 @@ float32x2_t vcmla_f32(float32x2_t r, float32x2_t a, float32x2_t b); // FCMLA Vd.
 float16x4_t vcmla_lane_f16(float16x4_t r, float16x4_t a, float16x4_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#0
 float32x2_t vcmla_lane_f32(float32x2_t r, float32x2_t a, float32x2_t b, const int lane); // FCMLA Vd.2S,Vn.2S,Vm.2S,#0
 float16x4_t vcmla_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#0
-float16x4_t vcmla_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#0
-float32x2_t vcmla_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.2S,Vn.2S,Vm.2S,#0
+float16x4_t vcmla_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#0
+float32x2_t vcmla_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.2S,Vn.2S,Vm.2S,#0
 float16x8_t vcmlaq_f16(float16x8_t r, float16x8_t a, float16x8_t b); // FCMLA Vd.8H,Vn.8H,Vm.8H,#0
 float32x4_t vcmlaq_f32(float32x4_t r, float32x4_t a, float32x4_t b); // FCMLA Vd.4S,Vn.4S,Vm.4S,#0
 float64x2_t vcmlaq_f64(float64x2_t r, float64x2_t a, float64x2_t b); // FCMLA Vd.2D,Vn.2D,Vm.2D,#0
@@ -4145,8 +4145,8 @@ float32x2_t vcmla_rot90_f32(float32x2_t r, float32x2_t a, float32x2_t b); // FCM
 float16x4_t vcmla_rot90_lane_f16(float16x4_t r, float16x4_t a, float16x4_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#90
 float32x2_t vcmla_rot90_lane_f32(float32x2_t r, float32x2_t a, float32x2_t b, const int lane); // FCMLA Vd.2S,Vn.2S,Vm.2S,#90
 float16x4_t vcmla_rot90_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#90
-float16x4_t vcmla_rot90_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#90
-float32x2_t vcmla_rot90_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.2S,Vn.2S,Vm.2S,#90
+float16x4_t vcmla_rot90_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#90
+float32x2_t vcmla_rot90_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.2S,Vn.2S,Vm.2S,#90
 float16x8_t vcmlaq_rot90_f16(float16x8_t r, float16x8_t a, float16x8_t b); // FCMLA Vd.8H,Vn.8H,Vm.8H,#90
 float32x4_t vcmlaq_rot90_f32(float32x4_t r, float32x4_t a, float32x4_t b); // FCMLA Vd.4S,Vn.4S,Vm.4S,#90
 float64x2_t vcmlaq_rot90_f64(float64x2_t r, float64x2_t a, float64x2_t b); // FCMLA Vd.2D,Vn.2D,Vm.2D,#90
@@ -4159,8 +4159,8 @@ float32x2_t vcmla_rot180_f32(float32x2_t r, float32x2_t a, float32x2_t b); // FC
 float16x4_t vcmla_rot180_lane_f16(float16x4_t r, float16x4_t a, float16x4_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
 float32x2_t vcmla_rot180_lane_f32(float32x2_t r, float32x2_t a, float32x2_t b, const int lane); // FCMLA Vd.2S,Vn.2S,Vm.2S,#180
 float16x4_t vcmla_rot180_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
-float16x4_t vcmla_rot180_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#180
-float32x2_t vcmla_rot180_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.2S,Vn.2S,Vm.2S,#180
+float16x4_t vcmla_rot180_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#180
+float32x2_t vcmla_rot180_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.2S,Vn.2S,Vm.2S,#180
 float16x8_t vcmlaq_rot180_f16(float16x8_t r, float16x8_t a, float16x8_t b); // FCMLA Vd.8H,Vn.8H,Vm.8H,#180
 float32x4_t vcmlaq_rot180_f32(float32x4_t r, float32x4_t a, float32x4_t b); // FCMLA Vd.4S,Vn.4S,Vm.4S,#180
 float64x2_t vcmlaq_rot180_f64(float64x2_t r, float64x2_t a, float64x2_t b); // FCMLA Vd.2D,Vn.2D,Vm.2D,#180
@@ -4173,8 +4173,8 @@ float32x2_t vcmla_rot270_f32(float32x2_t r, float32x2_t a, float32x2_t b); // FC
 float16x4_t vcmla_rot270_lane_f16(float16x4_t r, float16x4_t a, float16x4_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#270
 float32x2_t vcmla_rot270_lane_f32(float32x2_t r, float32x2_t a, float32x2_t b, const int lane); // FCMLA Vd.2S,Vn.2S,Vm.2S,#270
 float16x4_t vcmla_rot270_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#270
-float16x4_t vcmla_rot270_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#270
-float32x2_t vcmla_rot270_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]            FCMLA Vd.2S,Vn.2S,Vm.2S,#270
+float16x4_t vcmla_rot270_laneq_f16(float16x4_t r, float16x4_t a, float16x8_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.4H,Vn.4H,Vm.H[lane % 2],#270
+float32x2_t vcmla_rot270_laneq_f32(float32x2_t r, float32x2_t a, float32x4_t b, const int lane); // DUP Dm,Vm.D[1]; FCMLA Vd.2S,Vn.2S,Vm.2S,#270
 float16x8_t vcmlaq_rot270_f16(float16x8_t r, float16x8_t a, float16x8_t b); // FCMLA Vd.8H,Vn.8H,Vm.8H,#270
 float32x4_t vcmlaq_rot270_f32(float32x4_t r, float32x4_t a, float32x4_t b); // FCMLA Vd.4S,Vn.4S,Vm.4S,#270
 float64x2_t vcmlaq_rot270_f64(float64x2_t r, float64x2_t a, float64x2_t b); // FCMLA Vd.2D,Vn.2D,Vm.2D,#270
@@ -4218,7 +4218,7 @@ bfloat16x4_t vdup_lane_bf16(bfloat16x4_t vec, const int lane); // DUP Vd.4H,Vn.H
 bfloat16x8_t vdupq_lane_bf16(bfloat16x4_t vec, const int lane); // DUP Vd.8H,Vn.H[lane]
 bfloat16x4_t vdup_laneq_bf16(bfloat16x8_t vec, const int lane); // DUP Vd.4H,Vn.H[lane]
 bfloat16x8_t vdupq_laneq_bf16(bfloat16x8_t vec, const int lane); // DUP Vd.8H,Vn.H[lane]
-bfloat16x8_t vcombine_bf16(bfloat16x4_t low, bfloat16x4_t high); // DUP Vd.1D,Vn.D[0]            INS Vd.D[1],Vm.D[0]
+bfloat16x8_t vcombine_bf16(bfloat16x4_t low, bfloat16x4_t high); // DUP Vd.1D,Vn.D[0]; INS Vd.D[1],Vm.D[0]
 bfloat16x4_t vget_high_bf16(bfloat16x8_t a); // DUP Vd.1D,Vn.D[1]
 bfloat16x4_t vget_low_bf16(bfloat16x8_t a); // DUP Vd.1D,Vn.D[0]
 bfloat16_t vget_lane_bf16(bfloat16x4_t v, const int lane); // DUP Hd,Vn.H[lane]
