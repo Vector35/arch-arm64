@@ -5222,10 +5222,10 @@ string NeonGetIntrinsicName(uint32_t intrinsic)
 
 vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 {
-
+	return {};
 }
 
 vector<NameAndType> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 {
-
+	return {};
 }

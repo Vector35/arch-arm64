@@ -2,10 +2,10 @@
 
 #include <vector>
 #include <string>
-using namespace std;
 
 #include "il.h" /* for ARM64_INTRIN_NORMAL_END */
 
+using namespace std;
 using namespace BinaryNinja;
 
 enum NeonIntrinsic : uint32_t
