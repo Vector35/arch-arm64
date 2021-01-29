@@ -62,6 +62,33 @@ def get_write_size(asig):
 
 	return get_reg_size(reg0)
 
+def neon_type_to_binja_types(ntype):
+	# remove pointer
+	if ntype.endswith(' *'):
+		ntype = ntype[0:-2]
+
+	binja_type = 'Float' if 'float' in ntype else 'Int'
+
+	# multiple packed, eg: "uint8x8x2_t"
+	m = re.match(r'^(\w+?)(\d+)x(\d+)x(\d+)_t$', ntype)
+	if m:
+		(base, bit_width, npacked, nregs) = m.group(1,2,3, 4)
+		return ['Type::%sType(%d)' % (binja_type, int(bit_width)*int(npacked)/8)]*int(nregs)
+
+	# packed in registers, eg: "int8x8_t"
+	m = re.match(r'^(\w+?)(\d+)x(\d+)_t$', ntype)
+	if m:
+		(base, bit_width, npacked) = m.group(1,2,3)
+		return ['Type::%sType(%d)' % (binja_type, int(bit_width)*int(npacked)/8)]
+
+	# simple, eg: "int8_t"
+	m = re.match(r'^(\w+?)(\d+)_t$', ntype)
+	if m:
+		(base, bit_width) = m.group(1,2)
+		return ['Type::%sType(%d)' % (binja_type, int(bit_width)/8)]
+
+	print('cannot convert neon type %s into binja type' % ntype)
+
 if __name__ == '__main__':
 	# parse neon_intrins.c into a "database"
 	with open('neon_intrins.c') as fp:
@@ -96,6 +123,7 @@ if __name__ == '__main__':
 		              'define': 'ARM64_INTRIN_%s' % fname.upper(),
 		              'write_type': write_type,
 		              'read_types': read_types,
+		              'output_types': neon_type_to_binja_types(write_type),
 		              'skip': skip}
 
 	cmd = sys.argv[1]
@@ -130,25 +158,17 @@ if __name__ == '__main__':
 		pass
 
 	elif cmd in ['output', 'outputs']:
-		size_to_cases = {}
-
 		# for GetIntrinsicOutputs()
-		for i in range(len(intrin_defines)):
-			asig = intrin_asigs[i]
-			if not asig: continue
 
-			fsig = intrin_
-			reg_dest = get_destination_reg(asig)
-			wsize = get_write_size(asig)
+		# collect all unique write types
+		wtstrs = set(str(db[x]['output_types']) for x in db)
 
-			if not wsize in size_to_cases:
-				size_to_cases[wsize] = []
+		# for each write type
+		for wtstr in sorted(wtstrs):
+			fnames = [x for x in db if str(db[x]['output_types']) == wtstr]
 
-			#size_to_cases[wsize].append('case %s: // writes %s (%d bytes)' % (intrin_defines[i], reg_dest, wsize))
-			size_to_cases[wsize].append('case %s:' % intrin_defines[i])
+			# print cases in the db that have the same type
+			for fname in fnames:
+				print('\t\tcase %s: // %s' % (db[fname]['define'], db[fname]['write_type']))
 
-		for size in sorted(size_to_cases):
-			for case in size_to_cases[size]:
-				print('\t\t%s' % case)
-
-			print('\t\t\treturn {Type::IntegerType(%d, false)};' % size)
+			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['output_types'])))
