@@ -64,10 +64,16 @@ def get_write_size(asig):
 
 def neon_type_to_binja_types(ntype):
 	# remove pointer
+	if ntype.endswith(' const *'):
+		ntype = ntype[0:-8]
 	if ntype.endswith(' *'):
 		ntype = ntype[0:-2]
 
 	binja_type = 'Float' if 'float' in ntype else 'Int'
+
+	# int (for lane or immediate)
+	if ntype == 'int':
+		return ['Type::IntegerType(4)']
 
 	# multiple packed, eg: "uint8x8x2_t"
 	m = re.match(r'^(\w+?)(\d+)x(\d+)x(\d+)_t$', ntype)
@@ -88,6 +94,22 @@ def neon_type_to_binja_types(ntype):
 		return ['Type::%sType(%d)' % (binja_type, int(bit_width)/8)]
 
 	print('cannot convert neon type %s into binja type' % ntype)
+	sys.exit(-1)
+
+# given an intrinsic's name, argument types, and return type, compute
+# the binja intrinsic input types
+def resolve_input_types(name, arg_types, return_type):
+	result = []
+
+	for at in arg_types:
+		if at.endswith(' *'):
+			# eg: int32x4x2_t vld2q_s32(int32_t const * ptr);
+			assert 'ld' in name
+			result.extend(neon_type_to_binja_types(return_type))
+		else:
+			result.extend(neon_type_to_binja_types(at))
+
+	return result
 
 if __name__ == '__main__':
 	# parse neon_intrins.c into a "database"
@@ -107,14 +129,15 @@ if __name__ == '__main__':
 		args = re.match(r'^\w+ \w+\((.*)\)$', fsig).group(1).split(', ')
 		args = [re.match(r'^(.*) \w+$', arg).group(1) for arg in args]
 		args = [x[6:] if x.startswith('const ') else x for x in args]
-		(write_type, read_types) = (None, None)
+
+		(write_type, arg_types) = (None, None)
 		if rtype == 'void':
 			assert 'st' in fname and 'ST' in asig and '*' in args[0]
 			write_type = args[0]
-			read_types = args[1:]
+			arg_types = args[1:]
 		else:
 			write_type = rtype
-			read_types = args
+			arg_types = args
 
 		skip = asig.startswith('RESULT[') # array-like looping not yet supported
 
@@ -122,8 +145,9 @@ if __name__ == '__main__':
 		              'asig': asig,
 		              'define': 'ARM64_INTRIN_%s' % fname.upper(),
 		              'write_type': write_type,
-		              'read_types': read_types,
+		              'arg_types': arg_types,
 		              'output_types': neon_type_to_binja_types(write_type),
+		              'input_types': resolve_input_types(fname, arg_types, rtype),
 		              'skip': skip}
 
 	cmd = sys.argv[1]
@@ -155,7 +179,21 @@ if __name__ == '__main__':
 			i += 3
 
 	elif cmd in ['input', 'inputs']:
-		pass
+		# for GetIntrinsicInputs()
+
+		# collect all unique write types
+		rtstrs = set(str(db[x]['input_types']) for x in db)
+
+		# for each write type
+		for rtstr in sorted(rtstrs):
+			fnames = [x for x in db if str(db[x]['input_types']) == rtstr]
+
+			# print cases in the db that have the same type
+			for fname in fnames:
+				print('\t\tcase %s:' % (db[fname]['define']))
+				#print('\t\tcase %s: // %s' % (db[fname]['define'], db[fname]['arg_types']))
+
+			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['input_types'])))	
 
 	elif cmd in ['output', 'outputs']:
 		# for GetIntrinsicOutputs()
