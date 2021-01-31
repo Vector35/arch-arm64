@@ -62,7 +62,7 @@ def get_write_size(asig):
 
 	return get_reg_size(reg0)
 
-def neon_type_to_binja_types(ntype):
+def type_to_binja_types(ntype):
 	# remove pointer
 	if ntype.endswith(' const *'):
 		ntype = ntype[0:-8]
@@ -104,7 +104,7 @@ def resolve_input_types(name, arg_types, return_type):
 	for at in arg_types:
 		if at.endswith(' *'):
 			# eg: int32x4x2_t vld2q_s32(int32_t const * ptr);
-			assert 'ld' in name
+			assert ('ld' in name) or ('st' in name)
 			result.extend(neon_type_to_binja_types(return_type))
 		else:
 			result.extend(neon_type_to_binja_types(at))
@@ -120,35 +120,59 @@ if __name__ == '__main__':
 
 	for l in lines:
 		if 'reinterpret' in l: continue
+		if 'RESULT[' in l: continue
 		(fsig, asig) = l.split('; // ')
 
 		m = re.match(r'^(\w+) (\w+)\(.', fsig)
 		(rtype, fname) = m.group(1, 2)
 		if fname in db: continue
 
-		args = re.match(r'^\w+ \w+\((.*)\)$', fsig).group(1).split(', ')
-		args = [re.match(r'^(.*) \w+$', arg).group(1) for arg in args]
-		args = [x[6:] if x.startswith('const ') else x for x in args]
+		operands = re.match(r'^\w+? (.*)$', asig).group(1).split(',')
+		input_operands = operands[1:]
 
-		(write_type, arg_types) = (None, None)
+		func_arg_types = re.match(r'^\w+ \w+\((.*)\)$', fsig).group(1).split(', ')
+		func_arg_types = [re.match(r'^(.*) \w+$', arg).group(1) for arg in func_arg_types]
+		func_arg_types = [x[6:] if x.startswith('const ') else x for x in func_arg_types]
+
+		# resolve output operands
+		output_operand = operands[0]
 		if rtype == 'void':
-			assert 'st' in fname and 'ST' in asig and '*' in args[0]
-			write_type = args[0]
-			arg_types = args[1:]
+			assert 'st' in fname and 'ST' in asig and '*' in func_arg_types[0]
+			output_type = func_arg_types[0]
 		else:
-			write_type = rtype
-			arg_types = args
+			output_type = rtype
+
+		# resolve input operands
+		input_operands = operands[1:]
+		if rtype == 'void':
+			input_types = func_arg_types[1:]
+		else:
+			input_types = func_arg_types
+
+		# resolve binja output types
+		binja_output_types = type_to_binja_types(output_type)
+
+		# resolve binja input types
+		binja_input_types = []
+		for it in input_types:
+			binja_input_types.extend(type_to_binja_types(it))
 
 		skip = asig.startswith('RESULT[') # array-like looping not yet supported
 
-		db[fname] = { 'fsig': fsig,
+		db[fname] = OrderedDict({
+			          'fsig': fsig,
 		              'asig': asig,
 		              'define': 'ARM64_INTRIN_%s' % fname.upper(),
-		              'write_type': write_type,
-		              'arg_types': arg_types,
-		              'output_types': neon_type_to_binja_types(write_type),
-		              'input_types': resolve_input_types(fname, arg_types, rtype),
-		              'skip': skip}
+		              'operation': 'ARM64_' + asig.split(' ')[0],
+		              'output_type': output_type,
+		              'output_operand': output_operand,
+		              'input_types': input_types,
+		              'input_operands' : input_operands,
+		              'binja_input_types': binja_input_types,
+		              'binja_output_types': binja_output_types,
+		              'operands_n': len(operands),
+		              'skip': skip
+		           })
 
 	cmd = sys.argv[1]
 
@@ -182,31 +206,56 @@ if __name__ == '__main__':
 		# for GetIntrinsicInputs()
 
 		# collect all unique write types
-		rtstrs = set(str(db[x]['input_types']) for x in db)
+		rtstrs = set(str(db[x]['binja_input_types']) for x in db)
 
 		# for each write type
 		for rtstr in sorted(rtstrs):
-			fnames = [x for x in db if str(db[x]['input_types']) == rtstr]
+			fnames = [x for x in db if str(db[x]['binja_input_types']) == rtstr]
 
 			# print cases in the db that have the same type
 			for fname in fnames:
 				print('\t\tcase %s:' % (db[fname]['define']))
-				#print('\t\tcase %s: // %s' % (db[fname]['define'], db[fname]['arg_types']))
 
-			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['input_types'])))	
+			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['binja_input_types'])))
 
 	elif cmd in ['output', 'outputs']:
 		# for GetIntrinsicOutputs()
 
 		# collect all unique write types
-		wtstrs = set(str(db[x]['output_types']) for x in db)
+		wtstrs = set(str(db[x]['binja_output_types']) for x in db)
 
 		# for each write type
 		for wtstr in sorted(wtstrs):
-			fnames = [x for x in db if str(db[x]['output_types']) == wtstr]
+			fnames = [x for x in db if str(db[x]['binja_output_types']) == wtstr]
 
 			# print cases in the db that have the same type
 			for fname in fnames:
-				print('\t\tcase %s: // %s' % (db[fname]['define'], db[fname]['write_type']))
+				print('\t\tcase %s:' % (db[fname]['define']))
 
-			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['output_types'])))
+			print('\t\t\treturn {%s};' % (', '.join(db[fnames[0]]['binja_output_types'])))
+
+	elif cmd in ['implementation', 'code']:
+		# expects:
+		# std::vector<RegisterOrFlag> outputs
+		# std::vector<ExprId> inputs
+		for fname in db:
+			entry = db[fname]
+			if entry['skip']: continue
+
+			print('\t\tcase %s:' % entry['operation'])
+			print('\t\t{')
+			print('\t\t\t// fsig: %s' % entry['fsig'])
+			print('\t\t\t// asig: %s' % entry['asig'])
+			print('\t\t\t// operands_n: %d' % entry['operands_n'])
+			print('\t\t\tadd_output(outputs, oper0, inst, INTRIN_TYPE_HINT_%s);' % (' '.join(entry['binja_output_types']).upper()))
+			for i in range(0, len(entry['binja_input_types'])):
+				print('\t\t\tadd_input(inputs, oper%d, inst, INTRIN_TYPE_HINT_%s);' % (i+1, entry['binja_input_types'][i].upper()))
+			print('\t\t\til.AddInstruction(il.Intrinsic(outputs, %s, inputs));' % entry['define'])
+			print('\t\t}')
+			print('\t\tbreak;')
+
+	elif cmd in ['test']:
+		for fname in db:
+			entry = db[fname]
+
+			if len(entry['input_types']
