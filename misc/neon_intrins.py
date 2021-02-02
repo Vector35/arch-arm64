@@ -123,55 +123,26 @@ if __name__ == '__main__':
 		if 'RESULT[' in l: continue
 		(fsig, asig) = l.split('; // ')
 
-		m = re.match(r'^(\w+) (\w+)\(.', fsig)
-		(rtype, fname) = m.group(1, 2)
+		# function name
+		m = re.match(r'^(\w+) (\w+)\((.*)\)$', fsig)
+		fname = m.group(2)
 		if fname in db: continue
+		if asig.startswith('RESULT['): continue
 
-		operands = re.match(r'^\w+? (.*)$', asig).group(1).split(',')
-		input_operands = operands[1:]
+		# function arguments
+		fargs = [m.group(1)] + m.group(3).split(', ')
+		fargs = [x.replace('const ', '') for x in fargs]
 
-		func_arg_types = re.match(r'^\w+ \w+\((.*)\)$', fsig).group(1).split(', ')
-		func_arg_types = [re.match(r'^(.*) \w+$', arg).group(1) for arg in func_arg_types]
-		func_arg_types = [x[6:] if x.startswith('const ') else x for x in func_arg_types]
-
-		# resolve output operands
-		output_operand = operands[0]
-		if rtype == 'void':
-			assert 'st' in fname and 'ST' in asig and '*' in func_arg_types[0]
-			output_type = func_arg_types[0]
-		else:
-			output_type = rtype
-
-		# resolve input operands
-		input_operands = operands[1:]
-		if rtype == 'void':
-			input_types = func_arg_types[1:]
-		else:
-			input_types = func_arg_types
-
-		# resolve binja output types
-		binja_output_types = type_to_binja_types(output_type)
-
-		# resolve binja input types
-		binja_input_types = []
-		for it in input_types:
-			binja_input_types.extend(type_to_binja_types(it))
-
-		skip = asig.startswith('RESULT[') # array-like looping not yet supported
+		(operation, operands) = re.match(r'^(\w+?) (.*)$', asig).group(1, 2)
+		operands = operands.split(',')
 
 		db[fname] = OrderedDict({
 			          'fsig': fsig,
 		              'asig': asig,
 		              'define': 'ARM64_INTRIN_%s' % fname.upper(),
-		              'operation': 'ARM64_' + asig.split(' ')[0],
-		              'output_type': output_type,
-		              'output_operand': output_operand,
-		              'input_types': input_types,
-		              'input_operands' : input_operands,
-		              'binja_input_types': binja_input_types,
-		              'binja_output_types': binja_output_types,
-		              'operands_n': len(operands),
-		              'skip': skip
+		              'operation': 'ARM64_' + operation,
+		              'fargs': fargs,
+		              'operands': operands,
 		           })
 
 	cmd = sys.argv[1]
@@ -240,7 +211,6 @@ if __name__ == '__main__':
 		# std::vector<ExprId> inputs
 		for fname in db:
 			entry = db[fname]
-			if entry['skip']: continue
 
 			print('\t\tcase %s:' % entry['operation'])
 			print('\t\t{')
@@ -257,5 +227,35 @@ if __name__ == '__main__':
 	elif cmd in ['test']:
 		for fname in db:
 			entry = db[fname]
+			fargs = entry['fargs']
+			operands = entry['operands']
 
-			if len(entry['input_types']
+			print(entry['operation'])
+			print('fsig: %s' % entry['fsig'])
+			print('asig: %s' % entry['asig'])
+			print('fargs: %s' % fargs)
+			print('operands: %s' % operands)
+
+			# convert OPERATION X,Y,Z[lane] ->
+			#         OPERATION X,Y,Z,Z[lane]
+#			tmp = []
+#			for o in operands:
+#				m = re.match(r'^(.*)\[lane\d*\]$', o)
+#				if m:
+#					tmp.append(m.group(1))
+#					tmp.append('lane(%s)' % m.group(1))
+#				else:
+#					tmp.append(o)
+#			operands = tmp
+			# convert OPERATION X,Y,#0 ->
+			#         OPERATION X,Y
+			if re.match(r'^#\d+$', operands[-1]):
+				operands = operands[:-1]
+			#
+			if len(fargs) == len(operands)+1:
+				operands = [operands[0]] + operands
+
+			if len(operands) != len(fargs):
+				print('cant reconcile fargs and operands')
+				if not 'vcopy' in entry['fsig']:
+					sys.exit(-1)

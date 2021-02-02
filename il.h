@@ -83,3 +83,6 @@ bool GetLowLevelILForInstruction(
 		BinaryNinja::LowLevelILFunction& il,
 		Instruction& instr,
 		size_t addrSize);
+
+BinaryNinja::ExprId ExtractRegister(BinaryNinja::LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize);
+

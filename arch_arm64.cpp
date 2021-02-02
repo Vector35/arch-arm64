@@ -1013,8 +1013,10 @@ public:
 		case ARM64_INTRIN_AESE:
 			return {NameAndType(Type::IntegerType(16, false)), NameAndType(Type::IntegerType(16, false))};
 		default:
-			return vector<NameAndType>();
+			break;
 		}
+
+		return NeonGetIntrinsicInputs(intrinsic);
 	}
 
 
@@ -1040,7 +1042,7 @@ public:
 		case ARM64_INTRIN_PACDZA: // writes <Xd>
 		case ARM64_INTRIN_PACDZB: // writes <Xd>
 		case ARM64_INTRIN_PACIA: // writes <Xd>
-		case ARM64_INTRIN_PACGA: // writres <Xd>
+		case ARM64_INTRIN_PACGA: // writes <Xd>
 		case ARM64_INTRIN_PACIA1716: // writes x17
 		case ARM64_INTRIN_PACIASP: // writes x30
 		case ARM64_INTRIN_PACIAZ: // writes x30
@@ -1061,8 +1063,10 @@ public:
 		case ARM64_INTRIN_AESE:
 			return {Type::IntegerType(16, false)};
 		default:
-			return vector<Confidence<Ref<Type>>>();
+			break;
 		}
+
+		return NeonGetIntrinsicOutputs(intrinsic);
 	}
 
 

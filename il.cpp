@@ -5,6 +5,7 @@
 
 #include "sysregs.h"
 #include "il.h"
+#include "neon_intrinsics.h"
 
 using namespace BinaryNinja;
 
@@ -82,7 +83,7 @@ static void GenIfElse(LowLevelILFunction& il, ExprId clause, ExprId trueCase, Ex
 }
 
 
-static ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
+ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
 {
 	size_t opsz = get_register_size(operand.reg[regNum]);
 
@@ -898,6 +899,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	InstructionOperand& operand2 = instr.operands[1];
 	InstructionOperand& operand3 = instr.operands[2];
 	InstructionOperand& operand4 = instr.operands[3];
+
+	int n_instrs_before = il.GetInstructionCount();
 
 	LowLevelILLabel trueLabel, falseLabel;
 	switch (instr.operation)
@@ -1815,8 +1818,16 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
 		break;
 	default:
-		il.AddInstruction(il.Unimplemented());
 		break;
 	}
+
+	if(il.GetInstructionCount() > n_instrs_before)
+		return true;
+
+	NeonGetLowLevelILForInstruction(arch, addr, il, instr, addrSize);
+	if(il.GetInstructionCount() > n_instrs_before)
+		return true;
+
+	il.AddInstruction(il.Unimplemented());
 	return true;
 }
