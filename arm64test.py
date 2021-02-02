@@ -2,6 +2,65 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_sha = [
+	# sha1c q13, s7, v27.4s
+	(b'\xED\x00\x1B\x5E', 'LLIL_INTRINSIC([q13],vsha1cq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.d(s7),LLIL_REG.o(v27)]))'),
+	# sha1c q20, s15, v13.4s
+	(b'\xF4\x01\x0D\x5E', 'LLIL_INTRINSIC([q20],vsha1cq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q20),LLIL_REG.d(s15),LLIL_REG.o(v13)]))'),
+	# sha1h s27, s21
+	(b'\xBB\x0A\x28\x5E', 'LLIL_INTRINSIC([s27],vsha1h_u32,LLIL_CALL_PARAM([LLIL_REG.d(s21)]))'),
+	# sha1h s7, s9
+	(b'\x27\x09\x28\x5E', 'LLIL_INTRINSIC([s7],vsha1h_u32,LLIL_CALL_PARAM([LLIL_REG.d(s9)]))'),
+	# sha1m q3, s31, v10.4s
+	(b'\xE3\x23\x0A\x5E', 'LLIL_INTRINSIC([q3],vsha1mq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q3),LLIL_REG.d(s31),LLIL_REG.o(v10)]))'),
+	# sha1m q26, s2, v6.4s
+	(b'\x5A\x20\x06\x5E', 'LLIL_INTRINSIC([q26],vsha1mq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q26),LLIL_REG.d(s2),LLIL_REG.o(v6)]))'),
+	# sha1p q15, s15, v19.4s
+	(b'\xEF\x11\x13\x5E', 'LLIL_INTRINSIC([q15],vsha1pq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q15),LLIL_REG.d(s15),LLIL_REG.o(v19)]))'),
+	# sha1p q16, s31, v18.4s
+	(b'\xF0\x13\x12\x5E', 'LLIL_INTRINSIC([q16],vsha1pq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q16),LLIL_REG.d(s31),LLIL_REG.o(v18)]))'),
+	# sha1su0 v31.4s, v30.4s, v5.4s
+	(b'\xDF\x33\x05\x5E', 'LLIL_INTRINSIC([v31],vsha1su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v31),LLIL_REG.o(v30),LLIL_REG.o(v5)]))'),
+	# sha1su0 v16.4s, v16.4s, v31.4s
+	(b'\x10\x32\x1F\x5E', 'LLIL_INTRINSIC([v16],vsha1su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v16),LLIL_REG.o(v16),LLIL_REG.o(v31)]))'),
+	# sha1su1 v13.4s, v19.4s
+	(b'\x6D\x1A\x28\x5E', 'LLIL_INTRINSIC([v13],vsha1su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v19)]))'),
+	# sha1su1 v29.4s, v0.4s
+	(b'\x1D\x18\x28\x5E', 'LLIL_INTRINSIC([v29],vsha1su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v29),LLIL_REG.o(v0)]))'),
+	# sha256h2 q21, q29, v18.4s
+	(b'\xB5\x53\x12\x5E', 'LLIL_INTRINSIC([q21],vsha256h2q_u32,LLIL_CALL_PARAM([LLIL_REG.o(q21),LLIL_REG.o(q29),LLIL_REG.o(v18)]))'),
+	# sha256h2 q2, q9, v4.4s
+	(b'\x22\x51\x04\x5E', 'LLIL_INTRINSIC([q2],vsha256h2q_u32,LLIL_CALL_PARAM([LLIL_REG.o(q2),LLIL_REG.o(q9),LLIL_REG.o(v4)]))'),
+	# sha256h q7, q0, v30.4s
+	(b'\x07\x40\x1E\x5E', 'LLIL_INTRINSIC([q7],vsha256hq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q7),LLIL_REG.o(q0),LLIL_REG.o(v30)]))'),
+	# sha256h q16, q11, v4.4s
+	(b'\x70\x41\x04\x5E', 'LLIL_INTRINSIC([q16],vsha256hq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q16),LLIL_REG.o(q11),LLIL_REG.o(v4)]))'),
+	# sha256su0 v9.4s, v11.4s
+	(b'\x69\x29\x28\x5E', 'LLIL_INTRINSIC([v9],vsha256su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v9),LLIL_REG.o(v11)]))'),
+	# sha256su0 v24.4s, v26.4s
+	(b'\x58\x2B\x28\x5E', 'LLIL_INTRINSIC([v24],vsha256su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24),LLIL_REG.o(v26)]))'),
+	# sha256su1 v13.4s, v17.4s, v12.4s
+	(b'\x2D\x62\x0C\x5E', 'LLIL_INTRINSIC([v13],vsha256su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v17),LLIL_REG.o(v12)]))'),
+	# sha256su1 v1.4s, v28.4s, v8.4s
+	(b'\x81\x63\x08\x5E', 'LLIL_INTRINSIC([v1],vsha256su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v1),LLIL_REG.o(v28),LLIL_REG.o(v8)]))'),
+	# sha512h2 q30, q0, v15.2d
+	(b'\x1E\x84\x6F\xCE', 'LLIL_INTRINSIC([q30],vsha512h2q_u64,LLIL_CALL_PARAM([LLIL_REG.o(q30),LLIL_REG.o(q0),LLIL_REG.o(v15)]))'),
+	# sha512h2 q13, q3, v0.2d
+	(b'\x6D\x84\x60\xCE', 'LLIL_INTRINSIC([q13],vsha512h2q_u64,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.o(q3),LLIL_REG.o(v0)]))'),
+	# sha512h q30, q14, v10.2d
+	(b'\xDE\x81\x6A\xCE', 'LLIL_INTRINSIC([q30],vsha512hq_u64,LLIL_CALL_PARAM([LLIL_REG.o(q30),LLIL_REG.o(q14),LLIL_REG.o(v10)]))'),
+	# sha512h q13, q14, v28.2d
+	(b'\xCD\x81\x7C\xCE', 'LLIL_INTRINSIC([q13],vsha512hq_u64,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.o(q14),LLIL_REG.o(v28)]))'),
+	# sha512su0 v10.2d, v6.2d
+	(b'\xCA\x80\xC0\xCE', 'LLIL_INTRINSIC([v10],vsha512su0q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v10),LLIL_REG.o(v6)]))'),
+	# sha512su0 v13.2d, v9.2d
+	(b'\x2D\x81\xC0\xCE', 'LLIL_INTRINSIC([v13],vsha512su0q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v9)]))'),
+	# sha512su1 v13.2d, v6.2d, v5.2d
+	(b'\xCD\x88\x65\xCE', 'LLIL_INTRINSIC([v13],vsha512su1q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v6),LLIL_REG.o(v5)]))'),
+	# sha512su1 v18.2d, v19.2d, v12.2d
+	(b'\x72\x8A\x6C\xCE', 'LLIL_INTRINSIC([v18],vsha512su1q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v18),LLIL_REG.o(v19),LLIL_REG.o(v12)]))'),
+]
+
 tests_rev = [
 	(b'\x49\x29\xc8\x9a', 'LLIL_SET_REG.q(x9,LLIL_ASR.q(LLIL_REG.q(x10),LLIL_REG.q(x8)))'), # asr     x9, x10, x8
 	# rev16 w25, w2
@@ -389,6 +448,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_sha + \
 	tests_rev + \
 	tests_ld1 + \
 	tests_st1 + \

@@ -11184,6 +11184,99 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 
 	switch(instr.encoding)
 	{
+		case ENC_SHA1C_QSV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1CQ_U32, inputs));
+			break;
+		case ENC_SHA1P_QSV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1PQ_U32, inputs));
+			break;
+		case ENC_SHA1M_QSV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1MQ_U32, inputs));
+			break;
+		case ENC_SHA1H_SS_CRYPTOSHA2:
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1H_U32, inputs));
+			break;
+		case ENC_SHA1SU0_VVV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1SU0Q_U32, inputs));
+			break;
+		case ENC_SHA1SU1_VV_CRYPTOSHA2:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1SU1Q_U32, inputs));
+			break;
+		case ENC_SHA256H_QQV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256HQ_U32, inputs));
+			break;
+		case ENC_SHA256H2_QQV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256H2Q_U32, inputs));
+			break;
+		case ENC_SHA256SU0_VV_CRYPTOSHA2:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256SU0Q_U32, inputs));
+			break;
+		case ENC_SHA256SU1_VVV_CRYPTOSHA3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256SU1Q_U32, inputs));
+			break;
+		case ENC_SHA512H_QQV_CRYPTOSHA512_3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512HQ_U64, inputs));
+			break;
+		case ENC_SHA512H2_QQV_CRYPTOSHA512_3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512H2Q_U64, inputs));
+			break;
+		case ENC_SHA512SU0_VV2_CRYPTOSHA512_2:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512SU0Q_U64, inputs));
+			break;
+		case ENC_SHA512SU1_VVV2_CRYPTOSHA512_3:
+			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
+			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
+			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
+			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512SU1Q_U64, inputs));
+			break;
 		default:
 			break;
 	}
