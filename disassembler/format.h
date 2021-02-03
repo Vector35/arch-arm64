@@ -7,6 +7,7 @@
 #include "encodings_dec.h"
 #include "encodings_fmt.h"
 #include "operations.h"
+#include "regs.h"
 #include "sysregs.h"
 
 //-----------------------------------------------------------------------------
@@ -35,7 +36,6 @@ int aarch64_disassemble(Instruction *instruction, char *buf, size_t buf_sz);
 
 // register (and related) to string
 int get_register_full(enum Register, const InstructionOperand *, char *result);
-const char *get_register_name(enum Register);
 const char *get_register_arrspec(enum Register, const InstructionOperand *);
 
 // miscellany to string
