@@ -450,7 +450,6 @@ enum Group {
 #endif
 
 #define MAX_REGISTERS 5
-#define MAX_NAME 16
 
 struct InstructionOperand {
 	OperandClass operandClass;
@@ -479,7 +478,7 @@ struct InstructionOperand {
 	bool mul_vl; // whether MEM_OFFSET has the offset "mul vl"
 
 	/* for class NAME */
-	char name[MAX_NAME];
+	const char *name;
 };
 
 #ifndef __cplusplus
