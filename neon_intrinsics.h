@@ -2,13 +2,13 @@
 
 #include <vector>
 #include <string>
-using namespace std;
 
 // from api
 #include "lowlevelilinstruction.h"
-using namespace BinaryNinja;
-
 #include "il.h" /* for ARM64_INTRIN_NORMAL_END, ExtractRegister() */
+
+using namespace std;
+using namespace BinaryNinja;
 
 enum NeonIntrinsic : uint32_t
 {
