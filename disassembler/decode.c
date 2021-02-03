@@ -29,8 +29,7 @@ size_t get_register_size(Register r)
 
 int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t address)
 {
-	context ctx;
-	memset(&ctx, 0, sizeof(ctx));
+	context ctx = { 0 };
 	ctx.halted = 1; // enabled disassembly of exception instructions like DCPS1
 	ctx.insword = instructionValue;
 	ctx.address = address;
