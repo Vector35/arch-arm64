@@ -1,8 +1,5 @@
 #include "neon_intrinsics.h"
-
-#define TYPE_HINT_UINT32_T 0
-#define TYPE_HINT_UINT32X4_T 1
-#define TYPE_HINT_UINT64X2_T 2
+#include "il_macros.h"
 
 vector<uint32_t> NeonGetAllIntrinsics()
 {
@@ -11141,144 +11138,4934 @@ vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 	}
 }
 
-#define REG(X) (X).reg[0]
-#define REGSZ(X) get_register_size(REG(X))
-#define ILREG(X) ExtractRegister(il, X, 0, REGSZ(X), false, REGSZ(X))
-
-static void add_input(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand, int type_hint)
+static void add_input_reg(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
 {
-	switch(type_hint) {
-		case TYPE_HINT_UINT32_T:
-			inputs.push_back(ILREG(operand));
-			break;
-		case TYPE_HINT_UINT32X4_T:
-			inputs.push_back(ILREG(operand));
-			break;
-		case TYPE_HINT_UINT64X2_T:
-			inputs.push_back(ILREG(operand));
-			break;
-	}
-	return;
+	// TODO: test that arrangement specifier is being used to extract correctly sized register
+	// eg: V0.1d -> REG_V0_D0
+	inputs.push_back(ILREG(operand));
 }
 
-static void add_output(vector<RegisterOrFlag> &outputs, LowLevelILFunction &il, InstructionOperand &operand, int type_hint)
+static void add_input_imm(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
 {
-	switch(type_hint) {
-		case TYPE_HINT_UINT32_T:
-			outputs.push_back(RegisterOrFlag::Register(REG(operand)));
-			break;
-		case TYPE_HINT_UINT32X4_T:
-			outputs.push_back(RegisterOrFlag::Register(REG(operand)));
-			break;
-		case TYPE_HINT_UINT64X2_T:
-			outputs.push_back(RegisterOrFlag::Register(REG(operand)));
-			break;
-	}
-	return;
+	inputs.push_back(ILCONST(operand));
+}
+
+static void add_input_lane(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
+{
+	inputs.push_back(il.Const(1, operand.lane));
+}
+
+static void add_output_reg(vector<RegisterOrFlag> &outputs, LowLevelILFunction &il, InstructionOperand &operand)
+{
+	// TODO: test that arrangement specifier is being used to extract correctly sized register
+	// eg: V0.1d -> REG_V0_D0
+	outputs.push_back(RegisterOrFlag::Register(REG(operand)));
 }
 
 bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevelILFunction &il, Instruction &instr, size_t addrSize)
 {
+	NeonIntrinsic intrin_id = (NeonIntrinsic)ARM64_INTRIN_INVALID;
 	vector<RegisterOrFlag> outputs;
 	vector<ExprId> inputs;
 
 	switch(instr.encoding)
 	{
+		case ENC_ABS_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VABS_S8; // ABS Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VABSQ_S8; // ABS Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABS_S16; // ABS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABSQ_S16; // ABS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABS_S32; // ABS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABSQ_S32; // ABS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABSQ_S64; // ABS Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ABS_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VABS_S64; // ABS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADDHN_ASIMDDIFF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADDHN_S16; // ADDHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VADDHN_S32; // ADDHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADDHN_S64; // ADDHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADDHN_U16; // ADDHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VADDHN_U32; // ADDHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADDHN_U64; // ADDHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_S16; // ADDHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_S32; // ADDHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_S64; // ADDHN2 Vd.4S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_U16; // ADDHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_U32; // ADDHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDHN_HIGH_U64; // ADDHN2 Vd.4S,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADDP_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPADD_S8; // ADDP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADD_S16; // ADDP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADD_S32; // ADDP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPADD_U8; // ADDP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADD_U16; // ADDP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADD_U32; // ADDP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPADDQ_S8; // ADDP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADDQ_S16; // ADDP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADDQ_S32; // ADDP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADDQ_S64; // ADDP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPADDQ_U8; // ADDP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADDQ_U16; // ADDP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADDQ_U32; // ADDP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADDQ_U64; // ADDP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADDV_S32; // ADDP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADDV_U32; // ADDP Vd.2S,Vn.2S,Vm.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADDP_ASISDPAIR_ONLY:
+			intrin_id = ARM64_INTRIN_VPADDD_S64; // ADDP Dd,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADDV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VADDV_S8; // ADDV Bd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADD_S8; // ADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_S8; // ADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VADD_S16; // ADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDQ_S16; // ADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADD_S32; // ADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDQ_S32; // ADD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDQ_S64; // ADD Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADD_U8; // ADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_U8; // ADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VADD_U16; // ADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDQ_U16; // ADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADD_U32; // ADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDQ_U32; // ADD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDQ_U64; // ADD Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ADD_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VADD_S64; // ADD Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_AESD_B_CRYPTOAES:
+			intrin_id = ARM64_INTRIN_VAESDQ_U8; // AESD Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_AESE_B_CRYPTOAES:
+			intrin_id = ARM64_INTRIN_VAESEQ_U8; // AESE Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_AESIMC_B_CRYPTOAES:
+			intrin_id = ARM64_INTRIN_VAESIMCQ_U8; // AESIMC Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_AESMC_B_CRYPTOAES:
+			intrin_id = ARM64_INTRIN_VAESMCQ_U8; // AESMC Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_AND_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_S8; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_S8; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_S16; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_S16; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_S32; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_S32; // AND Vd.16B,Vn.16B,Vm.16B
+			//if(None) intrin_id = ARM64_INTRIN_VAND_S64; // AND Dd,Dn,Dm
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_S64; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_U8; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_U8; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_U16; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_U16; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_U32; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_U32; // AND Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VAND_U64; // AND Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VANDQ_U64; // AND Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BCAX_VVV16_CRYPTO4:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_U8; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_U16; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_U32; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_U64; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_S8; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_S16; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_S32; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBCAXQ_S64; // BCAX Vd.16B,Vn.16B,Vm.16B,Va.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFCVTN_ASIMDMISC_4S:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_BF16_F32; // BFCVTN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTQ_LOW_BF16_F32; // BFCVTN Vd.4H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_HIGH_BF16_F32; // BFCVTN2 Vd.8H,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFCVT_BS_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VCVTH_BF16_F32; // BFCVT Hd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFDOT_ASIMDELEM_E:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VBFDOT_LANE_F32; // BFDOT Vd.2S,Vn.4H,Vm.2H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFDOTQ_LANEQ_F32; // BFDOT Vd.4S,Vn.8H,Vm.2H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VBFDOT_LANEQ_F32; // BFDOT Vd.2S,Vn.4H,Vm.2H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFDOTQ_LANE_F32; // BFDOT Vd.4S,Vn.8H,Vm.2H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFDOT_ASIMDSAME2_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VBFDOT_F32; // BFDOT Vd.2S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFDOTQ_F32; // BFDOT Vd.4S,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFMMLA_ASIMDSAME2_E:
+			intrin_id = ARM64_INTRIN_VBFMMLAQ_F32; // BFMMLA Vd.4S,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BIC_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_S8; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_S8; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_S16; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_S16; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_S32; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_S32; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_S64; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_S64; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_U8; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_U8; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_U16; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_U16; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_U32; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_U32; // BIC Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBIC_U64; // BIC Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBICQ_U64; // BIC Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BSL_ASIMDSAME_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_S8; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_S8; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_S16; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_S16; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_S32; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_S32; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_S64; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_S64; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_U8; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_U8; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_U16; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_U16; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_U32; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_U32; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_U64; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_U64; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_P64; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_P64; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_F32; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_F32; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_P8; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_P8; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_P16; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_P16; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_F64; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_F64; // BSL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VBSL_F16; // BSL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VBSLQ_F16; // BSL Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CLS_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLS_S8; // CLS Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLSQ_S8; // CLS Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLS_S16; // CLS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLSQ_S16; // CLS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLS_S32; // CLS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLSQ_S32; // CLS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLS_U8; // CLS Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLSQ_U8; // CLS Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLS_U16; // CLS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLSQ_U16; // CLS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLS_U32; // CLS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLSQ_U32; // CLS Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CLZ_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLZ_S8; // CLZ Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLZQ_S8; // CLZ Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLZ_S16; // CLZ Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLZQ_S16; // CLZ Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLZ_S32; // CLZ Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLZQ_S32; // CLZ Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLZ_U8; // CLZ Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLZQ_U8; // CLZ Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLZ_U16; // CLZ Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLZQ_U16; // CLZ Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLZ_U32; // CLZ Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLZQ_U32; // CLZ Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMEQ_ASIMDMISC_Z:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQZ_S8; // CMEQ Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQZQ_S8; // CMEQ Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQZ_S16; // CMEQ Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQZQ_S16; // CMEQ Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQZ_S32; // CMEQ Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQZQ_S32; // CMEQ Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQZ_U8; // CMEQ Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQZQ_U8; // CMEQ Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQZ_U16; // CMEQ Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQZQ_U16; // CMEQ Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQZ_U32; // CMEQ Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQZQ_U32; // CMEQ Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQZ_P8; // CMEQ Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQZQ_P8; // CMEQ Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQZQ_S64; // CMEQ Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQZQ_U64; // CMEQ Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQZQ_P64; // CMEQ Vd.2D,Vn.2D,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMEQ_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQ_S8; // CMEQ Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQQ_S8; // CMEQ Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQ_S16; // CMEQ Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQQ_S16; // CMEQ Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQ_S32; // CMEQ Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQQ_S32; // CMEQ Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQ_U8; // CMEQ Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQQ_U8; // CMEQ Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQ_U16; // CMEQ Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQQ_U16; // CMEQ Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQ_U32; // CMEQ Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQQ_U32; // CMEQ Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCEQ_P8; // CMEQ Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCEQQ_P8; // CMEQ Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQQ_S64; // CMEQ Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQQ_U64; // CMEQ Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQQ_P64; // CMEQ Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMEQ_ASISDMISC_Z:
+			intrin_id = ARM64_INTRIN_VCEQZ_S64; // CMEQ Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMEQ_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VCEQ_S64; // CMEQ Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGE_ASIMDMISC_Z:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGEZ_S8; // CMGE Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGEZQ_S8; // CMGE Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGEZ_S16; // CMGE Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGEZQ_S16; // CMGE Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGEZ_S32; // CMGE Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGEZQ_S32; // CMGE Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGEZQ_S64; // CMGE Vd.2D,Vn.2D,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGE_ASIMDSAME_ONLY:
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGE_S8; // CMGE Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGEQ_S8; // CMGE Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGE_S16; // CMGE Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGEQ_S16; // CMGE Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGE_S32; // CMGE Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGEQ_S32; // CMGE Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGEQ_S64; // CMGE Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLE_S8; // CMGE Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLEQ_S8; // CMGE Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLE_S16; // CMGE Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLEQ_S16; // CMGE Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLE_S32; // CMGE Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLEQ_S32; // CMGE Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLEQ_S64; // CMGE Vd.2D,Vm.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGE_ASISDMISC_Z:
+			intrin_id = ARM64_INTRIN_VCGEZ_S64; // CMGE Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGE_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VCGE_S64; // CMGE Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGT_ASIMDMISC_Z:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGTZ_S8; // CMGT Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGTZQ_S8; // CMGT Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGTZ_S16; // CMGT Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGTZQ_S16; // CMGT Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGTZ_S32; // CMGT Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGTZQ_S32; // CMGT Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGTZQ_S64; // CMGT Vd.2D,Vn.2D,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGT_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGT_S8; // CMGT Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGTQ_S8; // CMGT Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGT_S16; // CMGT Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGTQ_S16; // CMGT Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGT_S32; // CMGT Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGTQ_S32; // CMGT Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGTQ_S64; // CMGT Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLT_S8; // CMGT Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLTQ_S8; // CMGT Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLT_S16; // CMGT Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLTQ_S16; // CMGT Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLT_S32; // CMGT Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLTQ_S32; // CMGT Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLTQ_S64; // CMGT Vd.2D,Vm.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGT_ASISDMISC_Z:
+			intrin_id = ARM64_INTRIN_VCGTZ_S64; // CMGT Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMGT_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VCGT_S64; // CMGT Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMHI_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGT_U8; // CMHI Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGTQ_U8; // CMHI Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGT_U16; // CMHI Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGTQ_U16; // CMHI Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGT_U32; // CMHI Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGTQ_U32; // CMHI Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGTQ_U64; // CMHI Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLT_U8; // CMHI Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLTQ_U8; // CMHI Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLT_U16; // CMHI Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLTQ_U16; // CMHI Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLT_U32; // CMHI Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLTQ_U32; // CMHI Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLTQ_U64; // CMHI Vd.2D,Vm.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMHI_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VCGT_U64; // CMHI Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMHS_ASIMDSAME_ONLY:
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCGE_U8; // CMHS Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCGEQ_U8; // CMHS Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGE_U16; // CMHS Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGEQ_U16; // CMHS Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGE_U32; // CMHS Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGEQ_U32; // CMHS Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGEQ_U64; // CMHS Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLE_U8; // CMHS Vd.8B,Vm.8B,Vn.8B
+			if(instr.operands[2].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLEQ_U8; // CMHS Vd.16B,Vm.16B,Vn.16B
+			if(instr.operands[2].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLE_U16; // CMHS Vd.4H,Vm.4H,Vn.4H
+			if(instr.operands[2].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLEQ_U16; // CMHS Vd.8H,Vm.8H,Vn.8H
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLE_U32; // CMHS Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLEQ_U32; // CMHS Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLEQ_U64; // CMHS Vd.2D,Vm.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMHS_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VCGE_U64; // CMHS Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMLE_ASIMDMISC_Z:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLEZ_S8; // CMLE Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLEZQ_S8; // CMLE Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLEZ_S16; // CMLE Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLEZQ_S16; // CMLE Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLEZ_S32; // CMLE Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLEZQ_S32; // CMLE Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLEZQ_S64; // CMLE Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLEZ_F32; // CMLE Vd.2S,Vn.2S,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMLE_ASISDMISC_Z:
+			intrin_id = ARM64_INTRIN_VCLEZ_S64; // CMLE Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMLT_ASIMDMISC_Z:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCLTZ_S8; // CMLT Vd.8B,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCLTZQ_S8; // CMLT Vd.16B,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLTZ_S16; // CMLT Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLTZQ_S16; // CMLT Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLTZ_S32; // CMLT Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLTZQ_S32; // CMLT Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLTZQ_S64; // CMLT Vd.2D,Vn.2D,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMLT_ASISDMISC_Z:
+			intrin_id = ARM64_INTRIN_VCLTZ_S64; // CMLT Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMTST_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTST_S8; // CMTST Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTSTQ_S8; // CMTST Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTST_S16; // CMTST Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTSTQ_S16; // CMTST Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTST_S32; // CMTST Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTSTQ_S32; // CMTST Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTST_U8; // CMTST Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTSTQ_U8; // CMTST Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTST_U16; // CMTST Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTSTQ_U16; // CMTST Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTST_U32; // CMTST Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTSTQ_U32; // CMTST Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTST_P8; // CMTST Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTSTQ_P8; // CMTST Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTSTQ_S64; // CMTST Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTSTQ_U64; // CMTST Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTSTQ_P64; // CMTST Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CMTST_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VTST_S64; // CMTST Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CNT_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCNT_S8; // CNT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCNTQ_S8; // CNT Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCNT_U8; // CNT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCNTQ_U8; // CNT Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VCNT_P8; // CNT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VCNTQ_P8; // CNT Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32B_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32B; // CRC32B Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32CB_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32CB; // CRC32CB Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32CH_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32CH; // CRC32CH Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32CW_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32CW; // CRC32CW Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32CX_64C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32CD; // CRC32CX Wd,Wn,Xm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32H_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32H; // CRC32H Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32W_32C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32W; // CRC32W Wd,Wn,Wm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_CRC32X_64C_DP_2SRC:
+			intrin_id = ARM64_INTRIN___CRC32D; // CRC32X Wd,Wn,Xm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_DUP_ASIMDINS_DR_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_N_S8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_N_S8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_N_S16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_N_S16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_N_S32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_N_S32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_N_S64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_N_U8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_N_U8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_N_U16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_N_U16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_N_U32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_N_U32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_N_U64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_N_P64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_N_F32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_N_F32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_N_P8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_N_P8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_N_P16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_N_P16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_N_F64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOV_N_S8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVQ_N_S8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOV_N_S16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVQ_N_S16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOV_N_S32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVQ_N_S32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VMOV_N_S64; // DUP Vd.1D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVQ_N_S64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOV_N_U8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVQ_N_U8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOV_N_U16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVQ_N_U16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOV_N_U32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVQ_N_U32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VMOV_N_U64; // DUP Vd.1D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVQ_N_U64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOV_N_F32; // DUP Vd.2S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVQ_N_F32; // DUP Vd.4S,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOV_N_P8; // DUP Vd.8B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVQ_N_P8; // DUP Vd.16B,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOV_N_P16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVQ_N_P16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VMOV_N_F64; // DUP Vd.1D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVQ_N_F64; // DUP Vd.2D,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_S8; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_S16; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_S32; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_S64; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_U8; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_U16; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_U32; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_U64; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_P64; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_F16; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_F32; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_P8; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_P16; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_F64; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_S8; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_S16; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_S32; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_S64; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_U8; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_U16; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_U32; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_U64; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_P64; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_F16; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_F32; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_P8; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_P16; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_F64; // DUP Vd.1D,Vn.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOV_N_F16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVQ_N_F16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_N_F16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_N_F16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_N_BF16; // DUP Vd.4H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_N_BF16; // DUP Vd.8H,rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_HIGH_BF16; // DUP Vd.1D,Vn.D[1]
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VGET_LOW_BF16; // DUP Vd.1D,Vn.D[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_DUP_ASISDONE_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANE_S8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_S8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANE_S16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_S16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANE_S32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_S32; // DUP Vd.4S,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_S64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_S64; // DUP Vd.2D,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANE_U8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_U8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANE_U16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_U16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANE_U32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_U32; // DUP Vd.4S,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_U64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_U64; // DUP Vd.2D,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_P64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_P64; // DUP Vd.2D,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANE_F32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_F32; // DUP Vd.4S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANE_P8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_P8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANE_P16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_P16; // DUP Vd.8H,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_F64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_F64; // DUP Vd.2D,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_S8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_S16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_S32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S32; // DUP Vd.4S,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_S64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S64; // DUP Vd.2D,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_U8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_U16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_U32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U32; // DUP Vd.4S,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_U64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U64; // DUP Vd.2D,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_P64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P64; // DUP Vd.2D,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_F32; // DUP Vd.2S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F32; // DUP Vd.4S,Vn.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_P8; // DUP Vd.8B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P8; // DUP Vd.16B,Vn.B[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_P16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P16; // DUP Vd.8H,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_F64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F64; // DUP Vd.2D,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_S8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_S16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_S32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_S64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_U8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_U16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_U32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_U64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_F32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_F64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_P8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_P16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_S8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_S16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_S32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_S64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_U8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_U16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_U32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_U64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_F32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_F64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_P8; // DUP Bd,Vn.B[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_P16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F64; // DUP Dd,Vn.D[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F32; // DUP Sd,Vn.S[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F64; // DUP Dd,Vn.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANE_F16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_F16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_F16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F16; // DUP Vd.8H,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_F16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_F16; // DUP Hd,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANE_BF16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANE_BF16; // DUP Vd.8H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDUP_LANEQ_BF16; // DUP Vd.4H,Vn.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_BF16; // DUP Vd.8H,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGET_LANE_BF16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_BF16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_BF16; // DUP Hd,Vn.H[lane]
+			//if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_BF16; // DUP Hd,Vn.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_lane(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_EOR3_VVV16_CRYPTO4:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_U8; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_U16; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_U32; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_U64; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_S8; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_S16; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_S32; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEOR3Q_S64; // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_EOR_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_S8; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_S8; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_S16; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_S16; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_S32; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_S32; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_S64; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_S64; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_U8; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_U8; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_U16; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_U16; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_U32; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_U32; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEOR_U64; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEORQ_U64; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADD_P8; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADD_P16; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VADD_P64; // EOR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_P8; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_P16; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_P64; // EOR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VADDQ_P128; // EOR Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_EXT_ASIMDEXT_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_S8; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_S8; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_S16; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_S16; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_S32; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_S32; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_S64; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_S64; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_U8; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_U8; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_U16; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_U16; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_U32; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_U32; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_U64; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_U64; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_P64; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_P64; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_F32; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_F32; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_F64; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_F64; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_P8; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_P8; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_P16; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_P16; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VEXT_F16; // EXT Vd.8B,Vn.8B,Vm.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VEXTQ_F16; // EXT Vd.16B,Vn.16B,Vm.16B,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[3]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FABD_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABD_F32; // FABD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDQ_F32; // FABD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABDQ_F64; // FABD Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABD_F16; // FABD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDQ_F16; // FABD Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FABD_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VABD_F64; // FABD Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FABS_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VABS_F64; // FABS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FABS_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VABSH_F16; // FABS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FABS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABS_F32; // FABS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABSQ_F32; // FABS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABSQ_F64; // FABS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABS_F16; // FABS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABSQ_F16; // FABS Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FACGE_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCAGE_F32; // FACGE Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCAGEQ_F32; // FACGE Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCAGEQ_F64; // FACGE Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCALE_F32; // FACGE Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCALEQ_F32; // FACGE Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCALEQ_F64; // FACGE Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCAGE_F16; // FACGE Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCAGEQ_F16; // FACGE Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCALE_F16; // FACGE Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCALEQ_F16; // FACGE Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FACGE_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VCAGE_F64; // FACGE Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FACGT_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCAGT_F32; // FACGT Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCAGTQ_F32; // FACGT Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCAGTQ_F64; // FACGT Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCALT_F32; // FACGT Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCALTQ_F32; // FACGT Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCALTQ_F64; // FACGT Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCAGT_F16; // FACGT Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCAGTQ_F16; // FACGT Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCALT_F16; // FACGT Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCALTQ_F16; // FACGT Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FACGT_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VCAGT_F64; // FACGT Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FADDP_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADD_F32; // FADDP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADDQ_F32; // FADDP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADDQ_F64; // FADDP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADD_F16; // FADDP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADDQ_F16; // FADDP Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FADDP_ASISDPAIR_ONLY_H:
+			intrin_id = ARM64_INTRIN_VPADDS_F32; // FADDP Sd,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FADD_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VADD_F64; // FADD Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FADD_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VADDH_F16; // FADD Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FADD_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VADD_F32; // FADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDQ_F32; // FADD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDQ_F64; // FADD Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VADD_F16; // FADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDQ_F16; // FADD Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCADD_ASIMDSAME2_C:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCADD_ROT90_F16; // FCADD Vd.4H,Vn.4H,Vm.4H,#90
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCADD_ROT90_F32; // FCADD Vd.2S,Vn.2S,Vm.2S,#90
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCADDQ_ROT90_F16; // FCADD Vd.8H,Vn.8H,Vm.8H,#90
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCADDQ_ROT90_F32; // FCADD Vd.4S,Vn.4S,Vm.4S,#90
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCADDQ_ROT90_F64; // FCADD Vd.2D,Vn.2D,Vm.2D,#90
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCADD_ROT270_F16; // FCADD Vd.4H,Vn.4H,Vm.4H,#270
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCADD_ROT270_F32; // FCADD Vd.2S,Vn.2S,Vm.2S,#270
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCADDQ_ROT270_F16; // FCADD Vd.8H,Vn.8H,Vm.8H,#270
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCADDQ_ROT270_F32; // FCADD Vd.4S,Vn.4S,Vm.4S,#270
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCADDQ_ROT270_F64; // FCADD Vd.2D,Vn.2D,Vm.2D,#270
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMEQ_ASIMDMISCFP16_FZ:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQZ_F32; // FCMEQ Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQZQ_F32; // FCMEQ Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQZQ_F64; // FCMEQ Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQZ_F16; // FCMEQ Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQZQ_F16; // FCMEQ Vd.8H,Vn.8H,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMEQ_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCEQ_F32; // FCMEQ Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCEQQ_F32; // FCMEQ Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCEQQ_F64; // FCMEQ Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCEQ_F16; // FCMEQ Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCEQQ_F16; // FCMEQ Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMEQ_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VCEQ_F64; // FCMEQ Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGE_ASIMDMISCFP16_FZ:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGEZ_F32; // FCMGE Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGEZQ_F32; // FCMGE Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGEZQ_F64; // FCMGE Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGEZ_F16; // FCMGE Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGEZQ_F16; // FCMGE Vd.8H,Vn.8H,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGE_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGE_F32; // FCMGE Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGEQ_F32; // FCMGE Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGEQ_F64; // FCMGE Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLE_F32; // FCMGE Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLEQ_F32; // FCMGE Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLEQ_F64; // FCMGE Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGE_F16; // FCMGE Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGEQ_F16; // FCMGE Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLE_F16; // FCMGE Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLEQ_F16; // FCMGE Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGE_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VCGE_F64; // FCMGE Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGT_ASIMDMISCFP16_FZ:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGTZ_F32; // FCMGT Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGTZQ_F32; // FCMGT Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGTZQ_F64; // FCMGT Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGTZ_F16; // FCMGT Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGTZQ_F16; // FCMGT Vd.8H,Vn.8H,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGT_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCGT_F32; // FCMGT Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCGTQ_F32; // FCMGT Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCGTQ_F64; // FCMGT Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLT_F32; // FCMGT Vd.2S,Vm.2S,Vn.2S
+			if(instr.operands[2].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLTQ_F32; // FCMGT Vd.4S,Vm.4S,Vn.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLTQ_F64; // FCMGT Vd.2D,Vm.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCGT_F16; // FCMGT Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCGTQ_F16; // FCMGT Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLT_F16; // FCMGT Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLTQ_F16; // FCMGT Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMGT_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VCGT_F64; // FCMGT Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLA_ASIMDSAME2_C:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_F16; // FCMLA Vd.4H,Vn.4H,Vm.4H,#0
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S,#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_LANE_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_LANE_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_LANEQ_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_F16; // FCMLA Vd.8H,Vn.8H,Vm.8H,#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_F32; // FCMLA Vd.4S,Vn.4S,Vm.4S,#0
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCMLAQ_F64; // FCMLA Vd.2D,Vn.2D,Vm.2D,#0
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_LANE_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_LANE_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_LANEQ_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_LANEQ_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#0
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT90_F16; // FCMLA Vd.4H,Vn.4H,Vm.4H,#90
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT90_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S,#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT90_LANE_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT90_LANE_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT90_LANEQ_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_F16; // FCMLA Vd.8H,Vn.8H,Vm.8H,#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_F32; // FCMLA Vd.4S,Vn.4S,Vm.4S,#90
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_F64; // FCMLA Vd.2D,Vn.2D,Vm.2D,#90
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_LANE_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_LANE_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_LANEQ_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT90_LANEQ_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#90
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_F16; // FCMLA Vd.4H,Vn.4H,Vm.4H,#180
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S,#180
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_F16; // FCMLA Vd.8H,Vn.8H,Vm.8H,#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_F32; // FCMLA Vd.4S,Vn.4S,Vm.4S,#180
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_F64; // FCMLA Vd.2D,Vn.2D,Vm.2D,#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT270_F16; // FCMLA Vd.4H,Vn.4H,Vm.4H,#270
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT270_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S,#270
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_F16; // FCMLA Vd.8H,Vn.8H,Vm.8H,#270
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_F32; // FCMLA Vd.4S,Vn.4S,Vm.4S,#270
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_F64; // FCMLA Vd.2D,Vn.2D,Vm.2D,#270
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLE_ASIMDMISCFP16_FZ:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLEZQ_F32; // FCMLE Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLEZQ_F64; // FCMLE Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLEZ_F16; // FCMLE Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLEZQ_F16; // FCMLE Vd.8H,Vn.8H,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLE_ASISDMISCFP16_FZ:
+			intrin_id = ARM64_INTRIN_VCLEZ_F64; // FCMLE Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLT_ASIMDMISCFP16_FZ:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCLTZ_F32; // FCMLT Vd.2S,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCLTZQ_F32; // FCMLT Vd.4S,Vn.4S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCLTZQ_F64; // FCMLT Vd.2D,Vn.2D,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCLTZ_F16; // FCMLT Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCLTZQ_F16; // FCMLT Vd.8H,Vn.8H,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLT_ASISDMISCFP16_FZ:
+			intrin_id = ARM64_INTRIN_VCLTZ_F64; // FCMLT Dd,Dn,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAS_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTA_S64_F64; // FCVTAS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAS_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTAS_S32_F32; // FCVTAS Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTA_S32_F32; // FCVTAS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTAQ_S32_F32; // FCVTAS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTAQ_S64_F64; // FCVTAS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTA_S16_F16; // FCVTAS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTAQ_S16_F16; // FCVTAS Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAS_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTAH_S16_F16; // FCVTAS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAU_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTA_U64_F64; // FCVTAU Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAU_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTAS_U32_F32; // FCVTAU Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAU_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTA_U32_F32; // FCVTAU Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTAQ_U32_F32; // FCVTAU Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTAQ_U64_F64; // FCVTAU Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTA_U16_F16; // FCVTAU Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTAQ_U16_F16; // FCVTAU Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTAU_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTAH_U16_F16; // FCVTAU Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTL_ASIMDMISC_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVT_F32_F16; // FCVTL Vd.4S,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVT_HIGH_F32_F16; // FCVTL2 Vd.4S,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVT_F64_F32; // FCVTL Vd.2D,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVT_HIGH_F64_F32; // FCVTL2 Vd.2D,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMS_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTM_S64_F64; // FCVTMS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMS_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTMS_S32_F32; // FCVTMS Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTM_S32_F32; // FCVTMS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTMQ_S32_F32; // FCVTMS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTMQ_S64_F64; // FCVTMS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTM_S16_F16; // FCVTMS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTMQ_S16_F16; // FCVTMS Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMS_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTMH_S16_F16; // FCVTMS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMU_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTM_U64_F64; // FCVTMU Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMU_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTMS_U32_F32; // FCVTMU Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMU_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTM_U32_F32; // FCVTMU Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTMQ_U32_F32; // FCVTMU Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTMQ_U64_F64; // FCVTMU Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTM_U16_F16; // FCVTMU Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTMQ_U16_F16; // FCVTMU Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTMU_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTMH_U16_F16; // FCVTMU Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNS_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTN_S64_F64; // FCVTNS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNS_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTNS_S32_F32; // FCVTNS Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTN_S32_F32; // FCVTNS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTNQ_S32_F32; // FCVTNS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTNQ_S64_F64; // FCVTNS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTN_S16_F16; // FCVTNS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTNQ_S16_F16; // FCVTNS Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNS_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTNH_S16_F16; // FCVTNS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNU_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTN_U64_F64; // FCVTNU Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNU_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTNS_U32_F32; // FCVTNU Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNU_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTN_U32_F32; // FCVTNU Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTNQ_U32_F32; // FCVTNU Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTNQ_U64_F64; // FCVTNU Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTN_U16_F16; // FCVTNU Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTNQ_U16_F16; // FCVTNU Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTNU_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTNH_U16_F16; // FCVTNU Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_F16_F32; // FCVTN Vd.4H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVT_HIGH_F16_F32; // FCVTN2 Vd.8H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_F32_F64; // FCVTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVT_HIGH_F32_F64; // FCVTN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPS_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTP_S64_F64; // FCVTPS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPS_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTPS_S32_F32; // FCVTPS Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTP_S32_F32; // FCVTPS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTPQ_S32_F32; // FCVTPS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTPQ_S64_F64; // FCVTPS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTP_S16_F16; // FCVTPS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTPQ_S16_F16; // FCVTPS Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPS_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTPH_S16_F16; // FCVTPS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPU_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTP_U64_F64; // FCVTPU Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPU_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTPS_U32_F32; // FCVTPU Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPU_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTP_U32_F32; // FCVTPU Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTPQ_U32_F32; // FCVTPU Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTPQ_U64_F64; // FCVTPU Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVTP_U16_F16; // FCVTPU Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTPQ_U16_F16; // FCVTPU Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTPU_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTPH_U16_F16; // FCVTPU Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTXN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVTX_F32_F64; // FCVTXN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTX_HIGH_F32_F64; // FCVTXN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTXN_ASISDMISC_N:
+			intrin_id = ARM64_INTRIN_VCVTXD_F32_F64; // FCVTXN Sd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZS_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVT_S64_F64; // FCVTZS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZS_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTS_S32_F32; // FCVTZS Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZS_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_S32_F32; // FCVTZS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_S32_F32; // FCVTZS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_S64_F64; // FCVTZS Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_N_S32_F32; // FCVTZS Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_N_S32_F32; // FCVTZS Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_N_S64_F64; // FCVTZS Vd.2D,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_S16_F16; // FCVTZS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_S16_F16; // FCVTZS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_U16_F16; // FCVTZS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_U16_F16; // FCVTZS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_N_S16_F16; // FCVTZS Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_N_S16_F16; // FCVTZS Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZS_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTH_S16_F16; // FCVTZS Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZU_32D_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVT_U64_F64; // FCVTZU Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZU_32S_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTS_U32_F32; // FCVTZU Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZU_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_U32_F32; // FCVTZU Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_U32_F32; // FCVTZU Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_U64_F64; // FCVTZU Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_N_U32_F32; // FCVTZU Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_N_U32_F32; // FCVTZU Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_N_U64_F64; // FCVTZU Vd.2D,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_N_U16_F16; // FCVTZU Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_N_U16_F16; // FCVTZU Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCVTZU_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTH_U16_F16; // FCVTZU Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FDIV_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VDIV_F64; // FDIV Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FDIV_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VDIVH_F16; // FDIV Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FDIV_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDIV_F32; // FDIV Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDIVQ_F32; // FDIV Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VDIVQ_F64; // FDIV Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VDIV_F16; // FDIV Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VDIVQ_F16; // FDIV Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMADD_D_FLOATDP3:
+			intrin_id = ARM64_INTRIN_VFMA_F64; // FMADD Dd,Dn,Dm,Da
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMADD_H_FLOATDP3:
+			intrin_id = ARM64_INTRIN_VFMAH_F16; // FMADD Hd,Hn,Hm,Ha
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNMP_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMAXNM_F32; // FMAXNMP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMAXNMQ_F32; // FMAXNMP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPMAXNMQ_F64; // FMAXNMP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMAXNM_F16; // FMAXNMP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMAXNMQ_F16; // FMAXNMP Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNMP_ASISDPAIR_ONLY_H:
+			intrin_id = ARM64_INTRIN_VPMAXNMS_F32; // FMAXNMP Sd,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNMV_ASIMDALL_ONLY_H:
+			intrin_id = ARM64_INTRIN_VMAXNMVQ_F32; // FMAXNMV Sd,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNM_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMAXNM_F64; // FMAXNM Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNM_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMAXNMH_F16; // FMAXNM Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXNM_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAXNM_F32; // FMAXNM Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMAXNMQ_F32; // FMAXNM Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMAXNMQ_F64; // FMAXNM Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMAXNM_F16; // FMAXNM Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMAXNMQ_F16; // FMAXNM Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXP_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMAX_F32; // FMAXP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMAXQ_F32; // FMAXP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPMAXQ_F64; // FMAXP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMAX_F16; // FMAXP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMAXQ_F16; // FMAXP Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXP_ASISDPAIR_ONLY_H:
+			intrin_id = ARM64_INTRIN_VPMAXS_F32; // FMAXP Sd,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAXV_ASIMDALL_ONLY_H:
+			intrin_id = ARM64_INTRIN_VMAXVQ_F32; // FMAXV Sd,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAX_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMAX_F64; // FMAX Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAX_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMAXH_F16; // FMAX Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMAX_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAX_F32; // FMAX Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMAXQ_F32; // FMAX Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMAXQ_F64; // FMAX Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMAX_F16; // FMAX Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMAXQ_F16; // FMAX Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNMP_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMINNM_F32; // FMINNMP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMINNMQ_F32; // FMINNMP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPMINNMQ_F64; // FMINNMP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMINNM_F16; // FMINNMP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMINNMQ_F16; // FMINNMP Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNMP_ASISDPAIR_ONLY_H:
+			intrin_id = ARM64_INTRIN_VPMINNMS_F32; // FMINNMP Sd,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNMV_ASIMDALL_ONLY_H:
+			intrin_id = ARM64_INTRIN_VMINNMVQ_F32; // FMINNMV Sd,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNM_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMINNM_F64; // FMINNM Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNM_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMINNMH_F16; // FMINNM Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINNM_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMINNM_F32; // FMINNM Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMINNMQ_F32; // FMINNM Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMINNMQ_F64; // FMINNM Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMINNM_F16; // FMINNM Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMINNMQ_F16; // FMINNM Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINP_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMIN_F32; // FMINP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMINQ_F32; // FMINP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPMINQ_F64; // FMINP Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMIN_F16; // FMINP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMINQ_F16; // FMINP Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINP_ASISDPAIR_ONLY_H:
+			intrin_id = ARM64_INTRIN_VPMINS_F32; // FMINP Sd,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMINV_ASIMDALL_ONLY_H:
+			intrin_id = ARM64_INTRIN_VMINVQ_F32; // FMINV Sd,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMIN_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMIN_F64; // FMIN Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMIN_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMINH_F16; // FMIN Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMIN_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMIN_F32; // FMIN Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMINQ_F32; // FMIN Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMINQ_F64; // FMIN Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMIN_F16; // FMIN Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMINQ_F16; // FMIN Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLAL2_ASIMDELEM_LH:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_LANE_HIGH_F16; // FMLAL2 Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_LANE_HIGH_F16; // FMLAL2 Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_LANEQ_HIGH_F16; // FMLAL2 Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_LANEQ_HIGH_F16; // FMLAL2 Vd.4S,Vn.4H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLAL2_ASIMDSAME_F:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_HIGH_F16; // FMLAL2 Vd.2S,Vn.2H,Vm.2H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_HIGH_F16; // FMLAL2 Vd.4S,Vn.4H,Vm.4H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLAL_ASIMDELEM_LH:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_LANE_LOW_F16; // FMLAL Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_LANEQ_LOW_F16; // FMLAL Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_LANE_LOW_F16; // FMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_LANEQ_LOW_F16; // FMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLAL_ASIMDSAME_F:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLAL_LOW_F16; // FMLAL Vd.2S,Vn.2H,Vm.2H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLALQ_LOW_F16; // FMLAL Vd.4S,Vn.4H,Vm.4H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLA_ASIMDELEM_RH_H:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMA_LANE_F32; // FMLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMAQ_LANE_F32; // FMLA Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMAQ_LANE_F64; // FMLA Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMA_LANEQ_F32; // FMLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMAQ_LANEQ_F32; // FMLA Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMAQ_LANEQ_F64; // FMLA Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMA_LANE_F16; // FMLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMAQ_LANE_F16; // FMLA Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMA_LANEQ_F16; // FMLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMAQ_LANEQ_F16; // FMLA Vd.8H,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLA_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMA_F32; // FMLA Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMAQ_F32; // FMLA Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMAQ_F64; // FMLA Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMA_N_F32; // FMLA Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMAQ_N_F32; // FMLA Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMAQ_N_F64; // FMLA Vd.2D,Vn.2D,Vm.D[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMA_F16; // FMLA Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMAQ_F16; // FMLA Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMA_N_F16; // FMLA Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMAQ_N_F16; // FMLA Vd.8H,Vn.8H,Vm.H[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLA_ASISDELEM_RH_H:
+			intrin_id = ARM64_INTRIN_VFMA_LANE_F64; // FMLA Dd,Dn,Vm.D[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLSL2_ASIMDELEM_LH:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_LANE_HIGH_F16; // FMLSL2 Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_LANE_HIGH_F16; // FMLSL2 Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_LANEQ_HIGH_F16; // FMLSL2 Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_LANEQ_HIGH_F16; // FMLSL2 Vd.4S,Vn.4H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLSL2_ASIMDSAME_F:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_HIGH_F16; // FMLSL2 Vd.2S,Vn.2H,Vm.2H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_HIGH_F16; // FMLSL2 Vd.4S,Vn.4H,Vm.4H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLSL_ASIMDELEM_LH:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_LANE_LOW_F16; // FMLSL Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_LANEQ_LOW_F16; // FMLSL Vd.2S,Vn.2H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_LANE_LOW_F16; // FMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_LANEQ_LOW_F16; // FMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLSL_ASIMDSAME_F:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMLSL_LOW_F16; // FMLSL Vd.2S,Vn.2H,Vm.2H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMLSLQ_LOW_F16; // FMLSL Vd.4S,Vn.4H,Vm.4H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLS_ASIMDELEM_RH_H:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMS_LANE_F32; // FMLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMSQ_LANE_F32; // FMLS Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMSQ_LANE_F64; // FMLS Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMS_LANEQ_F32; // FMLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMSQ_LANEQ_F32; // FMLS Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMSQ_LANEQ_F64; // FMLS Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMS_LANE_F16; // FMLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMSQ_LANE_F16; // FMLS Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMS_LANEQ_F16; // FMLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMSQ_LANEQ_F16; // FMLS Vd.8H,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLS_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMS_F32; // FMLS Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMSQ_F32; // FMLS Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMSQ_F64; // FMLS Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VFMS_N_F32; // FMLS Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VFMSQ_N_F32; // FMLS Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VFMSQ_N_F64; // FMLS Vd.2D,Vn.2D,Vm.D[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMS_F16; // FMLS Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMSQ_F16; // FMLS Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VFMS_N_F16; // FMLS Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VFMSQ_N_F16; // FMLS Vd.8H,Vn.8H,Vm.H[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMLS_ASISDELEM_RH_H:
+			intrin_id = ARM64_INTRIN_VFMS_LANE_F64; // FMLS Dd,Dn,Vm.D[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMSUB_D_FLOATDP3:
+			intrin_id = ARM64_INTRIN_VFMS_F64; // FMSUB Dd,Dn,Dm,Da
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMSUB_H_FLOATDP3:
+			intrin_id = ARM64_INTRIN_VFMSH_F16; // FMSUB Hd,Hn,Hm,Ha
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMULX_ASIMDELEM_RH_H:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMULX_LANE_F32; // FMULX Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULXQ_LANE_F32; // FMULX Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULXQ_LANE_F64; // FMULX Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMULX_LANEQ_F32; // FMULX Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULXQ_LANEQ_F32; // FMULX Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULXQ_LANEQ_F64; // FMULX Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMULX_LANE_F16; // FMULX Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULXQ_LANE_F16; // FMULX Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMULX_LANEQ_F16; // FMULX Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULXQ_LANEQ_F16; // FMULX Vd.8H,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMULX_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMULX_F32; // FMULX Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULXQ_F32; // FMULX Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULXQ_F64; // FMULX Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMULX_F16; // FMULX Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULXQ_F16; // FMULX Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMULX_N_F16; // FMULX Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULXQ_N_F16; // FMULX Vd.8H,Vn.8H,Vm.H[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMULX_ASISDELEM_RH_H:
+			intrin_id = ARM64_INTRIN_VMULX_LANE_F64; // FMULX Dd,Dn,Vm.D[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMULX_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VMULX_F64; // FMULX Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMUL_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMUL_F64; // FMUL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMUL_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VMULH_F16; // FMUL Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMUL_ASIMDELEM_RH_H:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANE_F32; // FMUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANE_F32; // FMUL Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULQ_LANE_F64; // FMUL Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_F32; // FMUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_F32; // FMUL Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_F64; // FMUL Vd.2D,Vn.2D,Vm.D[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANE_F16; // FMUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANE_F16; // FMUL Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_F16; // FMUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_F16; // FMUL Vd.8H,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMUL_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_F32; // FMUL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_F32; // FMUL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULQ_F64; // FMUL Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_N_F32; // FMUL Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_N_F32; // FMUL Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULQ_N_F64; // FMUL Vd.2D,Vn.2D,Vm.D[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_F16; // FMUL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_F16; // FMUL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_N_F16; // FMUL Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_N_F16; // FMUL Vd.8H,Vn.8H,Vm.H[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FMUL_ASISDELEM_RH_H:
+			intrin_id = ARM64_INTRIN_VMUL_LANE_F64; // FMUL Dd,Dn,Vm.D[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FNEG_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VNEG_F64; // FNEG Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FNEG_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VNEGH_F16; // FNEG Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FNEG_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VNEG_F32; // FNEG Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VNEGQ_F32; // FNEG Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VNEGQ_F64; // FNEG Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VNEG_F16; // FNEG Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VNEGQ_F16; // FNEG Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRECPE_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRECPE_F32; // FRECPE Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRECPEQ_F32; // FRECPE Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRECPEQ_F64; // FRECPE Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRECPE_F16; // FRECPE Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRECPEQ_F16; // FRECPE Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRECPE_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VRECPE_F64; // FRECPE Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRECPS_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRECPS_F32; // FRECPS Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRECPSQ_F32; // FRECPS Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRECPSQ_F64; // FRECPS Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRECPS_F16; // FRECPS Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRECPSQ_F16; // FRECPS Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRECPS_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VRECPS_F64; // FRECPS Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRECPX_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VRECPXS_F32; // FRECPX Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT32X_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRND32X_F64; // FRINT32X Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT32X_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRND32X_F32; // FRINT32X Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRND32XQ_F32; // FRINT32X Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRND32XQ_F64; // FRINT32X Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT32Z_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRND32Z_F64; // FRINT32Z Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT32Z_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRND32Z_F32; // FRINT32Z Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRND32ZQ_F32; // FRINT32Z Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRND32ZQ_F64; // FRINT32Z Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT64X_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRND64X_F64; // FRINT64X Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT64X_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRND64X_F32; // FRINT64X Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRND64XQ_F32; // FRINT64X Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRND64XQ_F64; // FRINT64X Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT64Z_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRND64Z_F64; // FRINT64Z Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINT64Z_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRND64Z_F32; // FRINT64Z Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRND64ZQ_F32; // FRINT64Z Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRND64ZQ_F64; // FRINT64Z Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTA_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDA_F64; // FRINTA Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTA_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDAH_F16; // FRINTA Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTA_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDA_F32; // FRINTA Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDAQ_F32; // FRINTA Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDAQ_F64; // FRINTA Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDA_F16; // FRINTA Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDAQ_F16; // FRINTA Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTI_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDI_F64; // FRINTI Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTI_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDIH_F16; // FRINTI Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTI_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDI_F32; // FRINTI Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDIQ_F32; // FRINTI Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDIQ_F64; // FRINTI Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDI_F16; // FRINTI Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDIQ_F16; // FRINTI Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTM_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDM_F64; // FRINTM Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTM_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDMH_F16; // FRINTM Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTM_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDM_F32; // FRINTM Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDMQ_F32; // FRINTM Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDMQ_F64; // FRINTM Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDM_F16; // FRINTM Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDMQ_F16; // FRINTM Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTN_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDN_F64; // FRINTN Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTN_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDNH_F16; // FRINTN Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTN_S_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDNS_F32; // FRINTN Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTN_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDN_F32; // FRINTN Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDNQ_F32; // FRINTN Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDNQ_F64; // FRINTN Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDN_F16; // FRINTN Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDNQ_F16; // FRINTN Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTP_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDP_F64; // FRINTP Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTP_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDPH_F16; // FRINTP Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTP_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDP_F32; // FRINTP Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDPQ_F32; // FRINTP Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDPQ_F64; // FRINTP Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDP_F16; // FRINTP Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDPQ_F16; // FRINTP Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTX_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDX_F64; // FRINTX Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTX_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDXH_F16; // FRINTX Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTX_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRNDX_F32; // FRINTX Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDXQ_F32; // FRINTX Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDXQ_F64; // FRINTX Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRNDX_F16; // FRINTX Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDXQ_F16; // FRINTX Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTZ_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRND_F64; // FRINTZ Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTZ_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VRNDH_F16; // FRINTZ Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRINTZ_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRND_F32; // FRINTZ Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRNDQ_F32; // FRINTZ Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRNDQ_F64; // FRINTZ Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRND_F16; // FRINTZ Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRNDQ_F16; // FRINTZ Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRSQRTE_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSQRTE_F32; // FRSQRTE Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSQRTEQ_F32; // FRSQRTE Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSQRTEQ_F64; // FRSQRTE Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSQRTE_F16; // FRSQRTE Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSQRTEQ_F16; // FRSQRTE Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRSQRTE_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VRSQRTE_F64; // FRSQRTE Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRSQRTS_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSQRTS_F32; // FRSQRTS Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSQRTSQ_F32; // FRSQRTS Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSQRTSQ_F64; // FRSQRTS Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSQRTS_F16; // FRSQRTS Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSQRTSQ_F16; // FRSQRTS Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FRSQRTS_ASISDSAMEFP16_ONLY:
+			intrin_id = ARM64_INTRIN_VRSQRTS_F64; // FRSQRTS Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSQRT_D_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VSQRT_F64; // FSQRT Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSQRT_H_FLOATDP1:
+			intrin_id = ARM64_INTRIN_VSQRTH_F16; // FSQRT Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSQRT_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSQRT_F32; // FSQRT Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSQRTQ_F32; // FSQRT Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSQRTQ_F64; // FSQRT Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSQRT_F16; // FSQRT Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSQRTQ_F16; // FSQRT Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSUB_D_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VSUB_F64; // FSUB Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSUB_H_FLOATDP2:
+			intrin_id = ARM64_INTRIN_VSUBH_F16; // FSUB Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FSUB_ASIMDSAMEFP16_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUB_F32; // FSUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBQ_F32; // FSUB Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBQ_F64; // FSUB Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSUB_F16; // FSUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBQ_F16; // FSUB Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_INS_ASIMDINS_IR_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_S8; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_S16; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_S32; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_S64; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_U8; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_U16; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_U32; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_U64; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_P64; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_F16; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_F32; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_P8; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_P16; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_F64; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VDUP_N_S64; // INS Vd.D[0],rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VDUP_N_U64; // INS Vd.D[0],rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VDUP_N_P64; // INS Vd.D[0],rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VDUP_N_F64; // INS Vd.D[0],rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VCREATE_BF16; // INS Vd.D[0],Xn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSET_LANE_BF16; // INS Vd.H[lane],Vn.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSETQ_LANE_BF16; // INS Vd.H[lane],Vn.H[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_LDR_Q_LOADLIT:
+			intrin_id = ARM64_INTRIN_VLDRQ_P128; // LDR Qd,[Xn]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MLA_ASIMDELEM_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_LANE_S16; // MLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_LANE_S16; // MLA Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_LANE_S32; // MLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_LANE_S32; // MLA Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_LANE_U16; // MLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_LANE_U16; // MLA Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_LANE_U32; // MLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_LANE_U32; // MLA Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_LANEQ_S16; // MLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_LANEQ_S16; // MLA Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_LANEQ_S32; // MLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_LANEQ_S32; // MLA Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_LANEQ_U16; // MLA Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_LANEQ_U16; // MLA Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_LANEQ_U32; // MLA Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_LANEQ_U32; // MLA Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MLA_ASIMDSAME_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMLA_S8; // MLA Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMLAQ_S8; // MLA Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_S16; // MLA Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_S16; // MLA Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_S32; // MLA Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_S32; // MLA Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMLA_U8; // MLA Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMLAQ_U8; // MLA Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_U16; // MLA Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_U16; // MLA Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_U32; // MLA Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_U32; // MLA Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_N_S16; // MLA Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_N_S16; // MLA Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_N_S32; // MLA Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_N_S32; // MLA Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLA_N_U16; // MLA Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAQ_N_U16; // MLA Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLA_N_U32; // MLA Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAQ_N_U32; // MLA Vd.4S,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MLS_ASIMDELEM_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_LANE_S16; // MLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_LANE_S16; // MLS Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_LANE_S32; // MLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_LANE_S32; // MLS Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_LANE_U16; // MLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_LANE_U16; // MLS Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_LANE_U32; // MLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_LANE_U32; // MLS Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_LANEQ_S16; // MLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_LANEQ_S16; // MLS Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_LANEQ_S32; // MLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_LANEQ_S32; // MLS Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_LANEQ_U16; // MLS Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_LANEQ_U16; // MLS Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_LANEQ_U32; // MLS Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_LANEQ_U32; // MLS Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MLS_ASIMDSAME_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMLS_S8; // MLS Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMLSQ_S8; // MLS Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_S16; // MLS Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_S16; // MLS Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_S32; // MLS Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_S32; // MLS Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMLS_U8; // MLS Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMLSQ_U8; // MLS Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_U16; // MLS Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_U16; // MLS Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_U32; // MLS Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_U32; // MLS Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_N_S16; // MLS Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_N_S16; // MLS Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_N_S32; // MLS Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_N_S32; // MLS Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMLS_N_U16; // MLS Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSQ_N_U16; // MLS Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMLS_N_U32; // MLS Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSQ_N_U32; // MLS Vd.4S,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MOV_INS_ASIMDINS_IR_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSET_LANE_U8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSET_LANE_U16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSET_LANE_U32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSET_LANE_U64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSET_LANE_P64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSET_LANE_S8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSET_LANE_S16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSET_LANE_S32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSET_LANE_S64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSET_LANE_P8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSET_LANE_P16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSET_LANE_F32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSET_LANE_F64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSETQ_LANE_U8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSETQ_LANE_U16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_U32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_U64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_P64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSETQ_LANE_S8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSETQ_LANE_S16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_S32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_S64; // MOV Vd.D[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1BYTE) intrin_id = ARM64_INTRIN_VSETQ_LANE_P8; // MOV Vd.B[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSETQ_LANE_P16; // MOV Vd.H[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1SINGLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_F32; // MOV Vd.S[lane],Rn
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VSETQ_LANE_F64; // MOV Vd.D[lane],Rn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_lane(inputs, il, instr.operands[0]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MOV_ORR_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSET_LANE_F16; // MOV Vd.H[lane],Vn.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_1HALF) intrin_id = ARM64_INTRIN_VSETQ_LANE_F16; // MOV Vd.H[lane],Vn.H[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_lane(inputs, il, instr.operands[0]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MUL_ASIMDELEM_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANE_S16; // MUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANE_S16; // MUL Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANE_S32; // MUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANE_S32; // MUL Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANE_U16; // MUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANE_U16; // MUL Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANE_U32; // MUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANE_U32; // MUL Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_S16; // MUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_S16; // MUL Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_S32; // MUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_S32; // MUL Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_U16; // MUL Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_U16; // MUL Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_LANEQ_U32; // MUL Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_LANEQ_U32; // MUL Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MUL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMUL_S8; // MUL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMULQ_S8; // MUL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_S16; // MUL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_S16; // MUL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_S32; // MUL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_S32; // MUL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMUL_U8; // MUL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMULQ_U8; // MUL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_U16; // MUL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_U16; // MUL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_U32; // MUL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_U32; // MUL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_N_S16; // MUL Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_N_S16; // MUL Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_N_S32; // MUL Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_N_S32; // MUL Vd.4S,Vn.4S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMUL_N_U16; // MUL Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULQ_N_U16; // MUL Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMUL_N_U32; // MUL Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULQ_N_U32; // MUL Vd.4S,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_MVN_NOT_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_S8; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_S8; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_S16; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_S16; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_S32; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_S32; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_U8; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_U8; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_U16; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_U16; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_U32; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_U32; // MVN Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMVN_P8; // MVN Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMVNQ_P8; // MVN Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_NEG_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VNEG_S8; // NEG Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VNEGQ_S8; // NEG Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VNEG_S16; // NEG Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VNEGQ_S16; // NEG Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VNEG_S32; // NEG Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VNEGQ_S32; // NEG Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VNEGQ_S64; // NEG Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_NEG_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VNEG_S64; // NEG Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ORN_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_S8; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_S8; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_S16; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_S16; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_S32; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_S32; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_S64; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_S64; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_U8; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_U8; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_U16; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_U16; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_U32; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_U32; // ORN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORN_U64; // ORN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORNQ_U64; // ORN Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ORR_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_S8; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_S8; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_S16; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_S16; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_S32; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_S32; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_S64; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_S64; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_U8; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_U8; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_U16; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_U16; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_U32; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_U32; // ORR Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VORR_U64; // ORR Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VORRQ_U64; // ORR Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_PMULL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_P8; // PMULL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_HIGH_P8; // PMULL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_FULL) intrin_id = ARM64_INTRIN_VMULL_P64; // PMULL Vd.1Q,Vn.1D,Vm.1D
+			if(instr.operands[1].arrSpec==ARRSPEC_FULL) intrin_id = ARM64_INTRIN_VMULL_HIGH_P64; // PMULL2 Vd.1Q,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_PMUL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMUL_P8; // PMUL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMULQ_P8; // PMUL Vd.16B,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_RADDHN_ASIMDDIFF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRADDHN_S16; // RADDHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRADDHN_S32; // RADDHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRADDHN_S64; // RADDHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRADDHN_U16; // RADDHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRADDHN_U32; // RADDHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRADDHN_U64; // RADDHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_S16; // RADDHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_S32; // RADDHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_S64; // RADDHN2 Vd.4S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_U16; // RADDHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_U32; // RADDHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRADDHN_HIGH_U64; // RADDHN2 Vd.4S,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_RAX1_VVV2_CRYPTOSHA512_3:
+			intrin_id = ARM64_INTRIN_VRAX1Q_U64; // RAX1 Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_RBIT_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRBIT_S8; // RBIT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRBITQ_S8; // RBIT Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRBIT_U8; // RBIT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRBITQ_U8; // RBIT Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRBIT_P8; // RBIT Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRBITQ_P8; // RBIT Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_REV16_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV16_S8; // REV16 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV16Q_S8; // REV16 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV16_U8; // REV16 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV16Q_U8; // REV16 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV16_P8; // REV16 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV16Q_P8; // REV16 Vd.16B,Vn.16B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_REV32_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV32_S8; // REV32 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV32Q_S8; // REV32 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV32_S16; // REV32 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV32Q_S16; // REV32 Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV32_U8; // REV32 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV32Q_U8; // REV32 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV32_U16; // REV32 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV32Q_U16; // REV32 Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV32_P8; // REV32 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV32Q_P8; // REV32 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV32_P16; // REV32 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV32Q_P16; // REV32 Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_REV64_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV64_S8; // REV64 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV64Q_S8; // REV64 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV64_S16; // REV64 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV64Q_S16; // REV64 Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VREV64_S32; // REV64 Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VREV64Q_S32; // REV64 Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV64_U8; // REV64 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV64Q_U8; // REV64 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV64_U16; // REV64 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV64Q_U16; // REV64 Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VREV64_U32; // REV64 Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VREV64Q_U32; // REV64 Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VREV64_F32; // REV64 Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VREV64Q_F32; // REV64 Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VREV64_P8; // REV64 Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VREV64Q_P8; // REV64 Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV64_P16; // REV64 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV64Q_P16; // REV64 Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VREV64_F16; // REV64 Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VREV64Q_F16; // REV64 Vd.8H,Vn.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_RSHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHRN_N_S16; // RSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHRN_N_S32; // RSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHRN_N_S64; // RSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHRN_N_U16; // RSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHRN_N_U32; // RSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHRN_N_U64; // RSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_S16; // RSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_S32; // RSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_S64; // RSHRN2 Vd.4S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_U16; // RSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_U32; // RSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHRN_HIGH_N_U64; // RSHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_RSUBHN_ASIMDDIFF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSUBHN_S16; // RSUBHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSUBHN_S32; // RSUBHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSUBHN_S64; // RSUBHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSUBHN_U16; // RSUBHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSUBHN_U32; // RSUBHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSUBHN_U64; // RSUBHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_S16; // RSUBHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_S32; // RSUBHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_S64; // RSUBHN2 Vd.4S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_U16; // RSUBHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_U32; // RSUBHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSUBHN_HIGH_U64; // RSUBHN2 Vd.4S,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SABAL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAL_S8; // SABAL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAL_S16; // SABAL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABAL_S32; // SABAL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAL_HIGH_S8; // SABAL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAL_HIGH_S16; // SABAL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABAL_HIGH_S32; // SABAL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SABA_ASIMDSAME_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VABA_S8; // SABA Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VABAQ_S8; // SABA Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABA_S16; // SABA Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAQ_S16; // SABA Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABA_S32; // SABA Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAQ_S32; // SABA Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SABDL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDL_S8; // SABDL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDL_S16; // SABDL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABDL_S32; // SABDL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDL_HIGH_S8; // SABDL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDL_HIGH_S16; // SABDL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABDL_HIGH_S32; // SABDL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SABD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VABD_S8; // SABD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VABDQ_S8; // SABD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABD_S16; // SABD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDQ_S16; // SABD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABD_S32; // SABD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDQ_S32; // SABD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SADALP_ASIMDMISC_P:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADAL_S8; // SADALP Vd.4H,Vn.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADALQ_S8; // SADALP Vd.8H,Vn.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADAL_S16; // SADALP Vd.2S,Vn.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADALQ_S16; // SADALP Vd.4S,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VPADAL_S32; // SADALP Vd.1D,Vn.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADALQ_S32; // SADALP Vd.2D,Vn.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SADDLP_ASIMDMISC_P:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADDL_S8; // SADDLP Vd.4H,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADDLQ_S8; // SADDLP Vd.8H,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADDL_S16; // SADDLP Vd.2S,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADDLQ_S16; // SADDLP Vd.4S,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VPADDL_S32; // SADDLP Vd.1D,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADDLQ_S32; // SADDLP Vd.2D,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VADDLV_S32; // SADDLP Vd.1D,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SADDLV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VADDLV_S8; // SADDLV Hd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SADDL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDL_S8; // SADDL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDL_S16; // SADDL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDL_S32; // SADDL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDL_HIGH_S8; // SADDL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDL_HIGH_S16; // SADDL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDL_HIGH_S32; // SADDL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SADDW_ASIMDDIFF_W:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDW_S8; // SADDW Vd.8H,Vn.8H,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDW_S16; // SADDW Vd.4S,Vn.4S,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDW_S32; // SADDW Vd.2D,Vn.2D,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDW_HIGH_S8; // SADDW2 Vd.8H,Vn.8H,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDW_HIGH_S16; // SADDW2 Vd.4S,Vn.4S,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDW_HIGH_S32; // SADDW2 Vd.2D,Vn.2D,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SCVTF_D32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVT_F64_S64; // SCVTF Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SCVTF_S32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTS_F32_S32; // SCVTF Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SCVTF_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_F32_S32; // SCVTF Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_F32_S32; // SCVTF Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_F64_S64; // SCVTF Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_N_F32_S32; // SCVTF Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_N_F32_S32; // SCVTF Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_N_F64_S64; // SCVTF Vd.2D,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_F16_S16; // SCVTF Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_F16_S16; // SCVTF Vd.8H,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_N_F16_S16; // SCVTF Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_N_F16_S16; // SCVTF Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SCVTF_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_S16; // SCVTF Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SDOT_ASIMDELEM_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_LANE_S32; // SDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_LANEQ_S32; // SDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_LANEQ_S32; // SDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_LANE_S32; // SDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SDOT_ASIMDSAME2_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_S32; // SDOT Vd.2S,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_S32; // SDOT Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
 		case ENC_SHA1C_QSV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1CQ_U32, inputs));
-			break;
-		case ENC_SHA1P_QSV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1PQ_U32, inputs));
-			break;
-		case ENC_SHA1M_QSV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1MQ_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA1CQ_U32; // SHA1C Qd,Sn,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA1H_SS_CRYPTOSHA2:
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1H_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA1H_U32; // SHA1H Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHA1M_QSV_CRYPTOSHA3:
+			intrin_id = ARM64_INTRIN_VSHA1MQ_U32; // SHA1M Qd,Sn,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHA1P_QSV_CRYPTOSHA3:
+			intrin_id = ARM64_INTRIN_VSHA1PQ_U32; // SHA1P Qd,Sn,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA1SU0_VVV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1SU0Q_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA1SU0Q_U32; // SHA1SU0 Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA1SU1_VV_CRYPTOSHA2:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA1SU1Q_U32, inputs));
-			break;
-		case ENC_SHA256H_QQV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256HQ_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA1SU1Q_U32; // SHA1SU1 Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA256H2_QQV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256H2Q_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA256H2Q_U32; // SHA256H2 Qd,Qn,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHA256H_QQV_CRYPTOSHA3:
+			intrin_id = ARM64_INTRIN_VSHA256HQ_U32; // SHA256H Qd,Qn,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA256SU0_VV_CRYPTOSHA2:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256SU0Q_U32, inputs));
+			intrin_id = ARM64_INTRIN_VSHA256SU0Q_U32; // SHA256SU0 Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA256SU1_VVV_CRYPTOSHA3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT32X4_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT32X4_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT32X4_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA256SU1Q_U32, inputs));
-			break;
-		case ENC_SHA512H_QQV_CRYPTOSHA512_3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512HQ_U64, inputs));
+			intrin_id = ARM64_INTRIN_VSHA256SU1Q_U32; // SHA256SU1 Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA512H2_QQV_CRYPTOSHA512_3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512H2Q_U64, inputs));
+			intrin_id = ARM64_INTRIN_VSHA512H2Q_U64; // SHA512H2 Qd,Qn,Vm.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHA512H_QQV_CRYPTOSHA512_3:
+			intrin_id = ARM64_INTRIN_VSHA512HQ_U64; // SHA512H Qd,Qn,Vm.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA512SU0_VV2_CRYPTOSHA512_2:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512SU0Q_U64, inputs));
+			intrin_id = ARM64_INTRIN_VSHA512SU0Q_U64; // SHA512SU0 Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_SHA512SU1_VVV2_CRYPTOSHA512_3:
-			add_input(inputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[1], TYPE_HINT_UINT64X2_T);
-			add_input(inputs, il, instr.operands[2], TYPE_HINT_UINT64X2_T);
-			add_output(outputs, il, instr.operands[0], TYPE_HINT_UINT64X2_T);
-			il.AddInstruction(il.Intrinsic(outputs, ARM64_INTRIN_VSHA512SU1Q_U64, inputs));
+			intrin_id = ARM64_INTRIN_VSHA512SU1Q_U64; // SHA512SU1 Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
 			break;
+		case ENC_SHADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VHADD_S8; // SHADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VHADDQ_S8; // SHADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VHADD_S16; // SHADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VHADDQ_S16; // SHADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VHADD_S32; // SHADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VHADDQ_S32; // SHADD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHLL_ASIMDMISC_S:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_N_S8; // SHLL Vd.8H,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_N_S16; // SHLL Vd.4S,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_N_S32; // SHLL Vd.2D,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_N_U8; // SHLL Vd.8H,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_N_U16; // SHLL Vd.4S,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_N_U32; // SHLL Vd.2D,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S8; // SHLL2 Vd.8H,Vn.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S16; // SHLL2 Vd.4S,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S32; // SHLL2 Vd.2D,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U8; // SHLL2 Vd.8H,Vn.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U16; // SHLL2 Vd.4S,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U32; // SHLL2 Vd.2D,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVT_F32_BF16; // SHLL Vd.4S,Vn.8H,#16
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_LOW_F32_BF16; // SHLL Vd.4S,Vn.8H,#16
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_HIGH_F32_BF16; // SHLL2 Vd.4S,Vn.8H,#16
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHL_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHL_N_S8; // SHL Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHL_N_S16; // SHL Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLQ_N_S16; // SHL Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHL_N_S32; // SHL Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLQ_N_S32; // SHL Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLQ_N_S64; // SHL Vd.2D,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHL_N_U8; // SHL Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHL_N_U16; // SHL Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLQ_N_U16; // SHL Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHL_N_U32; // SHL Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLQ_N_U32; // SHL Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLQ_N_U64; // SHL Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHL_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHLQ_N_S8; // SHL Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHL_N_S64; // SHL Dd,Dn,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHLQ_N_U8; // SHL Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHL_N_U64; // SHL Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHLD_N_S64; // SHL Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHLD_N_U64; // SHL Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VCVTAH_F32_BF16; // SHL Dd,Dn,#16
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHRN_N_S16; // SHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHRN_N_S32; // SHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHRN_N_S64; // SHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHRN_N_U16; // SHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHRN_N_U32; // SHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHRN_N_U64; // SHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_S16; // SHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_S32; // SHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_S64; // SHRN2 Vd.4S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_U16; // SHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_U32; // SHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHRN_HIGH_N_U64; // SHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SHSUB_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VHSUB_S8; // SHSUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VHSUBQ_S8; // SHSUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VHSUB_S16; // SHSUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VHSUBQ_S16; // SHSUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VHSUB_S32; // SHSUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VHSUBQ_S32; // SHSUB Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SLI_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSLI_N_S8; // SLI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSLI_N_S16; // SLI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSLIQ_N_S16; // SLI Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSLI_N_S32; // SLI Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSLIQ_N_S32; // SLI Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSLIQ_N_S64; // SLI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSLI_N_U8; // SLI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSLI_N_U16; // SLI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSLIQ_N_U16; // SLI Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSLI_N_U32; // SLI Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSLIQ_N_U32; // SLI Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSLIQ_N_U64; // SLI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSLIQ_N_P64; // SLI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSLI_N_P8; // SLI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSLI_N_P16; // SLI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSLIQ_N_P16; // SLI Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SLI_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSLIQ_N_S8; // SLI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSLI_N_S64; // SLI Dd,Dn,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSLIQ_N_U8; // SLI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSLI_N_U64; // SLI Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSLI_N_P64; // SLI Dd,Dn,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSLIQ_N_P8; // SLI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSLID_N_S64; // SLI Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSLID_N_U64; // SLI Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3PARTW1_VVV4_CRYPTOSHA512_3:
+			intrin_id = ARM64_INTRIN_VSM3PARTW1Q_U32; // SM3PARTW1 Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3PARTW2_VVV4_CRYPTOSHA512_3:
+			intrin_id = ARM64_INTRIN_VSM3PARTW2Q_U32; // SM3PARTW2 Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3SS1_VVV4_CRYPTO4:
+			intrin_id = ARM64_INTRIN_VSM3SS1Q_U32; // SM3SS1 Vd.4S,Vn.4S,Vm.4S,Va.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_reg(inputs, il, instr.operands[3]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3TT1A_VVV4_CRYPTO3_IMM2:
+			intrin_id = ARM64_INTRIN_VSM3TT1AQ_U32; // SM3TT1A Vd.4S,Vn.4S,Vm.4S[imm2]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3TT1B_VVV4_CRYPTO3_IMM2:
+			intrin_id = ARM64_INTRIN_VSM3TT1BQ_U32; // SM3TT1B Vd.4S,Vn.4S,Vm.4S[imm2]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3TT2A_VVV4_CRYPTO3_IMM2:
+			intrin_id = ARM64_INTRIN_VSM3TT2AQ_U32; // SM3TT2A Vd.4S,Vn.4S,Vm.4S[imm2]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM3TT2B_VVV_CRYPTO3_IMM2:
+			intrin_id = ARM64_INTRIN_VSM3TT2BQ_U32; // SM3TT2B Vd.4S,Vn.4S,Vm.4S[imm2]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM4EKEY_VVV4_CRYPTOSHA512_3:
+			intrin_id = ARM64_INTRIN_VSM4EKEYQ_U32; // SM4EKEY Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SM4E_VV4_CRYPTOSHA512_2:
+			intrin_id = ARM64_INTRIN_VSM4EQ_U32; // SM4E Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMAXP_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPMAX_S8; // SMAXP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMAX_S16; // SMAXP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMAX_S32; // SMAXP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPMAXQ_S8; // SMAXP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMAXQ_S16; // SMAXP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMAXQ_S32; // SMAXP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAXV_S32; // SMAXP Vd.2S,Vn.2S,Vm.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMAXV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VMAXV_S8; // SMAXV Bd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMAX_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMAX_S8; // SMAX Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMAXQ_S8; // SMAX Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMAX_S16; // SMAX Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMAXQ_S16; // SMAX Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAX_S32; // SMAX Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMAXQ_S32; // SMAX Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMINP_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPMIN_S8; // SMINP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMIN_S16; // SMINP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMIN_S32; // SMINP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPMINQ_S8; // SMINP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMINQ_S16; // SMINP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMINQ_S32; // SMINP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMINV_S32; // SMINP Vd.2S,Vn.2S,Vm.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMINV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VMINV_S8; // SMINV Bd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMIN_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMIN_S8; // SMIN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMINQ_S8; // SMIN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMIN_S16; // SMIN Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMINQ_S16; // SMIN Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMIN_S32; // SMIN Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMINQ_S32; // SMIN Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMLAL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAL_S8; // SMLAL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_S16; // SMLAL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_S32; // SMLAL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_S8; // SMLAL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_S16; // SMLAL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_S32; // SMLAL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_N_S16; // SMLAL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_N_S32; // SMLAL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_N_S16; // SMLAL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_N_S32; // SMLAL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMLAL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_LANE_S16; // SMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_LANE_S32; // SMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANE_S16; // SMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANE_S32; // SMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_LANEQ_S16; // SMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_LANEQ_S32; // SMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANEQ_S16; // SMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANEQ_S32; // SMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMLSL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSL_S8; // SMLSL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_S16; // SMLSL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_S32; // SMLSL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_S8; // SMLSL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_S16; // SMLSL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_S32; // SMLSL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_N_S16; // SMLSL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_N_S32; // SMLSL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_N_S16; // SMLSL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_N_S32; // SMLSL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMLSL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_LANE_S16; // SMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_LANE_S32; // SMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANE_S16; // SMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANE_S32; // SMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_LANEQ_S16; // SMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_LANEQ_S32; // SMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANEQ_S16; // SMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANEQ_S32; // SMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMMLA_ASIMDSAME2_G:
+			intrin_id = ARM64_INTRIN_VMMLAQ_S32; // SMMLA Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMOV_ASIMDINS_W_W:
+			intrin_id = ARM64_INTRIN_VGET_LANE_S8; // SMOV Rd,Vn.B[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_lane(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMULL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_S8; // SMULL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_S16; // SMULL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_S32; // SMULL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_HIGH_S8; // SMULL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_S16; // SMULL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_S32; // SMULL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_N_S16; // SMULL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_N_S32; // SMULL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_N_S16; // SMULL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_N_S32; // SMULL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SMULL_ASIMDELEM_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_LANE_S16; // SMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_LANE_S32; // SMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANE_S16; // SMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANE_S32; // SMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_LANEQ_S16; // SMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_LANEQ_S32; // SMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANEQ_S16; // SMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANEQ_S32; // SMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQABS_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQABS_S8; // SQABS Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQABSQ_S8; // SQABS Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQABS_S16; // SQABS Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQABSQ_S16; // SQABS Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQABS_S32; // SQABS Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQABSQ_S32; // SQABS Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQABSQ_S64; // SQABS Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQABS_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VQABS_S64; // SQABS Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQADD_S8; // SQADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQADDQ_S8; // SQADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQADD_S16; // SQADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQADDQ_S16; // SQADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQADD_S32; // SQADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQADDQ_S32; // SQADD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQADDQ_S64; // SQADD Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQADD_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQADD_S64; // SQADD Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLAL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_S16; // SQDMLAL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_S32; // SQDMLAL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_S16; // SQDMLAL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_S32; // SQDMLAL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_N_S16; // SQDMLAL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_N_S32; // SQDMLAL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_N_S16; // SQDMLAL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_N_S32; // SQDMLAL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLAL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_LANE_S16; // SQDMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_LANE_S32; // SQDMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_LANE_S16; // SQDMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_LANE_S32; // SQDMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_LANEQ_S16; // SQDMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_LANEQ_S32; // SQDMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_LANEQ_S16; // SQDMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLAL_HIGH_LANEQ_S32; // SQDMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLAL_ASISDDIFF_ONLY:
+			intrin_id = ARM64_INTRIN_VQDMLALH_S16; // SQDMLAL Sd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLAL_ASISDELEM_L:
+			intrin_id = ARM64_INTRIN_VQDMLALH_LANE_S16; // SQDMLAL Sd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLSL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_S16; // SQDMLSL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_S32; // SQDMLSL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_S16; // SQDMLSL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_S32; // SQDMLSL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_N_S16; // SQDMLSL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_N_S32; // SQDMLSL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_N_S16; // SQDMLSL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_N_S32; // SQDMLSL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLSL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_LANE_S16; // SQDMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_LANE_S32; // SQDMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_LANE_S16; // SQDMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_LANE_S32; // SQDMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_LANEQ_S16; // SQDMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_LANEQ_S32; // SQDMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_LANEQ_S16; // SQDMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMLSL_HIGH_LANEQ_S32; // SQDMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLSL_ASISDDIFF_ONLY:
+			intrin_id = ARM64_INTRIN_VQDMLSLH_S16; // SQDMLSL Sd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMLSL_ASISDELEM_L:
+			intrin_id = ARM64_INTRIN_VQDMLSLH_LANE_S16; // SQDMLSL Sd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULH_ASIMDELEM_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQDMULH_LANE_S16; // SQDMULH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQDMULHQ_LANE_S16; // SQDMULH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQDMULH_LANE_S32; // SQDMULH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULHQ_LANE_S32; // SQDMULH Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQDMULH_LANEQ_S16; // SQDMULH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQDMULHQ_LANEQ_S16; // SQDMULH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQDMULH_LANEQ_S32; // SQDMULH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULHQ_LANEQ_S32; // SQDMULH Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULH_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQDMULH_S16; // SQDMULH Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQDMULHQ_S16; // SQDMULH Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQDMULH_S32; // SQDMULH Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULHQ_S32; // SQDMULH Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQDMULH_N_S16; // SQDMULH Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQDMULHQ_N_S16; // SQDMULH Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQDMULH_N_S32; // SQDMULH Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULHQ_N_S32; // SQDMULH Vd.4S,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULH_ASISDELEM_R:
+			intrin_id = ARM64_INTRIN_VQDMULHH_LANE_S16; // SQDMULH Hd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULH_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQDMULHH_S16; // SQDMULH Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_S16; // SQDMULL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_S32; // SQDMULL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_S16; // SQDMULL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_S32; // SQDMULL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_N_S16; // SQDMULL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_N_S32; // SQDMULL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_N_S16; // SQDMULL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_N_S32; // SQDMULL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULL_ASIMDELEM_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_LANE_S16; // SQDMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_LANE_S32; // SQDMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_LANE_S16; // SQDMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_LANE_S32; // SQDMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_LANEQ_S16; // SQDMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_LANEQ_S32; // SQDMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_LANEQ_S16; // SQDMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQDMULL_HIGH_LANEQ_S32; // SQDMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULL_ASISDDIFF_ONLY:
+			intrin_id = ARM64_INTRIN_VQDMULLH_S16; // SQDMULL Sd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQDMULL_ASISDELEM_L:
+			intrin_id = ARM64_INTRIN_VQDMULLH_LANE_S16; // SQDMULL Sd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQNEG_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQNEG_S8; // SQNEG Vd.8B,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQNEGQ_S8; // SQNEG Vd.16B,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQNEG_S16; // SQNEG Vd.4H,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQNEGQ_S16; // SQNEG Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQNEG_S32; // SQNEG Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQNEGQ_S32; // SQNEG Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQNEGQ_S64; // SQNEG Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQNEG_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VQNEG_S64; // SQNEG Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLAH_ASIMDELEM_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLAH_LANE_S16; // SQRDMLAH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_LANE_S16; // SQRDMLAH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLAH_LANEQ_S16; // SQRDMLAH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_LANEQ_S16; // SQRDMLAH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAH_LANE_S32; // SQRDMLAH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_LANE_S32; // SQRDMLAH Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAH_LANEQ_S32; // SQRDMLAH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_LANEQ_S32; // SQRDMLAH Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLAH_ASIMDSAME2_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLAH_S16; // SQRDMLAH Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAH_S32; // SQRDMLAH Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_S16; // SQRDMLAH Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLAHQ_S32; // SQRDMLAH Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLAH_ASISDELEM_R:
+			intrin_id = ARM64_INTRIN_VQRDMLAHH_LANE_S16; // SQRDMLAH Hd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLSH_ASIMDELEM_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLSH_LANE_S16; // SQRDMLSH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_LANE_S16; // SQRDMLSH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLSH_LANEQ_S16; // SQRDMLSH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_LANEQ_S16; // SQRDMLSH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSH_LANE_S32; // SQRDMLSH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_LANE_S32; // SQRDMLSH Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSH_LANEQ_S32; // SQRDMLSH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_LANEQ_S32; // SQRDMLSH Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLSH_ASIMDSAME2_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMLSH_S16; // SQRDMLSH Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSH_S32; // SQRDMLSH Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_S16; // SQRDMLSH Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMLSHQ_S32; // SQRDMLSH Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLSH_ASISDELEM_R:
+			intrin_id = ARM64_INTRIN_VQRDMLSHH_LANE_S16; // SQRDMLSH Hd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMLSH_ASISDSAME2_ONLY:
+			intrin_id = ARM64_INTRIN_VQRDMLAHH_S16; // SQRDMLSH Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMULH_ASIMDELEM_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMULH_LANE_S16; // SQRDMULH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMULHQ_LANE_S16; // SQRDMULH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMULH_LANE_S32; // SQRDMULH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMULHQ_LANE_S32; // SQRDMULH Vd.4S,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMULH_LANEQ_S16; // SQRDMULH Vd.4H,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMULHQ_LANEQ_S16; // SQRDMULH Vd.8H,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMULH_LANEQ_S32; // SQRDMULH Vd.2S,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMULHQ_LANEQ_S32; // SQRDMULH Vd.4S,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMULH_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMULH_S16; // SQRDMULH Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMULHQ_S16; // SQRDMULH Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMULH_S32; // SQRDMULH Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMULHQ_S32; // SQRDMULH Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRDMULH_N_S16; // SQRDMULH Vd.4H,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRDMULHQ_N_S16; // SQRDMULH Vd.8H,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRDMULH_N_S32; // SQRDMULH Vd.2S,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRDMULHQ_N_S32; // SQRDMULH Vd.4S,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMULH_ASISDELEM_R:
+			intrin_id = ARM64_INTRIN_VQRDMULHH_LANE_S16; // SQRDMULH Hd,Hn,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRDMULH_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQRDMULHH_S16; // SQRDMULH Hd,Hn,Hm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQRSHL_S8; // SQRSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQRSHLQ_S8; // SQRSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRSHL_S16; // SQRSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRSHLQ_S16; // SQRSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRSHL_S32; // SQRSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRSHLQ_S32; // SQRSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQRSHLQ_S64; // SQRSHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQRSHL_S64; // SQRSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQRSHRN_N_S16; // SQRSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRSHRN_N_S32; // SQRSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRSHRN_N_S64; // SQRSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_S16; // SQRSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_S32; // SQRSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_S64; // SQRSHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHRN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQRSHRNH_N_S16; // SQRSHRN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHRUN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQRSHRUN_N_S16; // SQRSHRUN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRSHRUN_N_S32; // SQRSHRUN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRSHRUN_N_S64; // SQRSHRUN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQRSHRUN_HIGH_N_S16; // SQRSHRUN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRSHRUN_HIGH_N_S32; // SQRSHRUN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRSHRUN_HIGH_N_S64; // SQRSHRUN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQRSHRUN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQRSHRUNH_N_S16; // SQRSHRUN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHLU_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHLU_N_S8; // SQSHLU Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHLU_N_S16; // SQSHLU Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHLUQ_N_S16; // SQSHLU Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHLU_N_S32; // SQSHLU Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHLUQ_N_S32; // SQSHLU Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQSHLUQ_N_S64; // SQSHLU Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHLU_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHLUQ_N_S8; // SQSHLU Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VQSHLU_N_S64; // SQSHLU Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VQSHLUB_N_S8; // SQSHLU Bd,Bn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VQSHLUH_N_S16; // SQSHLU Hd,Hn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VQSHLUS_N_S32; // SQSHLU Sd,Sn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VQSHLUD_N_S64; // SQSHLU Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHL_S8; // SQSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHLQ_S8; // SQSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHL_S16; // SQSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHLQ_S16; // SQSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHL_S32; // SQSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHLQ_S32; // SQSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQSHLQ_S64; // SQSHL Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHLQ_N_S8; // SQSHL Vd.16B,Vn.16B,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQSHL_S64; // SQSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHRN_N_S16; // SQSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHRN_N_S32; // SQSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHRN_N_S64; // SQSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_S16; // SQSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_S32; // SQSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_S64; // SQSHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHRN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQSHRNH_N_S16; // SQSHRN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHRUN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHRUN_N_S16; // SQSHRUN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHRUN_N_S32; // SQSHRUN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHRUN_N_S64; // SQSHRUN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHRUN_HIGH_N_S16; // SQSHRUN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHRUN_HIGH_N_S32; // SQSHRUN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHRUN_HIGH_N_S64; // SQSHRUN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSHRUN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQSHRUNH_N_S16; // SQSHRUN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSUB_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSUB_S8; // SQSUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSUBQ_S8; // SQSUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSUB_S16; // SQSUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSUBQ_S16; // SQSUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSUB_S32; // SQSUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSUBQ_S32; // SQSUB Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQSUBQ_S64; // SQSUB Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQSUB_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQSUB_S64; // SQSUB Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQXTN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQMOVN_S16; // SQXTN Vd.8B,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQMOVN_S32; // SQXTN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQMOVN_S64; // SQXTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_S16; // SQXTN2 Vd.16B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_S32; // SQXTN2 Vd.8H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_S64; // SQXTN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQXTN_ASISDMISC_N:
+			intrin_id = ARM64_INTRIN_VQMOVNH_S16; // SQXTN Bd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQXTUN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQMOVUN_S16; // SQXTUN Vd.8B,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQMOVUN_S32; // SQXTUN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQMOVUN_S64; // SQXTUN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQMOVUN_HIGH_S16; // SQXTUN2 Vd.16B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQMOVUN_HIGH_S32; // SQXTUN2 Vd.8H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQMOVUN_HIGH_S64; // SQXTUN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SQXTUN_ASISDMISC_N:
+			intrin_id = ARM64_INTRIN_VQMOVUNH_S16; // SQXTUN Bd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRHADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRHADD_S8; // SRHADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRHADDQ_S8; // SRHADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRHADD_S16; // SRHADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRHADDQ_S16; // SRHADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRHADD_S32; // SRHADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRHADDQ_S32; // SRHADD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRI_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSRI_N_S8; // SRI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSRI_N_S16; // SRI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSRIQ_N_S16; // SRI Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSRI_N_S32; // SRI Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSRIQ_N_S32; // SRI Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSRIQ_N_S64; // SRI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSRI_N_U8; // SRI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSRI_N_U16; // SRI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSRIQ_N_U16; // SRI Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSRI_N_U32; // SRI Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSRIQ_N_U32; // SRI Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSRIQ_N_U64; // SRI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSRIQ_N_P64; // SRI Vd.2D,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSRI_N_P8; // SRI Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSRI_N_P16; // SRI Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSRIQ_N_P16; // SRI Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRI_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSRIQ_N_S8; // SRI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRI_N_S64; // SRI Dd,Dn,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSRIQ_N_U8; // SRI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRI_N_U64; // SRI Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRI_N_P64; // SRI Dd,Dn,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSRIQ_N_P8; // SRI Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRID_N_S64; // SRI Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRID_N_U64; // SRI Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHL_S8; // SRSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHLQ_S8; // SRSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHL_S16; // SRSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHLQ_S16; // SRSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHL_S32; // SRSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHLQ_S32; // SRSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSHLQ_S64; // SRSHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VRSHL_S64; // SRSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSHR_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHR_N_S8; // SRSHR Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHR_N_S16; // SRSHR Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHRQ_N_S16; // SRSHR Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHR_N_S32; // SRSHR Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHRQ_N_S32; // SRSHR Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSHRQ_N_S64; // SRSHR Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSHR_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHRQ_N_S8; // SRSHR Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSHR_N_S64; // SRSHR Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSHRD_N_S64; // SRSHR Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSRA_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSRA_N_S8; // SRSRA Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSRA_N_S16; // SRSRA Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSRAQ_N_S16; // SRSRA Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSRA_N_S32; // SRSRA Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSRAQ_N_S32; // SRSRA Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSRAQ_N_S64; // SRSRA Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SRSRA_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSRAQ_N_S8; // SRSRA Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSRA_N_S64; // SRSRA Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSRAD_N_S64; // SRSRA Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSHLL_ASIMDSHF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_N_S8; // SSHLL Vd.8H,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_N_S16; // SSHLL Vd.4S,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_N_S32; // SSHLL Vd.2D,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S8; // SSHLL2 Vd.8H,Vn.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S16; // SSHLL2 Vd.4S,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_S32; // SSHLL2 Vd.2D,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVL_S8; // SSHLL Vd.8H,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVL_S16; // SSHLL Vd.4S,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVL_S32; // SSHLL Vd.2D,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_S8; // SSHLL2 Vd.8H,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_S16; // SSHLL2 Vd.4S,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_S32; // SSHLL2 Vd.2D,Vn.4S,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHL_S8; // SSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHLQ_S8; // SSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHL_S16; // SSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLQ_S16; // SSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHL_S32; // SSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLQ_S32; // SSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLQ_S64; // SSHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VSHL_S64; // SSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSHR_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHR_N_S8; // SSHR Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHR_N_S16; // SSHR Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHRQ_N_S16; // SSHR Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHR_N_S32; // SSHR Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHRQ_N_S32; // SSHR Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHRQ_N_S64; // SSHR Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSHR_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHRQ_N_S8; // SSHR Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHR_N_S64; // SSHR Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHRD_N_S64; // SSHR Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSRA_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSRA_N_S8; // SSRA Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSRA_N_S16; // SSRA Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSRAQ_N_S16; // SSRA Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSRA_N_S32; // SSRA Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSRAQ_N_S32; // SSRA Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSRAQ_N_S64; // SSRA Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSRA_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSRAQ_N_S8; // SSRA Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRA_N_S64; // SSRA Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRAD_N_S64; // SSRA Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSUBL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBL_S8; // SSUBL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBL_S16; // SSUBL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBL_S32; // SSUBL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_S8; // SSUBL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_S16; // SSUBL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_S32; // SSUBL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SSUBW_ASIMDDIFF_W:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBW_S8; // SSUBW Vd.8H,Vn.8H,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBW_S16; // SSUBW Vd.4S,Vn.4S,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBW_S32; // SSUBW Vd.2D,Vn.2D,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_S8; // SSUBW2 Vd.8H,Vn.8H,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_S16; // SSUBW2 Vd.4S,Vn.4S,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_S32; // SSUBW2 Vd.2D,Vn.2D,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUBHN_ASIMDDIFF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSUBHN_S16; // SUBHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSUBHN_S32; // SUBHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUBHN_S64; // SUBHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSUBHN_U16; // SUBHN Vd.8B,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSUBHN_U32; // SUBHN Vd.4H,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUBHN_U64; // SUBHN Vd.2S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_S16; // SUBHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_S32; // SUBHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_S64; // SUBHN2 Vd.4S,Vn.2D,Vm.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_U16; // SUBHN2 Vd.16B,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_U32; // SUBHN2 Vd.8H,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBHN_HIGH_U64; // SUBHN2 Vd.4S,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUB_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSUB_S8; // SUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSUBQ_S8; // SUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSUB_S16; // SUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBQ_S16; // SUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUB_S32; // SUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBQ_S32; // SUB Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBQ_S64; // SUB Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSUB_U8; // SUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSUBQ_U8; // SUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSUB_U16; // SUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBQ_U16; // SUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUB_U32; // SUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBQ_U32; // SUB Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBQ_U64; // SUB Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUB_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VSUB_S64; // SUB Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUDOT_ASIMDELEM_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUDOT_LANE_S32; // SUDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSUDOT_LANEQ_S32; // SUDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUDOTQ_LANE_S32; // SUDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUDOTQ_LANEQ_S32; // SUDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUQADD_ASIMDMISC_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUQADD_S8; // SUQADD Vd.8B,Vn.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUQADDQ_S8; // SUQADD Vd.16B,Vn.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUQADD_S16; // SUQADD Vd.4H,Vn.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUQADDQ_S16; // SUQADD Vd.8H,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUQADD_S32; // SUQADD Vd.2S,Vn.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUQADDQ_S32; // SUQADD Vd.4S,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUQADDQ_S64; // SUQADD Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_SUQADD_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VUQADD_S64; // SUQADD Dd,Dn
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_TRN1_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN1_S8; // TRN1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN1Q_S8; // TRN1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN1_S16; // TRN1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN1Q_S16; // TRN1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN1_S32; // TRN1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN1Q_S32; // TRN1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN1Q_S64; // TRN1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN1_U8; // TRN1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN1Q_U8; // TRN1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN1_U16; // TRN1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN1Q_U16; // TRN1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN1_U32; // TRN1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN1Q_U32; // TRN1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN1Q_U64; // TRN1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN1Q_P64; // TRN1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN1_F32; // TRN1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN1Q_F32; // TRN1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN1Q_F64; // TRN1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN1_P8; // TRN1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN1Q_P8; // TRN1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN1_P16; // TRN1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN1Q_P16; // TRN1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN1_F16; // TRN1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN1Q_F16; // TRN1 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_TRN2_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN2_S8; // TRN2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN2Q_S8; // TRN2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN2_S16; // TRN2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN2Q_S16; // TRN2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN2_S32; // TRN2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN2Q_S32; // TRN2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN2Q_S64; // TRN2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN2_U8; // TRN2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN2Q_U8; // TRN2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN2_U16; // TRN2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN2Q_U16; // TRN2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN2_U32; // TRN2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN2Q_U32; // TRN2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN2Q_U64; // TRN2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN2Q_P64; // TRN2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VTRN2_F32; // TRN2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VTRN2Q_F32; // TRN2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VTRN2Q_F64; // TRN2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VTRN2_P8; // TRN2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VTRN2Q_P8; // TRN2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN2_P16; // TRN2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN2Q_P16; // TRN2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VTRN2_F16; // TRN2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VTRN2Q_F16; // TRN2 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UABAL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAL_U8; // UABAL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAL_U16; // UABAL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABAL_U32; // UABAL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAL_HIGH_U8; // UABAL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAL_HIGH_U16; // UABAL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABAL_HIGH_U32; // UABAL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UABA_ASIMDSAME_ONLY:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VABA_U8; // UABA Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VABAQ_U8; // UABA Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABA_U16; // UABA Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABAQ_U16; // UABA Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABA_U32; // UABA Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABAQ_U32; // UABA Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UABDL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDL_U8; // UABDL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDL_U16; // UABDL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABDL_U32; // UABDL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDL_HIGH_U8; // UABDL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDL_HIGH_U16; // UABDL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VABDL_HIGH_U32; // UABDL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UABD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VABD_U8; // UABD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VABDQ_U8; // UABD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VABD_U16; // UABD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VABDQ_U16; // UABD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VABD_U32; // UABD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VABDQ_U32; // UABD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UADALP_ASIMDMISC_P:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADAL_U8; // UADALP Vd.4H,Vn.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADALQ_U8; // UADALP Vd.8H,Vn.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADAL_U16; // UADALP Vd.2S,Vn.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADALQ_U16; // UADALP Vd.4S,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VPADAL_U32; // UADALP Vd.1D,Vn.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADALQ_U32; // UADALP Vd.2D,Vn.4S
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UADDLP_ASIMDMISC_P:
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPADDL_U8; // UADDLP Vd.4H,Vn.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPADDLQ_U8; // UADDLP Vd.8H,Vn.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPADDL_U16; // UADDLP Vd.2S,Vn.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPADDLQ_U16; // UADDLP Vd.4S,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VPADDL_U32; // UADDLP Vd.1D,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VPADDLQ_U32; // UADDLP Vd.2D,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_1DOUBLE) intrin_id = ARM64_INTRIN_VADDLV_U32; // UADDLP Vd.1D,Vn.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UADDLV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VADDLV_U8; // UADDLV Hd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UADDL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDL_U8; // UADDL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDL_U16; // UADDL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDL_U32; // UADDL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDL_HIGH_U8; // UADDL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDL_HIGH_U16; // UADDL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDL_HIGH_U32; // UADDL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UADDW_ASIMDDIFF_W:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDW_U8; // UADDW Vd.8H,Vn.8H,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDW_U16; // UADDW Vd.4S,Vn.4S,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDW_U32; // UADDW Vd.2D,Vn.2D,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VADDW_HIGH_U8; // UADDW2 Vd.8H,Vn.8H,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VADDW_HIGH_U16; // UADDW2 Vd.4S,Vn.4S,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VADDW_HIGH_U32; // UADDW2 Vd.2D,Vn.2D,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_D32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVT_F64_U64; // UCVTF Dd,Dn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_S32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTS_F32_U32; // UCVTF Sd,Sn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_ASIMDMISCFP16_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_F32_U32; // UCVTF Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_F32_U32; // UCVTF Vd.4S,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_F64_U64; // UCVTF Vd.2D,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCVT_N_F32_U32; // UCVTF Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCVTQ_N_F32_U32; // UCVTF Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VCVTQ_N_F64_U64; // UCVTF Vd.2D,Vn.2D,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_F16_U16; // UCVTF Vd.4H,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_F16_U16; // UCVTF Vd.8H,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_N_F16_U16; // UCVTF Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_N_F16_U16; // UCVTF Vd.8H,Vn.8H,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_U16; // UCVTF Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UDOT_ASIMDELEM_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_LANE_U32; // UDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_LANEQ_U32; // UDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_LANEQ_U32; // UDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_LANE_U32; // UDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UDOT_ASIMDSAME2_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VDOT_U32; // UDOT Vd.2S,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VDOTQ_U32; // UDOT Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UHADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VHADD_U8; // UHADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VHADDQ_U8; // UHADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VHADD_U16; // UHADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VHADDQ_U16; // UHADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VHADD_U32; // UHADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VHADDQ_U32; // UHADD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UHSUB_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VHSUB_U8; // UHSUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VHSUBQ_U8; // UHSUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VHSUB_U16; // UHSUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VHSUBQ_U16; // UHSUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VHSUB_U32; // UHSUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VHSUBQ_U32; // UHSUB Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMAXP_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPMAX_U8; // UMAXP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMAX_U16; // UMAXP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMAX_U32; // UMAXP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPMAXQ_U8; // UMAXP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMAXQ_U16; // UMAXP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMAXQ_U32; // UMAXP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAXV_U32; // UMAXP Vd.2S,Vn.2S,Vm.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMAXV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VMAXV_U8; // UMAXV Bd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMAX_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMAX_U8; // UMAX Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMAXQ_U8; // UMAX Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMAX_U16; // UMAX Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMAXQ_U16; // UMAX Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMAX_U32; // UMAX Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMAXQ_U32; // UMAX Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMINP_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VPMIN_U8; // UMINP Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VPMIN_U16; // UMINP Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VPMIN_U32; // UMINP Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VPMINQ_U8; // UMINP Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VPMINQ_U16; // UMINP Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VPMINQ_U32; // UMINP Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[2].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMINV_U32; // UMINP Vd.2S,Vn.2S,Vm.2S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMINV_ASIMDALL_ONLY:
+			intrin_id = ARM64_INTRIN_VMINV_U8; // UMINV Bd,Vn.8B
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMIN_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMIN_U8; // UMIN Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMINQ_U8; // UMIN Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMIN_U16; // UMIN Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMINQ_U16; // UMIN Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMIN_U32; // UMIN Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMINQ_U32; // UMIN Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMLAL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAL_U8; // UMLAL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_U16; // UMLAL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_U32; // UMLAL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_U8; // UMLAL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_U16; // UMLAL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_U32; // UMLAL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_N_U16; // UMLAL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_N_U32; // UMLAL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_N_U16; // UMLAL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_N_U32; // UMLAL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMLAL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_LANE_U16; // UMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_LANE_U32; // UMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANE_U16; // UMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANE_U32; // UMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_LANEQ_U16; // UMLAL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_LANEQ_U32; // UMLAL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANEQ_U16; // UMLAL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLAL_HIGH_LANEQ_U32; // UMLAL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMLSL_ASIMDDIFF_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSL_U8; // UMLSL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_U16; // UMLSL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_U32; // UMLSL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_U8; // UMLSL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_U16; // UMLSL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_U32; // UMLSL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_N_U16; // UMLSL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_N_U32; // UMLSL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_N_U16; // UMLSL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_N_U32; // UMLSL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMLSL_ASIMDELEM_L:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_LANE_U16; // UMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_LANE_U32; // UMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANE_U16; // UMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANE_U32; // UMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_LANEQ_U16; // UMLSL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_LANEQ_U32; // UMLSL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANEQ_U16; // UMLSL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMLSL_HIGH_LANEQ_U32; // UMLSL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMMLA_ASIMDSAME2_G:
+			intrin_id = ARM64_INTRIN_VMMLAQ_U32; // UMMLA Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMOV_ASIMDINS_W_W:
+			intrin_id = ARM64_INTRIN_VGET_LANE_U8; // UMOV Rd,Vn.B[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_lane(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMULL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_U8; // UMULL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_U16; // UMULL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_U32; // UMULL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMULL_HIGH_U8; // UMULL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_U16; // UMULL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_U32; // UMULL2 Vd.2D,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_N_U16; // UMULL Vd.4S,Vn.4H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_N_U32; // UMULL Vd.2D,Vn.2S,Vm.S[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_N_U16; // UMULL2 Vd.4S,Vn.8H,Vm.H[0]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_N_U32; // UMULL2 Vd.2D,Vn.4S,Vm.S[0]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UMULL_ASIMDELEM_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_LANE_U16; // UMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_LANE_U32; // UMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANE_U16; // UMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANE_U32; // UMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_LANEQ_U16; // UMULL Vd.4S,Vn.4H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_LANEQ_U32; // UMULL Vd.2D,Vn.2S,Vm.S[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANEQ_U16; // UMULL2 Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMULL_HIGH_LANEQ_U32; // UMULL2 Vd.2D,Vn.4S,Vm.S[lane]
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQADD_U8; // UQADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQADDQ_U8; // UQADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQADD_U16; // UQADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQADDQ_U16; // UQADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQADD_U32; // UQADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQADDQ_U32; // UQADD Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQADDQ_U64; // UQADD Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQADD_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQADD_U64; // UQADD Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQRSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQRSHL_U8; // UQRSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQRSHLQ_U8; // UQRSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRSHL_U16; // UQRSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRSHLQ_U16; // UQRSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRSHL_U32; // UQRSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRSHLQ_U32; // UQRSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQRSHLQ_U64; // UQRSHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQRSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQRSHL_U64; // UQRSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQRSHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQRSHRN_N_U16; // UQRSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQRSHRN_N_U32; // UQRSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQRSHRN_N_U64; // UQRSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_U16; // UQRSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_U32; // UQRSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQRSHRN_HIGH_N_U64; // UQRSHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQRSHRN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQRSHRNH_N_U16; // UQRSHRN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHL_U8; // UQSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHLQ_U8; // UQSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHL_U16; // UQSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHLQ_U16; // UQSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHL_U32; // UQSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHLQ_U32; // UQSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQSHLQ_U64; // UQSHL Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHLQ_N_U8; // UQSHL Vd.16B,Vn.16B,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQSHL_U64; // UQSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSHRN_ASIMDSHF_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSHRN_N_U16; // UQSHRN Vd.8B,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSHRN_N_U32; // UQSHRN Vd.4H,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSHRN_N_U64; // UQSHRN Vd.2S,Vn.2D,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_U16; // UQSHRN2 Vd.16B,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_U32; // UQSHRN2 Vd.8H,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSHRN_HIGH_N_U64; // UQSHRN2 Vd.4S,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSHRN_ASISDSHF_N:
+			intrin_id = ARM64_INTRIN_VQSHRNH_N_U16; // UQSHRN Bd,Hn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSUB_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQSUB_U8; // UQSUB Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQSUBQ_U8; // UQSUB Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQSUB_U16; // UQSUB Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQSUBQ_U16; // UQSUB Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQSUB_U32; // UQSUB Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQSUBQ_U32; // UQSUB Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VQSUBQ_U64; // UQSUB Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQSUB_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VQSUB_U64; // UQSUB Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQXTN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VQMOVN_U16; // UQXTN Vd.8B,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VQMOVN_U32; // UQXTN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VQMOVN_U64; // UQXTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_U16; // UQXTN2 Vd.16B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_U32; // UQXTN2 Vd.8H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VQMOVN_HIGH_U64; // UQXTN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UQXTN_ASISDMISC_N:
+			intrin_id = ARM64_INTRIN_VQMOVNH_U16; // UQXTN Bd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URECPE_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRECPE_U32; // URECPE Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRECPEQ_U32; // URECPE Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URHADD_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRHADD_U8; // URHADD Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRHADDQ_U8; // URHADD Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRHADD_U16; // URHADD Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRHADDQ_U16; // URHADD Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRHADD_U32; // URHADD Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRHADDQ_U32; // URHADD Vd.4S,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHL_U8; // URSHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHLQ_U8; // URSHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHL_U16; // URSHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHLQ_U16; // URSHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHL_U32; // URSHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHLQ_U32; // URSHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSHLQ_U64; // URSHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VRSHL_U64; // URSHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSHR_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSHR_N_U8; // URSHR Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSHR_N_U16; // URSHR Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSHRQ_N_U16; // URSHR Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSHR_N_U32; // URSHR Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSHRQ_N_U32; // URSHR Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSHRQ_N_U64; // URSHR Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSHR_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSHRQ_N_U8; // URSHR Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSHR_N_U64; // URSHR Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSHRD_N_U64; // URSHR Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSQRTE_ASIMDMISC_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSQRTE_U32; // URSQRTE Vd.2S,Vn.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSQRTEQ_U32; // URSQRTE Vd.4S,Vn.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSRA_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VRSRA_N_U8; // URSRA Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VRSRA_N_U16; // URSRA Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VRSRAQ_N_U16; // URSRA Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VRSRA_N_U32; // URSRA Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VRSRAQ_N_U32; // URSRA Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VRSRAQ_N_U64; // URSRA Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_URSRA_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VRSRAQ_N_U8; // URSRA Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSRA_N_U64; // URSRA Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VRSRAD_N_U64; // URSRA Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USDOT_ASIMDELEM_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUSDOT_LANE_S32; // USDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUSDOT_LANEQ_S32; // USDOT Vd.2S,Vn.8B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUSDOTQ_LANE_S32; // USDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUSDOTQ_LANEQ_S32; // USDOT Vd.4S,Vn.16B,Vm.4B[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USDOT_ASIMDSAME2_D:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUSDOT_S32; // USDOT Vd.2S,Vn.8B,Vm.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUSDOTQ_S32; // USDOT Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USHLL_ASIMDSHF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_N_U8; // USHLL Vd.8H,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_N_U16; // USHLL Vd.4S,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_N_U32; // USHLL Vd.2D,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U8; // USHLL2 Vd.8H,Vn.16B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U16; // USHLL2 Vd.4S,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLL_HIGH_N_U32; // USHLL2 Vd.2D,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVL_U8; // USHLL Vd.8H,Vn.8B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVL_U16; // USHLL Vd.4S,Vn.4H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVL_U32; // USHLL Vd.2D,Vn.2S,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_U8; // USHLL2 Vd.8H,Vn.16B,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_U16; // USHLL2 Vd.4S,Vn.8H,#0
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VMOVL_HIGH_U32; // USHLL2 Vd.2D,Vn.4S,#0
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USHL_ASIMDSAME_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHL_U8; // USHL Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHLQ_U8; // USHL Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHL_U16; // USHL Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHLQ_U16; // USHL Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHL_U32; // USHL Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHLQ_U32; // USHL Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHLQ_U64; // USHL Vd.2D,Vn.2D,Vm.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USHL_ASISDSAME_ONLY:
+			intrin_id = ARM64_INTRIN_VSHL_U64; // USHL Dd,Dn,Dm
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USHR_ASIMDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSHR_N_U8; // USHR Vd.8B,Vn.8B,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSHR_N_U16; // USHR Vd.4H,Vn.4H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSHRQ_N_U16; // USHR Vd.8H,Vn.8H,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSHR_N_U32; // USHR Vd.2S,Vn.2S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSHRQ_N_U32; // USHR Vd.4S,Vn.4S,#n
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSHRQ_N_U64; // USHR Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USHR_ASISDSHF_R:
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSHRQ_N_U8; // USHR Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHR_N_U64; // USHR Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSHRD_N_U64; // USHR Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USMMLA_ASIMDSAME2_G:
+			intrin_id = ARM64_INTRIN_VUSMMLAQ_S32; // USMMLA Vd.4S,Vn.16B,Vm.16B
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USQADD_ASIMDMISC_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSQADD_U8; // USQADD Vd.8B,Vn.8B
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSQADDQ_U8; // USQADD Vd.16B,Vn.16B
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSQADD_U16; // USQADD Vd.4H,Vn.4H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSQADDQ_U16; // USQADD Vd.8H,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSQADD_U32; // USQADD Vd.2S,Vn.2S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSQADDQ_U32; // USQADD Vd.4S,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSQADDQ_U64; // USQADD Vd.2D,Vn.2D
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USQADD_ASISDMISC_R:
+			intrin_id = ARM64_INTRIN_VSQADD_U64; // USQADD Dd,Dn
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USRA_ASIMDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VSRA_N_U8; // USRA Vd.8B,Vn.8B,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VSRA_N_U16; // USRA Vd.4H,Vn.4H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSRAQ_N_U16; // USRA Vd.8H,Vn.8H,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VSRA_N_U32; // USRA Vd.2S,Vn.2S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSRAQ_N_U32; // USRA Vd.4S,Vn.4S,#n
+			if(instr.operands[0].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSRAQ_N_U64; // USRA Vd.2D,Vn.2D,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USRA_ASISDSHF_R:
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VSRAQ_N_U8; // USRA Vd.16B,Vn.16B,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRA_N_U64; // USRA Dd,Dn,#n
+			//if(None) intrin_id = ARM64_INTRIN_VSRAD_N_U64; // USRA Dd,Dn,#n
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_imm(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USUBL_ASIMDDIFF_L:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBL_U8; // USUBL Vd.8H,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBL_U16; // USUBL Vd.4S,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBL_U32; // USUBL Vd.2D,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_U8; // USUBL2 Vd.8H,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_U16; // USUBL2 Vd.4S,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBL_HIGH_U32; // USUBL2 Vd.2D,Vn.4S,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_USUBW_ASIMDDIFF_W:
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBW_U8; // USUBW Vd.8H,Vn.8H,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBW_U16; // USUBW Vd.4S,Vn.4S,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBW_U32; // USUBW Vd.2D,Vn.2D,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_U8; // USUBW2 Vd.8H,Vn.8H,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_U16; // USUBW2 Vd.4S,Vn.4S,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VSUBW_HIGH_U32; // USUBW2 Vd.2D,Vn.2D,Vm.4S
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UZP1_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP1_S8; // UZP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP1Q_S8; // UZP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP1_S16; // UZP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP1Q_S16; // UZP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP1_S32; // UZP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP1Q_S32; // UZP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP1Q_S64; // UZP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP1_U8; // UZP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP1Q_U8; // UZP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP1_U16; // UZP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP1Q_U16; // UZP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP1_U32; // UZP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP1Q_U32; // UZP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP1Q_U64; // UZP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP1Q_P64; // UZP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP1_F32; // UZP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP1Q_F32; // UZP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP1Q_F64; // UZP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP1_P8; // UZP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP1Q_P8; // UZP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP1_P16; // UZP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP1Q_P16; // UZP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP1_F16; // UZP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP1Q_F16; // UZP1 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UZP2_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP2_S8; // UZP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP2Q_S8; // UZP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP2_S16; // UZP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP2Q_S16; // UZP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP2_S32; // UZP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP2Q_S32; // UZP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP2Q_S64; // UZP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP2_U8; // UZP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP2Q_U8; // UZP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP2_U16; // UZP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP2Q_U16; // UZP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP2_U32; // UZP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP2Q_U32; // UZP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP2Q_U64; // UZP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP2Q_P64; // UZP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VUZP2_F32; // UZP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VUZP2Q_F32; // UZP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VUZP2Q_F64; // UZP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VUZP2_P8; // UZP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VUZP2Q_P8; // UZP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP2_P16; // UZP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP2Q_P16; // UZP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VUZP2_F16; // UZP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VUZP2Q_F16; // UZP2 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_XAR_VVV2_CRYPTO3_IMM6:
+			intrin_id = ARM64_INTRIN_VXARQ_U64; // XAR Vd.2D,Vn.2D,Vm.2D,imm6
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_imm(inputs, il, instr.operands[3]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_XTN_ASIMDMISC_N:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_S16; // XTN Vd.8B,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_S32; // XTN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_S64; // XTN Vd.2S,Vn.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_U16; // XTN Vd.8B,Vn.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_U32; // XTN Vd.4H,Vn.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_U64; // XTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S16; // XTN2 Vd.16B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S32; // XTN2 Vd.8H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S64; // XTN2 Vd.4S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_U16; // XTN2 Vd.16B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_U32; // XTN2 Vd.8H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_U64; // XTN2 Vd.4S,Vn.2D
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ZIP1_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP1_S8; // ZIP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP1Q_S8; // ZIP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP1_S16; // ZIP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP1Q_S16; // ZIP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP1_S32; // ZIP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP1Q_S32; // ZIP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP1Q_S64; // ZIP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP1_U8; // ZIP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP1Q_U8; // ZIP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP1_U16; // ZIP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP1Q_U16; // ZIP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP1_U32; // ZIP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP1Q_U32; // ZIP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP1Q_U64; // ZIP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP1Q_P64; // ZIP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP1_F32; // ZIP1 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP1Q_F32; // ZIP1 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP1Q_F64; // ZIP1 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP1_P8; // ZIP1 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP1Q_P8; // ZIP1 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP1_P16; // ZIP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP1Q_P16; // ZIP1 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP1_F16; // ZIP1 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP1Q_F16; // ZIP1 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_ZIP2_ASIMDPERM_ONLY:
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP2_S8; // ZIP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP2Q_S8; // ZIP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP2_S16; // ZIP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP2Q_S16; // ZIP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP2_S32; // ZIP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP2Q_S32; // ZIP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP2Q_S64; // ZIP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP2_U8; // ZIP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP2Q_U8; // ZIP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP2_U16; // ZIP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP2Q_U16; // ZIP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP2_U32; // ZIP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP2Q_U32; // ZIP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP2Q_U64; // ZIP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP2Q_P64; // ZIP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VZIP2_F32; // ZIP2 Vd.2S,Vn.2S,Vm.2S
+			if(instr.operands[1].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VZIP2Q_F32; // ZIP2 Vd.4S,Vn.4S,Vm.4S
+			if(instr.operands[1].arrSpec==ARRSPEC_2DOUBLES) intrin_id = ARM64_INTRIN_VZIP2Q_F64; // ZIP2 Vd.2D,Vn.2D,Vm.2D
+			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VZIP2_P8; // ZIP2 Vd.8B,Vn.8B,Vm.8B
+			if(instr.operands[1].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VZIP2Q_P8; // ZIP2 Vd.16B,Vn.16B,Vm.16B
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP2_P16; // ZIP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP2Q_P16; // ZIP2 Vd.8H,Vn.8H,Vm.8H
+			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VZIP2_F16; // ZIP2 Vd.4H,Vn.4H,Vm.4H
+			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VZIP2Q_F16; // ZIP2 Vd.8H,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFMLALB_Z_ZZZ_:
+			intrin_id = ARM64_INTRIN_VBFMLALBQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFMLALB_Z_ZZZI_:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANE_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANEQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFMLALT_Z_ZZZ_:
+			intrin_id = ARM64_INTRIN_VBFMLALTQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.8H
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_BFMLALT_Z_ZZZI_:
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANE_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANEQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLA_Z_ZZZI_H:
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_LANE_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_LANEQ_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_LANE_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_LANEQ_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT270_LANE_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#270
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT270_LANEQ_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#270
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_LANE_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#270
+			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_LANEQ_F16; // FCMLA Vd.8H,Vn.8H,Vm.H[lane],#270
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_FCMLA_Z_ZZZI_S:
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_LANE_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_LANE_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT180_LANEQ_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#180
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VCMLA_ROT270_LANE_F32; // FCMLA Vd.2S,Vn.2S,Vm.2S[lane],#270
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_LANE_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#270
+			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VCMLAQ_ROT270_LANEQ_F32; // FCMLA Vd.4S,Vn.4S,Vm.S[lane],#270
+			add_input_reg(inputs, il, instr.operands[0]);
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_input_reg(inputs, il, instr.operands[2]);
+			add_input_lane(inputs, il, instr.operands[2]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+
 		default:
 			break;
 	}
+
+	if(intrin_id != (NeonIntrinsic)ARM64_INTRIN_INVALID)
+		il.AddInstruction(il.Intrinsic(outputs, intrin_id, inputs));
+
 	return true;
 }
