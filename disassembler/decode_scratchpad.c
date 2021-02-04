@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <strings.h>
 
 #include "decode.h"
 #include "pcode.h"
@@ -741,13 +742,13 @@ const char *reg_lookup_c[16] = {
 	dec->operands[i].operandClass = STR_IMM; \
 	dec->operands[i].immediate = VALUE; \
 	dec->operands[i].signedImm = 0; \
-	dec->operands[i].name = STRING; \
+	strcpy(dec->operands[i].name, STRING); \
 	i++;
 
 /* specialized immediate operands */
 #define ADD_OPERAND_NAME(VALUE) \
 	dec->operands[i].operandClass = NAME; \
-	dec->operands[i].name = VALUE; \
+	strcpy(dec->operands[i].name, VALUE); \
 	i++;
 
 #define ADD_OPERAND_VA
