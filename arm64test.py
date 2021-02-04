@@ -2,6 +2,33 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_fcvt = [
+	# fcvt d9, h29
+	(b'\xA9\xC3\xE2\x1E', 'LLIL_SET_REG.q(d9,LLIL_FLOAT_CONV.q(LLIL_REG.w(h29)))'),
+	# fcvt d11, h29
+	(b'\xAB\xC3\xE2\x1E', 'LLIL_SET_REG.q(d11,LLIL_FLOAT_CONV.q(LLIL_REG.w(h29)))'),
+	# fcvt d27, s12
+	(b'\x9B\xC1\x22\x1E', 'LLIL_SET_REG.q(d27,LLIL_FLOAT_CONV.q(LLIL_REG.d(s12)))'),
+	# fcvt d18, s7
+	(b'\xF2\xC0\x22\x1E', 'LLIL_SET_REG.q(d18,LLIL_FLOAT_CONV.q(LLIL_REG.d(s7)))'),
+	# fcvt h11, d15
+	(b'\xEB\xC1\x63\x1E', 'LLIL_SET_REG.w(h11,LLIL_FLOAT_CONV.w(LLIL_REG.q(d15)))'),
+	# fcvt h4, d8
+	(b'\x04\xC1\x63\x1E', 'LLIL_SET_REG.w(h4,LLIL_FLOAT_CONV.w(LLIL_REG.q(d8)))'),
+	# fcvt h14, s1
+	(b'\x2E\xC0\x23\x1E', 'LLIL_SET_REG.w(h14,LLIL_FLOAT_CONV.w(LLIL_REG.d(s1)))'),
+	# fcvt h7, s26
+	(b'\x47\xC3\x23\x1E', 'LLIL_SET_REG.w(h7,LLIL_FLOAT_CONV.w(LLIL_REG.d(s26)))'),
+	# fcvt s28, d16
+	(b'\x1C\x42\x62\x1E', 'LLIL_SET_REG.d(s28,LLIL_FLOAT_CONV.d(LLIL_REG.q(d16)))'),
+	# fcvt s28, d13
+	(b'\xBC\x41\x62\x1E', 'LLIL_SET_REG.d(s28,LLIL_FLOAT_CONV.d(LLIL_REG.q(d13)))'),
+	# fcvt s15, h17
+	(b'\x2F\x42\xE2\x1E', 'LLIL_SET_REG.d(s15,LLIL_FLOAT_CONV.d(LLIL_REG.w(h17)))'),
+	# fcvt s5, h14
+	(b'\xC5\x41\xE2\x1E', 'LLIL_SET_REG.d(s5,LLIL_FLOAT_CONV.d(LLIL_REG.w(h14)))'),
+]
+
 tests_fccmp_fccmpe = [
 	# fccmpe d0, d20, #0x7, lo
 	(b'\x17\x34\x74\x1E', 'LLIL_IF(LLIL_FLAG(c),1,3);' + \
@@ -742,6 +769,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_fcvt + \
 	tests_fccmp_fccmpe + \
 	tests_fcmp_fcmpe + \
 	tests_fcsel + \
