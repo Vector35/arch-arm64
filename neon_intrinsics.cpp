@@ -11142,7 +11142,7 @@ static void add_input_reg(vector<ExprId> &inputs, LowLevelILFunction &il, Instru
 {
 	// TODO: test that arrangement specifier is being used to extract correctly sized register
 	// eg: V0.1d -> REG_V0_D0
-	inputs.push_back(ILREG(operand));
+	inputs.push_back(ILREG_X(operand));
 }
 
 static void add_input_imm(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)

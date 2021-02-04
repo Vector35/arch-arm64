@@ -1,7 +1,8 @@
 #define IMM(X) X.immediate
 #define REG(X) (X).reg[0]
 #define REGSZ(X) get_register_size(REG(X))
-#define ILREG(X) ExtractRegister(il, X, 0, REGSZ(X), false, REGSZ(X))
+#define ILREG(REGID) il.Register(get_register_size((REGID)), (REGID))
+#define ILREG_X(X) ExtractRegister(il, X, 0, REGSZ(X), false, REGSZ(X)) /* ILREG with eXtract */
 #define ILCONST(X) il.Const(REGSZ(X), IMM(X))
 #define SETREG(R,V) il.AddInstruction(il.SetRegister(REGSZ(R), REG(R), V))
 #define ADDREGOFS(R,O) il.Add(REGSZ(R), ILREG(R), il.Const(REGSZ(R), O))

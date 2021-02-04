@@ -105,13 +105,12 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 			InstructionOperand operand = instr.operands[i];
 
 			printf("\t.class: %s\n", oper_class_to_str(operand.operandClass));
+			if(operand.laneUsed)
+				printf("\t.lane: %d\n", operand.lane);
 			switch(operand.operandClass) {
 				case CONDITION:
 					printf("\t\t%d %s\n", operand.cond, cond_to_str(operand.cond));
 					break;
-				case MULTI_REG:
-					printf("\t\t.lane: %d\n", operand.lane);
-					printf("\t\t.laneUsed: %d\n", operand.laneUsed);
 				default:
 					break;
 			}
