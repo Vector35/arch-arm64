@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <strings.h>
+#include <string.h>
 
 #include "decode.h"
 #include "pcode.h"
