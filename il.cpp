@@ -1362,7 +1362,20 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 				il.AddInstruction(ILSETREG_O(operand1,
 					ILREG_O(operand2)));
 				break;
+			case ENC_FMOV_ASIMDIMM_D2_D:
+			case ENC_FMOV_ASIMDIMM_H_H:
+			case ENC_FMOV_ASIMDIMM_S_S:
+			{
+				int float_sz = 2;
+				if(instr.encoding==ENC_FMOV_ASIMDIMM_S_S) float_sz = 4;
+				if(instr.encoding==ENC_FMOV_ASIMDIMM_D2_D) float_sz = 8;
 
+				Register regs[16];
+				int dst_n = unpack_vector(operand1, regs);
+				for(int i=0; i<dst_n; ++i)
+					il.AddInstruction(ILSETREG(regs[i], GetFloat(il, operand2, float_sz)));
+				break;
+			}
 			default:
 				il.AddInstruction(il.Unimplemented());
 		}

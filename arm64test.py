@@ -67,18 +67,32 @@ tests_fmov = [
 	(b'\x4E\x03\xAF\x9E', 'LLIL_SET_REG.q(v14.d[1],LLIL_FLOAT_TO_INT.o(LLIL_REG.q(x26)))'),
 	# fmov v28.d[1], x14
 	(b'\xDC\x01\xAF\x9E', 'LLIL_SET_REG.q(v28.d[1],LLIL_FLOAT_TO_INT.o(LLIL_REG.q(x14)))'),
-	# TODO fmov v13.2d, #-3.0
-	(b'\x0D\xF5\x04\x6F', 'LLIL_UNIMPL()'),
+	# TODO fmov v13.2d, #-3.0 (.d in arm namespace is 64-bit, .q in binja namespce is 64-bit)
+	(b'\x0D\xF5\x04\x6F', 'LLIL_SET_REG.q(v13.d[0],LLIL_FLOAT_CONST.q(-3.0)); ' + \
+						  'LLIL_SET_REG.q(v13.d[1],LLIL_FLOAT_CONST.q(-3.0))'),
 	# TODO fmov v24.2d, #-22.0
-	(b'\xD8\xF6\x05\x6F', 'LLIL_UNIMPL()'),
+	(b'\xD8\xF6\x05\x6F', 'LLIL_SET_REG.q(v24.d[0],LLIL_FLOAT_CONST.q(-22.0)); ' + \
+						  'LLIL_SET_REG.q(v24.d[1],LLIL_FLOAT_CONST.q(-22.0))'),
 	# TODO fmov v29.4h, #13.5
-	(b'\x7D\xFD\x01\x0F', 'LLIL_UNIMPL()'),
+	(b'\x7D\xFD\x01\x0F', 'LLIL_SET_REG.w(v29.h[0],LLIL_FLOAT_CONST.w(1096286208)); ' + \
+						  'LLIL_SET_REG.w(v29.h[1],LLIL_FLOAT_CONST.w(1096286208)); ' + \
+						  'LLIL_SET_REG.w(v29.h[2],LLIL_FLOAT_CONST.w(1096286208)); ' + \
+						  'LLIL_SET_REG.w(v29.h[3],LLIL_FLOAT_CONST.w(1096286208))'),
 	# TODO fmov v16.8h, #-0.1953125
-	(b'\x30\xFD\x06\x4F', 'LLIL_UNIMPL()'),
+	(b'\x30\xFD\x06\x4F', 'LLIL_SET_REG.w(v16.h[0],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[1],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[2],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[3],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[4],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[5],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[6],LLIL_FLOAT_CONST.w(3192389632)); ' + \
+						  'LLIL_SET_REG.w(v16.h[7],LLIL_FLOAT_CONST.w(3192389632))'),
 	# TODO fmov v23.2s, #-6.25
-	(b'\x37\xF7\x04\x0F', 'LLIL_UNIMPL()'),
+	(b'\x37\xF7\x04\x0F', 'LLIL_SET_REG.d(v23.s[0],LLIL_FLOAT_CONST.d(-6.25)); ' + \
+						  'LLIL_SET_REG.d(v23.s[1],LLIL_FLOAT_CONST.d(-6.25))'),
 	# TODO fmov v13.2s, #-2.0
-	(b'\x0D\xF4\x04\x0F', 'LLIL_UNIMPL()'),
+	(b'\x0D\xF4\x04\x0F', 'LLIL_SET_REG.d(v13.s[0],LLIL_FLOAT_CONST.d(-2.0)); ' + \
+						  'LLIL_SET_REG.d(v13.s[1],LLIL_FLOAT_CONST.d(-2.0))'),
 ]
 
 tests_sha = [
