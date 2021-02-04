@@ -1166,15 +1166,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		}
 		break;
 	case ARM64_CMP:
-	case ARM64_FCMP:
-	case ARM64_FCMPE:
 		il.AddInstruction(il.Sub(REGSZ_O(operand1),
 					ILREG_O(operand1),
 					ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
 		break;
 	case ARM64_CCMP:
-	case ARM64_FCCMP:
-	case ARM64_FCCMPE:
 		{
 			LowLevelILLabel trueCode, falseCode, done;
 
@@ -1287,6 +1283,36 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 				il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_FCCMP:
+	case ARM64_FCCMPE:
+		{
+			LowLevelILLabel trueCode, falseCode, done;
+
+			il.AddInstruction(il.If(GetCondition(il, operand4.cond), trueCode, falseCode));
+
+			il.MarkLabel(trueCode);
+			il.AddInstruction(il.FloatSub(REGSZ_O(operand1),
+						ILREG_O(operand1),
+						ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
+			il.AddInstruction(il.Goto(done));
+
+			il.MarkLabel(falseCode);
+			il.AddInstruction(il.SetFlag(IL_FLAG_N, il.Const(0, (IMM_O(operand3) >> 3) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_Z, il.Const(0, (IMM_O(operand3) >> 2) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_C, il.Const(0, (IMM_O(operand3) >> 1) & 1)));
+			il.AddInstruction(il.SetFlag(IL_FLAG_V, il.Const(0, (IMM_O(operand3) >> 0) & 1)));
+
+			il.AddInstruction(il.Goto(done));
+
+			il.MarkLabel(done);
+		}
+		break;		
+	case ARM64_FCMP:
+	case ARM64_FCMPE:
+		il.AddInstruction(il.FloatSub(REGSZ_O(operand1),
+					ILREG_O(operand1),
+					ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
+		break;		
 	case ARM64_FSUB:
 		switch(instr.encoding) {
 			case ENC_FSUB_H_FLOATDP2:
