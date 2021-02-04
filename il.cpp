@@ -309,6 +309,7 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 	case MEM_POST_IDX:
 	case MULTI_REG:
 	case FIMM32:
+		return GetFloat(il, operand, resultSize);
 	case NONE:
 	default:
 		return il.Unimplemented();
@@ -1284,6 +1285,12 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			default:
 				il.AddInstruction(il.Unimplemented());
 		}
+		break;
+	case ARM64_FCMP:
+	case ARM64_FCMPE:
+		il.AddInstruction(il.Sub(REGSZ_O(operand1),
+					ILREG_O(operand1),
+					ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
 		break;
 	case ARM64_FSUB:
 		switch(instr.encoding) {

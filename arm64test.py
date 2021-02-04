@@ -2,6 +2,57 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_fcmp = [
+	# fcmpe d23, #0.0
+	(b'\xF8\x22\x7F\x1E', 'LLIL_SUB.q(LLIL_REG.q(d23),LLIL_FLOAT_CONST.q(0.0))'),
+	# fcmpe d2, #0.0
+	(b'\x58\x20\x73\x1E', 'LLIL_SUB.q(LLIL_REG.q(d2),LLIL_FLOAT_CONST.q(0.0))'),
+	# fcmpe d4, d23
+	(b'\x90\x20\x77\x1E', 'LLIL_SUB.q(LLIL_REG.q(d4),LLIL_REG.q(d23))'),
+	# fcmpe d15, d16
+	(b'\xF0\x21\x70\x1E', 'LLIL_SUB.q(LLIL_REG.q(d15),LLIL_REG.q(d16))'),
+	# fcmpe h8, #0.0
+	(b'\x18\x21\xEC\x1E', 'LLIL_SUB.w(LLIL_REG.w(h8),LLIL_FLOAT_CONST.w(0))'),
+	# fcmpe h23, #0.0
+	(b'\xF8\x22\xEE\x1E', 'LLIL_SUB.w(LLIL_REG.w(h23),LLIL_FLOAT_CONST.w(0))'),
+	# fcmpe h14, h17
+	(b'\xD0\x21\xF1\x1E', 'LLIL_SUB.w(LLIL_REG.w(h14),LLIL_REG.w(h17))'),
+	# fcmpe h23, h25
+	(b'\xF0\x22\xF9\x1E', 'LLIL_SUB.w(LLIL_REG.w(h23),LLIL_REG.w(h25))'),
+	# fcmpe s4, #0.0
+	(b'\x98\x20\x2D\x1E', 'LLIL_SUB.d(LLIL_REG.d(s4),LLIL_FLOAT_CONST.d(0.0))'),
+	# fcmpe s16, #0.0
+	(b'\x18\x22\x27\x1E', 'LLIL_SUB.d(LLIL_REG.d(s16),LLIL_FLOAT_CONST.d(0.0))'),
+	# fcmpe s21, s23
+	(b'\xB0\x22\x37\x1E', 'LLIL_SUB.d(LLIL_REG.d(s21),LLIL_REG.d(s23))'),
+	# fcmpe s26, s6
+	(b'\x50\x23\x26\x1E', 'LLIL_SUB.d(LLIL_REG.d(s26),LLIL_REG.d(s6))'),
+	# fcmp d10, #0.0
+	(b'\x48\x21\x68\x1E', 'LLIL_SUB.q(LLIL_REG.q(d10),LLIL_FLOAT_CONST.q(0.0))'),
+	# fcmp d5, #0.0
+	(b'\xA8\x20\x71\x1E', 'LLIL_SUB.q(LLIL_REG.q(d5),LLIL_FLOAT_CONST.q(0.0))'),
+	# fcmp d2, d17
+	(b'\x40\x20\x71\x1E', 'LLIL_SUB.q(LLIL_REG.q(d2),LLIL_REG.q(d17))'),
+	# fcmp d27, d3
+	(b'\x60\x23\x63\x1E', 'LLIL_SUB.q(LLIL_REG.q(d27),LLIL_REG.q(d3))'),
+	# fcmp h19, #0.0
+	(b'\x68\x22\xF8\x1E', 'LLIL_SUB.w(LLIL_REG.w(h19),LLIL_FLOAT_CONST.w(0))'),
+	# fcmp h26, #0.0
+	(b'\x48\x23\xEF\x1E', 'LLIL_SUB.w(LLIL_REG.w(h26),LLIL_FLOAT_CONST.w(0))'),
+	# fcmp h8, h17
+	(b'\x00\x21\xF1\x1E', 'LLIL_SUB.w(LLIL_REG.w(h8),LLIL_REG.w(h17))'),
+	# fcmp h18, h26
+	(b'\x40\x22\xFA\x1E', 'LLIL_SUB.w(LLIL_REG.w(h18),LLIL_REG.w(h26))'),
+	# fcmp s20, #0.0
+	(b'\x88\x22\x27\x1E', 'LLIL_SUB.d(LLIL_REG.d(s20),LLIL_FLOAT_CONST.d(0.0))'),
+	# fcmp s29, #0.0
+	(b'\xA8\x23\x39\x1E', 'LLIL_SUB.d(LLIL_REG.d(s29),LLIL_FLOAT_CONST.d(0.0))'),
+	# fcmp s2, s19
+	(b'\x40\x20\x33\x1E', 'LLIL_SUB.d(LLIL_REG.d(s2),LLIL_REG.d(s19))'),
+	# fcmp s4, s7
+	(b'\x80\x20\x27\x1E', 'LLIL_SUB.d(LLIL_REG.d(s4),LLIL_REG.d(s7))'),
+]
+
 tests_fmov = [
 	# fmov w2, h17
 	(b'\x22\x02\xE6\x1E', 'LLIL_SET_REG.d(w2,LLIL_FLOAT_TO_INT.d(LLIL_REG.w(h17)))'),
@@ -541,6 +592,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_fcmp + \
 	tests_fmov + \
 	tests_sha + \
 	tests_rev + \
