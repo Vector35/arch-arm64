@@ -99,19 +99,19 @@ ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size
 	return res;
 }
 
-static ExprId GetFloat(LowLevelILFunction& il, Instruction& instr, InstructionOperand& operand)
+static ExprId GetFloat(LowLevelILFunction& il, InstructionOperand& operand, int float_sz)
 {
 	ExprId res;
 
-	switch(instr.datasize) {
-		case 16:
+	switch(float_sz) {
+		case 2:
 			res = il.FloatConstRaw(2, operand.immediate);
 			break;
-		case 32:
+		case 4:
 			res = il.FloatConstSingle(*(float *)&(operand.immediate));
 			break;
-		case 64:
-			res = il.FloatConstDouble(*(double *)&(operand.immediate));
+		case 8:
+			res = il.FloatConstDouble(*(float *)&(operand.immediate));
 			break;
 		default:
 			res = il.Unimplemented();
@@ -1349,9 +1349,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			case ENC_FMOV_H_FLOATIMM:
 			case ENC_FMOV_S_FLOATIMM:
 			case ENC_FMOV_D_FLOATIMM:
+			{
+				int float_sz = 2;
+				if(instr.encoding==ENC_FMOV_S_FLOATIMM) float_sz = 4;
+				if(instr.encoding==ENC_FMOV_D_FLOATIMM) float_sz = 8;
 				il.AddInstruction(il.SetRegister(REGSZ(operand1), REG(operand1),
-					GetFloat(il, instr, operand2)));
+					GetFloat(il, operand2, float_sz)));
 				break;
+			}
 			case ENC_FMOV_H_FLOATDP1:
 			case ENC_FMOV_S_FLOATDP1:
 			case ENC_FMOV_D_FLOATDP1:

@@ -32,9 +32,9 @@ tests_fmov = [
 	# fmov d19, d19
 	(b'\x73\x42\x60\x1E', 'LLIL_SET_REG.q(d19,LLIL_REG.q(d19))'),
 	# TODO fmov d17, #-1.9375
-	(b'\x11\xF0\x7F\x1E', 'LLIL_SET_REG.q(d17,LLIL_FLOAT_CONST.q(1.5912378105e-314))'),
+	(b'\x11\xF0\x7F\x1E', 'LLIL_SET_REG.q(d17,LLIL_FLOAT_CONST.q(-1.9375))'),
 	# TODO fmov d19, #-3.125
-	(b'\x13\x30\x71\x1E', 'LLIL_SET_REG.q(d19,LLIL_FLOAT_CONST.q(1.5938281374e-314))'),
+	(b'\x13\x30\x71\x1E', 'LLIL_SET_REG.q(d19,LLIL_FLOAT_CONST.q(-3.125))'),
 	# fmov h28, w19
 	(b'\x7C\x02\xE7\x1E', 'LLIL_SET_REG.w(h28,LLIL_FLOAT_TO_INT.w(LLIL_REG.d(w19)))'),
 	# fmov h2, w5

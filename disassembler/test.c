@@ -111,6 +111,9 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 				case CONDITION:
 					printf("\t\t%d %s\n", operand.cond, cond_to_str(operand.cond));
 					break;
+				case FIMM32:
+					printf("\t\t.datasize=%llu\n", instr.datasize);
+					printf("\t\t%f\n", *(float *)&(operand.immediate));
 				default:
 					break;
 			}
