@@ -11142,12 +11142,12 @@ static void add_input_reg(vector<ExprId> &inputs, LowLevelILFunction &il, Instru
 {
 	// TODO: test that arrangement specifier is being used to extract correctly sized register
 	// eg: V0.1d -> REG_V0_D0
-	inputs.push_back(ILREG_X(operand));
+	inputs.push_back(ILREG_O(operand));
 }
 
 static void add_input_imm(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
 {
-	inputs.push_back(ILCONST(operand));
+	inputs.push_back(ILCONST_O(operand));
 }
 
 static void add_input_lane(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
@@ -11159,7 +11159,7 @@ static void add_output_reg(vector<RegisterOrFlag> &outputs, LowLevelILFunction &
 {
 	// TODO: test that arrangement specifier is being used to extract correctly sized register
 	// eg: V0.1d -> REG_V0_D0
-	outputs.push_back(RegisterOrFlag::Register(REG(operand)));
+	outputs.push_back(RegisterOrFlag::Register(REG_O(operand)));
 }
 
 bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevelILFunction &il, Instruction &instr, size_t addrSize)
