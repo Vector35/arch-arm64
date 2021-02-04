@@ -1292,6 +1292,11 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					ILREG_O(operand1),
 					ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
 		break;
+	case ARM64_FCSEL:
+		GenIfElse(il, GetCondition(il, operand4.cond),
+			ILSETREG_O(operand1, ILREG_O(operand2)),
+			ILSETREG_O(operand1, ILREG_O(operand3)));
+		break;
 	case ARM64_FSUB:
 		switch(instr.encoding) {
 			case ENC_FSUB_H_FLOATDP2:
