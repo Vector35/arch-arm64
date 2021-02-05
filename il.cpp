@@ -97,6 +97,8 @@ ExprId ExtractImmediate(LowLevelILFunction& il, InstructionOperand& operand, int
 	return ILCONST(sizeof_imm, imm & ONES(sizeof_imm*8));
 }
 
+// extractSize can be smaller than the register, generating an LLIL_LOWPART
+// resultSize can be larger than the register, generating sign or zero extension
 ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
 {
 	size_t opsz = get_register_size(operand.reg[regNum]);
@@ -1357,13 +1359,13 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 
 			il.MarkLabel(done);
 		}
-		break;		
+		break;
 	case ARM64_FCMP:
 	case ARM64_FCMPE:
 		il.AddInstruction(il.FloatSub(REGSZ_O(operand1),
 					ILREG_O(operand1),
 					ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
-		break;		
+		break;
 	case ARM64_FSUB:
 		switch(instr.encoding) {
 			case ENC_FSUB_H_FLOATDP2:
@@ -2008,6 +2010,17 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_BRK:
 		il.AddInstruction(il.Trap(IMM_O(operand1))); // FIXME Breakpoint may need a parameter (IMM_O(operand1)));
 		return false;
+	case ARM64_DUP:
+		{
+			if(instr.encoding != ENC_DUP_ASIMDINS_DR_R) ABORT_LIFT;
+			Register regs[16];
+			int regs_n = unpack_vector(operand1, regs);
+			if(regs_n <= 0) ABORT_LIFT;
+			int lane_sz = REGSZ(regs[0]);
+			for(int i=0; i<regs_n; ++i)
+				il.AddInstruction(ILSETREG(regs[i], ExtractRegister(il, operand2, 0, lane_sz, 0, lane_sz)));
+		}
+		break;
 	case ARM64_DGH:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_HINT_DGH, {}));
 		break;

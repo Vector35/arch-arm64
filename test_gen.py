@@ -4,7 +4,7 @@
 
 import re, sys, codecs
 
-N_SAMPLES = 2 # number of samples for each encoding
+N_SAMPLES = 8 # number of samples for each encoding
 
 from arm64test import instr_to_il, il2str
 if not sys.argv[1:]:
@@ -59,7 +59,6 @@ def tests_for_mnemonics(mnems):
 # example:
 # ./test_gen mnemonic ld1
 if sys.argv[1] == 'mnemonic':
-	N_SAMPLES = 2
 	mnem = sys.argv[2]
 	print('searching for mnemonic -%s-' % mnem)
 	tests_for_mnemonics([mnem])
