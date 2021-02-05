@@ -141,7 +141,10 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 					break;
 				case IMM64:
 					printf("\t.imm64: 0x%llX\n", operand.immediate);
-
+					break;
+				case NAME:
+					printf("\t.name: %s\n", operand.name);
+					break;
 				default:
 					break;
 			}

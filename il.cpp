@@ -60,6 +60,42 @@ static void GenIfElse(LowLevelILFunction& il, ExprId clause, ExprId trueCase, Ex
 	return;
 }
 
+ExprId ExtractImmediate(LowLevelILFunction& il, InstructionOperand& operand, int sizeof_imm)
+{
+	if(operand.operandClass!=IMM32 && operand.operandClass!=IMM64)
+		return il.Unimplemented();
+
+	uint64_t imm = operand.immediate;
+
+	if(operand.shiftValueUsed) {
+		switch(operand.shiftType) {
+			case ShiftType_LSL:
+				imm = imm << operand.shiftValue;
+				break;
+			case ShiftType_LSR:
+				imm = imm >> operand.shiftValue;
+				break;
+			case ShiftType_MSL:
+				imm = (imm << operand.shiftValue) | ONES(operand.shiftValue);
+				break;
+			case ShiftType_ASR:
+			case ShiftType_ROR:
+			case ShiftType_UXTW:
+			case ShiftType_SXTW:
+			case ShiftType_SXTX:
+			case ShiftType_UXTX:
+			case ShiftType_SXTB:
+			case ShiftType_SXTH:
+			case ShiftType_UXTH:
+			case ShiftType_UXTB:
+			case ShiftType_END:
+			default:
+				return il.Unimplemented();
+		}
+	}
+
+	return ILCONST(sizeof_imm, imm & ONES(sizeof_imm*8));
+}
 
 ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize)
 {

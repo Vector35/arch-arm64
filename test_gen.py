@@ -37,7 +37,7 @@ def tests_for_mnemonics(mnems):
 				continue
 			#if samples == 0:
 			#	print('\t# %s' % encoding)
-			print('\t# %s                %s' % (instxt, encoding.upper()))
+			print('\t# %s %s' % (instxt.ljust(64), encoding.upper()))
 			ilstr = instr_to_il(data)
 			il_lines = ilstr.split(';')
 			print('\t(b\'\\x%s\\x%s\\x%s\\x%s\', ' % (b3, b2, b1, b0), end='')
