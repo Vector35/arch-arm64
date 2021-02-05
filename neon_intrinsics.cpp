@@ -11147,7 +11147,7 @@ static void add_input_reg(vector<ExprId> &inputs, LowLevelILFunction &il, Instru
 
 static void add_input_imm(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)
 {
-	inputs.push_back(ILCONST_O(operand));
+	inputs.push_back(ILCONST_O(0, operand));
 }
 
 static void add_input_lane(vector<ExprId> &inputs, LowLevelILFunction &il, InstructionOperand &operand)

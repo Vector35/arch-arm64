@@ -84,6 +84,29 @@ char *cond_to_str(enum Condition c)
 	}
 }
 
+char *shifttype_to_str(enum ShiftType st)
+{
+	switch(st) {
+		case ShiftType_NONE: return "ShiftType_NONE";
+		case ShiftType_LSL: return "ShiftType_LSL";
+		case ShiftType_LSR: return "ShiftType_LSR";
+		case ShiftType_ASR: return "ShiftType_ASR";
+		case ShiftType_ROR: return "ShiftType_ROR";
+		case ShiftType_UXTW: return "ShiftType_UXTW";
+		case ShiftType_SXTW: return "ShiftType_SXTW";
+		case ShiftType_SXTX: return "ShiftType_SXTX";
+		case ShiftType_UXTX: return "ShiftType_UXTX";
+		case ShiftType_SXTB: return "ShiftType_SXTB";
+		case ShiftType_SXTH: return "ShiftType_SXTH";
+		case ShiftType_UXTH: return "ShiftType_UXTH";
+		case ShiftType_UXTB: return "ShiftType_UXTB";
+		case ShiftType_MSL: return "ShiftType_MSL";
+		case ShiftType_END: return "ShiftType_END";
+		default:
+			return "ERROR";
+	}
+}
+
 int disassemble(uint64_t address, uint32_t insword, char *result)
 {
 	int rc;
@@ -104,18 +127,32 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 
 			InstructionOperand operand = instr.operands[i];
 
+			/* class */
 			printf("\t.class: %s\n", oper_class_to_str(operand.operandClass));
-			if(operand.laneUsed)
-				printf("\t.lane: %d\n", operand.lane);
 			switch(operand.operandClass) {
 				case CONDITION:
 					printf("\t\t%d %s\n", operand.cond, cond_to_str(operand.cond));
 					break;
 				case FIMM32:
 					printf("\t\t%f\n", *(float *)&(operand.immediate));
+					break;
+				case IMM32:
+					printf("\t.imm32: 0x%llX\n", operand.immediate & 0xFFFFFFFF);
+					break;
+				case IMM64:
+					printf("\t.imm64: 0x%llX\n", operand.immediate);
+
 				default:
 					break;
 			}
+			/* lane */
+			if(operand.laneUsed)
+				printf("\t.lane: %d\n", operand.lane);
+			/* shift */
+			if(operand.shiftType != ShiftType_NONE) {
+				printf("\t.shiftType: %d (%s)\n", operand.shiftType, shifttype_to_str(operand.shiftType));
+			}
+			/* arrangement spec */
 			printf("\t.arrSpec: %d %s\n", operand.arrSpec, arrspec_to_str(operand.arrSpec));
 		}
 	}

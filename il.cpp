@@ -1507,6 +1507,14 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					REG_O(operand1),
 					ReadILOperand(il, instr.operands[1], REGSZ_O(operand1))));
 		break;
+	case ARM64_MOVI:
+	{
+		Register regs[16];
+		int n = unpack_vector(operand1, regs);
+		for(int i=0; i<n; ++i)
+			il.AddInstruction(ILSETREG(regs[i], ILCONST_O(get_register_size(regs[i]), operand2)));
+	}
+	break;
 	case ARM64_MVN:
 		il.AddInstruction(ILSETREG_O(operand1,
 						il.Not(REGSZ_O(operand1), ReadILOperand(il, operand2, REGSZ_O(operand1)))));
