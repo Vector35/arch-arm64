@@ -9837,7 +9837,7 @@ break;
 		case ENC_BTI_HB_HINTS:
 		{
 			// NON-SYNTAX: {<targets>}
-			const char *table_indirection[4] = {"", "c", "j", "jc"};
+			const char *table_indirection[4] = {NULL, "c", "j", "jc"};
 			const char *TARGETS = table_indirection[(dec->op2 >> 1) & 3];
 			if(TARGETS) {
 				ADD_OPERAND_NAME(TARGETS)
