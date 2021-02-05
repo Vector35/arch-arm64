@@ -276,26 +276,26 @@ static ExprId GetILOperandEffectiveAddress(LowLevelILFunction& il, InstructionOp
 	switch (oclass) {
 		case MEM_REG: // ldr x0, [x1]
 		case MEM_POST_IDX: // ldr w0, [x1], #4
-			addr = il.Register(addrSize, operand.reg[0]);
+			addr = ILREG_O(operand);
 			if(extra_offset)
 				addr = il.Add(addrSize, addr, il.Const(addrSize, extra_offset));
 			break;
 		case MEM_OFFSET: // ldr w0, [x1, #4]
 		case MEM_PRE_IDX: // ldr w0, [x1, #4]!
-			addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate + extra_offset));
+			addr = il.Add(addrSize, ILREG_O(operand), il.Const(addrSize, operand.immediate + extra_offset));
 			break;
 		case MEM_EXTENDED:
 			if(operand.shiftType == ShiftType_NONE) {
-				addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]), il.Const(addrSize, operand.immediate + extra_offset));
+				addr = il.Add(addrSize, ILREG_O(operand), il.Const(addrSize, operand.immediate + extra_offset));
 			}
 			else if (operand.shiftType == ShiftType_LSL) {
 				if(extra_offset) {
-					addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
+					addr = il.Add(addrSize, ILREG_O(operand),
 						il.Add(addrSize, il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)),
 							il.Const(addrSize, extra_offset)));
 				}
 				else {
-					addr = il.Add(addrSize, il.Register(addrSize, operand.reg[0]),
+					addr = il.Add(addrSize, ILREG_O(operand),
 						il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
 				}
 			}
@@ -557,8 +557,8 @@ static void LoadStoreOperandPair(
 
 	/* compute addresses */
 	OperandClass oclass = (operand3.operandClass == MEM_PRE_IDX) ? MEM_REG : operand3.operandClass;
-	ExprId addr0 = GetILOperandEffectiveAddress(il, operand3, sz, oclass, 0);
-	ExprId addr1 = GetILOperandEffectiveAddress(il, operand3, sz, oclass, sz);
+	ExprId addr0 = GetILOperandEffectiveAddress(il, operand3, 8, oclass, 0);
+	ExprId addr1 = GetILOperandEffectiveAddress(il, operand3, 8, oclass, sz);
 
 	/* load/store */
 	if(load) {
@@ -1517,6 +1517,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDP:
+	case ARM64_LDNP:
 		LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_LDR:
@@ -1831,6 +1832,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		break;
 	}
 	case ARM64_STP:
+	case ARM64_STNP:
 		LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_STR:
