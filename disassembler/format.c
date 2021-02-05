@@ -292,15 +292,11 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	}
 
 	/* 4) handle other registers */
-	char scale[32] = {0};
-	if (operand->scale != 0)
-		snprintf(scale, sizeof(scale), "[%u]", 0x7fffffff & operand->scale);
-
 	char index[32] = {0};
 	if(operand->operandClass == REG && operand->laneUsed)
 		snprintf(index, sizeof(index), "[%u]", operand->lane);
 
-	if(snprintf(outBuffer, outBufferSize, "%s%s%s", reg_buf, scale, index) >= outBufferSize)
+	if(snprintf(outBuffer, outBufferSize, "%s%s", reg_buf, index) >= outBufferSize)
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	return 0;

@@ -538,13 +538,6 @@ protected:
 		if(arrspec)
 			result.emplace_back(TextToken, arrspec);
 
-		if (operand->scale) {
-			sprintf(buf, "%u", 0x7fffffff & operand->scale);
-			result.emplace_back(TextToken, "[");
-			result.emplace_back(IntegerToken, buf);
-			result.emplace_back(TextToken, "]");
-		}
-
 		/* only use index if this is isolated REG (not, for example, MULTIREG */
 		if(operand->operandClass == REG && operand->laneUsed) {
 			sprintf(buf, "%u", operand->lane);

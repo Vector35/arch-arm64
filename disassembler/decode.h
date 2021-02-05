@@ -288,7 +288,6 @@ struct InstructionOperand {
 	/* for class SYS_REG */
 	SystemReg sysreg;
 
-	uint32_t scale;
 	bool laneUsed;
 	uint32_t lane;
 	uint64_t immediate;

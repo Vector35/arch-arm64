@@ -1246,7 +1246,7 @@ tests_st1 = [
 ]
 
 test_cases = \
-	tests_ldadd +
+	tests_ldadd + \
 	tests_swp + \
 	tests_dup + \
 	tests_stlr + \
