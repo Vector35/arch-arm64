@@ -4,7 +4,7 @@
 
 import re, sys, codecs
 
-N_SAMPLES = 8 # number of samples for each encoding
+N_SAMPLES = 2 # number of samples for each encoding
 
 from arm64test import instr_to_il, il2str
 if not sys.argv[1:]:

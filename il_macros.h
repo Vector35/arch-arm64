@@ -11,6 +11,8 @@
 
 /* helpers given a register id */
 #define REGSZ(R) get_register_size(R)
+#define IS_W_REG(R) ((R) >= REG_W0 && (R) <= REG_W31)
+#define IS_X_REG(R) ((R) >= REG_X0 && (R) <= REG_X31)
 #define IS_V_REG(R) ((R) >= REG_V0 && (R) <= REG_V31)
 #define IS_Z_REG(R) ((R) >= REG_Z0 && (R) <= REG_Z31)
 #define IS_P_REG(R) ((R) >= REG_P0 && (R) <= REG_P15)
@@ -39,3 +41,4 @@
 	il.AddInstruction(il.Unimplemented()); \
 	break; \
 }
+
