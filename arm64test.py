@@ -2,6 +2,25 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_stlr = [
+	# stlrb w18, [x15]                                                 STLRB_SL32_LDSTEXCL
+	(b'\xF2\xB9\x8C\x08', 'LLIL_STORE.b(LLIL_REG.q(x15),LLIL_LOW_PART.b(LLIL_REG.d(w18)))'),
+	# stlrb w18, [x24]                                                 STLRB_SL32_LDSTEXCL
+	(b'\x12\xD3\x8F\x08', 'LLIL_STORE.b(LLIL_REG.q(x24),LLIL_LOW_PART.b(LLIL_REG.d(w18)))'),
+	# stlrh w10, [x12]                                                 STLRH_SL32_LDSTEXCL
+	(b'\x8A\x99\x89\x48', 'LLIL_STORE.w(LLIL_REG.q(x12),LLIL_LOW_PART.w(LLIL_REG.d(w10)))'),
+	# stlrh w25, [x18]                                                 STLRH_SL32_LDSTEXCL
+	(b'\x59\x86\x8B\x48', 'LLIL_STORE.w(LLIL_REG.q(x18),LLIL_LOW_PART.w(LLIL_REG.d(w25)))'),
+	# stlr wzr, [x14]                                                  STLR_SL32_LDSTEXCL
+	(b'\xDF\xAD\x8D\x88', 'LLIL_STORE.d(LLIL_REG.q(x14),LLIL_CONST.d(0x0))'),
+	# stlr w24, [x3]                                                   STLR_SL32_LDSTEXCL
+	(b'\x78\xF8\x9B\x88', 'LLIL_STORE.d(LLIL_REG.q(x3),LLIL_REG.d(w24))'),
+	# stlr x18, [x25]                                                  STLR_SL64_LDSTEXCL
+	(b'\x32\xD3\x8D\xC8', 'LLIL_STORE.q(LLIL_REG.q(x25),LLIL_REG.q(x18))'),
+	# stlr x0, [x17]                                                   STLR_SL64_LDSTEXCL
+	(b'\x20\xCE\x82\xC8', 'LLIL_STORE.q(LLIL_REG.q(x17),LLIL_REG.q(x0))'),
+]
+
 tests_ldnp = [
 	# ldnp w28, w5, [x14, #-0xd8]                                      LDNP_32_LDSTNAPAIR_OFFS
 	(b'\xDC\x15\x65\x28', 'LLIL_SET_REG.d(w28,LLIL_LOAD.d(LLIL_ADD.q(LLIL_REG.q(x14),LLIL_CONST.q(0xFFFFFFFFFFFFFF28))));' + \
@@ -986,6 +1005,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_stlr + \
 	tests_ldnp + \
 	tests_stnp + \
 	tests_movi + \

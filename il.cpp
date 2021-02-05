@@ -1836,14 +1836,17 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_STR:
+	case ARM64_STLR:
 	case ARM64_STUR:
 		LoadStoreOperand(il, false, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_STRB:
+	case ARM64_STLRB:
 	case ARM64_STURB:
 		LoadStoreOperandSize(il, false, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_STRH:
+	case ARM64_STLRH:
 	case ARM64_STURH:
 		LoadStoreOperandSize(il, false, false, 2, instr.operands[0], instr.operands[1]);
 		break;
