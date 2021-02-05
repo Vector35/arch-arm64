@@ -1556,29 +1556,29 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_LD1:
 		LoadStoreVector(il, true, instr.operands[0], instr.operands[1]);
 		break;
-	case ARM64_ST1:
-		LoadStoreVector(il, false, instr.operands[0], instr.operands[1]);
-		break;
-	case ARM64_SWPB: /* byte (1) */
-	case ARM64_SWPAB:
-	case ARM64_SWPLB:
-	case ARM64_SWPALB:
-		LoadStoreOperand(il, true, operand2, operand3, 1);
-		il.AddInstruction(il.Store(1, ILREG_O(operand3), il.LowPart(1, ILREG_O(operand1))));
-		break;
-	case ARM64_SWPH: /* half-word (2) */
-	case ARM64_SWPAH:
-	case ARM64_SWPLH:
-	case ARM64_SWPALH:
-		LoadStoreOperand(il, true, operand2, operand3, 2);
-		il.AddInstruction(il.Store(2, ILREG_O(operand3), il.LowPart(2, ILREG_O(operand1))));
-		break;
-	case ARM64_SWP: /* word (4) or doubleword (8) */
-	case ARM64_SWPA:
-	case ARM64_SWPL:
-	case ARM64_SWPAL:
+	case ARM64_LDADD:
+	case ARM64_LDADDA:
+	case ARM64_LDADDL:
+	case ARM64_LDADDAL:
 		LoadStoreOperand(il, true, operand2, operand3, 0);
-		LoadStoreOperand(il, false, operand1, operand3, 0);
+		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
+			il.Add(REGSZ_O(operand1), ILREG_O(operand1), ILREG_O(operand2))));
+		break;
+	case ARM64_LDADDB:
+	case ARM64_LDADDAB:
+	case ARM64_LDADDLB:
+	case ARM64_LDADDALB:
+		LoadStoreOperand(il, true, operand2, operand3, 1);
+		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
+			il.Add(1, il.LowPart(1,ILREG_O(operand1)), il.LowPart(1,ILREG_O(operand2)))));
+		break;
+	case ARM64_LDADDH:
+	case ARM64_LDADDAH:
+	case ARM64_LDADDLH:
+	case ARM64_LDADDALH:
+		LoadStoreOperand(il, true, operand2, operand3, 2);
+		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
+			il.Add(2, il.LowPart(2,ILREG_O(operand1)), il.LowPart(2,ILREG_O(operand2)))));
 		break;
 	case ARM64_LSL:
 		il.AddInstruction(ILSETREG_O(operand1,
@@ -1855,6 +1855,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 
 		break;
 	}
+	case ARM64_ST1:
+		LoadStoreVector(il, false, instr.operands[0], instr.operands[1]);
+		break;
 	case ARM64_STP:
 	case ARM64_STNP:
 		LoadStoreOperandPair(il, false, instr.operands[0], instr.operands[1], instr.operands[2]);
@@ -1883,6 +1886,27 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_SVC:
 		il.AddInstruction(il.SetRegister(2, FAKEREG_SYSCALL_IMM, il.Const(2, IMM_O(operand1))));
 		il.AddInstruction(il.SystemCall());
+		break;
+	case ARM64_SWP: /* word (4) or doubleword (8) */
+	case ARM64_SWPA:
+	case ARM64_SWPL:
+	case ARM64_SWPAL:
+		LoadStoreOperand(il, true, operand2, operand3, 0);
+		LoadStoreOperand(il, false, operand1, operand3, 0);
+		break;
+	case ARM64_SWPB: /* byte (1) */
+	case ARM64_SWPAB:
+	case ARM64_SWPLB:
+	case ARM64_SWPALB:
+		LoadStoreOperand(il, true, operand2, operand3, 1);
+		il.AddInstruction(il.Store(1, ILREG_O(operand3), il.LowPart(1, ILREG_O(operand1))));
+		break;
+	case ARM64_SWPH: /* half-word (2) */
+	case ARM64_SWPAH:
+	case ARM64_SWPLH:
+	case ARM64_SWPALH:
+		LoadStoreOperand(il, true, operand2, operand3, 2);
+		il.AddInstruction(il.Store(2, ILREG_O(operand3), il.LowPart(2, ILREG_O(operand1))));
 		break;
 	case ARM64_SXTB:
 		il.AddInstruction(ILSETREG_O(operand1,
