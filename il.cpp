@@ -1272,13 +1272,29 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						il.Const(1, IMM_O(operand4)))));
 		break;
 	case ARM64_FADD:
-		switch(instr.encoding) {
+		switch(instr.encoding)
+		{
 			case ENC_FADD_H_FLOATDP2:
 			case ENC_FADD_S_FLOATDP2:
 			case ENC_FADD_D_FLOATDP2:
 				il.AddInstruction(ILSETREG_O(operand1,
 					il.FloatAdd(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3))));
 				break;
+			case ENC_FADD_ASIMDSAME_ONLY:
+			case ENC_FADD_ASIMDSAMEFP16_ONLY:
+			{
+				Register srcs[16], dsts[16];
+				int dst_n = unpack_vector(operand1, dsts);
+				int src_n = unpack_vector(operand2, srcs);
+				if((dst_n != src_n) || dst_n==0)
+					ABORT_LIFT;
+
+				int rsize = get_register_size(dsts[0]);
+				for(int i=0; i<dst_n; ++i)
+					il.AddInstruction(il.FloatAdd(rsize, ILREG(dsts[i]), ILREG(srcs[i])));
+			}
+				break;
+
 			default:
 				il.AddInstruction(il.Unimplemented());
 		}

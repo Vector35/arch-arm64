@@ -2,6 +2,45 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_fadd = [
+	# fadd d30, d9, d18                FADD_D_FLOATDP2
+	(b'\x3E\x29\x72\x1E', 'LLIL_SET_REG.q(d30,LLIL_FADD.q(LLIL_REG.q(d9),LLIL_REG.q(d18)))'),
+	# fadd d23, d15, d25                FADD_D_FLOATDP2
+	(b'\xF7\x29\x79\x1E', 'LLIL_SET_REG.q(d23,LLIL_FADD.q(LLIL_REG.q(d15),LLIL_REG.q(d25)))'),
+	# fadd h24, h23, h13                FADD_H_FLOATDP2
+	(b'\xF8\x2A\xED\x1E', 'LLIL_SET_REG.w(h24,LLIL_FADD.w(LLIL_REG.w(h23),LLIL_REG.w(h13)))'),
+	# fadd h17, h1, h30                FADD_H_FLOATDP2
+	(b'\x31\x28\xFE\x1E', 'LLIL_SET_REG.w(h17,LLIL_FADD.w(LLIL_REG.w(h1),LLIL_REG.w(h30)))'),
+	# fadd s18, s19, s31                FADD_S_FLOATDP2
+	(b'\x72\x2A\x3F\x1E', 'LLIL_SET_REG.d(s18,LLIL_FADD.d(LLIL_REG.d(s19),LLIL_REG.d(s31)))'),
+	# fadd s30, s2, s14                FADD_S_FLOATDP2
+	(b'\x5E\x28\x2E\x1E', 'LLIL_SET_REG.d(s30,LLIL_FADD.d(LLIL_REG.d(s2),LLIL_REG.d(s14)))'),
+	# fadd v25.2s, v15.2s, v27.2s                FADD_ASIMDSAME_ONLY
+	(b'\xF9\xD5\x3B\x0E', 'LLIL_FADD.d(LLIL_REG.d(v25.s[0]),LLIL_REG.d(v15.s[0])); ' + \
+						  'LLIL_FADD.d(LLIL_REG.d(v25.s[1]),LLIL_REG.d(v15.s[1]))'),
+	# fadd v26.2s, v15.2s, v21.2s                FADD_ASIMDSAME_ONLY
+	(b'\xFA\xD5\x35\x0E', 'LLIL_FADD.d(LLIL_REG.d(v26.s[0]),LLIL_REG.d(v15.s[0])); ' + \
+						  'LLIL_FADD.d(LLIL_REG.d(v26.s[1]),LLIL_REG.d(v15.s[1]))'),
+	# fadd v21.8h, v20.8h, v16.8h                FADD_ASIMDSAMEFP16_ONLY
+	(b'\x95\x16\x50\x4E', 'LLIL_FADD.w(LLIL_REG.w(v21.h[0]),LLIL_REG.w(v20.h[0])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[1]),LLIL_REG.w(v20.h[1])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[2]),LLIL_REG.w(v20.h[2])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[3]),LLIL_REG.w(v20.h[3])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[4]),LLIL_REG.w(v20.h[4])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[5]),LLIL_REG.w(v20.h[5])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[6]),LLIL_REG.w(v20.h[6])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v21.h[7]),LLIL_REG.w(v20.h[7]))'),
+	# fadd v22.8h, v10.8h, v7.8h                FADD_ASIMDSAMEFP16_ONLY
+	(b'\x56\x15\x47\x4E', 'LLIL_FADD.w(LLIL_REG.w(v22.h[0]),LLIL_REG.w(v10.h[0])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[1]),LLIL_REG.w(v10.h[1])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[2]),LLIL_REG.w(v10.h[2])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[3]),LLIL_REG.w(v10.h[3])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[4]),LLIL_REG.w(v10.h[4])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[5]),LLIL_REG.w(v10.h[5])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[6]),LLIL_REG.w(v10.h[6])); ' + \
+						  'LLIL_FADD.w(LLIL_REG.w(v22.h[7]),LLIL_REG.w(v10.h[7]))'),
+]
+
 tests_fcvt = [
 	# fcvt d9, h29
 	(b'\xA9\xC3\xE2\x1E', 'LLIL_SET_REG.q(d9,LLIL_FLOAT_CONV.q(LLIL_REG.w(h29)))'),
@@ -769,6 +808,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_fadd + \
 	tests_fcvt + \
 	tests_fccmp_fccmpe + \
 	tests_fcmp_fcmpe + \
@@ -931,7 +971,6 @@ test_cases = \
 	(b'\x21\x00\x1b\xd5', 'LLIL_INTRINSIC([unknown_catchall],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
 	(b'\x23\x00\x3b\xd5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(unknown_catchall)]))'), # mrs x3, s3_3_c0_c0_1
 	(b'\xe0\x03\x9f\xd6', 'LLIL_INTRINSIC([],_eret,LLIL_CALL_PARAM([])); LLIL_TRAP(0)'), # eret
-	(b'\x00\x28\x21\x1e', 'LLIL_SET_REG.d(s0,LLIL_FADD.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fadd s0, s0, s1
 	(b'\x00\x38\x21\x1e', 'LLIL_SET_REG.d(s0,LLIL_FSUB.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fsub s0, s0, s1
 	(b'\x00\x08\x21\x1e', 'LLIL_SET_REG.d(s0,LLIL_FMUL.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fmul s0, s0, s1
 	(b'\x00\x18\x21\x1e', 'LLIL_SET_REG.d(s0,LLIL_FDIV.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fdiv s0, s0, s1
