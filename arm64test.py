@@ -2,6 +2,32 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_xtn_xtn2 = [
+	# xtn v17.4h, v24.4s                                               XTN_ASIMDMISC_N
+	(b'\x11\x2B\x61\x0E', 'LLIL_SET_REG.o(v17,LLIL_CONST.o(0x0));' + \
+						 ' LLIL_SET_REG.w(v17.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[0])));' + \
+						 ' LLIL_SET_REG.w(v17.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[1])));' + \
+						 ' LLIL_SET_REG.w(v17.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[2])));' + \
+						 ' LLIL_SET_REG.w(v17.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[3])))'),
+	# xtn v13.4h, v30.4s                                               XTN_ASIMDMISC_N
+	(b'\xCD\x2B\x61\x0E', 'LLIL_SET_REG.o(v13,LLIL_CONST.o(0x0));' + \
+						 ' LLIL_SET_REG.w(v13.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[0])));' + \
+						 ' LLIL_SET_REG.w(v13.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[1])));' + \
+						 ' LLIL_SET_REG.w(v13.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[2])));' + \
+						 ' LLIL_SET_REG.w(v13.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[3])))'),
+	# xtn v30.4h, v20.4s                                               XTN_ASIMDMISC_N
+	(b'\x9E\x2A\x61\x0E', 'LLIL_SET_REG.o(v30,LLIL_CONST.o(0x0));' + \
+						 ' LLIL_SET_REG.w(v30.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[0])));' + \
+						 ' LLIL_SET_REG.w(v30.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[1])));' + \
+						 ' LLIL_SET_REG.w(v30.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[2])));' + \
+						 ' LLIL_SET_REG.w(v30.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[3])))'),
+	# xtn2 v27.8h, v19.4s                                              XTN_ASIMDMISC_N
+	(b'\x7B\x2A\x61\x4E', 'LLIL_SET_REG.w(v27.h[4],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[0])));' + \
+						 ' LLIL_SET_REG.w(v27.h[5],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[1])));' + \
+						 ' LLIL_SET_REG.w(v27.h[6],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[2])));' + \
+						 ' LLIL_SET_REG.w(v27.h[7],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[3])))'),
+]
+
 tests_dc = [
 	# dc cvadp, x26                                                    DC_SYS_CR_SYSTEMINSTRS
 	(b'\x3A\x7D\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x26)]))'),
@@ -1304,6 +1330,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_xtn_xtn2 + \
 	tests_dc + \
 	tests_uxtl_uxtl2 + \
 	tests_ldadd + \
