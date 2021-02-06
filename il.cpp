@@ -1285,6 +1285,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_CLZ:
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_O(operand1))}, ARM64_INTRIN_CLZ, {ILREG_O(operand2)}));
 		break;
+	case ARM64_DC:
+		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_DC, {ILREG_O(operand2)})); /* operand1 is <dc_op> */
+		break;
 	case ARM64_DMB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_DMB, {}));
 		break;

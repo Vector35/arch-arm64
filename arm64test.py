@@ -2,6 +2,17 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_dc = [
+	# dc cvadp, x26                                                    DC_SYS_CR_SYSTEMINSTRS
+	(b'\x3A\x7D\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x26)]))'),
+	# dc zva, x24                                                      DC_SYS_CR_SYSTEMINSTRS
+	(b'\x38\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x24)]))'),
+	# dc zva, xzr                                                      DC_SYS_CR_SYSTEMINSTRS
+	(b'\x3F\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_CONST.q(0x0)]))'),
+	# dc cisw, x18                                                     DC_SYS_CR_SYSTEMINSTRS
+	(b'\x52\x7E\x08\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x18)]))'),
+]
+
 tests_uxtl_uxtl2 = [
 	# uxtl v2.2d, v8.2s                                                UXTL_USHLL_ASIMDSHF_L
 	(b'\x02\xA5\x20\x2F', 'LLIL_SET_REG.q(v2.d[0],LLIL_REG.d(v8.s[0]));' + \
@@ -1293,6 +1304,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_dc + \
 	tests_uxtl_uxtl2 + \
 	tests_ldadd + \
 	tests_swp + \

@@ -913,6 +913,8 @@ public:
 			return "__sev";
 		case ARM64_INTRIN_SEVL:
 			return "__sevl";
+		case ARM64_INTRIN_DC:
+			return "__dc";
 		case ARM64_INTRIN_DMB:
 			return "__dmb";
 		case ARM64_INTRIN_DSB:
@@ -954,7 +956,7 @@ public:
 		vector<uint32_t> tmp = {
 			ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTDZA, ARM64_INTRIN_AUTDZB,
 			ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB, ARM64_INTRIN_AUTIZA, ARM64_INTRIN_AUTIZB,
-			ARM64_INTRIN_AUTIB1716, ARM64_INTRIN_AUTIBSP, ARM64_INTRIN_AUTIBZ,
+			ARM64_INTRIN_AUTIB1716, ARM64_INTRIN_AUTIBSP, ARM64_INTRIN_AUTIBZ, ARM64_INTRIN_DC,
 			ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB, ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB,
 			ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB, ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR,
 			ARM64_INTRIN_PACDA, ARM64_INTRIN_PACDB, ARM64_INTRIN_PACDZA, ARM64_INTRIN_PACDZB,
@@ -978,14 +980,15 @@ public:
 	{
 		switch (intrinsic)
 		{
-		case ARM64_INTRIN_MRS:
-			return {NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AUTDA: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTDB: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTIA: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTIB: // reads <Xn|SP>
 		case ARM64_INTRIN_AUTIB1716: // reads x16
+		case ARM64_INTRIN_CLZ: // reads <Xn>
+		case ARM64_INTRIN_DC: // reads <Xt>
 		case ARM64_INTRIN_MSR:
+		case ARM64_INTRIN_MRS:
 		case ARM64_INTRIN_PACDA: // reads <Xn>
 		case ARM64_INTRIN_PACDB: // reads <Xn>
 		case ARM64_INTRIN_PACIA: // reads <Xn>
@@ -993,7 +996,6 @@ public:
 		case ARM64_INTRIN_PACIB: // reads <Xn>
 		case ARM64_INTRIN_PACIB1716: // reads x16
 		case ARM64_INTRIN_PRFM:
-		case ARM64_INTRIN_CLZ: // reads <Xn>
 		case ARM64_INTRIN_REV: // reads <Xn>
 		case ARM64_INTRIN_RBIT: // reads <Xn>
 			return {NameAndType(Type::IntegerType(8, false))};
