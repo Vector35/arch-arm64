@@ -2,6 +2,53 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_uxtl_uxtl2 = [
+	# uxtl v2.2d, v8.2s                                                UXTL_USHLL_ASIMDSHF_L
+	(b'\x02\xA5\x20\x2F', 'LLIL_SET_REG.q(v2.d[0],LLIL_REG.d(v8.s[0]));' + \
+						 ' LLIL_SET_REG.q(v2.d[1],LLIL_REG.d(v8.s[1]))'),
+	# uxtl v6.8h, v1.8b                                                UXTL_USHLL_ASIMDSHF_L
+	(b'\x26\xA4\x08\x2F', 'LLIL_SET_REG.w(v6.h[0],LLIL_REG.b(v1.b[0]));' + \
+						 ' LLIL_SET_REG.w(v6.h[1],LLIL_REG.b(v1.b[1]));' + \
+						 ' LLIL_SET_REG.w(v6.h[2],LLIL_REG.b(v1.b[2]));' + \
+						 ' LLIL_SET_REG.w(v6.h[3],LLIL_REG.b(v1.b[3]));' + \
+						 ' LLIL_SET_REG.w(v6.h[4],LLIL_REG.b(v1.b[4]));' + \
+						 ' LLIL_SET_REG.w(v6.h[5],LLIL_REG.b(v1.b[5]));' + \
+						 ' LLIL_SET_REG.w(v6.h[6],LLIL_REG.b(v1.b[6]));' + \
+						 ' LLIL_SET_REG.w(v6.h[7],LLIL_REG.b(v1.b[7]))'),
+	# uxtl v11.8h, v29.8b                                              UXTL_USHLL_ASIMDSHF_L
+	(b'\xAB\xA7\x08\x2F', 'LLIL_SET_REG.w(v11.h[0],LLIL_REG.b(v29.b[0]));' + \
+						 ' LLIL_SET_REG.w(v11.h[1],LLIL_REG.b(v29.b[1]));' + \
+						 ' LLIL_SET_REG.w(v11.h[2],LLIL_REG.b(v29.b[2]));' + \
+						 ' LLIL_SET_REG.w(v11.h[3],LLIL_REG.b(v29.b[3]));' + \
+						 ' LLIL_SET_REG.w(v11.h[4],LLIL_REG.b(v29.b[4]));' + \
+						 ' LLIL_SET_REG.w(v11.h[5],LLIL_REG.b(v29.b[5]));' + \
+						 ' LLIL_SET_REG.w(v11.h[6],LLIL_REG.b(v29.b[6]));' + \
+						 ' LLIL_SET_REG.w(v11.h[7],LLIL_REG.b(v29.b[7]))'),
+	# uxtl v9.2d, v8.2s                                                UXTL_USHLL_ASIMDSHF_L
+	(b'\x09\xA5\x20\x2F', 'LLIL_SET_REG.q(v9.d[0],LLIL_REG.d(v8.s[0]));' + \
+						 ' LLIL_SET_REG.q(v9.d[1],LLIL_REG.d(v8.s[1]))'),
+	# uxtl2 v19.2d, v20.4s                                             UXTL_USHLL_ASIMDSHF_L
+	(b'\x93\xA6\x20\x6F', 'LLIL_SET_REG.q(v19.d[0],LLIL_REG.d(v20.s[2]));' + \
+						 ' LLIL_SET_REG.q(v19.d[1],LLIL_REG.d(v20.s[3]))'),
+	# uxtl2 v11.2d, v18.4s                                             UXTL_USHLL_ASIMDSHF_L
+	(b'\x4B\xA6\x20\x6F', 'LLIL_SET_REG.q(v11.d[0],LLIL_REG.d(v18.s[2]));' + \
+						 ' LLIL_SET_REG.q(v11.d[1],LLIL_REG.d(v18.s[3]))'),
+	# uxtl2 v11.8h, v10.16b                                            UXTL_USHLL_ASIMDSHF_L
+	(b'\x4B\xA5\x08\x6F', 'LLIL_SET_REG.w(v11.h[0],LLIL_REG.b(v10.b[8]));' + \
+						 ' LLIL_SET_REG.w(v11.h[1],LLIL_REG.b(v10.b[9]));' + \
+						 ' LLIL_SET_REG.w(v11.h[2],LLIL_REG.b(v10.b[10]));' + \
+						 ' LLIL_SET_REG.w(v11.h[3],LLIL_REG.b(v10.b[11]));' + \
+						 ' LLIL_SET_REG.w(v11.h[4],LLIL_REG.b(v10.b[12]));' + \
+						 ' LLIL_SET_REG.w(v11.h[5],LLIL_REG.b(v10.b[13]));' + \
+						 ' LLIL_SET_REG.w(v11.h[6],LLIL_REG.b(v10.b[14]));' + \
+						 ' LLIL_SET_REG.w(v11.h[7],LLIL_REG.b(v10.b[15]))'),
+	# uxtl2 v0.4s, v13.8h                                              UXTL_USHLL_ASIMDSHF_L
+	(b'\xA0\xA5\x10\x6F', 'LLIL_SET_REG.d(v0.s[0],LLIL_REG.w(v13.h[4]));' + \
+						 ' LLIL_SET_REG.d(v0.s[1],LLIL_REG.w(v13.h[5]));' + \
+						 ' LLIL_SET_REG.d(v0.s[2],LLIL_REG.w(v13.h[6]));' + \
+						 ' LLIL_SET_REG.d(v0.s[3],LLIL_REG.w(v13.h[7]))'), 
+]
+
 tests_ldadd = [
 	# ldaddab w13, w7, [x30]                                           LDADDAB_32_MEMOP
 	(b'\xC7\x03\xAD\x38', 'LLIL_SET_REG.d(w7,LLIL_LOAD.b(LLIL_REG.q(x30)));' + \
@@ -1246,6 +1293,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_uxtl_uxtl2 + \
 	tests_ldadd + \
 	tests_swp + \
 	tests_dup + \
