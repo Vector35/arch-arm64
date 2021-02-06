@@ -2108,30 +2108,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_HLT:
 		il.AddInstruction(il.Trap(IMM_O(operand1)));
 		return false;
-//	case ARM64_XTN:
-//	case ARM64_XTN2:
-//	{
-//		Register srcs[16], dsts[16];
-//		int dst_n = unpack_vector(operand1, dsts);
-//		int src_n = unpack_vector(operand2, srcs);
-//
-//		if(src_n==0 || dst_n==0) ABORT_LIFT;
-//		if(instr.operation==ARM64_XTN && (src_n != dst_n)) ABORT_LIFT;
-//		if(instr.operation==ARM64_XTN2 && (2*src_n != dst_n)) ABORT_LIFT;
-//
-//		if(instr.operation==ARM64_XTN)
-//			il.AddInstruction(ILSETREG_O(operand1, il.Const(REGSZ_O(operand1), 0)));
-//
-//		int lane_sz = REGSZ(dsts[0]);
-//		for(int i=0; i<src_n; ++i) {
-//			if(instr.operation==ARM64_XTN)
-//				il.AddInstruction(ILSETREG(dsts[i], il.LowPart(lane_sz, ILREG(srcs[i]))));
-//			else
-//				il.AddInstruction(ILSETREG((enum Register)(dsts[i]+src_n), il.LowPart(lane_sz, ILREG(srcs[i]))));
-//		}
-//
-//		break;
-//	}
 	case ARM64_YIELD:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
 		break;

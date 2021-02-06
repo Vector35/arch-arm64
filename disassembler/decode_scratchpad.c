@@ -7190,10 +7190,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else if(op1==0b000 && CRm==0b0110 && op2==0b110 && HasMemTag()) dc_op = "igdsw";
 			else if(op1==0b000 && CRm==0b1010 && op2==0b010) dc_op = "csw";
 			else if(op1==0b000 && CRm==0b1010 && op2==0b100 && HasMemTag()) dc_op = "cgsw";
-			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMemTag()) dc_op = "cisw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b010) dc_op = "igdsw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMemTag()) dc_op = "csw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMemTag()) dc_op = "cgsw";
+			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMemTag()) dc_op = "cgdsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b010) dc_op = "cisw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMemTag()) dc_op = "cigsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMemTag()) dc_op = "cigdsw";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b001) dc_op = "zva";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b011 && HasMemTag()) dc_op = "gva";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b100 && HasMemTag()) dc_op = "gzva";
@@ -7205,11 +7205,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else if(op1==0b011 && CRm==0b1100 && op2==0b011 && HasMemTag()) dc_op = "cgvap";
 			else if(op1==0b011 && CRm==0b1100 && op2==0b101 && HasMemTag()) dc_op = "cgdvap";
 			else if(op1==0b011 && CRm==0b1101 && op2==0b001 && HaveDCCVADP()) dc_op = "cvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMemTag()) dc_op = "cvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMemTag()) dc_op = "cgvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMemTag()) dc_op = "cgvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMemTag()) dc_op = "cgdvadp";
 			else if(op1==0b011 && CRm==0b1110 && op2==0b001) dc_op = "civac";
 			else if(op1==0b011 && CRm==0b1110 && op2==0b011 && HasMemTag()) dc_op = "cigvac";
-			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMemTag()) dc_op = "cgdvac";
+			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMemTag()) dc_op = "cigdvac";
 
 			// SYNTAX: <dc_op>,<Xt>
 			ADD_OPERAND_NAME(dc_op);
