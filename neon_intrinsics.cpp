@@ -15926,12 +15926,13 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_XTN_ASIMDMISC_N:
-			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_S16; // XTN Vd.8B,Vn.8H
-			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_S32; // XTN Vd.4H,Vn.4S
-			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_S64; // XTN Vd.2S,Vn.2D
-			if(instr.operands[1].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_U16; // XTN Vd.8B,Vn.8H
-			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_U32; // XTN Vd.4H,Vn.4S
-			if(instr.operands[1].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_U64; // XTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_S16; // XTN Vd.8B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_S32; // XTN Vd.4H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_S64; // XTN Vd.2S,Vn.2D
+			if(instr.operands[0].arrSpec==ARRSPEC_8BYTES) intrin_id = ARM64_INTRIN_VMOVN_U16; // XTN Vd.8B,Vn.8H
+			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VMOVN_U32; // XTN Vd.4H,Vn.4S
+			if(instr.operands[0].arrSpec==ARRSPEC_2SINGLES) intrin_id = ARM64_INTRIN_VMOVN_U64; // XTN Vd.2S,Vn.2D
+
 			if(instr.operands[0].arrSpec==ARRSPEC_16BYTES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S16; // XTN2 Vd.16B,Vn.8H
 			if(instr.operands[0].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S32; // XTN2 Vd.8H,Vn.4S
 			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VMOVN_HIGH_S64; // XTN2 Vd.4S,Vn.2D

@@ -4,28 +4,21 @@ RET = b'\xc0\x03\x5f\xd6'
 
 tests_xtn_xtn2 = [
 	# xtn v17.4h, v24.4s                                               XTN_ASIMDMISC_N
-	(b'\x11\x2B\x61\x0E', 'LLIL_SET_REG.o(v17,LLIL_CONST.o(0x0));' + \
-						 ' LLIL_SET_REG.w(v17.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[0])));' + \
-						 ' LLIL_SET_REG.w(v17.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[1])));' + \
-						 ' LLIL_SET_REG.w(v17.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[2])));' + \
-						 ' LLIL_SET_REG.w(v17.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v24.s[3])))'),
+	(b'\x11\x2B\x61\x0E', 'LLIL_INTRINSIC([v17],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24)]))'),
 	# xtn v13.4h, v30.4s                                               XTN_ASIMDMISC_N
-	(b'\xCD\x2B\x61\x0E', 'LLIL_SET_REG.o(v13,LLIL_CONST.o(0x0));' + \
-						 ' LLIL_SET_REG.w(v13.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[0])));' + \
-						 ' LLIL_SET_REG.w(v13.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[1])));' + \
-						 ' LLIL_SET_REG.w(v13.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[2])));' + \
-						 ' LLIL_SET_REG.w(v13.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v30.s[3])))'),
+	(b'\xCD\x2B\x61\x0E', 'LLIL_INTRINSIC([v13],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v30)]))'),
 	# xtn v30.4h, v20.4s                                               XTN_ASIMDMISC_N
-	(b'\x9E\x2A\x61\x0E', 'LLIL_SET_REG.o(v30,LLIL_CONST.o(0x0));' + \
-						 ' LLIL_SET_REG.w(v30.h[0],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[0])));' + \
-						 ' LLIL_SET_REG.w(v30.h[1],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[1])));' + \
-						 ' LLIL_SET_REG.w(v30.h[2],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[2])));' + \
-						 ' LLIL_SET_REG.w(v30.h[3],LLIL_LOW_PART.w(LLIL_REG.d(v20.s[3])))'),
+	(b'\x9E\x2A\x61\x0E', 'LLIL_INTRINSIC([v30],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v20)]))'),
+	# xtn v13.2s, v10.2d                                               XTN_ASIMDMISC_N
+	(b'\x4D\x29\xA1\x0E', 'LLIL_INTRINSIC([v13],vmovn_u64,LLIL_CALL_PARAM([LLIL_REG.o(v10)]))'),
 	# xtn2 v27.8h, v19.4s                                              XTN_ASIMDMISC_N
-	(b'\x7B\x2A\x61\x4E', 'LLIL_SET_REG.w(v27.h[4],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[0])));' + \
-						 ' LLIL_SET_REG.w(v27.h[5],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[1])));' + \
-						 ' LLIL_SET_REG.w(v27.h[6],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[2])));' + \
-						 ' LLIL_SET_REG.w(v27.h[7],LLIL_LOW_PART.w(LLIL_REG.d(v19.s[3])))'),
+	(b'\x7B\x2A\x61\x4E', 'LLIL_INTRINSIC([v27],vmovn_high_u32,LLIL_CALL_PARAM([LLIL_REG.o(v19)]))'),
+	# xtn2 v26.4s, v7.2d                                               XTN_ASIMDMISC_N
+	(b'\xFA\x28\xA1\x4E', 'LLIL_INTRINSIC([v26],vmovn_high_u64,LLIL_CALL_PARAM([LLIL_REG.o(v7)]))'),
+	# xtn2 v3.4s, v22.2d                                               XTN_ASIMDMISC_N
+	(b'\xC3\x2A\xA1\x4E', 'LLIL_INTRINSIC([v3],vmovn_high_u64,LLIL_CALL_PARAM([LLIL_REG.o(v22)]))'),
+	# xtn2 v13.8h, v23.4s                                              XTN_ASIMDMISC_N
+	(b'\xED\x2A\x61\x4E', 'LLIL_INTRINSIC([v13],vmovn_high_u32,LLIL_CALL_PARAM([LLIL_REG.o(v23)]))'),
 ]
 
 tests_dc = [
