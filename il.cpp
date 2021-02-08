@@ -1236,6 +1236,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 			il.MarkLabel(done);
 		}
 		break;
+	case ARM64_CLREX:
+			il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_CLREX, {}));
+		break;
 	case ARM64_CSEL:
 	case ARM64_FCSEL:
 		GenIfElse(il, GetCondition(il, operand4.cond),
