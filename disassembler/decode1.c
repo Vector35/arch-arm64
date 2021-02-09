@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "operations.h"
-#include "encodings.h"
+#include "encodings_dec.h"
 #include "decode.h"
 #include "decode2.h"
 #include "pcode.h"

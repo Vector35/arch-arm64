@@ -3393,7 +3393,5 @@ ENC_ZIP2_P_PP_=3383,
 ENC_ZIP2_Z_ZZ_=3384,
 ENC_ZIP2_Z_ZZ_Q=3385,
 };
-const char *enc_to_str(enum ENCODING);
-const char *enc_to_xml(enum ENCODING);
 enum Operation enc_to_oper(enum ENCODING);
 enum Operation enc_to_oper2(enum ENCODING);

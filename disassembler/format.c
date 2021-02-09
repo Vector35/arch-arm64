@@ -5,7 +5,61 @@
 #include <inttypes.h>
 
 #include "format.h"
+#include "regs.h"
 #include "pcode.h"
+
+const char *get_register_arrspec(Register reg, const InstructionOperand *operand)
+{
+	if(operand->arrSpec == ARRSPEC_NONE)
+		return "";
+
+	bool is_simd = reg >= REG_V0 && reg <= REG_V31;
+	bool is_sve = reg >= REG_Z0 && reg <= REG_Z31;
+	bool is_pred = reg >= REG_P0 && reg <= REG_P31;
+
+	if(!is_simd && !is_sve && !is_pred)
+		return "";
+
+	/* truncated form */
+	if(operand->laneUsed || is_sve || is_pred) {
+		switch(operand->arrSpec) {
+			case ARRSPEC_FULL: return ".q";
+			case ARRSPEC_2DOUBLES: return ".d";
+			case ARRSPEC_4SINGLES: return ".s";
+			case ARRSPEC_8HALVES: return ".h";
+			case ARRSPEC_16BYTES: return ".b";
+			case ARRSPEC_1DOUBLE: return ".d";
+			case ARRSPEC_2SINGLES: return ".s";
+			case ARRSPEC_4HALVES: return ".h";
+			case ARRSPEC_8BYTES: return ".b";
+			case ARRSPEC_1SINGLE: return ".s";
+			case ARRSPEC_2HALVES: return ".h";
+			case ARRSPEC_4BYTES: return ".b";
+			case ARRSPEC_1HALF: return ".h";
+			case ARRSPEC_1BYTE: return ".b";
+			default: return "";
+		}
+	}
+
+	/* non-truncated */
+	switch(operand->arrSpec) {
+		case ARRSPEC_FULL: return ".1q";
+		case ARRSPEC_2DOUBLES: return ".2d";
+		case ARRSPEC_4SINGLES: return ".4s";
+		case ARRSPEC_8HALVES: return ".8h";
+		case ARRSPEC_16BYTES: return ".16b";
+		case ARRSPEC_1DOUBLE: return ".1d";
+		case ARRSPEC_2SINGLES: return ".2s";
+		case ARRSPEC_4HALVES: return ".4h";
+		case ARRSPEC_8BYTES: return ".8b";
+		case ARRSPEC_1SINGLE: return ".1s";
+		case ARRSPEC_2HALVES: return ".2h";
+		case ARRSPEC_4BYTES: return ".4b";
+		case ARRSPEC_1HALF: return ".1h";
+		case ARRSPEC_1BYTE: return ".1b";
+		default: return "";
+	}
+}
 
 int get_register_full(Register reg, const InstructionOperand *operand, char *result)
 {
@@ -17,6 +71,61 @@ int get_register_full(Register reg, const InstructionOperand *operand, char *res
 
 	return 0;
 }
+
+//-----------------------------------------------------------------------------
+// miscellany to string
+//-----------------------------------------------------------------------------
+
+uint32_t get_implementation_specific(const InstructionOperand *operand, char *outBuffer, uint32_t outBufferSize)
+{
+	return snprintf(outBuffer,
+			outBufferSize,
+			"s%d_%d_c%d_c%d_%d",
+			operand->implspec[0],
+			operand->implspec[1],
+			operand->implspec[2],
+			operand->implspec[3],
+			operand->implspec[4]) >= outBufferSize;
+}
+
+const char *get_operation(const Instruction *inst)
+{
+	return operation_to_str(inst->operation);
+}
+
+static const char *ConditionString[] = {
+	"eq", "ne", "cs", "cc",
+	"mi", "pl", "vs", "vc",
+	"hi", "ls", "ge", "lt",
+	"gt", "le", "al", "nv"
+};
+
+const char *get_condition(Condition cond)
+{
+	if (cond < 0 || cond >= END_CONDITION)
+		return NULL;
+
+	return ConditionString[cond];
+}
+
+static const char *ShiftString[] = {
+	"NONE", "lsl", "lsr", "asr",
+	"ror",  "uxtw", "sxtw", "sxtx",
+	"uxtx", "sxtb", "sxth", "uxth",
+	"uxtb", "msl"
+};
+
+const char *get_shift(ShiftType shift)
+{
+	if (shift <= ShiftType_NONE || shift >= ShiftType_END)
+		return NULL;
+
+	return ShiftString[shift];
+}
+
+//-----------------------------------------------------------------------------
+// operand processing helpers
+//-----------------------------------------------------------------------------
 
 static inline uint32_t get_shifted_register(
 	const InstructionOperand *operand,
@@ -183,15 +292,11 @@ uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber
 	}
 
 	/* 4) handle other registers */
-	char scale[32] = {0};
-	if (operand->scale != 0)
-		snprintf(scale, sizeof(scale), "[%u]", 0x7fffffff & operand->scale);
-
 	char index[32] = {0};
 	if(operand->operandClass == REG && operand->laneUsed)
 		snprintf(index, sizeof(index), "[%u]", operand->lane);
 
-	if(snprintf(outBuffer, outBufferSize, "%s%s%s", reg_buf, scale, index) >= outBufferSize)
+	if(snprintf(outBuffer, outBufferSize, "%s%s", reg_buf, index) >= outBufferSize)
 		return FAILED_TO_DISASSEMBLE_REGISTER;
 
 	return 0;
@@ -300,23 +405,6 @@ uint32_t get_shifted_immediate(const InstructionOperand *instructionOperand, cha
 			return FAILED_TO_DISASSEMBLE_OPERAND;
 	}
 	return DISASM_SUCCESS;
-}
-
-uint32_t get_implementation_specific(const InstructionOperand *operand, char *outBuffer, uint32_t outBufferSize)
-{
-	return snprintf(outBuffer,
-			outBufferSize,
-			"s%d_%d_c%d_c%d_%d",
-			operand->implspec[0],
-			operand->implspec[1],
-			operand->implspec[2],
-			operand->implspec[3],
-			operand->implspec[4]) >= outBufferSize;
-}
-
-const char *get_operation(const Instruction *inst)
-{
-	return operation_to_str(inst->operation);
 }
 
 //-----------------------------------------------------------------------------

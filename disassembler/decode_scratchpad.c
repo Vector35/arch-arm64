@@ -1,7 +1,7 @@
-#include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "decode.h"
 #include "pcode.h"
@@ -1149,7 +1149,9 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 	dec->operation = enc_to_oper(dec->encoding);
 
 	/* default to 0 operands */
-	memset(&(dec->operands), 0, sizeof(dec->operands));
+	InstructionOperand zero = { 0 };
+	for (uint32_t ii = 0; ii < MAX_REGISTERS; ++ii)
+		dec->operands[ii] = zero;
 
 	switch(dec->encoding) {
 		case ENC_AUTIA1716_HI_HINTS:
@@ -7188,10 +7190,10 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else if(op1==0b000 && CRm==0b0110 && op2==0b110 && HasMemTag()) dc_op = "igdsw";
 			else if(op1==0b000 && CRm==0b1010 && op2==0b010) dc_op = "csw";
 			else if(op1==0b000 && CRm==0b1010 && op2==0b100 && HasMemTag()) dc_op = "cgsw";
-			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMemTag()) dc_op = "cisw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b010) dc_op = "igdsw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMemTag()) dc_op = "csw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMemTag()) dc_op = "cgsw";
+			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMemTag()) dc_op = "cgdsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b010) dc_op = "cisw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMemTag()) dc_op = "cigsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMemTag()) dc_op = "cigdsw";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b001) dc_op = "zva";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b011 && HasMemTag()) dc_op = "gva";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b100 && HasMemTag()) dc_op = "gzva";
@@ -7203,11 +7205,11 @@ int decode_scratchpad(context *ctx, Instruction *dec)
 			else if(op1==0b011 && CRm==0b1100 && op2==0b011 && HasMemTag()) dc_op = "cgvap";
 			else if(op1==0b011 && CRm==0b1100 && op2==0b101 && HasMemTag()) dc_op = "cgdvap";
 			else if(op1==0b011 && CRm==0b1101 && op2==0b001 && HaveDCCVADP()) dc_op = "cvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMemTag()) dc_op = "cvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMemTag()) dc_op = "cgvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMemTag()) dc_op = "cgvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMemTag()) dc_op = "cgdvadp";
 			else if(op1==0b011 && CRm==0b1110 && op2==0b001) dc_op = "civac";
 			else if(op1==0b011 && CRm==0b1110 && op2==0b011 && HasMemTag()) dc_op = "cigvac";
-			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMemTag()) dc_op = "cgdvac";
+			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMemTag()) dc_op = "cigdvac";
 
 			// SYNTAX: <dc_op>,<Xt>
 			ADD_OPERAND_NAME(dc_op);
@@ -9835,7 +9837,7 @@ break;
 		case ENC_BTI_HB_HINTS:
 		{
 			// NON-SYNTAX: {<targets>}
-			const char *table_indirection[4] = {"", "c", "j", "jc"};
+			const char *table_indirection[4] = {NULL, "c", "j", "jc"};
 			const char *TARGETS = table_indirection[(dec->op2 >> 1) & 3];
 			if(TARGETS) {
 				ADD_OPERAND_NAME(TARGETS)

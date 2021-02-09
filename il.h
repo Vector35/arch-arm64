@@ -2,7 +2,8 @@
 
 #include "binaryninjaapi.h"
 #include "disassembler/operations.h"
-#include "disassembler/encodings.h"
+#include "disassembler/encodings_dec.h"
+#include "disassembler/encodings_fmt.h"
 #include "disassembler/arm64dis.h"
 
 #define IL_FLAG_N 31
@@ -26,6 +27,7 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_AUTDZB,
 	ARM64_INTRIN_AUTIZA,
 	ARM64_INTRIN_AUTIZB,
+	ARM64_INTRIN_DC,
 	ARM64_INTRIN_DMB,
 	ARM64_INTRIN_DSB,
 	ARM64_INTRIN_ESB,
@@ -67,6 +69,7 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_RBIT,
 	ARM64_INTRIN_AESD,
 	ARM64_INTRIN_AESE,
+	ARM64_INTRIN_NORMAL_END, /* needed so intrinsics can be extended by other lists, like neon intrinsics */
 	ARM64_INTRIN_INVALID=0xFFFFFFFF,
 };
 
@@ -81,3 +84,6 @@ bool GetLowLevelILForInstruction(
 		BinaryNinja::LowLevelILFunction& il,
 		Instruction& instr,
 		size_t addrSize);
+
+BinaryNinja::ExprId ExtractRegister(BinaryNinja::LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t extractSize, bool signExtend, size_t resultSize);
+

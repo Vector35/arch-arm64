@@ -14,9 +14,6 @@ void disassemble(uint64_t addr, uint8_t *data, int len, char *result, bool verbo
 
 	aarch64_decompose(*(uint32_t *)data, &instr, addr);
 
-	if(verbose)
-		print_instruction(&instr);
-
 	aarch64_disassemble(&instr, result, 1024);
 }
 
