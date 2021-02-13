@@ -934,7 +934,7 @@ public:
 		case ARM64_INTRIN_CLZ:
 			return "_CountLeadingZeros";
 		case ARM64_INTRIN_CLREX:
-			return "_clrex";
+			return "__clrex";
 		case ARM64_INTRIN_REV:
 			return "_byteswap";
 		case ARM64_INTRIN_RBIT:

@@ -2,6 +2,17 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_clrex = [
+	# clrex #0xe                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0x1                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x31\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0xb                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x3B\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0x2                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x32\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+]
+
 tests_xtn_xtn2 = [
 	# xtn v17.4h, v24.4s                                               XTN_ASIMDMISC_N
 	(b'\x11\x2B\x61\x0E', 'LLIL_INTRINSIC([v17],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24)]))'),
@@ -1323,6 +1334,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_clrex + \
 	tests_xtn_xtn2 + \
 	tests_dc + \
 	tests_uxtl_uxtl2 + \
