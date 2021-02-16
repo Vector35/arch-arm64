@@ -7,7 +7,7 @@
 #define SEE { return DECODE_STATUS_LOST; }
 #define UNREACHABLE { return DECODE_STATUS_UNREACHABLE; }
 /* do NOT return immediately! post-decode pcode might still need to run */ 
-#define OK(X) {dec->encoding = (X); dec->operation = enc_to_oper(X); rc = DECODE_STATUS_OK; }
+#define OK(X) {instr->encoding = (X); instr->operation = enc_to_oper(X); rc = DECODE_STATUS_OK; }
 
 #define BITMASK(N) (((uint64_t)1<<(N))-1)
 #define SLICE(X,MSB,LSB) (((X)>>(LSB)) & BITMASK((MSB)-(LSB)+1)) /* get bits [MSB,LSB] */

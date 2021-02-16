@@ -197,124 +197,6 @@ typedef struct context_ {
 	bool halted; // is CPU halted? used by Halted()
 	uint64_t FPCR; // floating point control register
 	bool EDSCR_HDE; // External Debug Status and Control Register, Halting debug enable
-} context;
-
-//-----------------------------------------------------------------------------
-// Instruction definition (OUTPUT from disassembler)
-//-----------------------------------------------------------------------------
-
-typedef union _ieee754 {
-	uint32_t value;
-	struct {
-		uint32_t fraction:23;
-		uint32_t exponent:8;
-		uint32_t sign:1;
-	};
-	float fvalue;
-}ieee754;
-
-enum OperandClass {
-	NONE = 0,
-	IMM32,
-	IMM64,
-	FIMM32,
-	STR_IMM,
-	REG,
-	MULTI_REG,
-	SYS_REG,
-	MEM_REG,
-	MEM_PRE_IDX,
-	MEM_POST_IDX,
-	MEM_OFFSET,
-	MEM_EXTENDED,
-	LABEL,
-	CONDITION,
-	NAME,
-	IMPLEMENTATION_SPECIFIC
-};
-
-enum Condition {
-	COND_EQ, COND_NE, COND_CS, COND_CC,
-	COND_MI, COND_PL, COND_VS, COND_VC,
-	COND_HI, COND_LS, COND_GE, COND_LT,
-	COND_GT, COND_LE, COND_AL, COND_NV,
-	END_CONDITION
-};
-
-enum ShiftType {
-	ShiftType_NONE, ShiftType_LSL, ShiftType_LSR, ShiftType_ASR,
-	ShiftType_ROR, ShiftType_UXTW, ShiftType_SXTW, ShiftType_SXTX,
-	ShiftType_UXTX, ShiftType_SXTB, ShiftType_SXTH, ShiftType_UXTH,
-	ShiftType_UXTB, ShiftType_MSL, ShiftType_END,
-};
-
-enum Group {
-	GROUP_UNALLOCATED,
-	GROUP_DATA_PROCESSING_IMM,
-	GROUP_BRANCH_EXCEPTION_SYSTEM,
-	GROUP_LOAD_STORE,
-	GROUP_DATA_PROCESSING_REG,
-	GROUP_DATA_PROCESSING_SIMD,
-	GROUP_DATA_PROCESSING_SIMD2,
-	END_GROUP
-};
-
-#ifndef __cplusplus
-	typedef enum SystemReg SystemReg;
-	typedef enum OperandClass OperandClass;
-	typedef enum Register Register;
-	typedef enum Condition Condition;
-	typedef enum ShiftType ShiftType;
-	typedef enum FailureCodes FailureCodes;
-	typedef enum Operation Operation;
-	typedef enum Group Group;
-	typedef enum ArrangementSpec ArrangementSpec;
-#endif
-
-#define MAX_REGISTERS 5
-#define MAX_NAME 16
-
-struct InstructionOperand {
-	OperandClass operandClass;
-	ArrangementSpec arrSpec;
-	Register reg[MAX_REGISTERS];
-
-	/* for class CONDITION */
-	Condition cond;
-
-	/* for class IMPLEMENTATION_SPECIFIC */
-	uint8_t implspec[MAX_REGISTERS];
-
-	/* for class SYS_REG */
-	SystemReg sysreg;
-
-	bool laneUsed;
-	uint32_t lane;
-	uint64_t immediate;
-	ShiftType shiftType;
-	bool shiftValueUsed;
-	uint32_t shiftValue;
-	ShiftType extend;
-	bool signedImm;
-	char pred_qual; // predicate register qualifier ('z' or 'm')
-	bool mul_vl; // whether MEM_OFFSET has the offset "mul vl"
-
-	/* for class NAME */
-	char name[MAX_NAME];
-};
-
-#ifndef __cplusplus
-	typedef struct InstructionOperand InstructionOperand;
-#endif
-
-#define MAX_OPERANDS 5
-
-struct Instruction {
-	uint32_t insword;
-	enum ENCODING encoding;
-
-	enum Operation operation;
-	InstructionOperand operands[MAX_OPERANDS];
 
 	/* specification scratchpad: ~300 possible named fields */
 	uint64_t A;
@@ -580,6 +462,116 @@ struct Instruction {
 	uint64_t writeback;
 	uint64_t xs;
 	uint64_t zero_data;
+} context;
+
+//-----------------------------------------------------------------------------
+// Instruction definition (OUTPUT from disassembler)
+//-----------------------------------------------------------------------------
+
+enum OperandClass {
+	NONE = 0,
+	IMM32,
+	IMM64,
+	FIMM32,
+	STR_IMM,
+	REG,
+	MULTI_REG,
+	SYS_REG,
+	MEM_REG,
+	MEM_PRE_IDX,
+	MEM_POST_IDX,
+	MEM_OFFSET,
+	MEM_EXTENDED,
+	LABEL,
+	CONDITION,
+	NAME,
+	IMPLEMENTATION_SPECIFIC
+};
+
+enum Condition {
+	COND_EQ, COND_NE, COND_CS, COND_CC,
+	COND_MI, COND_PL, COND_VS, COND_VC,
+	COND_HI, COND_LS, COND_GE, COND_LT,
+	COND_GT, COND_LE, COND_AL, COND_NV,
+	END_CONDITION
+};
+
+enum ShiftType {
+	ShiftType_NONE, ShiftType_LSL, ShiftType_LSR, ShiftType_ASR,
+	ShiftType_ROR, ShiftType_UXTW, ShiftType_SXTW, ShiftType_SXTX,
+	ShiftType_UXTX, ShiftType_SXTB, ShiftType_SXTH, ShiftType_UXTH,
+	ShiftType_UXTB, ShiftType_MSL, ShiftType_END,
+};
+
+enum Group {
+	GROUP_UNALLOCATED,
+	GROUP_DATA_PROCESSING_IMM,
+	GROUP_BRANCH_EXCEPTION_SYSTEM,
+	GROUP_LOAD_STORE,
+	GROUP_DATA_PROCESSING_REG,
+	GROUP_DATA_PROCESSING_SIMD,
+	GROUP_DATA_PROCESSING_SIMD2,
+	END_GROUP
+};
+
+#ifndef __cplusplus
+	typedef enum SystemReg SystemReg;
+	typedef enum OperandClass OperandClass;
+	typedef enum Register Register;
+	typedef enum Condition Condition;
+	typedef enum ShiftType ShiftType;
+	typedef enum FailureCodes FailureCodes;
+	typedef enum Operation Operation;
+	typedef enum Group Group;
+	typedef enum ArrangementSpec ArrangementSpec;
+#endif
+
+#define MAX_REGISTERS 5
+#define MAX_NAME 16
+
+struct InstructionOperand {
+	OperandClass operandClass;
+	ArrangementSpec arrSpec;
+	Register reg[MAX_REGISTERS];
+
+	/* for class CONDITION */
+	Condition cond;
+
+	/* for class IMPLEMENTATION_SPECIFIC */
+	uint8_t implspec[MAX_REGISTERS];
+
+	/* for class SYS_REG */
+	SystemReg sysreg;
+
+	bool laneUsed;
+	uint32_t lane;
+	uint64_t immediate;
+	ShiftType shiftType;
+	bool shiftValueUsed;
+	uint32_t shiftValue;
+	ShiftType extend;
+	bool signedImm;
+	char pred_qual; // predicate register qualifier ('z' or 'm')
+	bool mul_vl; // whether MEM_OFFSET has the offset "mul vl"
+
+	/* for class NAME */
+	char name[MAX_NAME];
+};
+
+#ifndef __cplusplus
+	typedef struct InstructionOperand InstructionOperand;
+#endif
+
+#define MAX_OPERANDS 5
+
+struct Instruction {
+	uint32_t insword;
+	enum ENCODING encoding;
+
+	enum Operation operation;
+	InstructionOperand operands[MAX_OPERANDS];
+
+	bool setflags;
 };
 
 #ifndef __cplusplus
