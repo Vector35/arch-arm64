@@ -1616,7 +1616,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 		int n = unpack_vector(operand1, regs);
 
 		if (n == 1)
-			il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, instr.operands[1], REGSZ_O(operand1))));
+			il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, operand2, get_register_size(regs[0]))));
 		else
 			ABORT_LIFT;
 
