@@ -189,6 +189,7 @@ enum Register {
 extern "C" {
 #endif
 const char *get_register_name(enum Register);
+size_t get_register_size(enum Register);
 #ifdef __cplusplus
 }
 #endif
