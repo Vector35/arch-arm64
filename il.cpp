@@ -462,6 +462,27 @@ static Register vector_reg_minimize(InstructionOperand &oper)
 	return REG_NONE;
 }
 
+/* "promote" the spec to full width so lane can select any */
+static ArrangementSpec promote_spec(ArrangementSpec spec) {
+	switch(spec) {
+		case ARRSPEC_1DOUBLE:
+			return ARRSPEC_2DOUBLES;
+		case ARRSPEC_1SINGLE:
+		case ARRSPEC_2SINGLES:
+			return ARRSPEC_4SINGLES;
+		case ARRSPEC_1HALF:
+		case ARRSPEC_2HALVES:
+		case ARRSPEC_4HALVES:
+			return ARRSPEC_8HALVES;
+		case ARRSPEC_1BYTE:
+		case ARRSPEC_4BYTES:
+		case ARRSPEC_8BYTES:
+			return ARRSPEC_16BYTES;
+		default:
+			return spec;
+	}
+}
+
 static int unpack_vector(InstructionOperand& oper, Register *result)
 {
 	if(oper.operandClass == REG) {
@@ -480,6 +501,19 @@ static int unpack_vector(InstructionOperand& oper, Register *result)
 			return 0;
 
 		/* lookup, copy result */
+		if(oper.laneUsed) {
+			ArrangementSpec spec = promote_spec(oper.arrSpec);
+
+			int n_lanes = v_unpack_lookup_sz[spec];
+
+			if(oper.lane >= n_lanes)
+				return 0;
+
+			result[0] = v_unpack_lookup[spec][oper.reg[0]-REG_V0][oper.lane];
+
+			return 1;
+		}
+
 		int n = v_unpack_lookup_sz[oper.arrSpec];
 		for(int i=0; i<n; ++i)
 			result[i] = v_unpack_lookup[oper.arrSpec][oper.reg[0]-REG_V0][i];
@@ -490,29 +524,7 @@ static int unpack_vector(InstructionOperand& oper, Register *result)
 			/* multireg with a lane
 				examples: "ld2 {v17.d, v18.d}[1], [x20]" */
 
-			/* "promote" the spec to full width so lane can select any */
-			ArrangementSpec spec = oper.arrSpec;
-			switch(spec) {
-				case ARRSPEC_1DOUBLE:
-					spec = ARRSPEC_2DOUBLES;
-					break;
-				case ARRSPEC_1SINGLE:
-				case ARRSPEC_2SINGLES:
-					spec = ARRSPEC_4SINGLES;
-					break;
-				case ARRSPEC_1HALF:
-				case ARRSPEC_2HALVES:
-				case ARRSPEC_4HALVES:
-					spec = ARRSPEC_8HALVES;
-					break;
-				case ARRSPEC_1BYTE:
-				case ARRSPEC_4BYTES:
-				case ARRSPEC_8BYTES:
-					spec = ARRSPEC_16BYTES;
-					break;
-				default:
-					break;
-			}
+			ArrangementSpec spec = promote_spec(oper.arrSpec);
 
 			int n = 0;
 			for(int i=0; i<4 && oper.reg[i]!=REG_NONE; i++) {
@@ -1599,18 +1611,25 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 						ReadILOperand(il, operand3, REGSZ_O(operand2)))));
 		break;
 	case ARM64_MOV:
-		il.AddInstruction(il.SetRegister(REGSZ_O(operand1),
-					REG_O(operand1),
-					ReadILOperand(il, instr.operands[1], REGSZ_O(operand1))));
+	{
+		Register regs[16];
+		int n = unpack_vector(operand1, regs);
+
+		if (n == 1)
+			il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, instr.operands[1], REGSZ_O(operand1))));
+		else
+			ABORT_LIFT;
+
 		break;
+	}
 	case ARM64_MOVI:
 	{
 		Register regs[16];
 		int n = unpack_vector(operand1, regs);
 		for(int i=0; i<n; ++i)
 			il.AddInstruction(ILSETREG(regs[i], ILCONST_O(get_register_size(regs[i]), operand2)));
+		break;
 	}
-	break;
 	case ARM64_MVN:
 		il.AddInstruction(ILSETREG_O(operand1,
 						il.Not(REGSZ_O(operand1), ReadILOperand(il, operand2, REGSZ_O(operand1)))));

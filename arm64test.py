@@ -416,6 +416,11 @@ tests_stnp = [
 						 ' LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_CONST.q(0x30)),LLIL_REG.d(s6))'),
 ]
 
+tests_mov = [
+	# 011c044e   mov     v1.s[0], w0
+	(b'\x01\x1c\x04\x4e', 'LLIL_SET_REG.d(v1.s[0],LLIL_ZX.o(LLIL_REG.d(w0)))'),
+]
+
 tests_movi = [
 	# movi v4.2d, #0xffffff0000ffff                                    MOVI_ASIMDIMM_D2_D
 	(b'\x64\xE6\x03\x6F', 'LLIL_SET_REG.q(v4.d[0],LLIL_CONST.q(0xFFFFFF0000FFFF));' + \
@@ -1344,6 +1349,7 @@ test_cases = \
 	tests_stlr + \
 	tests_ldnp + \
 	tests_stnp + \
+	tests_mov + \
 	tests_movi + \
 	tests_fsub + \
 	tests_fadd + \
