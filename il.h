@@ -76,7 +76,7 @@ enum Arm64Intrinsic : uint32_t
 
 enum Arm64FakeRegister: uint32_t
 {
-	FAKEREG_SYSCALL_IMM = SYSREG_END+1
+	FAKEREG_SYSCALL_INFO = SYSREG_END+1
 };
 
 bool GetLowLevelILForInstruction(

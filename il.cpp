@@ -1909,9 +1909,19 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 					SETFLAGS)));
 		break;
 	case ARM64_SVC:
-		il.AddInstruction(il.SetRegister(2, FAKEREG_SYSCALL_IMM, il.Const(2, IMM_O(operand1))));
+	case ARM64_HVC:
+	case ARM64_SMC:
+	{
+		/* b31,b30==xx of fake register mark transition to ELxx */
+		uint32_t el_mark = 0;
+		if(instr.operation == ARM64_SVC) el_mark = 0x40000000;
+		else if(instr.operation == ARM64_HVC) el_mark = 0x80000000;
+		else if(instr.operation == ARM64_SMC) el_mark = 0xC0000000;
+		/* b15..b0 of fake register still holds syscall number */
+		il.AddInstruction(il.SetRegister(4, FAKEREG_SYSCALL_INFO, il.Const(4, el_mark | IMM_O(operand1))));
 		il.AddInstruction(il.SystemCall());
 		break;
+	}
 	case ARM64_SWP: /* word (4) or doubleword (8) */
 	case ARM64_SWPA:
 	case ARM64_SWPL:
