@@ -1801,8 +1801,16 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_RET:
 	case ARM64_RETAA:
 	case ARM64_RETAB:
-		il.AddInstruction(il.Return(il.Register(8, REG_X30)));
+	{
+		ExprId reg = NULL;
+		if (operand1.operandClass == REG)
+			reg = ILREG_O(operand1);
+		else
+			reg = il.Register(8, REG_X30);
+
+		il.AddInstruction(il.Return(reg));
 		break;
+	}
 	case ARM64_REVB: // SVE only
 	case ARM64_REVH:
 	case ARM64_REVW:

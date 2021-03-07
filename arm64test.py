@@ -2,6 +2,13 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_ret = [
+	# ret
+	(b'\xc0\x03\x5f\xd6', ''), # test harness strips this LLIL_RET, empty string is correct
+	# ret x10
+	(b'\x40\x01\x5f\xd6', 'LLIL_RET(LLIL_REG.q(x10))'),
+]
+
 tests_svc_hvc_smc = [
 	# svc #0xb79                                                       SVC_EX_EXCEPTION
 	(b'\x21\x6F\x01\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000B79));' + \
@@ -1380,6 +1387,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_ret + \
 	tests_svc_hvc_smc + \
 	tests_clrex + \
 	tests_xtn_xtn2 + \
