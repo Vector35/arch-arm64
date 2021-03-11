@@ -52,42 +52,37 @@ enum ArrangementSpec {
 // disassembly target features
 //-----------------------------------------------------------------------------
 
-/* see encodingindex.xml for strings like "arch_version="ARMv8.X-XXX" */
-/* see also the HasXXX() functions in pcode */
-#define ARCH_FEATURE_DGH ((uint64_t)1<<0) // added in ARMv8.0
-#define ARCH_FEATURE_LOR ((uint64_t)1<<1) // added in ARMv8.1
-#define ARCH_FEATURE_LSE ((uint64_t)1<<2) // added in ARMv8.1
-#define ARCH_FEATURE_RDMA ((uint64_t)1<<3) // added in ARMv8.1
-#define ARCH_FEATURE_BF16 ((uint64_t)1<<4) // added in ARMv8.2
-#define ARCH_FEATURE_DotProd ((uint64_t)1<<5) // added in ARMv8.2
-#define ARCH_FEATURE_FHM ((uint64_t)1<<6) // added in ARMv8.2
-#define ARCH_FEATURE_FP16 ((uint64_t)1<<7) // added in ARMv8.2
-#define ARCH_FEATURE_I8MM ((uint64_t)1<<8) // added in ARMv8.2
-#define ARCH_FEATURE_SHA2 ((uint64_t)1<<9) // added in ARMv8.2
-#define ARCH_FEATURE_SHA3 ((uint64_t)1<<10) // added in ARMv8.2
-#define ARCH_FEATURE_SM3 ((uint64_t)1<<11) // added in ARMv8.2
-#define ARCH_FEATURE_SM4 ((uint64_t)1<<12) // added in ARMv8.2
-#define ARCH_FEATURE_CompNum ((uint64_t)1<<13) // added in ARMv8.3
-#define ARCH_FEATURE_JConv ((uint64_t)1<<14) // added in ARMv8.3
-#define ARCH_FEATURE_PAuth ((uint64_t)1<<15) // added in ARMv8.3
-#define ARCH_FEATURE_RCPC ((uint64_t)1<<16) // added in ARMv8.3
-#define ARCH_FEATURE_CondM ((uint64_t)1<<17) // added in ARMv8.4
-#define ARCH_FEATURE_RCPC_84 ((uint64_t)1<<18) // added in ARMv8.4, corresponding to "ARMv8.4-RCPC" in spec
-#define ARCH_FEATURE_Trace ((uint64_t)1<<19) // added in ARMv8.4
-#define ARCH_FEATURE_BTI ((uint64_t)1<<20) // added in ARMv8.5, branch target identification
-#define ARCH_FEATURE_CondM_85 ((uint64_t)1<<21) // added in ARMv8.5, corresponding to "ARMv8.5-CondM" in spec
-#define ARCH_FEATURE_FRINT ((uint64_t)1<<22) // added in ARMv8.5
-#define ARCH_FEATURE_MemTag ((uint64_t)1<<23) // added in ARMv8.5
-#define ARCH_FEATURE_RAS ((uint64_t)1<<24) // ?
-#define ARCH_FEATURE_SPE ((uint64_t)1<<25) // ?
-#define ARCH_FEATURE_ARMv8_0 ((uint64_t)1<<26)
-#define ARCH_FEATURE_ARMv8_1 ((uint64_t)1<<27)
-#define ARCH_FEATURE_ARMv8_2 ((uint64_t)1<<28)
-#define ARCH_FEATURE_ARMv8_3 ((uint64_t)1<<29)
-#define ARCH_FEATURE_ARMv8_4 ((uint64_t)1<<30)
-#define ARCH_FEATURE_ARMv8_5 ((uint64_t)1<<31)
+#define ARCH_FEATURE_BF16 ((uint64_t)1<<0)
+#define ARCH_FEATURE_BTI ((uint64_t)1<<1)
+#define ARCH_FEATURE_DGH ((uint64_t)1<<2)
+#define ARCH_FEATURE_DotProd ((uint64_t)1<<3)
+#define ARCH_FEATURE_FCMA ((uint64_t)1<<4)
+#define ARCH_FEATURE_FHM ((uint64_t)1<<5)
+#define ARCH_FEATURE_FP16 ((uint64_t)1<<6)
+#define ARCH_FEATURE_FRINTTS ((uint64_t)1<<7)
+#define ARCH_FEATURE_FlagM ((uint64_t)1<<8)
+#define ARCH_FEATURE_FlagM2 ((uint64_t)1<<9)
+#define ARCH_FEATURE_I8MM ((uint64_t)1<<10)
+#define ARCH_FEATURE_JSCVT ((uint64_t)1<<11)
+#define ARCH_FEATURE_LOR ((uint64_t)1<<12)
+#define ARCH_FEATURE_LRCPC ((uint64_t)1<<13)
+#define ARCH_FEATURE_LRCPC2 ((uint64_t)1<<14)
+#define ARCH_FEATURE_LS64 ((uint64_t)1<<15)
+#define ARCH_FEATURE_LS64_V ((uint64_t)1<<16)
+#define ARCH_FEATURE_LSE ((uint64_t)1<<17)
+#define ARCH_FEATURE_MTE ((uint64_t)1<<18)
+#define ARCH_FEATURE_PAuth ((uint64_t)1<<19)
+#define ARCH_FEATURE_RAS ((uint64_t)1<<20)
+#define ARCH_FEATURE_RDM ((uint64_t)1<<21)
+#define ARCH_FEATURE_SHA3 ((uint64_t)1<<22)
+#define ARCH_FEATURE_SHA512 ((uint64_t)1<<23)
+#define ARCH_FEATURE_SM3 ((uint64_t)1<<24)
+#define ARCH_FEATURE_SM4 ((uint64_t)1<<25)
+#define ARCH_FEATURE_SPE ((uint64_t)1<<26)
+#define ARCH_FEATURE_TRF ((uint64_t)1<<27)
+#define ARCH_FEATURE_WFxT ((uint64_t)1<<28)
+#define ARCH_FEATURE_XS ((uint64_t)1<<29)
 
-/* see the HaveXXX() functions in pcode */
 #define ARCH_FEATURE_AESExt ((uint64_t)1<<0)
 #define ARCH_FEATURE_AtomicExt ((uint64_t)1<<1)
 #define ARCH_FEATURE_BF16Ext ((uint64_t)1<<2)
@@ -101,34 +96,32 @@ enum ArrangementSpec {
 #define ARCH_FEATURE_FJCVTZSExt ((uint64_t)1<<10)
 #define ARCH_FEATURE_FP16Ext ((uint64_t)1<<11)
 #define ARCH_FEATURE_FP16MulNoRoundingToFP32Ext ((uint64_t)1<<12)
-#define ARCH_FEATURE_FlagFormatExt ((uint64_t)1<<13)
-#define ARCH_FEATURE_FlagManipulateExt ((uint64_t)1<<14)
-#define ARCH_FEATURE_FrintExt ((uint64_t)1<<15)
-#define ARCH_FEATURE_Int8MatMulExt ((uint64_t)1<<16)
-#define ARCH_FEATURE_MTEExt ((uint64_t)1<<17)
-#define ARCH_FEATURE_PACExt ((uint64_t)1<<18)
-#define ARCH_FEATURE_PANExt ((uint64_t)1<<19)
-#define ARCH_FEATURE_QRDMLAHExt ((uint64_t)1<<20)
-#define ARCH_FEATURE_RASExt ((uint64_t)1<<21)
-#define ARCH_FEATURE_SBExt ((uint64_t)1<<22)
-#define ARCH_FEATURE_SHA1Ext ((uint64_t)1<<23)
-#define ARCH_FEATURE_SHA256Ext ((uint64_t)1<<24)
-#define ARCH_FEATURE_SHA3Ext ((uint64_t)1<<25)
-#define ARCH_FEATURE_SHA512Ext ((uint64_t)1<<26)
-#define ARCH_FEATURE_SM3Ext ((uint64_t)1<<27)
-#define ARCH_FEATURE_SM4Ext ((uint64_t)1<<28)
-#define ARCH_FEATURE_SSBSExt ((uint64_t)1<<29)
-#define ARCH_FEATURE_SVE ((uint64_t)1<<30)
-#define ARCH_FEATURE_SVEFP32MatMulExt ((uint64_t)1<<31)
-#define ARCH_FEATURE_SVEFP64MatMulExt ((uint64_t)1<<32)
-#define ARCH_FEATURE_SelfHostedTrace ((uint64_t)1<<33)
-#define ARCH_FEATURE_StatisticalProfiling ((uint64_t)1<<34)
-#define ARCH_FEATURE_UAOExt ((uint64_t)1<<35)
-#define ARCH_FEATURE_NVExt ((uint64_t)1<<36)
-#define ARCH_FEATURE_VirtHostExt ((uint64_t)1<<37)
-#define ARCH_FEATURE_TLBI ((uint64_t)1<<38) // ARMv8.4-TLBI, see tlbi_sys.html
-#define ARCH_FEATURE_DCPoP ((uint64_t)1<<39) // ARMv8.2-DCPoP
-#define ARCH_FEATURE_DCCVADP ((uint64_t)1<<40) // ARMv8.2-DCCVADP
+#define ARCH_FEATURE_FeatLS64 ((uint64_t)1<<13)
+#define ARCH_FEATURE_FeatWFxT ((uint64_t)1<<14)
+#define ARCH_FEATURE_FlagFormatExt ((uint64_t)1<<15)
+#define ARCH_FEATURE_FlagManipulateExt ((uint64_t)1<<16)
+#define ARCH_FEATURE_FrintExt ((uint64_t)1<<17)
+#define ARCH_FEATURE_Int8MatMulExt ((uint64_t)1<<18)
+#define ARCH_FEATURE_MTE2Ext ((uint64_t)1<<19)
+#define ARCH_FEATURE_MTEExt ((uint64_t)1<<20)
+#define ARCH_FEATURE_NVExt ((uint64_t)1<<21)
+#define ARCH_FEATURE_PACExt ((uint64_t)1<<22)
+#define ARCH_FEATURE_PANExt ((uint64_t)1<<23)
+#define ARCH_FEATURE_QRDMLAHExt ((uint64_t)1<<24)
+#define ARCH_FEATURE_RASExt ((uint64_t)1<<25)
+#define ARCH_FEATURE_SBExt ((uint64_t)1<<26)
+#define ARCH_FEATURE_SHA1Ext ((uint64_t)1<<27)
+#define ARCH_FEATURE_SHA256Ext ((uint64_t)1<<28)
+#define ARCH_FEATURE_SHA3Ext ((uint64_t)1<<29)
+#define ARCH_FEATURE_SHA512Ext ((uint64_t)1<<30)
+#define ARCH_FEATURE_SM3Ext ((uint64_t)1<<31)
+#define ARCH_FEATURE_SM4Ext ((uint64_t)1<<32)
+#define ARCH_FEATURE_SSBSExt ((uint64_t)1<<33)
+#define ARCH_FEATURE_SVE ((uint64_t)1<<34)
+#define ARCH_FEATURE_SelfHostedTrace ((uint64_t)1<<35)
+#define ARCH_FEATURE_StatisticalProfiling ((uint64_t)1<<36)
+#define ARCH_FEATURE_UAOExt ((uint64_t)1<<37)
+#define ARCH_FEATURE_VirtHostExt ((uint64_t)1<<38)
 
 #define ARCH_FEATURES_ALL 0xFFFFFFFFFFFFFFFF
 
@@ -145,6 +138,7 @@ enum ArrangementSpec {
 #define DECODE_STATUS_END_OF_INSTRUCTION -5 // spec decode EndOfInstruction(), instruction executes as NOP
 #define DECODE_STATUS_LOST -6 // descended past a checks, ie: "SEE encoding_up_higher"
 #define DECODE_STATUS_UNREACHABLE -7 // ran into pcode Unreachable()
+#define DECODE_STATUS_ASSERT_FAILED -8 // failed an assert
 
 //-----------------------------------------------------------------------------
 // floating point condition register values
@@ -329,6 +323,7 @@ typedef struct context_ {
 	uint64_t immr;
 	uint64_t imms;
 	uint64_t index;
+	uint64_t init_scale;
 	uint64_t intsize;
 	uint64_t int_U;
 	uint64_t invert;
@@ -347,6 +342,7 @@ typedef struct context_ {
 	uint64_t memop;
 	uint64_t merging;
 	uint64_t min;
+	uint64_t min_EL;
 	uint64_t minimum;
 	uint64_t msb;
 	uint64_t msize;
@@ -354,6 +350,7 @@ typedef struct context_ {
 	uint64_t mulx_op;
 	uint64_t n;
 	uint64_t ne;
+	uint64_t need_secure;
 	uint64_t neg;
 	uint64_t neg_i;
 	uint64_t neg_r;
@@ -403,6 +400,8 @@ typedef struct context_ {
 	uint64_t rounding;
 	uint64_t rpt;
 	uint64_t rsize;
+	uint64_t rn_unknown;
+	uint64_t rt_unknown;
 	uint64_t s;
 	uint64_t s_esize;
 	uint64_t saturating;
@@ -458,10 +457,12 @@ typedef struct context_ {
 	uint64_t use_key_a;
 	uint64_t user_access_override;
 	uint64_t wback;
+	uint64_t wb_unknown;
 	uint64_t wmask;
 	uint64_t writeback;
 	uint64_t xs;
 	uint64_t zero_data;
+
 } context;
 
 //-----------------------------------------------------------------------------

@@ -358,10 +358,10 @@ uint64_t AdvSIMDExpandImm(uint8_t op, uint8_t cmode, uint64_t imm8)
 bool BTypeCompatible_BTI(uint8_t hintcode, uint8_t pstate_btype)
 {
 	switch(hintcode & 3) {
-        case 0b00: return false;
-        case 0b01: return pstate_btype != 0b11;
-        case 0b10: return pstate_btype != 0b10;
-        case 0b11: return true;
+		case 0b00: return false;
+		case 0b01: return pstate_btype != 0b11;
+		case 0b10: return pstate_btype != 0b10;
+		case 0b11: return true;
 	}
 
 	return false; /* impossible, but appease compiler */
@@ -510,4 +510,66 @@ uint64_t SignExtend(uint64_t x, int width)
 	}
 
 	return result;
+}
+
+enum Constraint ConstrainUnpredictable(enum Unpredictable u)
+{
+	switch(u) {
+		case Unpredictable_VMSR: return Constraint_UNDEF;
+		case Unpredictable_WBOVERLAPLD: return Constraint_WBSUPPRESS; // return loaded value
+		case Unpredictable_WBOVERLAPST: return Constraint_NONE;	 // store pre-writeback value
+		case Unpredictable_LDPOVERLAP: return Constraint_UNDEF;	// instruction is UNDEFINED
+		case Unpredictable_BASEOVERLAP: return Constraint_NONE;	 // use original address
+		case Unpredictable_DATAOVERLAP: return Constraint_NONE;	 // store original value
+		case Unpredictable_DEVPAGE2: return Constraint_FAULT;	// take an alignment fault
+		case Unpredictable_DEVICETAGSTORE: return Constraint_NONE;	 // Do not take a fault
+		case Unpredictable_INSTRDEVICE: return Constraint_NONE;	 // Do not take a fault
+		case Unpredictable_RESCPACR: return Constraint_TRUE;	 // Map to UNKNOWN value
+		case Unpredictable_RESMAIR: return Constraint_UNKNOWN;  // Map to UNKNOWN value
+		case Unpredictable_RESTEXCB: return Constraint_UNKNOWN;  // Map to UNKNOWN value
+		case Unpredictable_RESDACR: return Constraint_UNKNOWN;  // Map to UNKNOWN value
+		case Unpredictable_RESPRRR: return Constraint_UNKNOWN;  // Map to UNKNOWN value
+		case Unpredictable_RESVTCRS: return Constraint_UNKNOWN;  // Map to UNKNOWN value
+		case Unpredictable_RESTnSZ: return Constraint_FORCE;	// Map to the limit value
+		case Unpredictable_OORTnSZ: return Constraint_FORCE;	// Map to the limit value
+		case Unpredictable_LARGEIPA: return Constraint_FORCE;	// Restrict the inputsize to the PAMax value
+		case Unpredictable_ESRCONDPASS: return Constraint_FALSE;	// Report as "AL"
+		case Unpredictable_ILZEROIT: return Constraint_FALSE;	// Do not zero PSTATE.IT
+		case Unpredictable_ILZEROT: return Constraint_FALSE;	// Do not zero PSTATE.T
+		case Unpredictable_BPVECTORCATCHPRI: return Constraint_TRUE;	 // Debug Vector Catch: match on 2nd halfword
+		case Unpredictable_VCMATCHHALF: return Constraint_FALSE;	// No match
+		case Unpredictable_VCMATCHDAPA: return Constraint_FALSE;	// No match on Data Abort or Prefetch abort
+		case Unpredictable_WPMASKANDBAS: return Constraint_FALSE;	// Watchpoint disabled
+		case Unpredictable_WPBASCONTIGUOUS: return Constraint_FALSE;	// Watchpoint disabled
+		case Unpredictable_RESWPMASK: return Constraint_DISABLED; // Watchpoint disabled
+		case Unpredictable_WPMASKEDBITS: return Constraint_FALSE;	// Watchpoint disabled
+		case Unpredictable_RESBPWPCTRL: return Constraint_DISABLED; // Breakpoint/watchpoint disabled
+		case Unpredictable_BPNOTIMPL: return Constraint_DISABLED; // Breakpoint disabled
+		case Unpredictable_RESBPTYPE: return Constraint_DISABLED; // Breakpoint disabled
+		case Unpredictable_BPNOTCTXCMP: return Constraint_DISABLED; // Breakpoint disabled
+		case Unpredictable_BPMATCHHALF: return Constraint_FALSE;	// No match
+		case Unpredictable_BPMISMATCHHALF: return Constraint_FALSE;	// No match
+		case Unpredictable_RESTARTALIGNPC: return Constraint_FALSE;	// Do not force alignment
+		case Unpredictable_RESTARTZEROUPPERPC: return Constraint_TRUE;	 // Force zero extension
+		case Unpredictable_ZEROUPPER: return Constraint_TRUE;	 // zero top halves of X registers
+		case Unpredictable_ERETZEROUPPERPC: return Constraint_TRUE;	 // zero top half of PC
+		case Unpredictable_A32FORCEALIGNPC: return Constraint_FALSE;	// Do not force alignment
+		case Unpredictable_SMD: return Constraint_UNDEF;	// disabled SMC is Unallocated
+		case Unpredictable_NONFAULT: return Constraint_FALSE;	// Speculation enabled
+		case Unpredictable_SVEZEROUPPER: return Constraint_TRUE;	 // zero top bits of Z registers
+		case Unpredictable_SVELDNFDATA: return Constraint_TRUE;	 // Load mem data in NF loads
+		case Unpredictable_SVELDNFZERO: return Constraint_TRUE;	 // Write zeros in NF loads
+		case Unpredictable_CHECKSPNONEACTIVE: return Constraint_TRUE;	 // Check SP alignment
+		case Unpredictable_AFUPDATE: return Constraint_TRUE;
+		case Unpredictable_IESBinDebug: return Constraint_TRUE;
+		case Unpredictable_BADPMSFCR: return Constraint_TRUE;
+		case Unpredictable_ZEROBTYPE: return Constraint_TRUE;	 // Save BTYPE in SPSR_ELx/DPSR_EL0 as '00'
+		case Unpredictable_CLEARERRITEZERO: return Constraint_FALSE;
+		case Unpredictable_ALUEXCEPTIONRETURN: return Constraint_UNDEF;
+		case Unpredictable_DBGxVR_RESS: return Constraint_FALSE;
+		case Unpredictable_WFxTDEBUG: return Constraint_FALSE;			 // WFxT in Debug state does not execute as a NOP
+		case Unpredictable_LS64UNSUPPORTED: return Constraint_LIMITED_ATOMICITY; //
+		default:
+			return Constraint_ERROR;
+	}
 }

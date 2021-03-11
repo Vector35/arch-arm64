@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-
 #include "decode.h"
 #include "pcode.h"
 
@@ -1191,6 +1190,14 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_SETFFR_F_:
 		{
 			//
+			break;
+		}
+		case ENC_WFET_ONLY_SYSTEMINSTRSWITHREG:
+		case ENC_WFIT_ONLY_SYSTEMINSTRSWITHREG:
+		{
+			// SYNTAX: <Xt>
+			ADD_OPERAND_XD;
+			// SYNTAX-END
 			break;
 		}
 		case ENC_PSB_HC_HINTS:
@@ -4779,6 +4786,25 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			OPTIONAL_EXTEND_LSL0;
 			break;
 		}
+		case ENC_ST64B_64L_MEMOP:
+		case ENC_LD64B_64L_MEMOP:
+		{
+			// SYNTAX: <Xt>, [<Xn|SP> {,#0}]
+			ADD_OPERAND_XT;
+			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, ctx->n, 0);
+			// SYNTAX-END
+			break;
+		}
+		case ENC_ST64BV_64_MEMOP:
+		case ENC_ST64BV0_64_MEMOP:
+		{
+			// SYNTAX: <Xs>, <Xt>, [<Xn|SP> {,#0}]
+			ADD_OPERAND_XS;
+			ADD_OPERAND_XT;
+			ADD_OPERAND_MEM_REG_OFFSET(REGSET_SP, REG_X_BASE, ctx->n, 0);
+			// SYNTAX-END
+			break;
+		}
 		case ENC_LDRB_32_LDST_IMMPOST:
 		case ENC_LDRH_32_LDST_IMMPOST:
 		case ENC_LDRSB_32_LDST_IMMPOST:
@@ -6547,8 +6573,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_BFCVT_Z_P_Z_S2BF:
-		case ENC_BFCVTNT_Z_P_Z_S2BF:
 		case ENC_FCVT_Z_P_Z_S2H:
 		case ENC_SCVTF_Z_P_Z_W2FP16:
 		case ENC_UCVTF_Z_P_Z_W2FP16:
@@ -6566,20 +6590,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->d);
 			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->n);
 			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, ctx->m, ctx->index);
-			// SYNTAX-END
-			break;
-		}
-		case ENC_TRN1_Z_ZZ_Q:
-		case ENC_TRN2_Z_ZZ_Q:
-		case ENC_UZP1_Z_ZZ_Q:
-		case ENC_UZP2_Z_ZZ_Q:
-		case ENC_ZIP1_Z_ZZ_Q:
-		case ENC_ZIP2_Z_ZZ_Q:
-		{
-			// SYNTAX: <Zd>.Q,<Zn>.Q,<Zm>.Q
-			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->d);
-			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->m);
 			// SYNTAX-END
 			break;
 		}
@@ -6669,15 +6679,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_FMMLA_Z_ZZZ_D:
-		{
-			// SYNTAX: <Zda>.D,<Zn>.D,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->Zda);
-			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->m);
-			// SYNTAX-END
-			break;
-		}
 		case ENC_FMLA_Z_ZZZI_D:
 		case ENC_FMLS_Z_ZZZI_D:
 		{
@@ -6719,59 +6720,13 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_SMMLA_Z_ZZZ_:
-		case ENC_UMMLA_Z_ZZZ_:
-		case ENC_USDOT_Z_ZZZ_S:
-		case ENC_USMMLA_Z_ZZZ_:
-		{
-			// SYNTAX: <Zda>.S,<Zn>.B,<Zm>.B
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->Zda);
-			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->m);
-			// SYNTAX-END
-			break;
-		}
 		case ENC_SDOT_Z_ZZZI_S:
-		case ENC_SUDOT_Z_ZZZI_S:
 		case ENC_UDOT_Z_ZZZI_S:
-		case ENC_USDOT_Z_ZZZI_S:
 		{
 			// SYNTAX: <Zda>.S,<Zn>.B,<Zm>.B[<index>]
 			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->Zda);
 			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->n);
 			ADD_OPERAND_ZREG_ESIZE_LANED(_1B, ctx->m, ctx->index);
-			// SYNTAX-END
-			break;
-		}
-		case ENC_BFDOT_Z_ZZZ_:
-		case ENC_BFMLALB_Z_ZZZ_:
-		case ENC_BFMLALT_Z_ZZZ_:
-		case ENC_BFMMLA_Z_ZZZ_:
-		{
-			// SYNTAX: <Zda>.S,<Zn>.H,<Zm>.H
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->Zda);
-			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->m);
-			// SYNTAX-END
-			break;
-		}
-		case ENC_BFDOT_Z_ZZZI_:
-		case ENC_BFMLALB_Z_ZZZI_:
-		case ENC_BFMLALT_Z_ZZZI_:
-		{
-			// SYNTAX: <Zda>.S,<Zn>.H,<Zm>.H[<index>]
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->Zda);
-			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, ctx->m, ctx->index);
-			// SYNTAX-END
-			break;
-		}
-		case ENC_FMMLA_Z_ZZZ_S:
-		{
-			// SYNTAX: <Zda>.S,<Zn>.S,<Zm>.S
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->Zda);
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->n);
-			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->m);
 			// SYNTAX-END
 			break;
 		}
@@ -7184,32 +7139,32 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			uint64_t CRm = ctx->CRm;
 			     if(op1==0b000 && CRm==0b0110 && op2==0b001) dc_op = "ivac";
 			else if(op1==0b000 && CRm==0b0110 && op2==0b010) dc_op = "isw";
-			else if(op1==0b000 && CRm==0b0110 && op2==0b011 && HasMemTag()) dc_op = "igvac";
-			else if(op1==0b000 && CRm==0b0110 && op2==0b100 && HasMemTag()) dc_op = "igsw";
-			else if(op1==0b000 && CRm==0b0110 && op2==0b101 && HasMemTag()) dc_op = "igdvac";
-			else if(op1==0b000 && CRm==0b0110 && op2==0b110 && HasMemTag()) dc_op = "igdsw";
+			else if(op1==0b000 && CRm==0b0110 && op2==0b011 && HasMTE()) dc_op = "igvac";
+			else if(op1==0b000 && CRm==0b0110 && op2==0b100 && HasMTE()) dc_op = "igsw";
+			else if(op1==0b000 && CRm==0b0110 && op2==0b101 && HasMTE()) dc_op = "igdvac";
+			else if(op1==0b000 && CRm==0b0110 && op2==0b110 && HasMTE()) dc_op = "igdsw";
 			else if(op1==0b000 && CRm==0b1010 && op2==0b010) dc_op = "csw";
-			else if(op1==0b000 && CRm==0b1010 && op2==0b100 && HasMemTag()) dc_op = "cgsw";
-			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMemTag()) dc_op = "cgdsw";
+			else if(op1==0b000 && CRm==0b1010 && op2==0b100 && HasMTE()) dc_op = "cgsw";
+			else if(op1==0b000 && CRm==0b1010 && op2==0b010 && HasMTE()) dc_op = "cgdsw";
 			else if(op1==0b000 && CRm==0b1110 && op2==0b010) dc_op = "cisw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMemTag()) dc_op = "cigsw";
-			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMemTag()) dc_op = "cigdsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b100 && HasMTE()) dc_op = "cigsw";
+			else if(op1==0b000 && CRm==0b1110 && op2==0b110 && HasMTE()) dc_op = "cigdsw";
 			else if(op1==0b011 && CRm==0b0100 && op2==0b001) dc_op = "zva";
-			else if(op1==0b011 && CRm==0b0100 && op2==0b011 && HasMemTag()) dc_op = "gva";
-			else if(op1==0b011 && CRm==0b0100 && op2==0b100 && HasMemTag()) dc_op = "gzva";
+			else if(op1==0b011 && CRm==0b0100 && op2==0b011 && HasMTE()) dc_op = "gva";
+			else if(op1==0b011 && CRm==0b0100 && op2==0b100 && HasMTE()) dc_op = "gzva";
 			else if(op1==0b011 && CRm==0b1010 && op2==0b001) dc_op = "cvac";
-			else if(op1==0b011 && CRm==0b1010 && op2==0b011 && HasMemTag()) dc_op = "cgvac";
-			else if(op1==0b011 && CRm==0b1010 && op2==0b101 && HasMemTag()) dc_op = "cgdvac";
+			else if(op1==0b011 && CRm==0b1010 && op2==0b011 && HasMTE()) dc_op = "cgvac";
+			else if(op1==0b011 && CRm==0b1010 && op2==0b101 && HasMTE()) dc_op = "cgdvac";
 			else if(op1==0b011 && CRm==0b1011 && op2==0b001) dc_op = "cvau";
 			else if(op1==0b011 && CRm==0b1100 && op2==0b001 && HaveDCPoP()) dc_op = "cvap";
-			else if(op1==0b011 && CRm==0b1100 && op2==0b011 && HasMemTag()) dc_op = "cgvap";
-			else if(op1==0b011 && CRm==0b1100 && op2==0b101 && HasMemTag()) dc_op = "cgdvap";
+			else if(op1==0b011 && CRm==0b1100 && op2==0b011 && HasMTE()) dc_op = "cgvap";
+			else if(op1==0b011 && CRm==0b1100 && op2==0b101 && HasMTE()) dc_op = "cgdvap";
 			else if(op1==0b011 && CRm==0b1101 && op2==0b001 && HaveDCCVADP()) dc_op = "cvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMemTag()) dc_op = "cgvadp";
-			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMemTag()) dc_op = "cgdvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b011 && HasMTE()) dc_op = "cgvadp";
+			else if(op1==0b011 && CRm==0b1101 && op2==0b101 && HasMTE()) dc_op = "cgdvadp";
 			else if(op1==0b011 && CRm==0b1110 && op2==0b001) dc_op = "civac";
-			else if(op1==0b011 && CRm==0b1110 && op2==0b011 && HasMemTag()) dc_op = "cigvac";
-			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMemTag()) dc_op = "cigdvac";
+			else if(op1==0b011 && CRm==0b1110 && op2==0b011 && HasMTE()) dc_op = "cigvac";
+			else if(op1==0b011 && CRm==0b1110 && op2==0b101 && HasMTE()) dc_op = "cgdvac";
 
 			// SYNTAX: <dc_op>,<Xt>
 			ADD_OPERAND_NAME(dc_op);
@@ -7269,6 +7224,14 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 				"#12", "ld", "st", "sy"
 			};
 			ADD_OPERAND_NAME(table_barrier_limitations[ctx->CRm & 0xF]);
+			break;
+		}
+		case ENC_DSB_BON_BARRIERS:
+		{
+			const char *table_barrier_limitations[4] = { "oshnXS", "nshnXS", "ishnXS", "synXS" };
+			//int immediates[4] = { 16, 20, 24, 28 };
+			// DSB <option>nXS|#<imm>
+			ADD_OPERAND_NAME(table_barrier_limitations[ctx->CRm>>2]);
 			break;
 		}
 		case ENC_PRFH_I_P_BR_S:
@@ -7544,9 +7507,9 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			else if(ctx->op1==0 && ctx->op2==5) sr = REG_PSTATE_SPSEL; // "SPSel";
 			else if(ctx->op1==3 && ctx->op2==1 && HaveSSBSExt()) sr = REG_SSBS; // "SSBS";
 			else if(ctx->op1==3 && ctx->op2==2 && HaveDITExt()) sr = REG_DIT; // "DIT";
-			else if(ctx->op1==3 && ctx->op2==4 && HasMemTag()) sr = REG_TCO; // "TCO";
-			else if(ctx->op1==3 && ctx->op2==6 && HasMemTag()) sr = REG_DAIFSET; // "DAIFSet";
-			else if(ctx->op1==3 && ctx->op2==7 && HasMemTag()) sr = REG_DAIFCLR; // "DAIFClr";
+			else if(ctx->op1==3 && ctx->op2==4 && HasMTE()) sr = REG_TCO; // "TCO";
+			else if(ctx->op1==3 && ctx->op2==6 && HasMTE()) sr = REG_DAIFSET; // "DAIFSet";
+			else if(ctx->op1==3 && ctx->op2==7 && HasMTE()) sr = REG_DAIFCLR; // "DAIFClr";
 
 			if(sr == SYSREG_NONE) {
 				ADD_OPERAND_SYSTEMREG_IMPL_SPEC;
@@ -7575,30 +7538,30 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			uint64_t op2 = ctx->op2;
 			uint64_t crm = ctx->CRm;
 			const char *tlbi_op="error";
-			if(op1==0b000 && crm==0b0001 && op2==0b000 && HaveTLBI()) tlbi_op="vmalle1os";
-			else if(op1==0b000 && crm==0b0001 && op2==0b001 && HaveTLBI()) tlbi_op="vae1os";
-			else if(op1==0b000 && crm==0b0001 && op2==0b010 && HaveTLBI()) tlbi_op="aside1os";
-			else if(op1==0b000 && crm==0b0001 && op2==0b011 && HaveTLBI()) tlbi_op="vaae1os";
-			else if(op1==0b000 && crm==0b0001 && op2==0b101 && HaveTLBI()) tlbi_op="vale1os";
-			else if(op1==0b000 && crm==0b0001 && op2==0b111 && HaveTLBI()) tlbi_op="vaale1os";
-			else if(op1==0b000 && crm==0b0010 && op2==0b001 && HaveTLBI()) tlbi_op="rvae1is";
-			else if(op1==0b000 && crm==0b0010 && op2==0b011 && HaveTLBI()) tlbi_op="rvaae1is";
-			else if(op1==0b000 && crm==0b0010 && op2==0b101 && HaveTLBI()) tlbi_op="rvale1is";
-			else if(op1==0b000 && crm==0b0010 && op2==0b111 && HaveTLBI()) tlbi_op="rvaale1is";
+			if(op1==0b000 && crm==0b0001 && op2==0b000 && HaveTLBIOS()) tlbi_op="vmalle1os";
+			else if(op1==0b000 && crm==0b0001 && op2==0b001 && HaveTLBIOS()) tlbi_op="vae1os";
+			else if(op1==0b000 && crm==0b0001 && op2==0b010 && HaveTLBIOS()) tlbi_op="aside1os";
+			else if(op1==0b000 && crm==0b0001 && op2==0b011 && HaveTLBIOS()) tlbi_op="vaae1os";
+			else if(op1==0b000 && crm==0b0001 && op2==0b101 && HaveTLBIOS()) tlbi_op="vale1os";
+			else if(op1==0b000 && crm==0b0001 && op2==0b111 && HaveTLBIOS()) tlbi_op="vaale1os";
+			else if(op1==0b000 && crm==0b0010 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae1is";
+			else if(op1==0b000 && crm==0b0010 && op2==0b011 && HaveTLBIRANGE()) tlbi_op="rvaae1is";
+			else if(op1==0b000 && crm==0b0010 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale1is";
+			else if(op1==0b000 && crm==0b0010 && op2==0b111 && HaveTLBIRANGE()) tlbi_op="rvaale1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b000) tlbi_op="vmalle1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b001) tlbi_op="vae1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b010) tlbi_op="aside1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b011) tlbi_op="vaae1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b101) tlbi_op="vale1is";
 			else if(op1==0b000 && crm==0b0011 && op2==0b111) tlbi_op="vaale1is";
-			else if(op1==0b000 && crm==0b0101 && op2==0b001 && HaveTLBI()) tlbi_op="rvae1os";
-			else if(op1==0b000 && crm==0b0101 && op2==0b011 && HaveTLBI()) tlbi_op="rvaae1os";
-			else if(op1==0b000 && crm==0b0101 && op2==0b101 && HaveTLBI()) tlbi_op="rvale1os";
-			else if(op1==0b000 && crm==0b0101 && op2==0b111 && HaveTLBI()) tlbi_op="rvaale1os";
-			else if(op1==0b000 && crm==0b0110 && op2==0b001 && HaveTLBI()) tlbi_op="rvae1";
-			else if(op1==0b000 && crm==0b0110 && op2==0b011 && HaveTLBI()) tlbi_op="rvaae1";
-			else if(op1==0b000 && crm==0b0110 && op2==0b101 && HaveTLBI()) tlbi_op="rvale1";
-			else if(op1==0b000 && crm==0b0110 && op2==0b111 && HaveTLBI()) tlbi_op="rvaale1";
+			else if(op1==0b000 && crm==0b0101 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae1os";
+			else if(op1==0b000 && crm==0b0101 && op2==0b011 && HaveTLBIRANGE()) tlbi_op="rvaae1os";
+			else if(op1==0b000 && crm==0b0101 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale1os";
+			else if(op1==0b000 && crm==0b0101 && op2==0b111 && HaveTLBIRANGE()) tlbi_op="rvaale1os";
+			else if(op1==0b000 && crm==0b0110 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae1";
+			else if(op1==0b000 && crm==0b0110 && op2==0b011 && HaveTLBIRANGE()) tlbi_op="rvaae1";
+			else if(op1==0b000 && crm==0b0110 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale1";
+			else if(op1==0b000 && crm==0b0110 && op2==0b111 && HaveTLBIRANGE()) tlbi_op="rvaale1";
 			else if(op1==0b000 && crm==0b0111 && op2==0b000) tlbi_op="vmalle1";
 			else if(op1==0b000 && crm==0b0111 && op2==0b001) tlbi_op="vae1";
 			else if(op1==0b000 && crm==0b0111 && op2==0b010) tlbi_op="aside1";
@@ -7606,50 +7569,50 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			else if(op1==0b000 && crm==0b0111 && op2==0b101) tlbi_op="vale1";
 			else if(op1==0b000 && crm==0b0111 && op2==0b111) tlbi_op="vaale1";
 			else if(op1==0b100 && crm==0b0000 && op2==0b001) tlbi_op="ipas2e1is";
-			else if(op1==0b100 && crm==0b0000 && op2==0b010 && HaveTLBI()) tlbi_op="ripas2e1is";
+			else if(op1==0b100 && crm==0b0000 && op2==0b010 && HaveTLBIRANGE()) tlbi_op="ripas2e1is";
 			else if(op1==0b100 && crm==0b0000 && op2==0b101) tlbi_op="ipas2le1is";
-			else if(op1==0b100 && crm==0b0000 && op2==0b110 && HaveTLBI()) tlbi_op="ripas2le1is";
-			else if(op1==0b100 && crm==0b0001 && op2==0b000 && HaveTLBI()) tlbi_op="alle2os";
-			else if(op1==0b100 && crm==0b0001 && op2==0b001 && HaveTLBI()) tlbi_op="vae2os";
-			else if(op1==0b100 && crm==0b0001 && op2==0b100 && HaveTLBI()) tlbi_op="alle1os";
-			else if(op1==0b100 && crm==0b0001 && op2==0b101 && HaveTLBI()) tlbi_op="vale2os";
-			else if(op1==0b100 && crm==0b0001 && op2==0b110 && HaveTLBI()) tlbi_op="vmalls12e1os";
-			else if(op1==0b100 && crm==0b0010 && op2==0b001 && HaveTLBI()) tlbi_op="rvae2is";
-			else if(op1==0b100 && crm==0b0010 && op2==0b101 && HaveTLBI()) tlbi_op="rvale2is";
+			else if(op1==0b100 && crm==0b0000 && op2==0b110 && HaveTLBIRANGE()) tlbi_op="ripas2le1is";
+			else if(op1==0b100 && crm==0b0001 && op2==0b000 && HaveTLBIOS()) tlbi_op="alle2os";
+			else if(op1==0b100 && crm==0b0001 && op2==0b001 && HaveTLBIOS()) tlbi_op="vae2os";
+			else if(op1==0b100 && crm==0b0001 && op2==0b100 && HaveTLBIOS()) tlbi_op="alle1os";
+			else if(op1==0b100 && crm==0b0001 && op2==0b101 && HaveTLBIOS()) tlbi_op="vale2os";
+			else if(op1==0b100 && crm==0b0001 && op2==0b110 && HaveTLBIOS()) tlbi_op="vmalls12e1os";
+			else if(op1==0b100 && crm==0b0010 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae2is";
+			else if(op1==0b100 && crm==0b0010 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale2is";
 			else if(op1==0b100 && crm==0b0011 && op2==0b000) tlbi_op="alle2is";
 			else if(op1==0b100 && crm==0b0011 && op2==0b001) tlbi_op="vae2is";
 			else if(op1==0b100 && crm==0b0011 && op2==0b100) tlbi_op="alle1is";
 			else if(op1==0b100 && crm==0b0011 && op2==0b101) tlbi_op="vale2is";
 			else if(op1==0b100 && crm==0b0011 && op2==0b110) tlbi_op="vmalls12e1is";
-			else if(op1==0b100 && crm==0b0100 && op2==0b000 && HaveTLBI()) tlbi_op="ipas2e1os";
+			else if(op1==0b100 && crm==0b0100 && op2==0b000 && HaveTLBIOS()) tlbi_op="ipas2e1os";
 			else if(op1==0b100 && crm==0b0100 && op2==0b001) tlbi_op="ipas2e1";
-			else if(op1==0b100 && crm==0b0100 && op2==0b010 && HaveTLBI()) tlbi_op="ripas2e1";
-			else if(op1==0b100 && crm==0b0100 && op2==0b011 && HaveTLBI()) tlbi_op="ripas2e1os";
-			else if(op1==0b100 && crm==0b0100 && op2==0b100 && HaveTLBI()) tlbi_op="ipas2le1os";
+			else if(op1==0b100 && crm==0b0100 && op2==0b010 && HaveTLBIRANGE()) tlbi_op="ripas2e1";
+			else if(op1==0b100 && crm==0b0100 && op2==0b011 && HaveTLBIRANGE()) tlbi_op="ripas2e1os";
+			else if(op1==0b100 && crm==0b0100 && op2==0b100 && HaveTLBIOS()) tlbi_op="ipas2le1os";
 			else if(op1==0b100 && crm==0b0100 && op2==0b101) tlbi_op="ipas2le1";
-			else if(op1==0b100 && crm==0b0100 && op2==0b110 && HaveTLBI()) tlbi_op="ripas2le1";
-			else if(op1==0b100 && crm==0b0100 && op2==0b111 && HaveTLBI()) tlbi_op="ripas2le1os";
-			else if(op1==0b100 && crm==0b0101 && op2==0b001 && HaveTLBI()) tlbi_op="rvae2os";
-			else if(op1==0b100 && crm==0b0101 && op2==0b101 && HaveTLBI()) tlbi_op="rvale2os";
-			else if(op1==0b100 && crm==0b0110 && op2==0b001 && HaveTLBI()) tlbi_op="rvae2";
-			else if(op1==0b100 && crm==0b0110 && op2==0b101 && HaveTLBI()) tlbi_op="rvale2";
+			else if(op1==0b100 && crm==0b0100 && op2==0b110 && HaveTLBIRANGE()) tlbi_op="ripas2le1";
+			else if(op1==0b100 && crm==0b0100 && op2==0b111 && HaveTLBIRANGE()) tlbi_op="ripas2le1os";
+			else if(op1==0b100 && crm==0b0101 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae2os";
+			else if(op1==0b100 && crm==0b0101 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale2os";
+			else if(op1==0b100 && crm==0b0110 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae2";
+			else if(op1==0b100 && crm==0b0110 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale2";
 			else if(op1==0b100 && crm==0b0111 && op2==0b000) tlbi_op="alle2";
 			else if(op1==0b100 && crm==0b0111 && op2==0b001) tlbi_op="vae2";
 			else if(op1==0b100 && crm==0b0111 && op2==0b100) tlbi_op="alle1";
 			else if(op1==0b100 && crm==0b0111 && op2==0b101) tlbi_op="vale2";
 			else if(op1==0b100 && crm==0b0111 && op2==0b110) tlbi_op="vmalls12e1";
-			else if(op1==0b110 && crm==0b0001 && op2==0b000 && HaveTLBI()) tlbi_op="alle3os";
-			else if(op1==0b110 && crm==0b0001 && op2==0b001 && HaveTLBI()) tlbi_op="vae3os";
-			else if(op1==0b110 && crm==0b0001 && op2==0b101 && HaveTLBI()) tlbi_op="vale3os";
-			else if(op1==0b110 && crm==0b0010 && op2==0b001 && HaveTLBI()) tlbi_op="rvae3is";
-			else if(op1==0b110 && crm==0b0010 && op2==0b101 && HaveTLBI()) tlbi_op="rvale3is";
+			else if(op1==0b110 && crm==0b0001 && op2==0b000 && HaveTLBIOS()) tlbi_op="alle3os";
+			else if(op1==0b110 && crm==0b0001 && op2==0b001 && HaveTLBIOS()) tlbi_op="vae3os";
+			else if(op1==0b110 && crm==0b0001 && op2==0b101 && HaveTLBIOS()) tlbi_op="vale3os";
+			else if(op1==0b110 && crm==0b0010 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae3is";
+			else if(op1==0b110 && crm==0b0010 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale3is";
 			else if(op1==0b110 && crm==0b0011 && op2==0b000) tlbi_op="alle3is";
 			else if(op1==0b110 && crm==0b0011 && op2==0b001) tlbi_op="vae3is";
 			else if(op1==0b110 && crm==0b0011 && op2==0b101) tlbi_op="vale3is";
-			else if(op1==0b110 && crm==0b0101 && op2==0b001 && HaveTLBI()) tlbi_op="rvae3os";
-			else if(op1==0b110 && crm==0b0101 && op2==0b101 && HaveTLBI()) tlbi_op="rvale3os";
-			else if(op1==0b110 && crm==0b0110 && op2==0b001 && HaveTLBI()) tlbi_op="rvae3";
-			else if(op1==0b110 && crm==0b0110 && op2==0b101 && HaveTLBI()) tlbi_op="rvale3";
+			else if(op1==0b110 && crm==0b0101 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae3os";
+			else if(op1==0b110 && crm==0b0101 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale3os";
+			else if(op1==0b110 && crm==0b0110 && op2==0b001 && HaveTLBIRANGE()) tlbi_op="rvae3";
+			else if(op1==0b110 && crm==0b0110 && op2==0b101 && HaveTLBIRANGE()) tlbi_op="rvale3";
 			else if(op1==0b110 && crm==0b0111 && op2==0b000) tlbi_op="alle3";
 			else if(op1==0b110 && crm==0b0111 && op2==0b001) tlbi_op="vae3";
 			else if(op1==0b110 && crm==0b0111 && op2==0b101) tlbi_op="vale3";
@@ -9026,7 +8989,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			break;
 		}
 		case ENC_LD1B_Z_P_BR_U8:
-		case ENC_LD1ROB_Z_P_BR_CONTIGUOUS:
 		case ENC_LD1RQB_Z_P_BR_CONTIGUOUS:
 		case ENC_LDNT1B_Z_P_BR_CONTIGUOUS:
 		{
@@ -9050,7 +9012,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			break;
 		}
 		case ENC_LD1RB_Z_P_BI_U8:
-		case ENC_LD1ROB_Z_P_BI_U8:
 		case ENC_LD1RQB_Z_P_BI_U8:
 		{
 			signed imm = (instr->encoding == ENC_LD1RQB_Z_P_BI_U8) ? 16*(ctx->offset) : ctx->offset;
@@ -9213,7 +9174,6 @@ break;
 			break;
 		}
 		case ENC_LD1D_Z_P_BR_U64:
-		case ENC_LD1ROD_Z_P_BR_CONTIGUOUS:
 		case ENC_LD1RQD_Z_P_BR_CONTIGUOUS:
 		case ENC_LDNT1D_Z_P_BR_CONTIGUOUS:
 		{
@@ -9377,7 +9337,6 @@ break;
 		case ENC_LD1RB_Z_P_BI_U64:
 		case ENC_LD1RD_Z_P_BI_U64:
 		case ENC_LD1RH_Z_P_BI_U64:
-		case ENC_LD1ROD_Z_P_BI_U64:
 		case ENC_LD1RQD_Z_P_BI_U64:
 		case ENC_LD1RSB_Z_P_BI_S64:
 		case ENC_LD1RSH_Z_P_BI_S64:
@@ -9506,7 +9465,6 @@ break;
 			break;
 		}
 		case ENC_LD1H_Z_P_BR_U16:
-		case ENC_LD1ROH_Z_P_BR_CONTIGUOUS:
 		case ENC_LD1RQH_Z_P_BR_CONTIGUOUS:
 		case ENC_LDNT1H_Z_P_BR_CONTIGUOUS:
 		{
@@ -9545,14 +9503,12 @@ break;
 		}
 		case ENC_LD1RB_Z_P_BI_U16:
 		case ENC_LD1RH_Z_P_BI_U16:
-		case ENC_LD1ROH_Z_P_BI_U16:
 		case ENC_LD1RQH_Z_P_BI_U16:
 		case ENC_LD1RSB_Z_P_BI_S16:
 		{
 			signed imm;
 			switch(instr->encoding) {
 				case ENC_LD1RH_Z_P_BI_U16:
-				case ENC_LD1ROH_Z_P_BI_U16:
 					imm = 2 * ctx->offset; break;
 				case ENC_LD1RQH_Z_P_BI_U16:
 					imm = 16 * ctx->offset; break;
@@ -9663,10 +9619,9 @@ break;
 			// SYNTAX-END
 			break;
 		}
-		case ENC_LD1ROW_Z_P_BR_CONTIGUOUS:
-		case ENC_LD1RQW_Z_P_BR_CONTIGUOUS:
 		case ENC_LD1W_Z_P_BR_U32:
 		case ENC_LDNT1W_Z_P_BR_CONTIGUOUS:
+		case ENC_LD1RQW_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>,<Xm>, LSL #2]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, ctx->t);
@@ -9750,7 +9705,6 @@ break;
 		}
 		case ENC_LD1RB_Z_P_BI_U32:
 		case ENC_LD1RH_Z_P_BI_U32:
-		case ENC_LD1ROW_Z_P_BI_U32:
 		case ENC_LD1RQW_Z_P_BI_U32:
 		case ENC_LD1RSB_Z_P_BI_S32:
 		case ENC_LD1RSH_Z_P_BI_S32:
@@ -9762,7 +9716,6 @@ break;
 				case ENC_LD1RSH_Z_P_BI_S32:
 					factor = 2; break;
 				case ENC_LD1RW_Z_P_BI_U32:
-				case ENC_LD1ROW_Z_P_BI_U32:
 					factor = 4; break;
 				case ENC_LD1RQW_Z_P_BI_U32:
 					factor = 16; break;

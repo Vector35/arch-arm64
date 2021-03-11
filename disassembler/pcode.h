@@ -8,6 +8,7 @@
 #define UNREACHABLE { return DECODE_STATUS_UNREACHABLE; }
 /* do NOT return immediately! post-decode pcode might still need to run */ 
 #define OK(X) {instr->encoding = (X); instr->operation = enc_to_oper(X); rc = DECODE_STATUS_OK; }
+#define assert(X) if(!(X)) { return DECODE_STATUS_ASSERT_FAILED; }
 
 #define BITMASK(N) (((uint64_t)1<<(N))-1)
 #define SLICE(X,MSB,LSB) (((X)>>(LSB)) & BITMASK((MSB)-(LSB)+1)) /* get bits [MSB,LSB] */
@@ -33,81 +34,84 @@
 #define EncodingLabeled32Bit() (encoding32)
 #define EncodingLabeled64Bit() (encoding64)
 
-#define HasARMv8_0() ((ctx->features0) & ARCH_FEATURE_ARMv8_0)
-#define HasARMv8_1() ((ctx->features0) & ARCH_FEATURE_ARMv8_1)
-#define HasARMv8_2() ((ctx->features0) & ARCH_FEATURE_ARMv8_2)
-#define HasARMv8_3() ((ctx->features0) & ARCH_FEATURE_ARMv8_3)
-#define HasARMv8_4() ((ctx->features0) & ARCH_FEATURE_ARMv8_4)
-#define HasARMv8_5() ((ctx->features0) & ARCH_FEATURE_ARMv8_5)
+// 30 HasXXX() functions used by decode:
+#define HasBF16() (ctx->features0 & ARCH_FEATURE_BF16)
+#define HasBTI() (ctx->features0 & ARCH_FEATURE_BTI)
+#define HasDGH() (ctx->features0 & ARCH_FEATURE_DGH)
+#define HasDotProd() (ctx->features0 & ARCH_FEATURE_DotProd)
+#define HasFCMA() (ctx->features0 & ARCH_FEATURE_FCMA)
+#define HasFHM() (ctx->features0 & ARCH_FEATURE_FHM)
+#define HasFP16() (ctx->features0 & ARCH_FEATURE_FP16)
+#define HasFRINTTS() (ctx->features0 & ARCH_FEATURE_FRINTTS)
+#define HasFlagM() (ctx->features0 & ARCH_FEATURE_FlagM)
+#define HasFlagM2() (ctx->features0 & ARCH_FEATURE_FlagM2)
+#define HasI8MM() (ctx->features0 & ARCH_FEATURE_I8MM)
+#define HasJSCVT() (ctx->features0 & ARCH_FEATURE_JSCVT)
+#define HasLOR() (ctx->features0 & ARCH_FEATURE_LOR)
+#define HasLRCPC() (ctx->features0 & ARCH_FEATURE_LRCPC)
+#define HasLRCPC2() (ctx->features0 & ARCH_FEATURE_LRCPC2)
+#define HasLS64() (ctx->features0 & ARCH_FEATURE_LS64)
+#define HasLS64_V() (ctx->features0 & ARCH_FEATURE_LS64_V)
+#define HasLSE() (ctx->features0 & ARCH_FEATURE_LSE)
+#define HasMTE() (ctx->features0 & ARCH_FEATURE_MTE)
+#define HasPAuth() (ctx->features0 & ARCH_FEATURE_PAuth)
+#define HasRAS() (ctx->features0 & ARCH_FEATURE_RAS)
+#define HasRDM() (ctx->features0 & ARCH_FEATURE_RDM)
+#define HasSHA3() (ctx->features0 & ARCH_FEATURE_SHA3)
+#define HasSHA512() (ctx->features0 & ARCH_FEATURE_SHA512)
+#define HasSM3() (ctx->features0 & ARCH_FEATURE_SM3)
+#define HasSM4() (ctx->features0 & ARCH_FEATURE_SM4)
+#define HasSPE() (ctx->features0 & ARCH_FEATURE_SPE)
+#define HasTRF() (ctx->features0 & ARCH_FEATURE_TRF)
+#define HasWFxT() (ctx->features0 & ARCH_FEATURE_WFxT)
+#define HasXS() (ctx->features0 & ARCH_FEATURE_XS)
 
-#define HasDGH() ((ctx->features0) & ARCH_FEATURE_DGH)
-#define HasLOR() ((ctx->features0) & ARCH_FEATURE_LOR)
-#define HasLSE() ((ctx->features0) & ARCH_FEATURE_LSE)
-#define HasRDMA() ((ctx->features0) & ARCH_FEATURE_RDMA)
-#define HasBF16() ((ctx->features0) & ARCH_FEATURE_BF16)
-#define HasDotProd() ((ctx->features0) & ARCH_FEATURE_DotProd)
-#define HasFHM() ((ctx->features0) & ARCH_FEATURE_FHM)
-#define HasFP16() ((ctx->features0) & ARCH_FEATURE_FP16)
-#define HasI8MM() ((ctx->features0) & ARCH_FEATURE_I8MM)
-#define HasSHA2() ((ctx->features0) & ARCH_FEATURE_SHA2)
-#define HasSHA3() ((ctx->features0) & ARCH_FEATURE_SHA3)
-#define HasSM3() ((ctx->features0) & ARCH_FEATURE_SM3)
-#define HasSM4() ((ctx->features0) & ARCH_FEATURE_SM4)
-#define HasCompNum() ((ctx->features0) & ARCH_FEATURE_CompNum)
-#define HasJConv() ((ctx->features0) & ARCH_FEATURE_JConv)
-#define HasPAuth() ((ctx->features0) & ARCH_FEATURE_PAuth)
-#define HasRCPC() ((ctx->features0) & ARCH_FEATURE_RCPC)
-#define HasCondM() ((ctx->features0) & ARCH_FEATURE_CondM)
-#define HasRCPC_84() ((ctx->features0) & ARCH_FEATURE_RCPC_84)
-#define HasTrace() ((ctx->features0) & ARCH_FEATURE_Trace)
-#define HasBTI() ((ctx->features0) & ARCH_FEATURE_BTI)
-#define HasCondM_85() ((ctx->features0) & ARCH_FEATURE_CondM_85)
-#define HasFRINT() ((ctx->features0) & ARCH_FEATURE_FRINT)
-#define HasMemTag() ((ctx->features0) & ARCH_FEATURE_MemTag)
-#define HasRAS() ((ctx->features0) & ARCH_FEATURE_RAS)
-#define HasSPE() ((ctx->features0) & ARCH_FEATURE_SPE)
+// 39 HaveXXX() functions used by pcode:
+#define HaveAESExt() (ctx->features1 & ARCH_FEATURE_AESExt)
+#define HaveAtomicExt() (ctx->features1 & ARCH_FEATURE_AtomicExt)
+#define HaveBF16Ext() (ctx->features1 & ARCH_FEATURE_BF16Ext)
+#define HaveBTIExt() (ctx->features1 & ARCH_FEATURE_BTIExt)
+#define HaveBit128PMULLExt() (ctx->features1 & ARCH_FEATURE_Bit128PMULLExt)
+#define HaveCRCExt() (ctx->features1 & ARCH_FEATURE_CRCExt)
+#define HaveDGHExt() (ctx->features1 & ARCH_FEATURE_DGHExt)
+#define HaveDITExt() (ctx->features1 & ARCH_FEATURE_DITExt)
+#define HaveDOTPExt() (ctx->features1 & ARCH_FEATURE_DOTPExt)
+#define HaveFCADDExt() (ctx->features1 & ARCH_FEATURE_FCADDExt)
+#define HaveFJCVTZSExt() (ctx->features1 & ARCH_FEATURE_FJCVTZSExt)
+#define HaveFP16Ext() (ctx->features1 & ARCH_FEATURE_FP16Ext)
+#define HaveFP16MulNoRoundingToFP32Ext() (ctx->features1 & ARCH_FEATURE_FP16MulNoRoundingToFP32Ext)
+#define HaveFeatLS64() (ctx->features1 & ARCH_FEATURE_FeatLS64)
+#define HaveFeatWFxT() (ctx->features1 & ARCH_FEATURE_FeatWFxT)
+#define HaveFlagFormatExt() (ctx->features1 & ARCH_FEATURE_FlagFormatExt)
+#define HaveFlagManipulateExt() (ctx->features1 & ARCH_FEATURE_FlagManipulateExt)
+#define HaveFrintExt() (ctx->features1 & ARCH_FEATURE_FrintExt)
+#define HaveInt8MatMulExt() (ctx->features1 & ARCH_FEATURE_Int8MatMulExt)
+#define HaveMTE2Ext() (ctx->features1 & ARCH_FEATURE_MTE2Ext)
+#define HaveMTEExt() (ctx->features1 & ARCH_FEATURE_MTEExt)
+#define HaveNVExt() (ctx->features1 & ARCH_FEATURE_NVExt)
+#define HavePACExt() (ctx->features1 & ARCH_FEATURE_PACExt)
+#define HavePANExt() (ctx->features1 & ARCH_FEATURE_PANExt)
+#define HaveQRDMLAHExt() (ctx->features1 & ARCH_FEATURE_QRDMLAHExt)
+#define HaveRASExt() (ctx->features1 & ARCH_FEATURE_RASExt)
+#define HaveSBExt() (ctx->features1 & ARCH_FEATURE_SBExt)
+#define HaveSHA1Ext() (ctx->features1 & ARCH_FEATURE_SHA1Ext)
+#define HaveSHA256Ext() (ctx->features1 & ARCH_FEATURE_SHA256Ext)
+#define HaveSHA3Ext() (ctx->features1 & ARCH_FEATURE_SHA3Ext)
+#define HaveSHA512Ext() (ctx->features1 & ARCH_FEATURE_SHA512Ext)
+#define HaveSM3Ext() (ctx->features1 & ARCH_FEATURE_SM3Ext)
+#define HaveSM4Ext() (ctx->features1 & ARCH_FEATURE_SM4Ext)
+#define HaveSSBSExt() (ctx->features1 & ARCH_FEATURE_SSBSExt)
+#define HaveSVE() (ctx->features1 & ARCH_FEATURE_SVE)
+#define HaveSelfHostedTrace() (ctx->features1 & ARCH_FEATURE_SelfHostedTrace)
+#define HaveStatisticalProfiling() (ctx->features1 & ARCH_FEATURE_StatisticalProfiling)
+#define HaveUAOExt() (ctx->features1 & ARCH_FEATURE_UAOExt)
+#define HaveVirtHostExt() (ctx->features1 & ARCH_FEATURE_VirtHostExt)
 
-#define HaveAESExt() ((ctx->features1) & ARCH_FEATURE_AESExt)
-#define HaveAtomicExt() ((ctx->features1) & ARCH_FEATURE_AtomicExt)
-#define HaveBF16Ext() ((ctx->features1) & ARCH_FEATURE_BF16Ext)
-#define HaveBTIExt() ((ctx->features1) & ARCH_FEATURE_BTIExt)
-#define HaveBit128PMULLExt() ((ctx->features1) & ARCH_FEATURE_Bit128PMULLExt)
-#define HaveCRCExt() ((ctx->features1) & ARCH_FEATURE_CRCExt)
-#define HaveDGHExt() ((ctx->features1) & ARCH_FEATURE_DGHExt)
-#define HaveDITExt() ((ctx->features1) & ARCH_FEATURE_DITExt)
-#define HaveDOTPExt() ((ctx->features1) & ARCH_FEATURE_DOTPExt)
-#define HaveFCADDExt() ((ctx->features1) & ARCH_FEATURE_FCADDExt)
-#define HaveFJCVTZSExt() ((ctx->features1) & ARCH_FEATURE_FJCVTZSExt)
-#define HaveFP16Ext() ((ctx->features1) & ARCH_FEATURE_FP16Ext)
-#define HaveFP16MulNoRoundingToFP32Ext() ((ctx->features1) & ARCH_FEATURE_FP16MulNoRoundingToFP32Ext)
-#define HaveFlagFormatExt() ((ctx->features1) & ARCH_FEATURE_FlagFormatExt)
-#define HaveFlagManipulateExt() ((ctx->features1) & ARCH_FEATURE_FlagManipulateExt)
-#define HaveFrintExt() ((ctx->features1) & ARCH_FEATURE_FrintExt)
-#define HaveInt8MatMulExt() ((ctx->features1) & ARCH_FEATURE_Int8MatMulExt)
-#define HaveMTEExt() ((ctx->features1) & ARCH_FEATURE_MTEExt)
-#define HavePACExt() ((ctx->features1) & ARCH_FEATURE_PACExt)
-#define HavePANExt() ((ctx->features1) & ARCH_FEATURE_PANExt)
-#define HaveQRDMLAHExt() ((ctx->features1) & ARCH_FEATURE_QRDMLAHExt)
-#define HaveRASExt() ((ctx->features1) & ARCH_FEATURE_RASExt)
-#define HaveSBExt() ((ctx->features1) & ARCH_FEATURE_SBExt)
-#define HaveSHA1Ext() ((ctx->features1) & ARCH_FEATURE_SHA1Ext)
-#define HaveSHA256Ext() ((ctx->features1) & ARCH_FEATURE_SHA256Ext)
-#define HaveSHA3Ext() ((ctx->features1) & ARCH_FEATURE_SHA3Ext)
-#define HaveSHA512Ext() ((ctx->features1) & ARCH_FEATURE_SHA512Ext)
-#define HaveSM3Ext() ((ctx->features1) & ARCH_FEATURE_SM3Ext)
-#define HaveSM4Ext() ((ctx->features1) & ARCH_FEATURE_SM4Ext)
-#define HaveSSBSExt() ((ctx->features1) & ARCH_FEATURE_SSBSExt)
-#define HaveSVE() ((ctx->features1) & ARCH_FEATURE_SVE)
-#define HaveSVEFP32MatMulExt() ((ctx->features1) & ARCH_FEATURE_SVEFP32MatMulExt)
-#define HaveSVEFP64MatMulExt() ((ctx->features1) & ARCH_FEATURE_SVEFP64MatMulExt)
-#define HaveSelfHostedTrace() ((ctx->features1) & ARCH_FEATURE_SelfHostedTrace)
-#define HaveStatisticalProfiling() ((ctx->features1) & ARCH_FEATURE_StatisticalProfiling)
-#define HaveUAOExt() ((ctx->features1) & ARCH_FEATURE_UAOExt)
-#define HaveNVExt() ((ctx->features1) & ARCH_FEATURE_NVExt)
-#define HaveVirtHostExt() ((ctx->features1) & ARCH_FEATURE_VirtHostExt)
-#define HaveTLBI() ((ctx->features1) & ARCH_FEATURE_TLBI)
-#define HaveDCPoP() ((ctx->features1) & ARCH_FEATURE_DCPoP)
-#define HaveDCCVADP() ((ctx->features1) & ARCH_FEATURE_DCCVADP)
+// extras we find in spec tables, etc.
+#define HaveTLBIOS() (1)
+#define HaveTLBIRANGE() (1)
+#define HaveDCCVADP() (1)
+#define HaveDCPoP() (1)
 
 #define SetBTypeCompatible(X) ctx->BTypeCompatible = (X)
 #define SetBTypeNext(X) ctx->BTypeNext = (X)
@@ -174,7 +178,9 @@ enum SystemHintOp {
 	SystemHintOp_PSB,
 	SystemHintOp_TSB,
 	SystemHintOp_BTI,
-	SystemHintOp_CSDB
+	SystemHintOp_CSDB,
+	SystemHintOp_WFET,
+	SystemHintOp_WFIT,
 };
 
 enum ImmediateOp {
@@ -202,6 +208,21 @@ enum CompareOp {
 	CompareOp_GT,
 	CompareOp_LE,
 	CompareOp_LT
+};
+
+enum Constraint {
+	Constraint_ERROR=0,
+	Constraint_DISABLED,
+	Constraint_FALSE,
+	Constraint_FAULT,
+	Constraint_FORCE,
+	Constraint_LIMITED_ATOMICITY,
+	Constraint_NONE,
+	Constraint_NOP,
+	Constraint_TRUE,
+	Constraint_UNDEF,
+	Constraint_UNKNOWN,
+	Constraint_WBSUPPRESS,
 };
 
 enum CountOp {
@@ -317,6 +338,64 @@ enum PrefetchHint {
 	Prefetch_EXEC
 };
 
+enum Unpredictable {
+	Unpredictable_ERROR=-1,
+	Unpredictable_VMSR,
+	Unpredictable_WBOVERLAPLD,
+	Unpredictable_WBOVERLAPST,
+	Unpredictable_LDPOVERLAP,
+	Unpredictable_BASEOVERLAP,
+	Unpredictable_DATAOVERLAP,
+	Unpredictable_DEVPAGE2,
+	Unpredictable_DEVICETAGSTORE,
+	Unpredictable_INSTRDEVICE,
+	Unpredictable_RESCPACR,
+	Unpredictable_RESMAIR,
+	Unpredictable_RESTEXCB,
+	Unpredictable_RESDACR,
+	Unpredictable_RESPRRR,
+	Unpredictable_RESVTCRS,
+	Unpredictable_RESTnSZ,
+	Unpredictable_OORTnSZ,
+	Unpredictable_LARGEIPA,
+	Unpredictable_ESRCONDPASS,
+	Unpredictable_ILZEROIT,
+	Unpredictable_ILZEROT,
+	Unpredictable_BPVECTORCATCHPRI,
+	Unpredictable_VCMATCHHALF,
+	Unpredictable_VCMATCHDAPA,
+	Unpredictable_WPMASKANDBAS,
+	Unpredictable_WPBASCONTIGUOUS,
+	Unpredictable_RESWPMASK,
+	Unpredictable_WPMASKEDBITS,
+	Unpredictable_RESBPWPCTRL,
+	Unpredictable_BPNOTIMPL,
+	Unpredictable_RESBPTYPE,
+	Unpredictable_BPNOTCTXCMP,
+	Unpredictable_BPMATCHHALF,
+	Unpredictable_BPMISMATCHHALF,
+	Unpredictable_RESTARTALIGNPC,
+	Unpredictable_RESTARTZEROUPPERPC,
+	Unpredictable_ZEROUPPER,
+	Unpredictable_ERETZEROUPPERPC,
+	Unpredictable_A32FORCEALIGNPC,
+	Unpredictable_SMD,
+	Unpredictable_NONFAULT,
+	Unpredictable_SVEZEROUPPER,
+	Unpredictable_SVELDNFDATA,
+	Unpredictable_SVELDNFZERO,
+	Unpredictable_CHECKSPNONEACTIVE,
+	Unpredictable_AFUPDATE,     // AF update for alignment or permission fault,
+	Unpredictable_IESBinDebug,  // Use SCTLR[].IESB in Debug state,
+	Unpredictable_BADPMSFCR,    // Bad settings for PMSFCR_EL1/PMSEVFR_EL1/PMSLATFR_EL1,
+	Unpredictable_ZEROBTYPE,
+	Unpredictable_CLEARERRITEZERO, // Clearing sticky errors when instruction in flight,
+	Unpredictable_ALUEXCEPTIONRETURN,
+	Unpredictable_DBGxVR_RESS,
+	Unpredictable_WFxTDEBUG,
+	Unpredictable_LS64UNSUPPORTED,
+};
+
 typedef struct DecodeBitMasks_ReturnType_ {
 	uint64_t wmask;
 	uint64_t tmask;
@@ -328,6 +407,8 @@ int LowestSetBit(uint64_t x);
 bool BFXPreferred(uint32_t sf, uint32_t uns, uint32_t imms, uint32_t immr);
 int BitCount(uint32_t x);
 DecodeBitMasks_ReturnType DecodeBitMasks(uint8_t /*bit*/ immN, uint8_t /*bit(6)*/ imms, uint8_t /*bit(6)*/ immr);
+
+enum Constraint ConstrainUnpredictable(enum Unpredictable);
 bool MoveWidePreferred(uint32_t sf, uint32_t immN, uint32_t imms, uint32_t immr);
 bool SVEMoveMaskPreferred(uint32_t imm13);
 enum ShiftType DecodeRegExtend(uint8_t op);
