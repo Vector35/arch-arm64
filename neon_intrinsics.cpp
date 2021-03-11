@@ -16000,38 +16000,38 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			add_input_reg(inputs, il, instr.operands[2]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
-		case ENC_BFMLALB_Z_ZZZ_:
-			intrin_id = ARM64_INTRIN_VBFMLALBQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.8H
-			add_input_reg(inputs, il, instr.operands[0]);
-			add_input_reg(inputs, il, instr.operands[1]);
-			add_input_reg(inputs, il, instr.operands[2]);
-			add_output_reg(outputs, il, instr.operands[0]);
-			break;
-		case ENC_BFMLALB_Z_ZZZI_:
-			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANE_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
-			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANEQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
-			add_input_reg(inputs, il, instr.operands[0]);
-			add_input_reg(inputs, il, instr.operands[1]);
-			add_input_reg(inputs, il, instr.operands[2]);
-			add_input_lane(inputs, il, instr.operands[2]);
-			add_output_reg(outputs, il, instr.operands[0]);
-			break;
-		case ENC_BFMLALT_Z_ZZZ_:
-			intrin_id = ARM64_INTRIN_VBFMLALTQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.8H
-			add_input_reg(inputs, il, instr.operands[0]);
-			add_input_reg(inputs, il, instr.operands[1]);
-			add_input_reg(inputs, il, instr.operands[2]);
-			add_output_reg(outputs, il, instr.operands[0]);
-			break;
-		case ENC_BFMLALT_Z_ZZZI_:
-			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANE_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
-			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANEQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
-			add_input_reg(inputs, il, instr.operands[0]);
-			add_input_reg(inputs, il, instr.operands[1]);
-			add_input_reg(inputs, il, instr.operands[2]);
-			add_input_lane(inputs, il, instr.operands[2]);
-			add_output_reg(outputs, il, instr.operands[0]);
-			break;
+//		case ENC_BFMLALB_Z_ZZZ_:
+//			intrin_id = ARM64_INTRIN_VBFMLALBQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.8H
+//			add_input_reg(inputs, il, instr.operands[0]);
+//			add_input_reg(inputs, il, instr.operands[1]);
+//			add_input_reg(inputs, il, instr.operands[2]);
+//			add_output_reg(outputs, il, instr.operands[0]);
+//			break;
+//		case ENC_BFMLALB_Z_ZZZI_:
+//			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANE_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
+//			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALBQ_LANEQ_F32; // BFMLALB Vd.4S,Vn.8H,Vm.H[lane]
+//			add_input_reg(inputs, il, instr.operands[0]);
+//			add_input_reg(inputs, il, instr.operands[1]);
+//			add_input_reg(inputs, il, instr.operands[2]);
+//			add_input_lane(inputs, il, instr.operands[2]);
+//			add_output_reg(outputs, il, instr.operands[0]);
+//			break;
+//		case ENC_BFMLALT_Z_ZZZ_:
+//			intrin_id = ARM64_INTRIN_VBFMLALTQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.8H
+//			add_input_reg(inputs, il, instr.operands[0]);
+//			add_input_reg(inputs, il, instr.operands[1]);
+//			add_input_reg(inputs, il, instr.operands[2]);
+//			add_output_reg(outputs, il, instr.operands[0]);
+//			break;
+//		case ENC_BFMLALT_Z_ZZZI_:
+//			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANE_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
+//			if(instr.operands[0].arrSpec==ARRSPEC_4SINGLES) intrin_id = ARM64_INTRIN_VBFMLALTQ_LANEQ_F32; // BFMLALT Vd.4S,Vn.8H,Vm.H[lane]
+//			add_input_reg(inputs, il, instr.operands[0]);
+//			add_input_reg(inputs, il, instr.operands[1]);
+//			add_input_reg(inputs, il, instr.operands[2]);
+//			add_input_lane(inputs, il, instr.operands[2]);
+//			add_output_reg(outputs, il, instr.operands[0]);
+//			break;
 		case ENC_FCMLA_Z_ZZZI_H:
 			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_LANE_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
 			if(instr.operands[0].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCMLA_ROT180_LANEQ_F16; // FCMLA Vd.4H,Vn.4H,Vm.H[lane],#180
