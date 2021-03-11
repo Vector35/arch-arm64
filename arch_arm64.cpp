@@ -397,8 +397,9 @@ protected:
 		case ARM64_RETAB:
 			result.AddBranch(FunctionReturn);
 			break;
-
 		case ARM64_SVC:
+		case ARM64_HVC:
+		case ARM64_SMC:
 			result.AddBranch(SystemCall);
 			break;
 
@@ -933,6 +934,8 @@ public:
 			return "_eret";
 		case ARM64_INTRIN_CLZ:
 			return "_CountLeadingZeros";
+		case ARM64_INTRIN_CLREX:
+			return "__clrex";
 		case ARM64_INTRIN_REV:
 			return "_byteswap";
 		case ARM64_INTRIN_RBIT:
@@ -967,7 +970,7 @@ public:
 			ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC, ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE,
 			ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
 			ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI,
-			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
+			ARM64_INTRIN_ERET, ARM64_INTRIN_CLZ, ARM64_INTRIN_CLREX, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
 			ARM64_INTRIN_AESD, ARM64_INTRIN_AESE
 		};
 
@@ -1353,8 +1356,8 @@ public:
 		if(reg_ > SYSREG_NONE && reg_ < SYSREG_END)
 			return get_system_register_name((enum SystemReg)reg_);
 
-		if(reg_ == FAKEREG_SYSCALL_IMM)
-			return "syscall_imm";
+		if(reg_ == FAKEREG_SYSCALL_INFO)
+			return "syscall_info";
 
 		return "";
 	}
@@ -1694,7 +1697,7 @@ public:
 			REG_CNTPS_TVAL_EL1, REG_CNTPS_CTL_EL1, REG_CNTPS_CVAL_EL1, REG_PSTATE_SPSEL,
 			SYSREG_UNKNOWN,
 			/* fake registers */
-			FAKEREG_SYSCALL_IMM
+			FAKEREG_SYSCALL_INFO
 		};
 
 		return r;
@@ -2001,8 +2004,8 @@ public:
 			return RegisterInfo(REG_V0 + v, idx * 8, 8);
 		}
 
-		if (reg == FAKEREG_SYSCALL_IMM)
-				return RegisterInfo(reg, 0, 2);
+		if (reg == FAKEREG_SYSCALL_INFO)
+				return RegisterInfo(reg, 0, 4);
 
 		if (reg > SYSREG_NONE && reg < SYSREG_END)
 			return RegisterInfo(reg, 0, 8);
@@ -2383,7 +2386,7 @@ public:
 
 	virtual vector<uint32_t> GetIntegerArgumentRegisters() override
 	{
-		return { FAKEREG_SYSCALL_IMM };
+		return { FAKEREG_SYSCALL_INFO };
 	}
 
 

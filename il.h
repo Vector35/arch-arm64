@@ -65,6 +65,7 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_YIELD,
 	ARM64_INTRIN_ERET,
 	ARM64_INTRIN_CLZ,
+	ARM64_INTRIN_CLREX,
 	ARM64_INTRIN_REV,
 	ARM64_INTRIN_RBIT,
 	ARM64_INTRIN_AESD,
@@ -75,7 +76,7 @@ enum Arm64Intrinsic : uint32_t
 
 enum Arm64FakeRegister: uint32_t
 {
-	FAKEREG_SYSCALL_IMM = SYSREG_END+1
+	FAKEREG_SYSCALL_INFO = SYSREG_END+1
 };
 
 bool GetLowLevelILForInstruction(

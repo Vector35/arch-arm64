@@ -2,6 +2,63 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_ret = [
+	# ret
+	(b'\xc0\x03\x5f\xd6', ''), # test harness strips this LLIL_RET, empty string is correct
+	# ret x10
+	(b'\x40\x01\x5f\xd6', 'LLIL_RET(LLIL_REG.q(x10))'),
+]
+
+tests_svc_hvc_smc = [
+	# svc #0xb79                                                       SVC_EX_EXCEPTION
+	(b'\x21\x6F\x01\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000B79));' + \
+						 ' LLIL_SYSCALL()'),
+	# svc #0x18a3                                                      SVC_EX_EXCEPTION
+	(b'\x61\x14\x03\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x400018A3));' + \
+						 ' LLIL_SYSCALL()'),
+	# svc #0x6ea8                                                      SVC_EX_EXCEPTION
+	(b'\x01\xD5\x0D\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40006EA8));' + \
+						 ' LLIL_SYSCALL()'),
+	# svc #0x73ac                                                      SVC_EX_EXCEPTION
+	(b'\x81\x75\x0E\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x400073AC));' + \
+						 ' LLIL_SYSCALL()'),
+	# hvc #0x6fa3                                                      HVC_EX_EXCEPTION
+	(b'\x62\xF4\x0D\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x80006FA3));' + \
+						 ' LLIL_SYSCALL()'),
+	# hvc #0xa4c4                                                      HVC_EX_EXCEPTION
+	(b'\x82\x98\x14\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x8000A4C4));' + \
+						 ' LLIL_SYSCALL()'),
+	# hvc #0xd5b2                                                      HVC_EX_EXCEPTION
+	(b'\x42\xB6\x1A\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x8000D5B2));' + \
+						 ' LLIL_SYSCALL()'),
+	# hvc #0x85e5                                                      HVC_EX_EXCEPTION
+	(b'\xA2\xBC\x10\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x800085E5));' + \
+						 ' LLIL_SYSCALL()'),
+	# smc #0xcfd4                                                      SMC_EX_EXCEPTION
+	(b'\x83\xFA\x19\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0xC000CFD4));' + \
+						 ' LLIL_SYSCALL()'),
+	# smc #0xc2ff                                                      SMC_EX_EXCEPTION
+	(b'\xE3\x5F\x18\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0xC000C2FF));' + \
+						 ' LLIL_SYSCALL()'),
+	# smc #0x7dd1                                                      SMC_EX_EXCEPTION
+	(b'\x23\xBA\x0F\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0xC0007DD1));' + \
+						 ' LLIL_SYSCALL()'),
+	# smc #0x7bb1                                                      SMC_EX_EXCEPTION
+	(b'\x23\x76\x0F\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0xC0007BB1));' + \
+						 ' LLIL_SYSCALL()'),
+]
+
+tests_clrex = [
+	# clrex #0xe                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0x1                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x31\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0xb                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x3B\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	# clrex #0x2                                                       CLREX_BN_BARRIERS
+	(b'\x5F\x32\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+]
+
 tests_xtn_xtn2 = [
 	# xtn v17.4h, v24.4s                                               XTN_ASIMDMISC_N
 	(b'\x11\x2B\x61\x0E', 'LLIL_INTRINSIC([v17],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24)]))'),
@@ -76,7 +133,7 @@ tests_uxtl_uxtl2 = [
 	(b'\xA0\xA5\x10\x6F', 'LLIL_SET_REG.d(v0.s[0],LLIL_REG.w(v13.h[4]));' + \
 						 ' LLIL_SET_REG.d(v0.s[1],LLIL_REG.w(v13.h[5]));' + \
 						 ' LLIL_SET_REG.d(v0.s[2],LLIL_REG.w(v13.h[6]));' + \
-						 ' LLIL_SET_REG.d(v0.s[3],LLIL_REG.w(v13.h[7]))'), 
+						 ' LLIL_SET_REG.d(v0.s[3],LLIL_REG.w(v13.h[7]))'),
 ]
 
 tests_ldadd = [
@@ -403,6 +460,13 @@ tests_stnp = [
 	# stnp s8, s6, [x17, #0x2c]                                        STNP_S_LDSTNAPAIR_OFFS
 	(b'\x28\x9A\x05\x2C', 'LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_CONST.q(0x2C)),LLIL_REG.d(s8));' + \
 						 ' LLIL_STORE.d(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_CONST.q(0x30)),LLIL_REG.d(s6))'),
+]
+
+tests_mov = [
+	# 011c044e   mov     v1.s[0], w0
+	(b'\x01\x1c\x04\x4e', 'LLIL_SET_REG.d(v1.s[0],LLIL_REG.d(w0))'),
+	# mov w10, #0
+	(b'\x0a\x00\x80\x52', 'LLIL_SET_REG.d(w10,LLIL_CONST.d(0x0))'),
 ]
 
 tests_movi = [
@@ -1323,6 +1387,9 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_ret + \
+	tests_svc_hvc_smc + \
+	tests_clrex + \
 	tests_xtn_xtn2 + \
 	tests_dc + \
 	tests_uxtl_uxtl2 + \
@@ -1332,6 +1399,7 @@ test_cases = \
 	tests_stlr + \
 	tests_ldnp + \
 	tests_stnp + \
+	tests_mov + \
 	tests_movi + \
 	tests_fsub + \
 	tests_fadd + \
@@ -1875,10 +1943,10 @@ test_cases = \
 	(b'\x41\x00\x03\xea', 'LLIL_SET_REG.q(x1,LLIL_AND.q(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # ands x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x41\x00\x03\xda', 'LLIL_SET_REG.q(x1,LLIL_SBB.q(LLIL_REG.q(x2),LLIL_REG.q(x3),LLIL_NOT(LLIL_FLAG(c))))'), # sbc x1,x2,x3
 	(b'\x41\x00\x03\xfa', 'LLIL_SET_REG.q(x1,LLIL_SBB.q(LLIL_REG.q(x2),LLIL_REG.q(x3),LLIL_NOT(LLIL_FLAG(c))))'), # sbcs x1,x2,x3 with IL_FLAGWRITE_ALL
-	(b'\x01\x00\x00\xd4', 'LLIL_SET_REG.w(syscall_imm,LLIL_CONST.w(0x0)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
-	(b'\x21\x00\x00\xd4', 'LLIL_SET_REG.w(syscall_imm,LLIL_CONST.w(0x1)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
-	(b'\x41\x00\x00\xd4', 'LLIL_SET_REG.w(syscall_imm,LLIL_CONST.w(0x2)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
-	(b'\x61\x00\x00\xd4', 'LLIL_SET_REG.w(syscall_imm,LLIL_CONST.w(0x3)); LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
+	(b'\x01\x00\x00\xd4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000000)); LLIL_SYSCALL()'), # svc #0; ret; ZwAccessCheck() on win-arm64
+	(b'\x21\x00\x00\xd4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000001)); LLIL_SYSCALL()'), # svc #1; ret; ZwWorkerFactoryWorkerReady() on win-arm64
+	(b'\x41\x00\x00\xd4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000002)); LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
+	(b'\x61\x00\x00\xd4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000003)); LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
 	(b'\xbf\x3f\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb sy (data memory barrier, system)
 	(b'\xbf\x3e\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb st (data memory barrier, stores)
 	(b'\xbf\x3a\x03\xd5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb ishst (data memory barrier, inner shareable domain)
@@ -1910,7 +1978,6 @@ test_cases = \
 	(b'\x22\x6A\x41\x7A', 'LLIL_IF(LLIL_FLAG(v),1,3); LLIL_SUB.d(LLIL_REG.d(w17),LLIL_CONST.d(0x1)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(0)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(1)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w17, #1, #2, vs
 	(b'\xA8\xA8\x41\x7A', 'LLIL_IF(LLIL_CMP_E(LLIL_FLAG(n),LLIL_FLAG(v)),1,3); LLIL_SUB.d(LLIL_REG.d(w5),LLIL_CONST.d(0x1)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(1)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w5, #1, #8, ge
 	(b'\x08\x49\x5E\x7A', 'LLIL_IF(LLIL_FLAG(n),1,3); LLIL_SUB.d(LLIL_REG.d(w8),LLIL_CONST.d(0x1E)); LLIL_GOTO(8); LLIL_SET_FLAG(n,LLIL_CONST(1)); LLIL_SET_FLAG(z,LLIL_CONST(0)); LLIL_SET_FLAG(c,LLIL_CONST(0)); LLIL_SET_FLAG(v,LLIL_CONST(0)); LLIL_GOTO(8)'), # ccmp w8, #30, #8, mi
-	(b'\x0a\x00\x80\x52', 'LLIL_SET_REG.d(w10,LLIL_CONST.d(0x0))'), # mov 10, #0
 	(b'\x1f\x20\x03\xd5', ''), # nop, gets optimized from function
 ]
 

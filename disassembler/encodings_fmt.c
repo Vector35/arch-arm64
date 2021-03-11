@@ -233,6 +233,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_DMB_BO_BARRIERS: return "DMB_BO_barriers";
 		case ENC_DRPS_64E_BRANCH_REG: return "DRPS_64E_branch_reg";
 		case ENC_DSB_BO_BARRIERS: return "DSB_BO_barriers";
+		case ENC_DSB_BON_BARRIERS: return "DSB_BOn_barriers";
 		case ENC_DUP_ASIMDINS_DR_R: return "DUP_asimdins_DR_r";
 		case ENC_DUP_ASIMDINS_DV_V: return "DUP_asimdins_DV_v";
 		case ENC_DUP_ASISDONE_ONLY: return "DUP_asisdone_only";
@@ -761,6 +762,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_LD4_ASISDLSOP_HX4_R4H: return "LD4_asisdlsop_HX4_r4h";
 		case ENC_LD4_ASISDLSOP_S4_I4S: return "LD4_asisdlsop_S4_i4s";
 		case ENC_LD4_ASISDLSOP_SX4_R4S: return "LD4_asisdlsop_SX4_r4s";
+		case ENC_LD64B_64L_MEMOP: return "LD64B_64L_memop";
 		case ENC_LDADDAB_32_MEMOP: return "LDADDAB_32_memop";
 		case ENC_LDADDAH_32_MEMOP: return "LDADDAH_32_memop";
 		case ENC_LDADDALB_32_MEMOP: return "LDADDALB_32_memop";
@@ -1461,6 +1463,9 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_ST4_ASISDLSOP_HX4_R4H: return "ST4_asisdlsop_HX4_r4h";
 		case ENC_ST4_ASISDLSOP_S4_I4S: return "ST4_asisdlsop_S4_i4s";
 		case ENC_ST4_ASISDLSOP_SX4_R4S: return "ST4_asisdlsop_SX4_r4s";
+		case ENC_ST64BV0_64_MEMOP: return "ST64BV0_64_memop";
+		case ENC_ST64BV_64_MEMOP: return "ST64BV_64_memop";
+		case ENC_ST64B_64L_MEMOP: return "ST64B_64L_memop";
 		case ENC_STADDB_LDADDB_32_MEMOP: return "STADDB_LDADDB_32_memop";
 		case ENC_STADDH_LDADDH_32_MEMOP: return "STADDH_LDADDH_32_memop";
 		case ENC_STADDLB_LDADDLB_32_MEMOP: return "STADDLB_LDADDLB_32_memop";
@@ -1784,6 +1789,14 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_10_PSTATE: return "UNALLOCATED_10_pstate";
 		case ENC_UNALLOCATED_10_RMIF: return "UNALLOCATED_10_rmif";
 		case ENC_UNALLOCATED_10_SETF: return "UNALLOCATED_10_setf";
+		case ENC_UNALLOCATED_112: return "UNALLOCATED_112";
+		case ENC_UNALLOCATED_113: return "UNALLOCATED_113";
+		case ENC_UNALLOCATED_114: return "UNALLOCATED_114";
+		case ENC_UNALLOCATED_115: return "UNALLOCATED_115";
+		case ENC_UNALLOCATED_116: return "UNALLOCATED_116";
+		case ENC_UNALLOCATED_117: return "UNALLOCATED_117";
+		case ENC_UNALLOCATED_118: return "UNALLOCATED_118";
+		case ENC_UNALLOCATED_119: return "UNALLOCATED_119";
 		case ENC_UNALLOCATED_11_ADDSUB_EXT: return "UNALLOCATED_11_addsub_ext";
 		case ENC_UNALLOCATED_11_ADDSUB_IMMTAGS: return "UNALLOCATED_11_addsub_immtags";
 		case ENC_UNALLOCATED_11_ADDSUB_SHIFT: return "UNALLOCATED_11_addsub_shift";
@@ -1829,6 +1842,14 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_11_FLOATSEL: return "UNALLOCATED_11_floatsel";
 		case ENC_UNALLOCATED_11_RMIF: return "UNALLOCATED_11_rmif";
 		case ENC_UNALLOCATED_11_SETF: return "UNALLOCATED_11_setf";
+		case ENC_UNALLOCATED_120: return "UNALLOCATED_120";
+		case ENC_UNALLOCATED_121: return "UNALLOCATED_121";
+		case ENC_UNALLOCATED_122: return "UNALLOCATED_122";
+		case ENC_UNALLOCATED_123: return "UNALLOCATED_123";
+		case ENC_UNALLOCATED_124: return "UNALLOCATED_124";
+		case ENC_UNALLOCATED_125: return "UNALLOCATED_125";
+		case ENC_UNALLOCATED_126: return "UNALLOCATED_126";
+		case ENC_UNALLOCATED_127: return "UNALLOCATED_127";
 		case ENC_UNALLOCATED_128: return "UNALLOCATED_128";
 		case ENC_UNALLOCATED_129: return "UNALLOCATED_129";
 		case ENC_UNALLOCATED_12_ADDSUB_EXT: return "UNALLOCATED_12_addsub_ext";
@@ -1843,6 +1864,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_12_ASISDMISCFP16: return "UNALLOCATED_12_asisdmiscfp16";
 		case ENC_UNALLOCATED_12_ASISDONE: return "UNALLOCATED_12_asisdone";
 		case ENC_UNALLOCATED_12_ASISDPAIR: return "UNALLOCATED_12_asisdpair";
+		case ENC_UNALLOCATED_12_BARRIERS: return "UNALLOCATED_12_barriers";
 		case ENC_UNALLOCATED_12_BITFIELD: return "UNALLOCATED_12_bitfield";
 		case ENC_UNALLOCATED_12_BRANCH_REG: return "UNALLOCATED_12_branch_reg";
 		case ENC_UNALLOCATED_12_CONDBRANCH: return "UNALLOCATED_12_condbranch";
@@ -1863,6 +1885,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_12_FLOATIMM: return "UNALLOCATED_12_floatimm";
 		case ENC_UNALLOCATED_12_FLOATSEL: return "UNALLOCATED_12_floatsel";
 		case ENC_UNALLOCATED_12_LDSTNAPAIR_OFFS: return "UNALLOCATED_12_ldstnapair_offs";
+		case ENC_UNALLOCATED_12_SYSTEMINSTRSWITHREG: return "UNALLOCATED_12_systeminstrswithreg";
 		case ENC_UNALLOCATED_130: return "UNALLOCATED_130";
 		case ENC_UNALLOCATED_131: return "UNALLOCATED_131";
 		case ENC_UNALLOCATED_132: return "UNALLOCATED_132";
@@ -1897,6 +1920,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_13_LDSTTAGS: return "UNALLOCATED_13_ldsttags";
 		case ENC_UNALLOCATED_13_MOVEWIDE: return "UNALLOCATED_13_movewide";
 		case ENC_UNALLOCATED_13_RMIF: return "UNALLOCATED_13_rmif";
+		case ENC_UNALLOCATED_13_SYSTEMINSTRSWITHREG: return "UNALLOCATED_13_systeminstrswithreg";
 		case ENC_UNALLOCATED_140: return "UNALLOCATED_140";
 		case ENC_UNALLOCATED_141: return "UNALLOCATED_141";
 		case ENC_UNALLOCATED_142: return "UNALLOCATED_142";
@@ -1914,10 +1938,10 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_14_ASISDLSO: return "UNALLOCATED_14_asisdlso";
 		case ENC_UNALLOCATED_14_ASISDLSOP: return "UNALLOCATED_14_asisdlsop";
 		case ENC_UNALLOCATED_14_ASISDONE: return "UNALLOCATED_14_asisdone";
-		case ENC_UNALLOCATED_14_ASISDPAIR: return "UNALLOCATED_14_asisdpair";
 		case ENC_UNALLOCATED_14_ASISDSAME: return "UNALLOCATED_14_asisdsame";
 		case ENC_UNALLOCATED_14_ASISDSAMEFP16: return "UNALLOCATED_14_asisdsamefp16";
 		case ENC_UNALLOCATED_14_ASISDSHF: return "UNALLOCATED_14_asisdshf";
+		case ENC_UNALLOCATED_14_BARRIERS: return "UNALLOCATED_14_barriers";
 		case ENC_UNALLOCATED_14_CRYPTO4: return "UNALLOCATED_14_crypto4";
 		case ENC_UNALLOCATED_14_DP_1SRC: return "UNALLOCATED_14_dp_1src";
 		case ENC_UNALLOCATED_14_DP_2SRC: return "UNALLOCATED_14_dp_2src";
@@ -1930,6 +1954,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_14_LDST_PAC: return "UNALLOCATED_14_ldst_pac";
 		case ENC_UNALLOCATED_14_RMIF: return "UNALLOCATED_14_rmif";
 		case ENC_UNALLOCATED_14_SETF: return "UNALLOCATED_14_setf";
+		case ENC_UNALLOCATED_14_SYSTEMINSTRSWITHREG: return "UNALLOCATED_14_systeminstrswithreg";
 		case ENC_UNALLOCATED_150: return "UNALLOCATED_150";
 		case ENC_UNALLOCATED_151: return "UNALLOCATED_151";
 		case ENC_UNALLOCATED_152: return "UNALLOCATED_152";
@@ -1953,7 +1978,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_15_ASISDONE: return "UNALLOCATED_15_asisdone";
 		case ENC_UNALLOCATED_15_ASISDSAME: return "UNALLOCATED_15_asisdsame";
 		case ENC_UNALLOCATED_15_ASISDSAME2: return "UNALLOCATED_15_asisdsame2";
-		case ENC_UNALLOCATED_15_BARRIERS: return "UNALLOCATED_15_barriers";
 		case ENC_UNALLOCATED_15_BRANCH_REG: return "UNALLOCATED_15_branch_reg";
 		case ENC_UNALLOCATED_15_DP_1SRC: return "UNALLOCATED_15_dp_1src";
 		case ENC_UNALLOCATED_15_DP_2SRC: return "UNALLOCATED_15_dp_2src";
@@ -1995,9 +2019,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_16_ASISDLSO: return "UNALLOCATED_16_asisdlso";
 		case ENC_UNALLOCATED_16_ASISDLSOP: return "UNALLOCATED_16_asisdlsop";
 		case ENC_UNALLOCATED_16_ASISDMISC: return "UNALLOCATED_16_asisdmisc";
-		case ENC_UNALLOCATED_16_ASISDONE: return "UNALLOCATED_16_asisdone";
 		case ENC_UNALLOCATED_16_ASISDSAME2: return "UNALLOCATED_16_asisdsame2";
-		case ENC_UNALLOCATED_16_BARRIERS: return "UNALLOCATED_16_barriers";
 		case ENC_UNALLOCATED_16_CRYPTOSHA2: return "UNALLOCATED_16_cryptosha2";
 		case ENC_UNALLOCATED_16_DP_1SRC: return "UNALLOCATED_16_dp_1src";
 		case ENC_UNALLOCATED_16_DP_3SRC: return "UNALLOCATED_16_dp_3src";
@@ -2026,7 +2048,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_17_ASIMDINS: return "UNALLOCATED_17_asimdins";
 		case ENC_UNALLOCATED_17_ASIMDSAME2: return "UNALLOCATED_17_asimdsame2";
 		case ENC_UNALLOCATED_17_ASISDELEM: return "UNALLOCATED_17_asisdelem";
-		case ENC_UNALLOCATED_17_ASISDPAIR: return "UNALLOCATED_17_asisdpair";
+		case ENC_UNALLOCATED_17_ASISDONE: return "UNALLOCATED_17_asisdone";
 		case ENC_UNALLOCATED_17_ASISDSAME2: return "UNALLOCATED_17_asisdsame2";
 		case ENC_UNALLOCATED_17_ASISDSAMEFP16: return "UNALLOCATED_17_asisdsamefp16";
 		case ENC_UNALLOCATED_17_ASISDSHF: return "UNALLOCATED_17_asisdshf";
@@ -2065,7 +2087,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_18_ASISDDIFF: return "UNALLOCATED_18_asisddiff";
 		case ENC_UNALLOCATED_18_ASISDLSO: return "UNALLOCATED_18_asisdlso";
 		case ENC_UNALLOCATED_18_ASISDLSOP: return "UNALLOCATED_18_asisdlsop";
-		case ENC_UNALLOCATED_18_ASISDONE: return "UNALLOCATED_18_asisdone";
 		case ENC_UNALLOCATED_18_BARRIERS: return "UNALLOCATED_18_barriers";
 		case ENC_UNALLOCATED_18_BRANCH_REG: return "UNALLOCATED_18_branch_reg";
 		case ENC_UNALLOCATED_18_CRYPTOAES: return "UNALLOCATED_18_cryptoaes";
@@ -2093,7 +2114,9 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_19_ASISDELEM: return "UNALLOCATED_19_asisdelem";
 		case ENC_UNALLOCATED_19_ASISDLSEP: return "UNALLOCATED_19_asisdlsep";
 		case ENC_UNALLOCATED_19_ASISDMISCFP16: return "UNALLOCATED_19_asisdmiscfp16";
+		case ENC_UNALLOCATED_19_ASISDPAIR: return "UNALLOCATED_19_asisdpair";
 		case ENC_UNALLOCATED_19_ASISDSAMEFP16: return "UNALLOCATED_19_asisdsamefp16";
+		case ENC_UNALLOCATED_19_BARRIERS: return "UNALLOCATED_19_barriers";
 		case ENC_UNALLOCATED_19_BITFIELD: return "UNALLOCATED_19_bitfield";
 		case ENC_UNALLOCATED_19_BRANCH_REG: return "UNALLOCATED_19_branch_reg";
 		case ENC_UNALLOCATED_19_CRYPTOAES: return "UNALLOCATED_19_cryptoaes";
@@ -2117,6 +2140,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_20_ASISDMISCFP16: return "UNALLOCATED_20_asisdmiscfp16";
 		case ENC_UNALLOCATED_20_ASISDPAIR: return "UNALLOCATED_20_asisdpair";
 		case ENC_UNALLOCATED_20_ASISDSHF: return "UNALLOCATED_20_asisdshf";
+		case ENC_UNALLOCATED_20_BARRIERS: return "UNALLOCATED_20_barriers";
 		case ENC_UNALLOCATED_20_BRANCH_REG: return "UNALLOCATED_20_branch_reg";
 		case ENC_UNALLOCATED_20_CRYPTOSHA3: return "UNALLOCATED_20_cryptosha3";
 		case ENC_UNALLOCATED_20_DP_1SRC: return "UNALLOCATED_20_dp_1src";
@@ -2167,7 +2191,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_22_ASISDELEM: return "UNALLOCATED_22_asisdelem";
 		case ENC_UNALLOCATED_22_ASISDLSE: return "UNALLOCATED_22_asisdlse";
 		case ENC_UNALLOCATED_22_ASISDMISCFP16: return "UNALLOCATED_22_asisdmiscfp16";
-		case ENC_UNALLOCATED_22_ASISDPAIR: return "UNALLOCATED_22_asisdpair";
 		case ENC_UNALLOCATED_22_DP_3SRC: return "UNALLOCATED_22_dp_3src";
 		case ENC_UNALLOCATED_22_EXCEPTION: return "UNALLOCATED_22_exception";
 		case ENC_UNALLOCATED_22_LDSTPAIR_OFF: return "UNALLOCATED_22_ldstpair_off";
@@ -2188,7 +2211,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_23_ASISDLSE: return "UNALLOCATED_23_asisdlse";
 		case ENC_UNALLOCATED_23_ASISDLSO: return "UNALLOCATED_23_asisdlso";
 		case ENC_UNALLOCATED_23_ASISDLSOP: return "UNALLOCATED_23_asisdlsop";
-		case ENC_UNALLOCATED_23_ASISDPAIR: return "UNALLOCATED_23_asisdpair";
 		case ENC_UNALLOCATED_23_ASISDSAMEFP16: return "UNALLOCATED_23_asisdsamefp16";
 		case ENC_UNALLOCATED_23_ASISDSHF: return "UNALLOCATED_23_asisdshf";
 		case ENC_UNALLOCATED_23_BRANCH_REG: return "UNALLOCATED_23_branch_reg";
@@ -2237,7 +2259,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_25_ASISDLSOP: return "UNALLOCATED_25_asisdlsop";
 		case ENC_UNALLOCATED_25_ASISDPAIR: return "UNALLOCATED_25_asisdpair";
 		case ENC_UNALLOCATED_25_ASISDSAMEFP16: return "UNALLOCATED_25_asisdsamefp16";
-		case ENC_UNALLOCATED_25_BARRIERS: return "UNALLOCATED_25_barriers";
 		case ENC_UNALLOCATED_25_DP_2SRC: return "UNALLOCATED_25_dp_2src";
 		case ENC_UNALLOCATED_25_DP_3SRC: return "UNALLOCATED_25_dp_3src";
 		case ENC_UNALLOCATED_25_LDAPSTL_UNSCALED: return "UNALLOCATED_25_ldapstl_unscaled";
@@ -2262,40 +2283,26 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_26_ASISDLSEP: return "UNALLOCATED_26_asisdlsep";
 		case ENC_UNALLOCATED_26_ASISDLSO: return "UNALLOCATED_26_asisdlso";
 		case ENC_UNALLOCATED_26_ASISDLSOP: return "UNALLOCATED_26_asisdlsop";
+		case ENC_UNALLOCATED_26_ASISDPAIR: return "UNALLOCATED_26_asisdpair";
 		case ENC_UNALLOCATED_26_ASISDSHF: return "UNALLOCATED_26_asisdshf";
 		case ENC_UNALLOCATED_26_BRANCH_REG: return "UNALLOCATED_26_branch_reg";
 		case ENC_UNALLOCATED_26_FLOATDP1: return "UNALLOCATED_26_floatdp1";
 		case ENC_UNALLOCATED_26_LDSTEXCL: return "UNALLOCATED_26_ldstexcl";
 		case ENC_UNALLOCATED_270: return "UNALLOCATED_270";
-		case ENC_UNALLOCATED_271: return "UNALLOCATED_271";
-		case ENC_UNALLOCATED_272: return "UNALLOCATED_272";
-		case ENC_UNALLOCATED_273: return "UNALLOCATED_273";
-		case ENC_UNALLOCATED_274: return "UNALLOCATED_274";
-		case ENC_UNALLOCATED_275: return "UNALLOCATED_275";
-		case ENC_UNALLOCATED_276: return "UNALLOCATED_276";
-		case ENC_UNALLOCATED_277: return "UNALLOCATED_277";
-		case ENC_UNALLOCATED_278: return "UNALLOCATED_278";
-		case ENC_UNALLOCATED_279: return "UNALLOCATED_279";
 		case ENC_UNALLOCATED_27_ASIMDALL: return "UNALLOCATED_27_asimdall";
 		case ENC_UNALLOCATED_27_ASIMDELEM: return "UNALLOCATED_27_asimdelem";
 		case ENC_UNALLOCATED_27_ASIMDIMM: return "UNALLOCATED_27_asimdimm";
 		case ENC_UNALLOCATED_27_ASIMDSAME2: return "UNALLOCATED_27_asimdsame2";
 		case ENC_UNALLOCATED_27_ASISDLSE: return "UNALLOCATED_27_asisdlse";
 		case ENC_UNALLOCATED_27_ASISDMISC: return "UNALLOCATED_27_asisdmisc";
+		case ENC_UNALLOCATED_27_ASISDPAIR: return "UNALLOCATED_27_asisdpair";
 		case ENC_UNALLOCATED_27_ASISDSAMEFP16: return "UNALLOCATED_27_asisdsamefp16";
+		case ENC_UNALLOCATED_27_BARRIERS: return "UNALLOCATED_27_barriers";
 		case ENC_UNALLOCATED_27_DP_3SRC: return "UNALLOCATED_27_dp_3src";
-		case ENC_UNALLOCATED_280: return "UNALLOCATED_280";
-		case ENC_UNALLOCATED_281: return "UNALLOCATED_281";
-		case ENC_UNALLOCATED_282: return "UNALLOCATED_282";
-		case ENC_UNALLOCATED_283: return "UNALLOCATED_283";
-		case ENC_UNALLOCATED_284: return "UNALLOCATED_284";
-		case ENC_UNALLOCATED_285: return "UNALLOCATED_285";
-		case ENC_UNALLOCATED_286: return "UNALLOCATED_286";
 		case ENC_UNALLOCATED_28_ASIMDIMM: return "UNALLOCATED_28_asimdimm";
 		case ENC_UNALLOCATED_28_ASIMDSAME2: return "UNALLOCATED_28_asimdsame2";
 		case ENC_UNALLOCATED_28_ASIMDSHF: return "UNALLOCATED_28_asimdshf";
 		case ENC_UNALLOCATED_28_ASISDELEM: return "UNALLOCATED_28_asisdelem";
-		case ENC_UNALLOCATED_28_ASISDPAIR: return "UNALLOCATED_28_asisdpair";
 		case ENC_UNALLOCATED_28_BRANCH_REG: return "UNALLOCATED_28_branch_reg";
 		case ENC_UNALLOCATED_28_DP_1SRC: return "UNALLOCATED_28_dp_1src";
 		case ENC_UNALLOCATED_28_EXCEPTION: return "UNALLOCATED_28_exception";
@@ -2310,6 +2317,7 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_29_ASISDLSEP: return "UNALLOCATED_29_asisdlsep";
 		case ENC_UNALLOCATED_29_ASISDLSO: return "UNALLOCATED_29_asisdlso";
 		case ENC_UNALLOCATED_29_ASISDLSOP: return "UNALLOCATED_29_asisdlsop";
+		case ENC_UNALLOCATED_29_ASISDPAIR: return "UNALLOCATED_29_asisdpair";
 		case ENC_UNALLOCATED_29_ASISDSHF: return "UNALLOCATED_29_asisdshf";
 		case ENC_UNALLOCATED_29_BRANCH_REG: return "UNALLOCATED_29_branch_reg";
 		case ENC_UNALLOCATED_29_DP_3SRC: return "UNALLOCATED_29_dp_3src";
@@ -2328,7 +2336,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_31_ASIMDSHF: return "UNALLOCATED_31_asimdshf";
 		case ENC_UNALLOCATED_31_ASISDLSO: return "UNALLOCATED_31_asisdlso";
 		case ENC_UNALLOCATED_31_ASISDLSOP: return "UNALLOCATED_31_asisdlsop";
-		case ENC_UNALLOCATED_31_ASISDPAIR: return "UNALLOCATED_31_asisdpair";
 		case ENC_UNALLOCATED_31_BRANCH_REG: return "UNALLOCATED_31_branch_reg";
 		case ENC_UNALLOCATED_31_DP_3SRC: return "UNALLOCATED_31_dp_3src";
 		case ENC_UNALLOCATED_31_EXCEPTION: return "UNALLOCATED_31_exception";
@@ -2337,7 +2344,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_32_ASIMDELEM: return "UNALLOCATED_32_asimdelem";
 		case ENC_UNALLOCATED_32_ASIMDSAME2: return "UNALLOCATED_32_asimdsame2";
 		case ENC_UNALLOCATED_32_ASISDELEM: return "UNALLOCATED_32_asisdelem";
-		case ENC_UNALLOCATED_32_ASISDPAIR: return "UNALLOCATED_32_asisdpair";
 		case ENC_UNALLOCATED_32_ASISDSHF: return "UNALLOCATED_32_asisdshf";
 		case ENC_UNALLOCATED_32_BRANCH_REG: return "UNALLOCATED_32_branch_reg";
 		case ENC_UNALLOCATED_32_DP_3SRC: return "UNALLOCATED_32_dp_3src";
@@ -2359,7 +2365,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_34_ASISDLSO: return "UNALLOCATED_34_asisdlso";
 		case ENC_UNALLOCATED_34_ASISDLSOP: return "UNALLOCATED_34_asisdlsop";
 		case ENC_UNALLOCATED_34_ASISDMISC: return "UNALLOCATED_34_asisdmisc";
-		case ENC_UNALLOCATED_34_ASISDPAIR: return "UNALLOCATED_34_asisdpair";
 		case ENC_UNALLOCATED_34_BRANCH_REG: return "UNALLOCATED_34_branch_reg";
 		case ENC_UNALLOCATED_34_DP_1SRC: return "UNALLOCATED_34_dp_1src";
 		case ENC_UNALLOCATED_34_DP_2SRC: return "UNALLOCATED_34_dp_2src";
@@ -2369,7 +2374,6 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UNALLOCATED_35_ASISDELEM: return "UNALLOCATED_35_asisdelem";
 		case ENC_UNALLOCATED_35_ASISDLSE: return "UNALLOCATED_35_asisdlse";
 		case ENC_UNALLOCATED_35_ASISDMISC: return "UNALLOCATED_35_asisdmisc";
-		case ENC_UNALLOCATED_35_ASISDPAIR: return "UNALLOCATED_35_asisdpair";
 		case ENC_UNALLOCATED_35_ASISDSAME: return "UNALLOCATED_35_asisdsame";
 		case ENC_UNALLOCATED_35_ASISDSHF: return "UNALLOCATED_35_asisdshf";
 		case ENC_UNALLOCATED_35_BRANCH_REG: return "UNALLOCATED_35_branch_reg";
@@ -2622,7 +2626,9 @@ const char *enc_to_str(enum ENCODING enc)
 		case ENC_UXTL_USHLL_ASIMDSHF_L: return "UXTL_USHLL_asimdshf_L";
 		case ENC_UZP1_ASIMDPERM_ONLY: return "UZP1_asimdperm_only";
 		case ENC_UZP2_ASIMDPERM_ONLY: return "UZP2_asimdperm_only";
+		case ENC_WFET_ONLY_SYSTEMINSTRSWITHREG: return "WFET_only_systeminstrswithreg";
 		case ENC_WFE_HI_HINTS: return "WFE_HI_hints";
+		case ENC_WFIT_ONLY_SYSTEMINSTRSWITHREG: return "WFIT_only_systeminstrswithreg";
 		case ENC_WFI_HI_HINTS: return "WFI_HI_hints";
 		case ENC_XAFLAG_M_PSTATE: return "XAFLAG_M_pstate";
 		case ENC_XAR_VVV2_CRYPTO3_IMM6: return "XAR_VVV2_crypto3_imm6";
@@ -3625,6 +3631,7 @@ const char *enc_to_xml(enum ENCODING enc)
 		case ENC_DMB_BO_BARRIERS: return "dmb.xml";
 		case ENC_DRPS_64E_BRANCH_REG: return "drps.xml";
 		case ENC_DSB_BO_BARRIERS: return "dsb.xml";
+		case ENC_DSB_BON_BARRIERS: return "dsb.xml";
 		case ENC_DUP_ASIMDINS_DR_R: return "dup_advsimd_gen.xml";
 		case ENC_DUP_ASIMDINS_DV_V: return "dup_advsimd_elt.xml";
 		case ENC_DUP_ASISDONE_ONLY: return "dup_advsimd_elt.xml";
@@ -4153,6 +4160,7 @@ const char *enc_to_xml(enum ENCODING enc)
 		case ENC_LD4_ASISDLSOP_HX4_R4H: return "ld4_advsimd_sngl.xml";
 		case ENC_LD4_ASISDLSOP_S4_I4S: return "ld4_advsimd_sngl.xml";
 		case ENC_LD4_ASISDLSOP_SX4_R4S: return "ld4_advsimd_sngl.xml";
+		case ENC_LD64B_64L_MEMOP: return "ld64b.xml";
 		case ENC_LDADDAB_32_MEMOP: return "ldaddb.xml";
 		case ENC_LDADDAH_32_MEMOP: return "ldaddh.xml";
 		case ENC_LDADDALB_32_MEMOP: return "ldaddb.xml";
@@ -4830,6 +4838,9 @@ const char *enc_to_xml(enum ENCODING enc)
 		case ENC_ST4_ASISDLSOP_HX4_R4H: return "st4_advsimd_sngl.xml";
 		case ENC_ST4_ASISDLSOP_S4_I4S: return "st4_advsimd_sngl.xml";
 		case ENC_ST4_ASISDLSOP_SX4_R4S: return "st4_advsimd_sngl.xml";
+		case ENC_ST64BV0_64_MEMOP: return "st64bv0.xml";
+		case ENC_ST64BV_64_MEMOP: return "st64bv.xml";
+		case ENC_ST64B_64L_MEMOP: return "st64b.xml";
 		case ENC_STADDB_LDADDB_32_MEMOP: return "staddb_ldaddb.xml";
 		case ENC_STADDH_LDADDH_32_MEMOP: return "staddh_ldaddh.xml";
 		case ENC_STADDLB_LDADDLB_32_MEMOP: return "staddb_ldaddb.xml";
@@ -5171,7 +5182,9 @@ const char *enc_to_xml(enum ENCODING enc)
 		case ENC_UXTL_USHLL_ASIMDSHF_L: return "uxtl_ushll_advsimd.xml";
 		case ENC_UZP1_ASIMDPERM_ONLY: return "uzp1_advsimd.xml";
 		case ENC_UZP2_ASIMDPERM_ONLY: return "uzp2_advsimd.xml";
+		case ENC_WFET_ONLY_SYSTEMINSTRSWITHREG: return "wfet.xml";
 		case ENC_WFE_HI_HINTS: return "wfe.xml";
+		case ENC_WFIT_ONLY_SYSTEMINSTRSWITHREG: return "wfit.xml";
 		case ENC_WFI_HI_HINTS: return "wfi.xml";
 		case ENC_XAFLAG_M_PSTATE: return "xaflag.xml";
 		case ENC_XAR_VVV2_CRYPTO3_IMM6: return "xar_advsimd.xml";

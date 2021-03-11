@@ -34,7 +34,7 @@ const char *get_register_arrspec(Register reg, const InstructionOperand *operand
 			case ARRSPEC_8BYTES: return ".b";
 			case ARRSPEC_1SINGLE: return ".s";
 			case ARRSPEC_2HALVES: return ".h";
-			case ARRSPEC_4BYTES: return ".b";
+			case ARRSPEC_4BYTES: return ".4b"; // not an error, UDOT_asimdelem_D and SDOT_asimdelem_D use this
 			case ARRSPEC_1HALF: return ".h";
 			case ARRSPEC_1BYTE: return ".b";
 			default: return "";
@@ -260,7 +260,6 @@ uint32_t get_memory_operand(
 
 uint32_t get_register(const InstructionOperand *operand, uint32_t registerNumber, char *outBuffer, uint32_t outBufferSize)
 {
-
 	/* 1) handle system registers */
 	if(operand->operandClass == SYS_REG)
 	{

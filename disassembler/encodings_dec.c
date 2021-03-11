@@ -542,6 +542,7 @@ enum Operation enc_to_oper(enum ENCODING enc)
 		case ENC_DRPS_64E_BRANCH_REG:
 			return ARM64_DRPS;
 		case ENC_DSB_BO_BARRIERS:
+		case ENC_DSB_BON_BARRIERS:
 			return ARM64_DSB;
 		case ENC_DUP_ASISDONE_ONLY:
 		case ENC_DUP_ASIMDINS_DV_V:
@@ -1520,6 +1521,8 @@ enum Operation enc_to_oper(enum ENCODING enc)
 		case ENC_LD4W_Z_P_BI_CONTIGUOUS:
 		case ENC_LD4W_Z_P_BR_CONTIGUOUS:
 			return ARM64_LD4W;
+		case ENC_LD64B_64L_MEMOP:
+			return ARM64_LD64B;
 		case ENC_LDADD_32_MEMOP:
 		case ENC_LDADD_64_MEMOP:
 			return ARM64_LDADD;
@@ -2927,6 +2930,12 @@ enum Operation enc_to_oper(enum ENCODING enc)
 		case ENC_ST4W_Z_P_BI_CONTIGUOUS:
 		case ENC_ST4W_Z_P_BR_CONTIGUOUS:
 			return ARM64_ST4W;
+		case ENC_ST64B_64L_MEMOP:
+			return ARM64_ST64B;
+		case ENC_ST64BV_64_MEMOP:
+			return ARM64_ST64BV;
+		case ENC_ST64BV0_64_MEMOP:
+			return ARM64_ST64BV0;
 		case ENC_STADD_LDADD_32_MEMOP:
 		case ENC_STADD_LDADD_64_MEMOP:
 			return ARM64_STADD;
@@ -3601,8 +3610,12 @@ enum Operation enc_to_oper(enum ENCODING enc)
 			return ARM64_UZP2;
 		case ENC_WFE_HI_HINTS:
 			return ARM64_WFE;
+		case ENC_WFET_ONLY_SYSTEMINSTRSWITHREG:
+			return ARM64_WFET;
 		case ENC_WFI_HI_HINTS:
 			return ARM64_WFI;
+		case ENC_WFIT_ONLY_SYSTEMINSTRSWITHREG:
+			return ARM64_WFIT;
 		case ENC_WHILELE_P_P_RR_:
 			return ARM64_WHILELE;
 		case ENC_WHILELO_P_P_RR_:

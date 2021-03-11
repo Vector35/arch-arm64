@@ -175,9 +175,6 @@ def excusable_difference(actual, expected):
 	if actual.startswith('msr pan') and expected.startswith('msr s0_'): return True
 	if actual.startswith('axflag'): return True
 
-	if actual.startswith('sdot'): return True
-	if actual.startswith('udot'): return True
-
 	return False
 
 #------------------------------------------------------------------------------
