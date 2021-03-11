@@ -1671,6 +1671,15 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
+		case ENC_BFCVT_Z_P_Z_S2BF:
+		case ENC_BFCVTNT_Z_P_Z_S2BF:
+		{
+			// SYNTAX: <Zd>.H, <Pg>/M, <Zn>.S
+			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->d);
+			ADD_OPERAND_PRED_REG_QUAL(ctx->g, 'm');
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->n);
+			break;
+		}
 		case ENC_FMOV_H32_FLOAT2INT:
 		case ENC_SCVTF_H32_FLOAT2INT:
 		case ENC_UCVTF_H32_FLOAT2INT:
@@ -3765,6 +3774,68 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			ADD_OPERAND_VREG_TB(ctx->n);
 			ADD_OPERAND_VREG_TB(ctx->m);
 			// SYNTAX-END
+			break;
+		}
+		case ENC_SMMLA_Z_ZZZ_:
+		case ENC_UMMLA_Z_ZZZ_:
+		case ENC_USDOT_Z_ZZZ_S:
+		case ENC_USMMLA_Z_ZZZ_:
+		{
+			// <Zda>.S,<Zn>.B,<Zm>.B
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->da);
+			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->m);
+			break;
+		}
+		case ENC_FMMLA_Z_ZZZ_S:
+		{
+			// <Zda>.S, <Zn>.S, <Zm>.S
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->da);
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->m);
+			break;
+		}
+		case ENC_BFDOT_Z_ZZZ_:
+		case ENC_BFMLALB_Z_ZZZ_:
+		case ENC_BFMLALT_Z_ZZZ_:
+		case ENC_BFMMLA_Z_ZZZ_:
+		{
+			// <Zda>.S, <Zn>.H, <Zm>.H
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->da);
+			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->m);
+			break;
+		}
+		case ENC_BFDOT_Z_ZZZI_:
+		case ENC_BFMLALB_Z_ZZZI_:
+		case ENC_BFMLALT_Z_ZZZI_:
+		{
+			// <Zda>.S, <Zn>.H, <Zm>.H[<imm>]
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->da);
+			ADD_OPERAND_ZREG_ESIZE(_1H, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1H, ctx->m, ctx->index);
+			break;
+		}
+		case ENC_TRN1_Z_ZZ_Q:
+		case ENC_TRN2_Z_ZZ_Q:
+		case ENC_UZP1_Z_ZZ_Q:
+		case ENC_UZP2_Z_ZZ_Q:
+		case ENC_ZIP1_Z_ZZ_Q:
+		case ENC_ZIP2_Z_ZZ_Q:
+		{
+			// <Zd>.Q, <Zn>.Q, <Zm>.Q
+			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->d);
+			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE(_1Q, ctx->m);
+			break;
+		}
+		case ENC_USDOT_Z_ZZZI_S:
+		case ENC_SUDOT_Z_ZZZI_S:
+		{
+			// <Zda>.S, <Zn>.B, <Zm>.B[<imm>]
+			ADD_OPERAND_ZREG_ESIZE(_1S, ctx->da);
+			ADD_OPERAND_ZREG_ESIZE(_1B, ctx->n);
+			ADD_OPERAND_ZREG_ESIZE_LANED(_1B, ctx->m, ctx->index);
 			break;
 		}
 		case ENC_SDOT_ASIMDSAME2_D:
@@ -6533,9 +6604,15 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_BIC_Z_ZZ_:
 		case ENC_EOR_Z_ZZ_:
 		case ENC_ORR_Z_ZZ_:
+		case ENC_FMMLA_Z_ZZZ_D:
 		{
 			// SYNTAX: <Zd>.D,<Zn>.D,<Zm>.D
-			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->d);
+			if(instr->encoding == ENC_FMMLA_Z_ZZZ_D) {
+				ADD_OPERAND_ZREG_ESIZE(_1D, ctx->da);
+			}
+			else {
+				ADD_OPERAND_ZREG_ESIZE(_1D, ctx->d);
+			}
 			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->n);
 			ADD_OPERAND_ZREG_ESIZE(_1D, ctx->m);
 			// SYNTAX-END
@@ -7231,7 +7308,7 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			const char *table_barrier_limitations[4] = { "oshnXS", "nshnXS", "ishnXS", "synXS" };
 			//int immediates[4] = { 16, 20, 24, 28 };
 			// DSB <option>nXS|#<imm>
-			ADD_OPERAND_NAME(table_barrier_limitations[ctx->CRm>>2]);
+			ADD_OPERAND_NAME(table_barrier_limitations[ctx->imm2]);
 			break;
 		}
 		case ENC_PRFH_I_P_BR_S:
@@ -9013,6 +9090,7 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		}
 		case ENC_LD1RB_Z_P_BI_U8:
 		case ENC_LD1RQB_Z_P_BI_U8:
+		case ENC_LD1ROB_Z_P_BI_U8:
 		{
 			signed imm = (instr->encoding == ENC_LD1RQB_Z_P_BI_U8) ? 16*(ctx->offset) : ctx->offset;
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>{, #<imm>}]
@@ -9023,6 +9101,7 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			break;
 		}
 		case ENC_LDFF1B_Z_P_BR_U8:
+		case ENC_LD1ROB_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.B},<Pg>/Z, [<Xn|SP>{,<Xm>}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1B, ctx->t);
@@ -9342,10 +9421,12 @@ break;
 		case ENC_LD1RSH_Z_P_BI_S64:
 		case ENC_LD1RW_Z_P_BI_U64:
 		case ENC_LD1RSW_Z_P_BI_S64:
+		case ENC_LD1ROD_Z_P_BI_U64:
 		{
 			signed imm;
 			switch(instr->encoding) {
 				case ENC_LD1RB_Z_P_BI_U64:
+				case ENC_LD1ROD_Z_P_BI_U64:
 				case ENC_LD1RSB_Z_P_BI_S64:
 					imm = ctx->offset; break;
 				case ENC_LD1RH_Z_P_BI_U64:
@@ -9387,6 +9468,7 @@ break;
 			break;
 		}
 		case ENC_LDFF1D_Z_P_BR_U64:
+		case ENC_LD1ROD_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.D},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #3}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, ctx->t);
@@ -9505,6 +9587,7 @@ break;
 		case ENC_LD1RH_Z_P_BI_U16:
 		case ENC_LD1RQH_Z_P_BI_U16:
 		case ENC_LD1RSB_Z_P_BI_S16:
+		case ENC_LD1ROH_Z_P_BI_U16:
 		{
 			signed imm;
 			switch(instr->encoding) {
@@ -9523,6 +9606,7 @@ break;
 			break;
 		}
 		case ENC_LDFF1H_Z_P_BR_U16:
+		case ENC_LD1ROH_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.H},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #1}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1H, ctx->t);
@@ -9709,6 +9793,7 @@ break;
 		case ENC_LD1RSB_Z_P_BI_S32:
 		case ENC_LD1RSH_Z_P_BI_S32:
 		case ENC_LD1RW_Z_P_BI_U32:
+		case ENC_LD1ROW_Z_P_BI_U32:
 		{
 			unsigned factor;
 			switch(instr->encoding) {
@@ -9741,6 +9826,7 @@ break;
 			break;
 		}
 		case ENC_LDFF1W_Z_P_BR_U32:
+		case ENC_LD1ROW_Z_P_BR_CONTIGUOUS:
 		{
 			// SYNTAX: {<Zt>.S},<Pg>/Z, [<Xn|SP>{,<Xm>, LSL #2}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, ctx->t);

@@ -50,10 +50,13 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_BFCVT: return "bfcvt";
 		case ARM64_BFCVTN: return "bfcvtn";
 		case ARM64_BFCVTN2: return "bfcvtn2";
+		case ARM64_BFCVTNT: return "bfcvtnt";
 		case ARM64_BFDOT: return "bfdot";
 		case ARM64_BFI: return "bfi";
 		case ARM64_BFM: return "bfm";
 		case ARM64_BFMLAL: return "bfmlal";
+		case ARM64_BFMLALB: return "bfmlalb";
+		case ARM64_BFMLALT: return "bfmlalt";
 		case ARM64_BFMMLA: return "bfmmla";
 		case ARM64_BFXIL: return "bfxil";
 		case ARM64_BIC: return "bic";
@@ -272,6 +275,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_FMLS: return "fmls";
 		case ARM64_FMLSL: return "fmlsl";
 		case ARM64_FMLSL2: return "fmlsl2";
+		case ARM64_FMMLA: return "fmmla";
 		case ARM64_FMOV: return "fmov";
 		case ARM64_FMSB: return "fmsb";
 		case ARM64_FMSUB: return "fmsub";
@@ -333,6 +337,10 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_LD1RB: return "ld1rb";
 		case ARM64_LD1RD: return "ld1rd";
 		case ARM64_LD1RH: return "ld1rh";
+		case ARM64_LD1ROB: return "ld1rob";
+		case ARM64_LD1ROD: return "ld1rod";
+		case ARM64_LD1ROH: return "ld1roh";
+		case ARM64_LD1ROW: return "ld1row";
 		case ARM64_LD1RQB: return "ld1rqb";
 		case ARM64_LD1RQD: return "ld1rqd";
 		case ARM64_LD1RQH: return "ld1rqh";

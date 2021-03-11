@@ -82,6 +82,7 @@ enum ArrangementSpec {
 #define ARCH_FEATURE_TRF ((uint64_t)1<<27)
 #define ARCH_FEATURE_WFxT ((uint64_t)1<<28)
 #define ARCH_FEATURE_XS ((uint64_t)1<<29)
+#define ARCH_FEATURE_MTE2 ((uint64_t)1<<30)
 
 #define ARCH_FEATURE_AESExt ((uint64_t)1<<0)
 #define ARCH_FEATURE_AtomicExt ((uint64_t)1<<1)
@@ -122,6 +123,9 @@ enum ArrangementSpec {
 #define ARCH_FEATURE_StatisticalProfiling ((uint64_t)1<<36)
 #define ARCH_FEATURE_UAOExt ((uint64_t)1<<37)
 #define ARCH_FEATURE_VirtHostExt ((uint64_t)1<<38)
+#define ARCH_FEATURE_SVEFP32MatMulExt ((uint64_t)1<<39)
+#define ARCH_FEATURE_SVEFP64MatMulExt ((uint64_t)1<<40)
+#define ARCH_FEATURE_FeatXS ((uint64_t)1<<41)
 
 #define ARCH_FEATURES_ALL 0xFFFFFFFFFFFFFFFF
 
@@ -357,6 +361,7 @@ typedef struct context_ {
 	uint64_t negated;
 	uint64_t nreg;
 	uint64_t nzcv;
+	uint64_t nXS;
 	uint64_t o0, o1, o2, o3;
 	uint64_t offs_size;
 	uint64_t offs_unsigned;

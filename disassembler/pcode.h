@@ -54,6 +54,7 @@
 #define HasLS64_V() (ctx->features0 & ARCH_FEATURE_LS64_V)
 #define HasLSE() (ctx->features0 & ARCH_FEATURE_LSE)
 #define HasMTE() (ctx->features0 & ARCH_FEATURE_MTE)
+#define HasMTE2() (ctx->features0 & ARCH_FEATURE_MTE2)
 #define HasPAuth() (ctx->features0 & ARCH_FEATURE_PAuth)
 #define HasRAS() (ctx->features0 & ARCH_FEATURE_RAS)
 #define HasRDM() (ctx->features0 & ARCH_FEATURE_RDM)
@@ -106,6 +107,9 @@
 #define HaveStatisticalProfiling() (ctx->features1 & ARCH_FEATURE_StatisticalProfiling)
 #define HaveUAOExt() (ctx->features1 & ARCH_FEATURE_UAOExt)
 #define HaveVirtHostExt() (ctx->features1 & ARCH_FEATURE_VirtHostExt)
+#define HaveSVEFP32MatMulExt() (ctx->features1 & ARCH_FEATURE_SVEFP32MatMulExt)
+#define HaveSVEFP64MatMulExt() (ctx->features1 & ARCH_FEATURE_SVEFP64MatMulExt)
+#define HaveFeatXS() (ctx->features1 & ARCH_FEATURE_FeatXS)
 
 // extras we find in spec tables, etc.
 #define HaveTLBIOS() (1)
