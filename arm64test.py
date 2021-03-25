@@ -30,6 +30,60 @@ tests_ucvtf = [
 	# ucvtf h24, h18                                                   UCVTF_asisdmiscfp16_R
 	(b'\x58\xDA\x79\x7E', 'LLIL_INTRINSIC([h24],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h18)]))'),
 	# ucvtf h8, h21                                                    UCVTF_asisdmiscfp16_R
+	# 64-bit GPR to 64-bit FP
+	# ucvtf d30, x19                                                   UCVTF_D64_float2int
+	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x19)]))'),
+	# ucvtf d10, x28                                                   UCVTF_D64_float2int
+	(b'\x8A\x03\x63\x9E', 'LLIL_INTRINSIC([d10],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x28)]))'),
+	# ucvtf d16, x21                                                   UCVTF_D64_float2int
+	(b'\xB0\x02\x63\x9E', 'LLIL_INTRINSIC([d16],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x21)]))'),
+	# ucvtf d18, x24                                                   UCVTF_D64_float2int
+	(b'\x12\x03\x63\x9E', 'LLIL_INTRINSIC([d18],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x24)]))'),
+	# 64-bit GPR to 32-bit FP
+	# ucvtf s29, x5                                                    UCVTF_S64_float2int
+	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'),
+	# ucvtf s23, x8                                                    UCVTF_S64_float2int
+	(b'\x17\x01\x23\x9E', 'LLIL_INTRINSIC([s23],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x8)]))'),
+	# ucvtf s22, x14                                                   UCVTF_S64_float2int
+	(b'\xD6\x01\x23\x9E', 'LLIL_INTRINSIC([s22],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'),
+	# ucvtf s10, x11                                                   UCVTF_S64_float2int
+	(b'\x6A\x01\x23\x9E', 'LLIL_INTRINSIC([s10],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x11)]))'),
+	# 64-bit GPR to 16-bit FP
+	# ucvtf h3, x2                                                     UCVTF_H64_float2int
+	(b'\x43\x00\xE3\x9E', 'LLIL_INTRINSIC([h3],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x2)]))'),
+	# ucvtf h18, x21                                                   UCVTF_H64_float2int
+	(b'\xB2\x02\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x21)]))'),
+	# ucvtf h18, x7                                                    UCVTF_H64_float2int
+	(b'\xF2\x00\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'),
+	# ucvtf h27, x29                                                   UCVTF_H64_float2int
+	(b'\xBB\x03\xE3\x9E', 'LLIL_INTRINSIC([h27],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x29)]))'),
+	# 32-bit GPR to 64-bit FP
+	# ucvtf d0, w7                                                     UCVTF_D32_float2int
+	(b'\xE0\x00\x63\x1E', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w7)]))'),
+	# ucvtf d19, w25                                                   UCVTF_D32_float2int
+	(b'\x33\x03\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w25)]))'),
+	# ucvtf d19, w5                                                    UCVTF_D32_float2int
+	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w5)]))'),
+	# ucvtf d26, w16                                                   UCVTF_D32_float2int
+	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w16)]))'),
+	# 32-bit GPR to 32-bit FP
+	# ucvtf s29, w24                                                   UCVTF_S32_float2int
+	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w24)]))'),
+	# ucvtf s6, w7                                                     UCVTF_S32_float2int
+	(b'\xE6\x00\x23\x1E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w7)]))'),
+	# ucvtf s31, w23                                                   UCVTF_S32_float2int
+	(b'\xFF\x02\x23\x1E', 'LLIL_INTRINSIC([s31],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w23)]))'),
+	# ucvtf s21, w0                                                    UCVTF_S32_float2int
+	(b'\x15\x00\x23\x1E', 'LLIL_INTRINSIC([s21],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w0)]))'),
+	# 32-bit GPR to 16-bit FP
+	# ucvtf h5, w12                                                    UCVTF_H32_float2int
+	(b'\x85\x01\xE3\x1E', 'LLIL_INTRINSIC([h5],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w12)]))'),
+	# ucvtf h30, w15                                                   UCVTF_H32_float2int
+	(b'\xFE\x01\xE3\x1E', 'LLIL_INTRINSIC([h30],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w15)]))'),
+	# ucvtf h7, w13                                                    UCVTF_H32_float2int
+	(b'\xA7\x01\xE3\x1E', 'LLIL_INTRINSIC([h7],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w13)]))'),
+	# ucvtf h26, w8                                                    UCVTF_H32_float2int
+	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w8)]))'),
 ]
 
 tests_ret = [

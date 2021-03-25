@@ -404,7 +404,8 @@ vector<uint32_t> NeonGetAllIntrinsics()
 		ARM64_INTRIN_VCVTD_N_U64_F64, ARM64_INTRIN_VCVT_F32_S32, ARM64_INTRIN_VCVTQ_F32_S32,
 		ARM64_INTRIN_VCVT_F32_U32, ARM64_INTRIN_VCVTQ_F32_U32, ARM64_INTRIN_VCVTS_F32_S32,
 		ARM64_INTRIN_VCVTS_F32_U32, ARM64_INTRIN_VCVT_F64_S64, ARM64_INTRIN_VCVTQ_F64_S64,
-		ARM64_INTRIN_VCVT_F64_U64, ARM64_INTRIN_VCVTQ_F64_U64, ARM64_INTRIN_VCVTD_F64_S64,
+		ARM64_INTRIN_VCVT_F64_U64, ARM64_INTRIN_VCVT_F64_U32, ARM64_INTRIN_VCVT_F32_U64,
+		ARM64_INTRIN_VCVTQ_F64_U64, ARM64_INTRIN_VCVTD_F64_S64,
 		ARM64_INTRIN_VCVTD_F64_U64, ARM64_INTRIN_VCVT_N_F32_S32, ARM64_INTRIN_VCVTQ_N_F32_S32,
 		ARM64_INTRIN_VCVT_N_F32_U32, ARM64_INTRIN_VCVTQ_N_F32_U32, ARM64_INTRIN_VCVTS_N_F32_S32,
 		ARM64_INTRIN_VCVTS_N_F32_U32, ARM64_INTRIN_VCVT_N_F64_S64, ARM64_INTRIN_VCVTQ_N_F64_S64,
@@ -2513,6 +2514,8 @@ string NeonGetIntrinsicName(uint32_t intrinsic)
 		case ARM64_INTRIN_VCVT_F64_S64: return "vcvt_f64_s64";
 		case ARM64_INTRIN_VCVTQ_F64_S64: return "vcvtq_f64_s64";
 		case ARM64_INTRIN_VCVT_F64_U64: return "vcvt_f64_u64";
+		case ARM64_INTRIN_VCVT_F64_U32: return "vcvt_f64_u32";
+		case ARM64_INTRIN_VCVT_F32_U64: return "vcvt_f32_u64";
 		case ARM64_INTRIN_VCVTQ_F64_U64: return "vcvtq_f64_u64";
 		case ARM64_INTRIN_VCVTD_F64_S64: return "vcvtd_f64_s64";
 		case ARM64_INTRIN_VCVTD_F64_U64: return "vcvtd_f64_u64";
@@ -7252,6 +7255,7 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 		case ARM64_INTRIN_VQMOVUNS_S32:
 		case ARM64_INTRIN_VQNEGS_S32:
 		case ARM64_INTRIN_VSHA1H_U32:
+		case ARM64_INTRIN_VCVT_F64_U32:
 			return {NameAndType(Type::IntegerType(4, false))};
 		case ARM64_INTRIN___CRC32B:
 		case ARM64_INTRIN___CRC32CB:
@@ -7406,6 +7410,7 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 		case ARM64_INTRIN_VCVT_F32_U32:
 		case ARM64_INTRIN_VCVT_F64_S64:
 		case ARM64_INTRIN_VCVT_F64_U64:
+		case ARM64_INTRIN_VCVT_F32_U64:
 		case ARM64_INTRIN_VCVTD_F64_S64:
 		case ARM64_INTRIN_VCVTD_F64_U64:
 		case ARM64_INTRIN_VCVTH_F16_S64:
@@ -8595,6 +8600,7 @@ vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 		case ARM64_INTRIN_VRNDNS_F32:
 		case ARM64_INTRIN_VRSQRTES_F32:
 		case ARM64_INTRIN_VRSQRTSS_F32:
+		case ARM64_INTRIN_VCVT_F32_U64:
 			return {Type::FloatType(4)};
 		case ARM64_INTRIN_VABD_F16:
 		case ARM64_INTRIN_VABD_F32:
@@ -8650,6 +8656,7 @@ vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 		case ARM64_INTRIN_VCVT_F32_U32:
 		case ARM64_INTRIN_VCVT_F64_S64:
 		case ARM64_INTRIN_VCVT_F64_U64:
+		case ARM64_INTRIN_VCVT_F64_U32:
 		case ARM64_INTRIN_VCVT_N_F16_S16:
 		case ARM64_INTRIN_VCVT_N_F16_U16:
 		case ARM64_INTRIN_VCVT_N_F32_S32:
@@ -15289,6 +15296,8 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
 		case ENC_UCVTF_ASISDMISC_R:
+		case ENC_UCVTF_D64_FLOAT2INT:
+		case ENC_UCVTF_S32_FLOAT2INT:
 			if(REGSZ_O(instr.operands[0]) == 8)
 				intrin_id = ARM64_INTRIN_VCVT_F64_U64; // UCVTF Dd,Dn
 			else if(REGSZ_O(instr.operands[0]) == 4)
@@ -15300,6 +15309,26 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			break;
 		case ENC_UCVTF_ASISDMISCFP16_R:
 			intrin_id = ARM64_INTRIN_VCVTH_F16_U16; // UCVTF Hd,Hn
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_S64_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_U16; // ucvtf s29, x5
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_H64_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_U64; // ucvtf h3, x2
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_H32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_U32; // ucvtf h5, w12
+			add_input_reg(inputs, il, instr.operands[1]);
+			add_output_reg(outputs, il, instr.operands[0]);
+			break;
+		case ENC_UCVTF_D32_FLOAT2INT:
+			intrin_id = ARM64_INTRIN_VCVT_F64_U32; // ucvtf d0, w7
 			add_input_reg(inputs, il, instr.operands[1]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
