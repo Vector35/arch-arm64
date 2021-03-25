@@ -2,6 +2,36 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_ucvtf = [
+	# when same input/output register, encoding is UCVTF_asisdmisc_R
+	# ucvtf s16, s7                                                    UCVTF_asisdmisc_R
+	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s7)]))'),
+	# ucvtf d26, d30                                                   UCVTF_asisdmisc_R
+	(b'\xDA\xDB\x61\x7E', 'LLIL_INTRINSIC([d26],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d30)]))'),
+	# ucvtf s6, s19                                                    UCVTF_asisdmisc_R
+	(b'\x66\xDA\x21\x7E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s19)]))'),
+	# ucvtf s13, s0                                                    UCVTF_asisdmisc_R
+	(b'\x0D\xD8\x21\x7E', 'LLIL_INTRINSIC([s13],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s0)]))'),
+	# ucvtf d28, d26                                                   UCVTF_asisdmisc_R
+	(b'\x5C\xDB\x61\x7E', 'LLIL_INTRINSIC([d28],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d26)]))'),
+	# ucvtf d25, d11                                                   UCVTF_asisdmisc_R
+	(b'\x79\xD9\x61\x7E', 'LLIL_INTRINSIC([d25],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d11)]))'),
+	# ucvtf d24, d21                                                   UCVTF_asisdmisc_R
+	(b'\xB8\xDA\x61\x7E', 'LLIL_INTRINSIC([d24],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d21)]))'),
+	# ucvtf s7, s18                                                    UCVTF_asisdmisc_R
+	(b'\x47\xDA\x21\x7E', 'LLIL_INTRINSIC([s7],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s18)]))'),
+	# when 16-bit reg, needs FP16 extension and encoding name breaks convention
+	# ucvtf h30, h0                                                    UCVTF_asisdmiscfp16_R
+	(b'\x1E\xD8\x79\x7E', 'LLIL_INTRINSIC([h30],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h0)]))'),
+	# ucvtf h22, h6                                                    UCVTF_asisdmiscfp16_R
+	(b'\xD6\xD8\x79\x7E', 'LLIL_INTRINSIC([h22],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h6)]))'),
+	# ucvtf h7, h2                                                     UCVTF_asisdmiscfp16_R
+	(b'\x47\xD8\x79\x7E', 'LLIL_INTRINSIC([h7],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h2)]))'),
+	# ucvtf h24, h18                                                   UCVTF_asisdmiscfp16_R
+	(b'\x58\xDA\x79\x7E', 'LLIL_INTRINSIC([h24],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h18)]))'),
+	# ucvtf h8, h21                                                    UCVTF_asisdmiscfp16_R
+]
+
 tests_ret = [
 	# ret
 	(b'\xc0\x03\x5f\xd6', ''), # test harness strips this LLIL_RET, empty string is correct
@@ -1387,6 +1417,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_ucvtf + \
 	tests_ret + \
 	tests_svc_hvc_smc + \
 	tests_clrex + \

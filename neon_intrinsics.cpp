@@ -11168,6 +11168,8 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 	vector<RegisterOrFlag> outputs;
 	vector<ExprId> inputs;
 
+	//printf("%s() operation:%d encoding:%d\n", __func__, instr.operation, instr.encoding);
+
 	switch(instr.encoding)
 	{
 		case ENC_ABS_ASIMDMISC_R:
@@ -15286,13 +15288,18 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			add_input_reg(inputs, il, instr.operands[2]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
-		case ENC_UCVTF_D32_FLOAT2INT:
-			intrin_id = ARM64_INTRIN_VCVT_F64_U64; // UCVTF Dd,Dn
+		case ENC_UCVTF_ASISDMISC_R:
+			if(REGSZ_O(instr.operands[0]) == 8)
+				intrin_id = ARM64_INTRIN_VCVT_F64_U64; // UCVTF Dd,Dn
+			else if(REGSZ_O(instr.operands[0]) == 4)
+				intrin_id = ARM64_INTRIN_VCVTS_F32_U32; // UCVTF Sd,Sn
+			else
+				break;
 			add_input_reg(inputs, il, instr.operands[1]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
-		case ENC_UCVTF_S32_FLOAT2INT:
-			intrin_id = ARM64_INTRIN_VCVTS_F32_U32; // UCVTF Sd,Sn
+		case ENC_UCVTF_ASISDMISCFP16_R:
+			intrin_id = ARM64_INTRIN_VCVTH_F16_U16; // UCVTF Hd,Hn
 			add_input_reg(inputs, il, instr.operands[1]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;
@@ -15307,11 +15314,6 @@ bool NeonGetLowLevelILForInstruction(Architecture *arch, uint64_t addr, LowLevel
 			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_F16_U16; // UCVTF Vd.8H,Vn.8H
 			if(instr.operands[1].arrSpec==ARRSPEC_4HALVES) intrin_id = ARM64_INTRIN_VCVT_N_F16_U16; // UCVTF Vd.4H,Vn.4H,#n
 			if(instr.operands[1].arrSpec==ARRSPEC_8HALVES) intrin_id = ARM64_INTRIN_VCVTQ_N_F16_U16; // UCVTF Vd.8H,Vn.8H,#n
-			add_input_reg(inputs, il, instr.operands[1]);
-			add_output_reg(outputs, il, instr.operands[0]);
-			break;
-		case ENC_UCVTF_ASISDMISCFP16_R:
-			intrin_id = ARM64_INTRIN_VCVTH_F16_U16; // UCVTF Hd,Hn
 			add_input_reg(inputs, il, instr.operands[1]);
 			add_output_reg(outputs, il, instr.operands[0]);
 			break;

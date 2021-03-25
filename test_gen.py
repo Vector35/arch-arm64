@@ -11,6 +11,8 @@ if not sys.argv[1:]:
 	sys.exit(-1)
 
 def gather_samples(mnems, encodings):
+	encodings = [x.upper() for x in encodings]
+
 	global N_SAMPLES
 	fpath = './disassembler/test_cases.txt'
 	with open(fpath) as fp:
@@ -42,7 +44,7 @@ def gather_samples(mnems, encodings):
 			#if not (instxt==mnem or instxt.startswith(mnem+' ')):
 
 			mnemonic_match = [x for x in mnems if instxt.startswith(x)]
-			encoding_match = current_encoding in encodings
+			encoding_match = current_encoding.upper() in encodings
 			if not (mnemonic_match or encoding_match):
 				continue
 

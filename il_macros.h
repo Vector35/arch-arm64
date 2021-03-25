@@ -10,7 +10,7 @@
 #define ILCONST(SZ,VAL) il.Const((SZ), (VAL))
 
 /* helpers given a register id */
-#define REGSZ(R) get_register_size(R)
+#define REGSZ(R) get_register_size(R) /* units: BYTES */
 #define IS_W_REG(R) ((R) >= REG_W0 && (R) <= REG_W31)
 #define IS_X_REG(R) ((R) >= REG_X0 && (R) <= REG_X31)
 #define IS_V_REG(R) ((R) >= REG_V0 && (R) <= REG_V31)
@@ -21,7 +21,7 @@
 /* access stuff from operands */
 #define IMM_O(O) (O).immediate
 #define REG_O(O) (O).reg[0]
-#define REGSZ_O(O) get_register_size(REG_O(O))
+#define REGSZ_O(O) get_register_size(REG_O(O)) /* units: BYTES */
 
 /* construct IL from an InstructionOperand */
 #define ILREG_O(O) ExtractRegister(il, O, 0, REGSZ_O(O), false, REGSZ_O(O))

@@ -1003,6 +1003,8 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 
 	int n_instrs_before = il.GetInstructionCount();
 
+	//printf("%s() operation:%d encoding:%d\n", __func__, instr.operation, instr.encoding);
+
 	LowLevelILLabel trueLabel, falseLabel;
 	switch (instr.operation)
 	{
@@ -1802,12 +1804,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_RETAA:
 	case ARM64_RETAB:
 	{
-		ExprId reg = NULL;
-		if (operand1.operandClass == REG)
-			reg = ILREG_O(operand1);
-		else
-			reg = il.Register(8, REG_X30);
-
+		ExprId reg = (operand1.operandClass == REG) ? ILREG_O(operand1) : il.Register(8, REG_X30);
 		il.AddInstruction(il.Return(reg));
 		break;
 	}
