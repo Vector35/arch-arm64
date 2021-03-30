@@ -58,7 +58,7 @@ int ADC(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->sf==0) OK(ENC_ADC_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADC_64_ADDSUB_CARRY);
 	}
@@ -78,7 +78,7 @@ int ADCS(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->sf==0) OK(ENC_ADCS_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADCS_64_ADDSUB_CARRY);
 	}
@@ -188,7 +188,7 @@ int ADDS_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -214,7 +214,7 @@ int ADDS_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -242,7 +242,7 @@ int ADDS_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -297,7 +297,7 @@ int ADD_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -321,7 +321,7 @@ int ADD_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -349,7 +349,7 @@ int ADD_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -20090,7 +20090,7 @@ int SBC(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		/* regular aliases */
 		if(ctx->Rn==0x1f) return NGC_SBC(ctx, instr);
 		if(ctx->sf==0) OK(ENC_SBC_32_ADDSUB_CARRY);
@@ -20112,7 +20112,7 @@ int SBCS(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		/* regular aliases */
 		if(ctx->Rn==0x1f) return NGCS_SBCS(ctx, instr);
 		if(ctx->sf==0) OK(ENC_SBCS_32_ADDSUB_CARRY);
@@ -26836,7 +26836,7 @@ int SUBP(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Xd);
 		ctx->n = UINT(ctx->Xn);
 		ctx->m = UINT(ctx->Xm);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_SUBP_64S_DP_2SRC);
 	}
 	return rc;
@@ -26856,7 +26856,7 @@ int SUBPS(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Xd);
 		ctx->n = UINT(ctx->Xn);
 		ctx->m = UINT(ctx->Xm);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Xd==0x1f) return CMPP_SUBPS(ctx, instr);
 		OK(ENC_SUBPS_64S_DP_2SRC);
@@ -26877,7 +26877,7 @@ int SUBS_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -26903,7 +26903,7 @@ int SUBS_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -26931,7 +26931,7 @@ int SUBS_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -26962,7 +26962,7 @@ int SUB_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -26986,7 +26986,7 @@ int SUB_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -27012,7 +27012,7 @@ int SUB_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags = (ctx->S==1);
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -30462,7 +30462,7 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_and_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
@@ -30480,7 +30480,7 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_and_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
@@ -30949,7 +30949,7 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BIC_P_P_PP_Z);
 	}
 	/* class s */
@@ -30964,7 +30964,7 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BICS_P_P_PP_Z);
 	}
 	return rc;
@@ -31025,7 +31025,7 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = (ctx->M==1);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKA_P_P_P_);
 	}
 	/* class s */
@@ -31040,7 +31040,7 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = FALSE;
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BRKAS_P_P_P_Z);
 	}
 	return rc;
@@ -31062,7 +31062,7 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = (ctx->M==1);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKB_P_P_P_);
 	}
 	/* class s */
@@ -31077,7 +31077,7 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = FALSE;
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BRKBS_P_P_P_Z);
 	}
 	return rc;
@@ -31097,7 +31097,7 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->g = UINT(ctx->Pg);
 		ctx->n = UINT(ctx->Pn);
 		ctx->dm = UINT(ctx->Pdm);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKN_P_P_PP_);
 	}
 	/* class s */
@@ -31110,7 +31110,7 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->g = UINT(ctx->Pg);
 		ctx->n = UINT(ctx->Pn);
 		ctx->dm = UINT(ctx->Pdm);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BRKNS_P_P_PP_);
 	}
 	return rc;
@@ -31132,7 +31132,7 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKPA_P_P_PP_);
 	}
 	/* class s */
@@ -31147,7 +31147,7 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BRKPAS_P_P_PP_);
 	}
 	return rc;
@@ -31169,7 +31169,7 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKPB_P_P_PP_);
 	}
 	/* class s */
@@ -31184,7 +31184,7 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_BRKPBS_P_P_PP_);
 	}
 	return rc;
@@ -32379,7 +32379,7 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		/* regular aliases */
 		if(ctx->Pm==ctx->Pg) return NOTS_eor_p_p_pp(ctx, instr);
 		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
@@ -32397,7 +32397,7 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		/* regular aliases */
 		if(ctx->Pm==ctx->Pg) return NOTS_eor_p_p_pp(ctx, instr);
 		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
@@ -40099,7 +40099,7 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_NAND_P_P_PP_Z);
 	}
 	/* class s */
@@ -40114,7 +40114,7 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_NANDS_P_P_PP_Z);
 	}
 	return rc;
@@ -40156,7 +40156,7 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_NOR_P_P_PP_Z);
 	}
 	/* class s */
@@ -40171,7 +40171,7 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_NORS_P_P_PP_Z);
 	}
 	return rc;
@@ -40213,7 +40213,7 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_ORN_P_P_PP_Z);
 	}
 	/* class s */
@@ -40228,7 +40228,7 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_ORNS_P_P_PP_Z);
 	}
 	return rc;
@@ -40250,7 +40250,7 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orr_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
@@ -40268,7 +40268,7 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orr_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
@@ -41125,7 +41125,7 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUE_P_S_);
 	}
@@ -41138,7 +41138,7 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUES_P_S_);
 	}
@@ -41228,7 +41228,7 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 		}
 		ctx->g = UINT(ctx->Pg);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = FALSE;
+		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_RDFFR_P_P_F_);
 	}
 	/* class s */
@@ -41240,7 +41240,7 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 		}
 		ctx->g = UINT(ctx->Pg);
 		ctx->d = UINT(ctx->Pd);
-		ctx->setflags = TRUE;
+		instr->setflags = ctx->setflags = TRUE;
 		OK(ENC_RDFFRS_P_P_F_);
 	}
 	return rc;

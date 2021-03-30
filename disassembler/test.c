@@ -122,6 +122,7 @@ int disassemble(uint64_t address, uint32_t insword, char *result)
 		printf("  instr.insword: %08X\n", instr.insword);
 		printf(" instr.encoding: %d %s\n", instr.encoding, enc_to_str(instr.encoding));
 		printf("instr.operation: %d %s\n", instr.operation, operation_to_str(instr.operation));
+		printf(" instr.setflags: %d\n", instr.setflags);
 		for(int i=0; i<MAX_OPERANDS && instr.operands[i].operandClass!=NONE; i++) {
 			printf("instr.operands[%d]\n", i);
 
