@@ -10,6 +10,29 @@ from arm64test import instr_to_il, il2str
 if not sys.argv[1:]:
 	sys.exit(-1)
 
+arch = None
+def disassemble(addr, data):
+	global arch
+	if not arch:
+		arch = binaryninja.Architecture['aarch64']
+	(tokens, length) = arch.get_instruction_text(data, addr)
+	if not tokens or length==0:
+		return None
+	return disasm_test.normalize(''.join([x.text for x in tokens]))
+
+def print_case(data, comment=''):
+	ilstr = instr_to_il(data)
+	il_lines = ilstr.split(';')
+	print("\t(b'%s', " % (''.join(['\\x%02X'%b for b in data])), end='')
+	for (i,line) in enumerate(il_lines):
+		if i!=0:
+			print('\t\t\t\t\t\t ', end='')
+		print('\'%s' % line, end='')
+		if i!=len(il_lines)-1:
+			print(';\' + \\')
+	comment = ' # '+comment if comment else ''
+	print('\'),%s' % comment)
+
 def gather_samples(mnems, encodings):
 	encodings = [x.upper() for x in encodings]
 
@@ -25,7 +48,7 @@ def gather_samples(mnems, encodings):
 		if line.startswith('// SYNTAX:'): continue
 
 		if re.match(r'^// .*? .*', line):
-			m = re.match(r'^// (.*?) .*', line)	
+			m = re.match(r'^// (.*?) .*', line)
 
 			# example:
 			# // BFCVT_Z_P_Z_S2BF 01100101|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx
@@ -51,17 +74,8 @@ def gather_samples(mnems, encodings):
 			#if samples == 0:
 			#	print('\t# %s' % encoding)
 			print('\t# %s %s' % (instxt.ljust(64), current_encoding))
-			ilstr = instr_to_il(data)
-			il_lines = ilstr.split(';')
-			print('\t(b\'\\x%s\\x%s\\x%s\\x%s\', ' % (b3, b2, b1, b0), end='')
-			for (i,line) in enumerate(il_lines):
-				if i!=0:
-					print('\t\t\t\t\t\t ', end='')
-				print('\'%s' % line, end='')
-				if i!=len(il_lines)-1:
-					print(';\' + \\')
+			print_case(data)
 
-			print('\'),')
 			samples += 1
 			continue
 
@@ -87,7 +101,31 @@ elif sys.argv[1] == 'mte':
 			'subps']
 	gather_samples(mnems, [])
 
+elif sys.argv[1] == 'recompute_arm64test':
+	with open('arm64test.py') as fp:
+		lines = [x.rstrip() for x in fp.readlines()]
 
+	i = 0
+	while i < len(lines):
+		m = re.match(r'^\t\(b\'\\x(..)\\x(..)\\x(..)\\x(..)\'.*$', lines[i])
+		if not m:
+			print(lines[i])
+			i += 1
+			continue
+
+		(b0, b1, b2, b3) = m.group(1,2,3,4)
+
+		comment = None
+		m = re.search(r'# (.*)$', lines[i])
+		if m:
+			comment = m.group(1)
+
+		data = codecs.decode(b0+b1+b2+b3, 'hex_codec')
+		print_case(data, comment)
+
+		i += 1
+		while lines[i].startswith('\t\t\t\t\t\t'):
+			i += 1
 
 
 
