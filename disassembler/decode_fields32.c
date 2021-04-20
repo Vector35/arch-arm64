@@ -973,54 +973,63 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Rn = (insword>>5)&0x1f;
 			ctx->Rd = insword&0x1f;
 			break;
-		case ENC_CAS_C32_LDSTEXCL:
-		case ENC_CASA_C32_LDSTEXCL:
-		case ENC_CASAL_C32_LDSTEXCL:
-		case ENC_CASL_C32_LDSTEXCL:
-		case ENC_CAS_C64_LDSTEXCL:
-		case ENC_CASA_C64_LDSTEXCL:
-		case ENC_CASAL_C64_LDSTEXCL:
-		case ENC_CASL_C64_LDSTEXCL:
-		case ENC_CASAB_C32_LDSTEXCL:
-		case ENC_CASALB_C32_LDSTEXCL:
-		case ENC_CASB_C32_LDSTEXCL:
-		case ENC_CASLB_C32_LDSTEXCL:
-		case ENC_CASAH_C32_LDSTEXCL:
-		case ENC_CASALH_C32_LDSTEXCL:
-		case ENC_CASH_C32_LDSTEXCL:
-		case ENC_CASLH_C32_LDSTEXCL:
-		case ENC_LDAR_LR32_LDSTEXCL:
-		case ENC_LDAR_LR64_LDSTEXCL:
-		case ENC_LDARB_LR32_LDSTEXCL:
-		case ENC_LDARH_LR32_LDSTEXCL:
-		case ENC_LDAXR_LR32_LDSTEXCL:
-		case ENC_LDAXR_LR64_LDSTEXCL:
-		case ENC_LDAXRB_LR32_LDSTEXCL:
-		case ENC_LDAXRH_LR32_LDSTEXCL:
-		case ENC_LDLAR_LR32_LDSTEXCL:
-		case ENC_LDLAR_LR64_LDSTEXCL:
-		case ENC_LDLARB_LR32_LDSTEXCL:
-		case ENC_LDLARH_LR32_LDSTEXCL:
-		case ENC_LDXR_LR32_LDSTEXCL:
-		case ENC_LDXR_LR64_LDSTEXCL:
-		case ENC_LDXRB_LR32_LDSTEXCL:
-		case ENC_LDXRH_LR32_LDSTEXCL:
-		case ENC_STLLR_SL32_LDSTEXCL:
-		case ENC_STLLR_SL64_LDSTEXCL:
-		case ENC_STLLRB_SL32_LDSTEXCL:
-		case ENC_STLLRH_SL32_LDSTEXCL:
-		case ENC_STLR_SL32_LDSTEXCL:
-		case ENC_STLR_SL64_LDSTEXCL:
-		case ENC_STLRB_SL32_LDSTEXCL:
-		case ENC_STLRH_SL32_LDSTEXCL:
-		case ENC_STLXR_SR32_LDSTEXCL:
-		case ENC_STLXR_SR64_LDSTEXCL:
-		case ENC_STLXRB_SR32_LDSTEXCL:
-		case ENC_STLXRH_SR32_LDSTEXCL:
-		case ENC_STXR_SR32_LDSTEXCL:
-		case ENC_STXR_SR64_LDSTEXCL:
-		case ENC_STXRB_SR32_LDSTEXCL:
-		case ENC_STXRH_SR32_LDSTEXCL:
+		case ENC_CAS_C32_COMSWAP:
+		case ENC_CASA_C32_COMSWAP:
+		case ENC_CASAL_C32_COMSWAP:
+		case ENC_CASL_C32_COMSWAP:
+		case ENC_CAS_C64_COMSWAP:
+		case ENC_CASA_C64_COMSWAP:
+		case ENC_CASAL_C64_COMSWAP:
+		case ENC_CASL_C64_COMSWAP:
+		case ENC_CASAB_C32_COMSWAP:
+		case ENC_CASALB_C32_COMSWAP:
+		case ENC_CASB_C32_COMSWAP:
+		case ENC_CASLB_C32_COMSWAP:
+		case ENC_CASAH_C32_COMSWAP:
+		case ENC_CASALH_C32_COMSWAP:
+		case ENC_CASH_C32_COMSWAP:
+		case ENC_CASLH_C32_COMSWAP:
+			// size=xx|xxxxxxx|L=x|x|Rs=xxxxx|o0=x|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx
+			ctx->size = insword>>30;
+			ctx->L = (insword>>22)&1;
+			ctx->Rs = (insword>>16)&0x1f;
+			ctx->o0 = (insword>>15)&1;
+			ctx->Rt2 = (insword>>10)&0x1f;
+			ctx->Rn = (insword>>5)&0x1f;
+			ctx->Rt = insword&0x1f;
+			break;
+		case ENC_LDAR_LR32_LDSTORD:
+		case ENC_LDAR_LR64_LDSTORD:
+		case ENC_LDARB_LR32_LDSTORD:
+		case ENC_LDARH_LR32_LDSTORD:
+		case ENC_LDAXR_LR32_LDSTEXCLR:
+		case ENC_LDAXR_LR64_LDSTEXCLR:
+		case ENC_LDAXRB_LR32_LDSTEXCLR:
+		case ENC_LDAXRH_LR32_LDSTEXCLR:
+		case ENC_LDLAR_LR32_LDSTORD:
+		case ENC_LDLAR_LR64_LDSTORD:
+		case ENC_LDLARB_LR32_LDSTORD:
+		case ENC_LDLARH_LR32_LDSTORD:
+		case ENC_LDXR_LR32_LDSTEXCLR:
+		case ENC_LDXR_LR64_LDSTEXCLR:
+		case ENC_LDXRB_LR32_LDSTEXCLR:
+		case ENC_LDXRH_LR32_LDSTEXCLR:
+		case ENC_STLLR_SL32_LDSTORD:
+		case ENC_STLLR_SL64_LDSTORD:
+		case ENC_STLLRB_SL32_LDSTORD:
+		case ENC_STLLRH_SL32_LDSTORD:
+		case ENC_STLR_SL32_LDSTORD:
+		case ENC_STLR_SL64_LDSTORD:
+		case ENC_STLRB_SL32_LDSTORD:
+		case ENC_STLRH_SL32_LDSTORD:
+		case ENC_STLXR_SR32_LDSTEXCLR:
+		case ENC_STLXR_SR64_LDSTEXCLR:
+		case ENC_STLXRB_SR32_LDSTEXCLR:
+		case ENC_STLXRH_SR32_LDSTEXCLR:
+		case ENC_STXR_SR32_LDSTEXCLR:
+		case ENC_STXR_SR64_LDSTEXCLR:
+		case ENC_STXRB_SR32_LDSTEXCLR:
+		case ENC_STXRH_SR32_LDSTEXCLR:
 			// size=xx|xxxxxx|o2=x|L=x|o1=x|Rs=xxxxx|o0=x|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx
 			ctx->size = insword>>30;
 			ctx->o2 = (insword>>23)&1;
@@ -1617,9 +1626,9 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 		case ENC_DMB_BO_BARRIERS:
 		case ENC_DSB_BO_BARRIERS:
 		case ENC_ISB_BI_BARRIERS:
-		case ENC_PSSBB_ONLY_BARRIERS:
+		case ENC_PSSBB_DSB_BO_BARRIERS:
 		case ENC_SB_ONLY_BARRIERS:
-		case ENC_SSBB_ONLY_BARRIERS:
+		case ENC_SSBB_DSB_BO_BARRIERS:
 			// xxxxxxxxxx|L=x|op0=xx|op1=xxx|CRn=xxxx|CRm=xxxx|x|opc=xx|Rt=xxxxx
 			ctx->L = (insword>>21)&1;
 			ctx->op0 = (insword>>19)&3;
@@ -2240,6 +2249,38 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Pm = (insword>>5)&15;
 			ctx->Zdn = insword&0x1f;
 			break;
+		case ENC_SADDV_R_P_Z_:
+		case ENC_SMAXV_R_P_Z_:
+		case ENC_SMINV_R_P_Z_:
+		case ENC_UADDV_R_P_Z_:
+		case ENC_UMAXV_R_P_Z_:
+		case ENC_UMINV_R_P_Z_:
+			// xxxxxxxx|size=xx|xxxx|op=x|U=x|xxx|Pg=xxx|Zn=xxxxx|Vd=xxxxx
+			ctx->size = (insword>>22)&3;
+			ctx->op = (insword>>17)&1;
+			ctx->U = (insword>>16)&1;
+			ctx->Pg = (insword>>10)&7;
+			ctx->Zn = (insword>>5)&0x1f;
+			ctx->Vd = insword&0x1f;
+			break;
+		case ENC_FADDA_V_P_Z_:
+			// xxxxxxxx|size=xx|xxxx|opc=xx|xxx|Pg=xxx|Zm=xxxxx|Vdn=xxxxx
+			ctx->size = (insword>>22)&3;
+			ctx->opc = (insword>>16)&3;
+			ctx->Pg = (insword>>10)&7;
+			ctx->Zm = (insword>>5)&0x1f;
+			ctx->Vdn = insword&0x1f;
+			break;
+		case ENC_ANDV_R_P_Z_:
+		case ENC_EORV_R_P_Z_:
+		case ENC_ORV_R_P_Z_:
+			// xxxxxxxx|size=xx|xxxx|opc=xx|xxx|Pg=xxx|Zn=xxxxx|Vd=xxxxx
+			ctx->size = (insword>>22)&3;
+			ctx->opc = (insword>>16)&3;
+			ctx->Pg = (insword>>10)&7;
+			ctx->Zn = (insword>>5)&0x1f;
+			ctx->Vd = insword&0x1f;
+			break;
 		case ENC_FRECPX_Z_P_Z_:
 		case ENC_FSQRT_Z_P_Z_:
 		case ENC_RBIT_Z_P_Z_:
@@ -2287,15 +2328,6 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Zn = (insword>>5)&0x1f;
 			ctx->Zd = insword&0x1f;
 			break;
-		case ENC_FADDA_V_P_Z_:
-			// xxxxxxxx|size=xx|xxx|opc<2:1>=xx|opc<0>=x|xxx|Pg=xxx|Zm=xxxxx|Vdn=xxxxx
-			ctx->size = (insword>>22)&3;
-			ctx->opc = (insword>>17)&3;
-			ctx->opc = (insword>>16)&1;
-			ctx->Pg = (insword>>10)&7;
-			ctx->Zm = (insword>>5)&0x1f;
-			ctx->Vdn = insword&0x1f;
-			break;
 		case ENC_ADD_Z_P_ZZ_:
 		case ENC_AND_Z_P_ZZ_:
 		case ENC_BIC_Z_P_ZZ_:
@@ -2311,14 +2343,11 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Zm = (insword>>5)&0x1f;
 			ctx->Zdn = insword&0x1f;
 			break;
-		case ENC_ANDV_R_P_Z_:
-		case ENC_EORV_R_P_Z_:
 		case ENC_FADDV_V_P_Z_:
 		case ENC_FMAXNMV_V_P_Z_:
 		case ENC_FMAXV_V_P_Z_:
 		case ENC_FMINNMV_V_P_Z_:
 		case ENC_FMINV_V_P_Z_:
-		case ENC_ORV_R_P_Z_:
 			// xxxxxxxx|size=xx|xxx|opc<2:1>=xx|opc<0>=x|xxx|Pg=xxx|Zn=xxxxx|Vd=xxxxx
 			ctx->size = (insword>>22)&3;
 			ctx->opc = (insword>>17)&3;
@@ -2368,12 +2397,11 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Zdn = insword&0x1f;
 			break;
 		case ENC_CNTP_R_P_P_:
-			// xxxxxxxx|size=xx|xxx|opc<2:1>=xx|opc<0>=x|xx|Pg=xxxx|o2=x|Pn=xxxx|Rd=xxxxx
+			// xxxxxxxx|size=xx|xxx|opc<2:1>=xx|opc<0>=x|xx|Pg=xxxx|x|Pn=xxxx|Rd=xxxxx
 			ctx->size = (insword>>22)&3;
 			ctx->opc = (insword>>17)&3;
 			ctx->opc = (insword>>16)&1;
 			ctx->Pg = (insword>>10)&15;
-			ctx->o2 = (insword>>9)&1;
 			ctx->Pn = (insword>>5)&15;
 			ctx->Rd = insword&0x1f;
 			break;
@@ -2419,20 +2447,6 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Pg = (insword>>10)&7;
 			ctx->Zm = (insword>>5)&0x1f;
 			ctx->Zdn = insword&0x1f;
-			break;
-		case ENC_SADDV_R_P_Z_:
-		case ENC_SMAXV_R_P_Z_:
-		case ENC_SMINV_R_P_Z_:
-		case ENC_UADDV_R_P_Z_:
-		case ENC_UMAXV_R_P_Z_:
-		case ENC_UMINV_R_P_Z_:
-			// xxxxxxxx|size=xx|xxx|opc=xx|U=x|xxx|Pg=xxx|Zn=xxxxx|Vd=xxxxx
-			ctx->size = (insword>>22)&3;
-			ctx->opc = (insword>>17)&3;
-			ctx->U = (insword>>16)&1;
-			ctx->Pg = (insword>>10)&7;
-			ctx->Zn = (insword>>5)&0x1f;
-			ctx->Vd = insword&0x1f;
 			break;
 		case ENC_FMOV_FDUP_Z_I_:
 		case ENC_FDUP_Z_I_:
@@ -5178,22 +5192,22 @@ void decode_fields32(enum ENCODING enc, context *ctx, Instruction *instr)
 			ctx->Rn = (insword>>5)&0x1f;
 			ctx->Rd = insword&0x1f;
 			break;
-		case ENC_CASP_CP32_LDSTEXCL:
-		case ENC_CASPA_CP32_LDSTEXCL:
-		case ENC_CASPAL_CP32_LDSTEXCL:
-		case ENC_CASPL_CP32_LDSTEXCL:
-		case ENC_CASP_CP64_LDSTEXCL:
-		case ENC_CASPA_CP64_LDSTEXCL:
-		case ENC_CASPAL_CP64_LDSTEXCL:
-		case ENC_CASPL_CP64_LDSTEXCL:
-		case ENC_LDAXP_LP32_LDSTEXCL:
-		case ENC_LDAXP_LP64_LDSTEXCL:
-		case ENC_LDXP_LP32_LDSTEXCL:
-		case ENC_LDXP_LP64_LDSTEXCL:
-		case ENC_STLXP_SP32_LDSTEXCL:
-		case ENC_STLXP_SP64_LDSTEXCL:
-		case ENC_STXP_SP32_LDSTEXCL:
-		case ENC_STXP_SP64_LDSTEXCL:
+		case ENC_CASP_CP32_COMSWAPPR:
+		case ENC_CASPA_CP32_COMSWAPPR:
+		case ENC_CASPAL_CP32_COMSWAPPR:
+		case ENC_CASPL_CP32_COMSWAPPR:
+		case ENC_CASP_CP64_COMSWAPPR:
+		case ENC_CASPA_CP64_COMSWAPPR:
+		case ENC_CASPAL_CP64_COMSWAPPR:
+		case ENC_CASPL_CP64_COMSWAPPR:
+		case ENC_LDAXP_LP32_LDSTEXCLP:
+		case ENC_LDAXP_LP64_LDSTEXCLP:
+		case ENC_LDXP_LP32_LDSTEXCLP:
+		case ENC_LDXP_LP64_LDSTEXCLP:
+		case ENC_STLXP_SP32_LDSTEXCLP:
+		case ENC_STLXP_SP64_LDSTEXCLP:
+		case ENC_STXP_SP32_LDSTEXCLP:
+		case ENC_STXP_SP64_LDSTEXCLP:
 			// x|sz=x|xxxxxx|o2=x|L=x|o1=x|Rs=xxxxx|o0=x|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx
 			ctx->sz = (insword>>30)&1;
 			ctx->o2 = (insword>>23)&1;

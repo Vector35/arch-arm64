@@ -1813,9 +1813,9 @@ int CAS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
-	/* size=1x|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
+	/* size=1x|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x88A07C00) {
-		decode_fields32(ENC_CAS_C32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_CAS_C32_COMSWAP, ctx, instr);
 		if(!HaveAtomicExt()) {
 			UNDEFINED;
 		}
@@ -1827,14 +1827,14 @@ int CAS(context *ctx, Instruction *instr)
 		ctx->ldacctype = (ctx->L==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->stacctype = (ctx->o0==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->size==2 && ctx->L==0 && ctx->o0==0) OK(ENC_CAS_C32_LDSTEXCL);
-		if(ctx->size==2 && ctx->L==1 && ctx->o0==0) OK(ENC_CASA_C32_LDSTEXCL);
-		if(ctx->size==2 && ctx->L==1 && ctx->o0==1) OK(ENC_CASAL_C32_LDSTEXCL);
-		if(ctx->size==2 && ctx->L==0 && ctx->o0==1) OK(ENC_CASL_C32_LDSTEXCL);
-		if(ctx->size==3 && ctx->L==0 && ctx->o0==0) OK(ENC_CAS_C64_LDSTEXCL);
-		if(ctx->size==3 && ctx->L==1 && ctx->o0==0) OK(ENC_CASA_C64_LDSTEXCL);
-		if(ctx->size==3 && ctx->L==1 && ctx->o0==1) OK(ENC_CASAL_C64_LDSTEXCL);
-		if(ctx->size==3 && ctx->L==0 && ctx->o0==1) OK(ENC_CASL_C64_LDSTEXCL);
+		if(ctx->size==2 && ctx->L==0 && ctx->o0==0) OK(ENC_CAS_C32_COMSWAP);
+		if(ctx->size==2 && ctx->L==1 && ctx->o0==0) OK(ENC_CASA_C32_COMSWAP);
+		if(ctx->size==2 && ctx->L==1 && ctx->o0==1) OK(ENC_CASAL_C32_COMSWAP);
+		if(ctx->size==2 && ctx->L==0 && ctx->o0==1) OK(ENC_CASL_C32_COMSWAP);
+		if(ctx->size==3 && ctx->L==0 && ctx->o0==0) OK(ENC_CAS_C64_COMSWAP);
+		if(ctx->size==3 && ctx->L==1 && ctx->o0==0) OK(ENC_CASA_C64_COMSWAP);
+		if(ctx->size==3 && ctx->L==1 && ctx->o0==1) OK(ENC_CASAL_C64_COMSWAP);
+		if(ctx->size==3 && ctx->L==0 && ctx->o0==1) OK(ENC_CASL_C64_COMSWAP);
 	}
 	return rc;
 }
@@ -1844,9 +1844,9 @@ int CASB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
-	/* size=00|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
+	/* size=00|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x8A07C00) {
-		decode_fields32(ENC_CASAB_C32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_CASAB_C32_COMSWAP, ctx, instr);
 		if(!HaveAtomicExt()) {
 			UNDEFINED;
 		}
@@ -1858,10 +1858,10 @@ int CASB(context *ctx, Instruction *instr)
 		ctx->ldacctype = (ctx->L==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->stacctype = (ctx->o0==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->L==1 && ctx->o0==0) OK(ENC_CASAB_C32_LDSTEXCL);
-		if(ctx->L==1 && ctx->o0==1) OK(ENC_CASALB_C32_LDSTEXCL);
-		if(ctx->L==0 && ctx->o0==0) OK(ENC_CASB_C32_LDSTEXCL);
-		if(ctx->L==0 && ctx->o0==1) OK(ENC_CASLB_C32_LDSTEXCL);
+		if(ctx->L==1 && ctx->o0==0) OK(ENC_CASAB_C32_COMSWAP);
+		if(ctx->L==1 && ctx->o0==1) OK(ENC_CASALB_C32_COMSWAP);
+		if(ctx->L==0 && ctx->o0==0) OK(ENC_CASB_C32_COMSWAP);
+		if(ctx->L==0 && ctx->o0==1) OK(ENC_CASLB_C32_COMSWAP);
 	}
 	return rc;
 }
@@ -1871,9 +1871,9 @@ int CASH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class base_register */
-	/* size=01|001000|o2=1|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
+	/* size=01|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x48A07C00) {
-		decode_fields32(ENC_CASAH_C32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_CASAH_C32_COMSWAP, ctx, instr);
 		if(!HaveAtomicExt()) {
 			UNDEFINED;
 		}
@@ -1885,10 +1885,10 @@ int CASH(context *ctx, Instruction *instr)
 		ctx->ldacctype = (ctx->L==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->stacctype = (ctx->o0==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->L==1 && ctx->o0==0) OK(ENC_CASAH_C32_LDSTEXCL);
-		if(ctx->L==1 && ctx->o0==1) OK(ENC_CASALH_C32_LDSTEXCL);
-		if(ctx->L==0 && ctx->o0==0) OK(ENC_CASH_C32_LDSTEXCL);
-		if(ctx->L==0 && ctx->o0==1) OK(ENC_CASLH_C32_LDSTEXCL);
+		if(ctx->L==1 && ctx->o0==0) OK(ENC_CASAH_C32_COMSWAP);
+		if(ctx->L==1 && ctx->o0==1) OK(ENC_CASALH_C32_COMSWAP);
+		if(ctx->L==0 && ctx->o0==0) OK(ENC_CASH_C32_COMSWAP);
+		if(ctx->L==0 && ctx->o0==1) OK(ENC_CASLH_C32_COMSWAP);
 	}
 	return rc;
 }
@@ -1900,7 +1900,7 @@ int CASP(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* 0|sz=x|001000|o2=0|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x8207C00) {
-		decode_fields32(ENC_CASP_CP32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_CASP_CP32_COMSWAPPR, ctx, instr);
 		if(!HaveAtomicExt()) {
 			UNDEFINED;
 		}
@@ -1918,14 +1918,14 @@ int CASP(context *ctx, Instruction *instr)
 		ctx->ldacctype = (ctx->L==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->stacctype = (ctx->o0==1) ? AccType_ORDEREDATOMICRW : AccType_ATOMICRW;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->sz==0 && ctx->L==0 && ctx->o0==0) OK(ENC_CASP_CP32_LDSTEXCL);
-		if(ctx->sz==0 && ctx->L==1 && ctx->o0==0) OK(ENC_CASPA_CP32_LDSTEXCL);
-		if(ctx->sz==0 && ctx->L==1 && ctx->o0==1) OK(ENC_CASPAL_CP32_LDSTEXCL);
-		if(ctx->sz==0 && ctx->L==0 && ctx->o0==1) OK(ENC_CASPL_CP32_LDSTEXCL);
-		if(ctx->sz==1 && ctx->L==0 && ctx->o0==0) OK(ENC_CASP_CP64_LDSTEXCL);
-		if(ctx->sz==1 && ctx->L==1 && ctx->o0==0) OK(ENC_CASPA_CP64_LDSTEXCL);
-		if(ctx->sz==1 && ctx->L==1 && ctx->o0==1) OK(ENC_CASPAL_CP64_LDSTEXCL);
-		if(ctx->sz==1 && ctx->L==0 && ctx->o0==1) OK(ENC_CASPL_CP64_LDSTEXCL);
+		if(ctx->sz==0 && ctx->L==0 && ctx->o0==0) OK(ENC_CASP_CP32_COMSWAPPR);
+		if(ctx->sz==0 && ctx->L==1 && ctx->o0==0) OK(ENC_CASPA_CP32_COMSWAPPR);
+		if(ctx->sz==0 && ctx->L==1 && ctx->o0==1) OK(ENC_CASPAL_CP32_COMSWAPPR);
+		if(ctx->sz==0 && ctx->L==0 && ctx->o0==1) OK(ENC_CASPL_CP32_COMSWAPPR);
+		if(ctx->sz==1 && ctx->L==0 && ctx->o0==0) OK(ENC_CASP_CP64_COMSWAPPR);
+		if(ctx->sz==1 && ctx->L==1 && ctx->o0==0) OK(ENC_CASPA_CP64_COMSWAPPR);
+		if(ctx->sz==1 && ctx->L==1 && ctx->o0==1) OK(ENC_CASPAL_CP64_COMSWAPPR);
+		if(ctx->sz==1 && ctx->L==0 && ctx->o0==1) OK(ENC_CASPL_CP64_COMSWAPPR);
 	}
 	return rc;
 }
@@ -3434,8 +3434,8 @@ int DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class dsb_memory */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm!=0x00|1|opc=00|Rt=11111 */
-	if((INSWORD & 0xFFFFF0FF)==0xD503309F && (INSWORD & 0xB00)!=0x0) {
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=00|Rt=11111 */
+	if((INSWORD & 0xFFFFF0FF)==0xD503309F) {
 		decode_fields32(ENC_DSB_BO_BARRIERS, ctx, instr);
 		ctx->nXS = FALSE;
 		if(!SLICE(ctx->CRm,3,2)) {
@@ -3463,6 +3463,9 @@ int DSB(context *ctx, Instruction *instr)
 		else if(SLICE(ctx->CRm,1,0)==3) {
 			ctx->types = MBReqTypes_All;
 		}
+		/* regular aliases */
+		if(ctx->CRm==4) return PSSBB_DSB(ctx, instr);
+		if(ctx->CRm==0) return SSBB_DSB(ctx, instr);
 		OK(ENC_DSB_BO_BARRIERS);
 	}
 	/* class dsb_nxs */
@@ -3486,6 +3489,9 @@ int DSB(context *ctx, Instruction *instr)
 		else if(ctx->imm2==3) {
 			ctx->domain = MBReqDomain_FullSystem;
 		}
+		/* regular aliases */
+		// alias:PSSBB_DSB with preference:["CRm == '0100'"] does not apply
+		// alias:SSBB_DSB with preference:["CRm == '0000'"] does not apply
 		OK(ENC_DSB_BON_BARRIERS);
 	}
 	return rc;
@@ -13332,7 +13338,7 @@ int LDAR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C08000) {
-		decode_fields32(ENC_LDAR_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDAR_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13343,8 +13349,8 @@ int LDAR(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->size==2) OK(ENC_LDAR_LR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_LDAR_LR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_LDAR_LR32_LDSTORD);
+		if(ctx->size==3) OK(ENC_LDAR_LR64_LDSTORD);
 	}
 	return rc;
 }
@@ -13356,7 +13362,7 @@ int LDARB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C08000) {
-		decode_fields32(ENC_LDARB_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDARB_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13367,7 +13373,7 @@ int LDARB(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_LDARB_LR32_LDSTEXCL);
+		OK(ENC_LDARB_LR32_LDSTORD);
 	}
 	return rc;
 }
@@ -13379,7 +13385,7 @@ int LDARH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C08000) {
-		decode_fields32(ENC_LDARH_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDARH_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13390,7 +13396,7 @@ int LDARH(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_LDARH_LR32_LDSTEXCL);
+		OK(ENC_LDARH_LR32_LDSTORD);
 	}
 	return rc;
 }
@@ -13402,7 +13408,7 @@ int LDAXP(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88608000) {
-		decode_fields32(ENC_LDAXP_LP32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDAXP_LP32_LDSTEXCLP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13433,8 +13439,8 @@ int LDAXP(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->sz==0) OK(ENC_LDAXP_LP32_LDSTEXCL);
-		if(ctx->sz==1) OK(ENC_LDAXP_LP64_LDSTEXCL);
+		if(ctx->sz==0) OK(ENC_LDAXP_LP32_LDSTEXCLP);
+		if(ctx->sz==1) OK(ENC_LDAXP_LP64_LDSTEXCLP);
 	}
 	return rc;
 }
@@ -13446,7 +13452,7 @@ int LDAXR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88408000) {
-		decode_fields32(ENC_LDAXR_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDAXR_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13477,8 +13483,8 @@ int LDAXR(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->size==2) OK(ENC_LDAXR_LR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_LDAXR_LR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_LDAXR_LR32_LDSTEXCLR);
+		if(ctx->size==3) OK(ENC_LDAXR_LR64_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -13490,7 +13496,7 @@ int LDAXRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8408000) {
-		decode_fields32(ENC_LDAXRB_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDAXRB_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13521,7 +13527,7 @@ int LDAXRB(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_LDAXRB_LR32_LDSTEXCL);
+		OK(ENC_LDAXRB_LR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -13533,7 +13539,7 @@ int LDAXRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48408000) {
-		decode_fields32(ENC_LDAXRH_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDAXRH_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13564,7 +13570,7 @@ int LDAXRH(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_LDAXRH_LR32_LDSTEXCL);
+		OK(ENC_LDAXRH_LR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -13939,7 +13945,7 @@ int LDLAR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C00000) {
-		decode_fields32(ENC_LDLAR_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDLAR_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13950,8 +13956,8 @@ int LDLAR(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->size==2) OK(ENC_LDLAR_LR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_LDLAR_LR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_LDLAR_LR32_LDSTORD);
+		if(ctx->size==3) OK(ENC_LDLAR_LR64_LDSTORD);
 	}
 	return rc;
 }
@@ -13963,7 +13969,7 @@ int LDLARB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C00000) {
-		decode_fields32(ENC_LDLARB_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDLARB_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13974,7 +13980,7 @@ int LDLARB(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_LDLARB_LR32_LDSTEXCL);
+		OK(ENC_LDLARB_LR32_LDSTORD);
 	}
 	return rc;
 }
@@ -13986,7 +13992,7 @@ int LDLARH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C00000) {
-		decode_fields32(ENC_LDLARH_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDLARH_LR32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -13997,7 +14003,7 @@ int LDLARH(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_LDLARH_LR32_LDSTEXCL);
+		OK(ENC_LDLARH_LR32_LDSTORD);
 	}
 	return rc;
 }
@@ -16980,7 +16986,7 @@ int LDXP(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88600000) {
-		decode_fields32(ENC_LDXP_LP32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDXP_LP32_LDSTEXCLP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -17011,8 +17017,8 @@ int LDXP(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->sz==0) OK(ENC_LDXP_LP32_LDSTEXCL);
-		if(ctx->sz==1) OK(ENC_LDXP_LP64_LDSTEXCL);
+		if(ctx->sz==0) OK(ENC_LDXP_LP32_LDSTEXCLP);
+		if(ctx->sz==1) OK(ENC_LDXP_LP64_LDSTEXCLP);
 	}
 	return rc;
 }
@@ -17024,7 +17030,7 @@ int LDXR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88400000) {
-		decode_fields32(ENC_LDXR_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDXR_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -17055,8 +17061,8 @@ int LDXR(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->size==2) OK(ENC_LDXR_LR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_LDXR_LR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_LDXR_LR32_LDSTEXCLR);
+		if(ctx->size==3) OK(ENC_LDXR_LR64_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -17068,7 +17074,7 @@ int LDXRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8400000) {
-		decode_fields32(ENC_LDXRB_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDXRB_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -17099,7 +17105,7 @@ int LDXRB(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_LDXRB_LR32_LDSTEXCL);
+		OK(ENC_LDXRB_LR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -17111,7 +17117,7 @@ int LDXRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48400000) {
-		decode_fields32(ENC_LDXRH_LR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_LDXRH_LR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -17142,7 +17148,7 @@ int LDXRH(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_LDXRH_LR32_LDSTEXCL);
+		OK(ENC_LDXRH_LR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -17980,9 +17986,6 @@ int MSR_imm(context *ctx, Instruction *instr)
 				UNDEFINED;
 			}
 			ctx->field = PSTATEField_DIT;
-		}
-		else if(((ctx->op1<<3)|ctx->op2)==0x1b) {
-			UNDEFINED;
 		}
 		else if(((ctx->op1<<3)|ctx->op2)==0x1c) {
 			if(!HaveMTEExt()) {
@@ -19330,15 +19333,15 @@ int PSB(context *ctx, Instruction *instr)
 	return rc;
 }
 
-/* pssbb.xml */
-int PSSBB(context *ctx, Instruction *instr)
+/* pssbb_dsb.xml */
+int PSSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class dsb_memory */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0100|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503349F) {
-		decode_fields32(ENC_PSSBB_ONLY_BARRIERS, ctx, instr);
-		OK(ENC_PSSBB_ONLY_BARRIERS);
+		decode_fields32(ENC_PSSBB_DSB_BO_BARRIERS, ctx, instr);
+		OK(ENC_PSSBB_DSB_BO_BARRIERS);
 	}
 	return rc;
 }
@@ -23420,15 +23423,15 @@ int SRSRA_advsimd(context *ctx, Instruction *instr)
 	return rc;
 }
 
-/* ssbb.xml */
-int SSBB(context *ctx, Instruction *instr)
+/* ssbb_dsb.xml */
+int SSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class dsb_memory */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503309F) {
-		decode_fields32(ENC_SSBB_ONLY_BARRIERS, ctx, instr);
-		OK(ENC_SSBB_ONLY_BARRIERS);
+		decode_fields32(ENC_SSBB_DSB_BO_BARRIERS, ctx, instr);
+		OK(ENC_SSBB_DSB_BO_BARRIERS);
 	}
 	return rc;
 }
@@ -24625,7 +24628,7 @@ int STLLR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88800000) {
-		decode_fields32(ENC_STLLR_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLLR_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24636,8 +24639,8 @@ int STLLR(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->size==2) OK(ENC_STLLR_SL32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_STLLR_SL64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_STLLR_SL32_LDSTORD);
+		if(ctx->size==3) OK(ENC_STLLR_SL64_LDSTORD);
 	}
 	return rc;
 }
@@ -24649,7 +24652,7 @@ int STLLRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8800000) {
-		decode_fields32(ENC_STLLRB_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLLRB_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24660,7 +24663,7 @@ int STLLRB(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_STLLRB_SL32_LDSTEXCL);
+		OK(ENC_STLLRB_SL32_LDSTORD);
 	}
 	return rc;
 }
@@ -24672,7 +24675,7 @@ int STLLRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48800000) {
-		decode_fields32(ENC_STLLRH_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLLRH_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24683,7 +24686,7 @@ int STLLRH(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_STLLRH_SL32_LDSTEXCL);
+		OK(ENC_STLLRH_SL32_LDSTORD);
 	}
 	return rc;
 }
@@ -24695,7 +24698,7 @@ int STLR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88808000) {
-		decode_fields32(ENC_STLR_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLR_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24706,8 +24709,8 @@ int STLR(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		if(ctx->size==2) OK(ENC_STLR_SL32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_STLR_SL64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_STLR_SL32_LDSTORD);
+		if(ctx->size==3) OK(ENC_STLR_SL64_LDSTORD);
 	}
 	return rc;
 }
@@ -24719,7 +24722,7 @@ int STLRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8808000) {
-		decode_fields32(ENC_STLRB_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLRB_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24730,7 +24733,7 @@ int STLRB(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_STLRB_SL32_LDSTEXCL);
+		OK(ENC_STLRB_SL32_LDSTORD);
 	}
 	return rc;
 }
@@ -24742,7 +24745,7 @@ int STLRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48808000) {
-		decode_fields32(ENC_STLRH_SL32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLRH_SL32_LDSTORD, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24753,7 +24756,7 @@ int STLRH(context *ctx, Instruction *instr)
 		ctx->regsize = (ctx->elsize==0x40) ? 0x40 : 0x20;
 		ctx->datasize = ctx->elsize;
 		ctx->tag_checked = ctx->n!=0x1f;
-		OK(ENC_STLRH_SL32_LDSTEXCL);
+		OK(ENC_STLRH_SL32_LDSTORD);
 	}
 	return rc;
 }
@@ -24952,7 +24955,7 @@ int STLXP(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88208000) {
-		decode_fields32(ENC_STLXP_SP32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLXP_SP32_LDSTEXCLP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -24983,8 +24986,8 @@ int STLXP(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->sz==0) OK(ENC_STLXP_SP32_LDSTEXCL);
-		if(ctx->sz==1) OK(ENC_STLXP_SP64_LDSTEXCL);
+		if(ctx->sz==0) OK(ENC_STLXP_SP32_LDSTEXCLP);
+		if(ctx->sz==1) OK(ENC_STLXP_SP64_LDSTEXCLP);
 	}
 	return rc;
 }
@@ -24996,7 +24999,7 @@ int STLXR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88008000) {
-		decode_fields32(ENC_STLXR_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLXR_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -25027,8 +25030,8 @@ int STLXR(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->size==2) OK(ENC_STLXR_SR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_STLXR_SR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_STLXR_SR32_LDSTEXCLR);
+		if(ctx->size==3) OK(ENC_STLXR_SR64_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -25040,7 +25043,7 @@ int STLXRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8008000) {
-		decode_fields32(ENC_STLXRB_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLXRB_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -25071,7 +25074,7 @@ int STLXRB(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_STLXRB_SR32_LDSTEXCL);
+		OK(ENC_STLXRB_SR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -25083,7 +25086,7 @@ int STLXRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48008000) {
-		decode_fields32(ENC_STLXRH_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STLXRH_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -25114,7 +25117,7 @@ int STLXRH(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_STLXRH_SR32_LDSTEXCL);
+		OK(ENC_STLXRH_SR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -26487,7 +26490,7 @@ int STXP(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88200000) {
-		decode_fields32(ENC_STXP_SP32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STXP_SP32_LDSTEXCLP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -26518,8 +26521,8 @@ int STXP(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->sz==0) OK(ENC_STXP_SP32_LDSTEXCL);
-		if(ctx->sz==1) OK(ENC_STXP_SP64_LDSTEXCL);
+		if(ctx->sz==0) OK(ENC_STXP_SP32_LDSTEXCLP);
+		if(ctx->sz==1) OK(ENC_STXP_SP64_LDSTEXCLP);
 	}
 	return rc;
 }
@@ -26531,7 +26534,7 @@ int STXR(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88000000) {
-		decode_fields32(ENC_STXR_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STXR_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -26562,8 +26565,8 @@ int STXR(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		if(ctx->size==2) OK(ENC_STXR_SR32_LDSTEXCL);
-		if(ctx->size==3) OK(ENC_STXR_SR64_LDSTEXCL);
+		if(ctx->size==2) OK(ENC_STXR_SR32_LDSTEXCLR);
+		if(ctx->size==3) OK(ENC_STXR_SR64_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -26575,7 +26578,7 @@ int STXRB(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8000000) {
-		decode_fields32(ENC_STXRB_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STXRB_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -26606,7 +26609,7 @@ int STXRB(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_STXRB_SR32_LDSTEXCL);
+		OK(ENC_STXRB_SR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -26618,7 +26621,7 @@ int STXRH(context *ctx, Instruction *instr)
 	/* class base_register */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48000000) {
-		decode_fields32(ENC_STXRH_SR32_LDSTEXCL, ctx, instr);
+		decode_fields32(ENC_STXRH_SR32_LDSTEXCLR, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
 		ctx->t = UINT(ctx->Rt);
 		ctx->t2 = UINT(ctx->Rt2);
@@ -26649,7 +26652,7 @@ int STXRH(context *ctx, Instruction *instr)
 				// switch on constraint
 			}
 		}
-		OK(ENC_STXRH_SR32_LDSTEXCL);
+		OK(ENC_STXRH_SR32_LDSTEXCLR);
 	}
 	return rc;
 }
@@ -30553,7 +30556,7 @@ int andv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0110|opc=10|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A2000) {
 		decode_fields32(ENC_ANDV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -31929,7 +31932,7 @@ int cntp_r_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|10|Pg=xxxx|o2=0|Pn=xxxx|Rd=xxxxx */
+	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|10|Pg=xxxx|0|Pn=xxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FC200)==0x25208000) {
 		decode_fields32(ENC_CNTP_R_P_P_, ctx, instr);
 		if(!HaveSVE()) {
@@ -32470,7 +32473,7 @@ int eorv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0110|opc=01|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4192000) {
 		decode_fields32(ENC_EORV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -32668,7 +32671,7 @@ int fadda_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
+	/* 01100101|size=xx|0110|opc=00|001|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65182000) {
 		decode_fields32(ENC_FADDA_V_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -40343,7 +40346,7 @@ int orv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0110|opc=00|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4182000) {
 		decode_fields32(ENC_ORV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -41386,7 +41389,7 @@ int saddv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|000|opc=00|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0000|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4002000) {
 		decode_fields32(ENC_SADDV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -41751,7 +41754,7 @@ int smaxv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|001|opc=00|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0010|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4082000) {
 		decode_fields32(ENC_SMAXV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -41813,7 +41816,7 @@ int sminv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|001|opc=01|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0010|op=1|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A2000) {
 		decode_fields32(ENC_SMINV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -44388,7 +44391,7 @@ int uaddv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|000|opc=00|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0000|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4012000) {
 		decode_fields32(ENC_UADDV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -44681,7 +44684,7 @@ int umaxv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|001|opc=00|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0010|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4092000) {
 		decode_fields32(ENC_UMAXV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {
@@ -44743,7 +44746,7 @@ int uminv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class sve */
-	/* 00000100|size=xx|001|opc=01|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
+	/* 00000100|size=xx|0010|op=1|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B2000) {
 		decode_fields32(ENC_UMINV_R_P_Z_, ctx, instr);
 		if(!HaveSVE()) {

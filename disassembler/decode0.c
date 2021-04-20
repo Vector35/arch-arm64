@@ -59,15 +59,19 @@ int decode_spec(context *ctx, Instruction *dec)
 		}
 		if(!op0 && !(op1&2) && !(op2&0x10) && (op3&0x38)==8) {
 			/* GROUP: sve_int_pred_red */
-			op0 = (INSWORD>>19)&3;
+			op0 = (INSWORD>>18)&7;
 			if(!op0)
 				return decode_iclass_sve_int_reduce_0(ctx, dec);
-			if(op0==1)
-				return decode_iclass_sve_int_reduce_1(ctx, dec);
 			if(op0==2)
+				return decode_iclass_sve_int_reduce_1(ctx, dec);
+			if((op0&5)==1)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_1
+			if((op0&6)==4)
 				return decode_iclass_sve_int_movprfx_pred(ctx, dec);
-			if(op0==3)
+			if(op0==6)
 				return decode_iclass_sve_int_reduce_2(ctx, dec);
+			if(op0==7)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_2
 			UNMATCHED;
 		}
 		if(!op0 && !(op1&2) && !(op2&0x10) && (op3&0x38)==0x20) {
@@ -99,11 +103,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			op0 = (INSWORD>>12)&1;
 			op1 = (INSWORD>>10)&3;
 			if(!op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_1
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_3
 			if(op0 && !op1)
 				return decode_iclass_sve_int_bin_cons_log(ctx, dec);
 			if(op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_94
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_98
 			UNMATCHED;
 		}
 		if(!op0 && !(op1&2) && (op2&0x10)==0x10 && (op3&0x3c)==0x10) {
@@ -128,7 +132,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0 && !op1)
 				return decode_iclass_sve_int_read_vl_a(ctx, dec);
 			if(op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_2
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_4
 			UNMATCHED;
 		}
 		if(!op0 && !(op1&2) && (op2&0x10)==0x10 && (op3&0x38)==0x18)
@@ -164,15 +168,15 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && op1==4)
 				return decode_iclass_sve_int_count(ctx, dec);
 			if(!op0 && op1==5)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_4
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_6
 			if(op0 && !op1)
 				return decode_iclass_sve_int_countvlv1(ctx, dec);
 			if(op0 && op1==4)
 				return decode_iclass_sve_int_pred_pattern_a(ctx, dec);
 			if(op0 && (op1&3)==1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_5
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_7
 			if((op1&6)==2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_3
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_5
 			if((op1&6)==6)
 				return decode_iclass_sve_int_pred_pattern_b(ctx, dec);
 			UNMATCHED;
@@ -186,7 +190,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0!=3 && !op1)
 				return decode_iclass_sve_int_log_imm(ctx, dec);
 			if(op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_101
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_105
 			UNMATCHED;
 		}
 		if(!op0 && (op1&2)==2 && (op2&0x18)==8) {
@@ -195,11 +199,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!(op0&4))
 				return decode_iclass_sve_int_dup_imm_pred(ctx, dec);
 			if((op0&6)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_6
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_8
 			if(op0==6)
 				return decode_iclass_sve_int_dup_fpimm_pred(ctx, dec);
 			if(op0==7)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_7
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_9
 			UNMATCHED;
 		}
 		if(!op0 && (op1&2)==2 && (op2&0x10)==0x10 && op3==8)
@@ -221,23 +225,23 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && op1==4)
 				return decode_iclass_sve_int_perm_insrs(ctx, dec);
 			if(!op0 && (op1&3)==2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_64
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_68
 			if(!op0 && op1&1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_63
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_67
 			if(op0==1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_10
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_12
 			if(op0==2 && !(op1&4))
 				return decode_iclass_sve_int_perm_unpk(ctx, dec);
 			if(op0==2 && op1==4)
 				return decode_iclass_sve_int_perm_insrv(ctx, dec);
 			if(op0==2 && op1==6)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_72
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_76
 			if(op0==2 && (op1&5)==5)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_71
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_75
 			if(op0==3 && !op1)
 				return decode_iclass_sve_int_perm_reverse_z(ctx, dec);
 			if(op0==3 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_96
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_100
 			UNMATCHED;
 		}
 		if(!op0 && (op1&2)==2 && (op2&0x10)==0x10 && (op3&0x38)==0x10) {
@@ -249,33 +253,33 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && (op1&0x1e)==0x10 && !op2 && !op3)
 				return decode_iclass_sve_int_perm_punpk(ctx, dec);
 			if(op0==1 && (op1&0x1e)==0x10 && !op2 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_73
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_77
 			if(op0==2 && (op1&0x1e)==0x10 && !op2 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_74
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_78
 			if(op0==3 && (op1&0x1e)==0x10 && !op2 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_75
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_79
 			if(!(op1&0x10) && !(op2&1) && !op3)
 				return decode_iclass_sve_int_perm_bin_perm_pp(ctx, dec);
 			if(!(op1&0x10) && op2&1 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_62
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_66
 			if(op1==0x14 && !op2 && !op3)
 				return decode_iclass_sve_int_perm_reverse_p(ctx, dec);
 			if(op1==0x15 && !op2 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_17
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_19
 			if((op1&0x1a)==0x10 && op2==8 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_70
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_74
 			if((op1&0x1a)==0x10 && (op2&7)==4 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_69
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_73
 			if((op1&0x1a)==0x10 && (op2&3)==2 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_68
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_72
 			if((op1&0x1a)==0x10 && op2&1 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_67
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_71
 			if((op1&0x1a)==0x12 && !op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_16
-			if((op1&0x18)==0x18 && !op3)
 				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_18
+			if((op1&0x18)==0x18 && !op3)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_20
 			if(op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_61
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_65
 			UNMATCHED;
 		}
 		if(!op0 && (op1&2)==2 && (op2&0x10)==0x10 && (op3&0x38)==0x18)
@@ -297,11 +301,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && (op1&6)==2 && !op3)
 				return decode_iclass_sve_int_perm_rev(ctx, dec);
 			if(!op0 && (op1&6)==2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_9
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_11
 			if(!op0 && op1==4 && !op2 && op3)
 				return decode_iclass_sve_int_perm_cpy_r(ctx, dec);
 			if(!op0 && op1==4 && op2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_11
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_13
 			if(!op0 && op1==4 && !op3)
 				return decode_iclass_sve_int_perm_clast_zz(ctx, dec);
 			if(!op0 && op1==5 && !op3)
@@ -309,23 +313,23 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && op1==6 && !op2 && !op3)
 				return decode_iclass_sve_int_perm_splice(ctx, dec);
 			if(!op0 && op1==6 && !op2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_12
-			if(!op0 && op1==6 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_13
-			if(!op0 && op1==7 && !op2 && !op3)
 				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_14
-			if(!op0 && op1==7 && !op2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_65
-			if(!op0 && op1==7 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_66
-			if(!op0 && (op1&3)==1 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_8
-			if(op0 && !op1 && !op3)
+			if(!op0 && op1==6 && op2)
 				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_15
+			if(!op0 && op1==7 && !op2 && !op3)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_16
+			if(!op0 && op1==7 && !op2 && op3)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_69
+			if(!op0 && op1==7 && op2)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_70
+			if(!op0 && (op1&3)==1 && op3)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_10
+			if(op0 && !op1 && !op3)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_17
 			if(op0 && !op1 && op3)
 				return decode_iclass_sve_int_perm_clast_rz(ctx, dec);
 			if(op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_92
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_96
 			UNMATCHED;
 		}
 		if(!op0 && (op1&2)==2 && (op2&0x10)==0x10 && (op3&0x30)==0x30)
@@ -336,7 +340,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0)
 				return decode_iclass_sve_int_perm_extract_i(ctx, dec);
 			if(op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_19
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_21
 			UNMATCHED;
 		}
 		if(!op0 && op1==3 && (op2&0x10)==0x10 && !(op3&0x38))
@@ -362,7 +366,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0)
 				return decode_iclass_sve_int_brkp(ctx, dec);
 			if(op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_20
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_22
 			UNMATCHED;
 		}
 		if(op0==1 && (op1&2)==2 && (op2&0x18)==8 && (op3&0x30)==0x10) {
@@ -374,19 +378,19 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && op1==8 && !op2 && !op3)
 				return decode_iclass_sve_int_brkn(ctx, dec);
 			if(!op0 && op1==8 && !op2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_22
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_24
 			if(!op0 && !(op1&7) && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_21
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_23
 			if(!op0 && (op1&4)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_82
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_86
 			if(!op0 && (op1&2)==2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_80
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_84
 			if(!op0 && op1&1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_78
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_82
 			if(op0 && !op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_27
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_30
 			if(op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_106
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_110
 			if(!op1 && !op2)
 				return decode_iclass_sve_int_break(ctx, dec);
 			UNMATCHED;
@@ -401,51 +405,51 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && !(op2&1) && !op4)
 				return decode_iclass_sve_int_ptest(ctx, dec);
 			if(op0==4 && !(op2&1) && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_83
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_87
 			if((op0&11)==2 && !(op2&1) && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_81
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_85
 			if((op0&9)==1 && !(op2&1) && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_79
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_83
 			if(!(op0&8) && op2&1 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_77
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_81
 			if(op0==8 && !op1 && !op2 && !op4)
 				return decode_iclass_sve_int_pfirst(ctx, dec);
 			if(op0==8 && !op1 && op2 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_102
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_106
 			if(op0==8 && op1==4 && op2==2 && !op3 && !op4)
 				return decode_iclass_sve_int_pfalse(ctx, dec);
 			if(op0==8 && op1==4 && op2==2 && op3 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_103
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_107
 			if(op0==8 && op1==6 && !op2 && !op4)
 				return decode_iclass_sve_int_rdffr(ctx, dec);
 			if(op0==9 && !op1 && !(op2&2) && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_24
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_26
 			if(op0==9 && !op1 && op2==2 && !op4)
 				return decode_iclass_sve_int_pnext(ctx, dec);
 			if(op0==9 && !op1 && op2==3 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_25
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_27
 			if(op0==9 && op1==4 && op2==2 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_26
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_28
 			if(op0==9 && op1==6 && !op2 && !op3 && !op4)
 				return decode_iclass_sve_int_rdffr_2(ctx, dec);
 			if(op0==9 && op1==6 && !op2 && op3 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_105
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_109
 			if((op0&14)==8 && op1==2 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_23
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_25
 			if((op0&14)==8 && op1==4 && !(op2&2) && !op4)
 				return decode_iclass_sve_int_ptrue(ctx, dec);
 			if((op0&14)==8 && op1==4 && op2==3 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_85
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_89
 			if((op0&14)==8 && op1==6 && op2 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_104
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_108
 			if((op0&14)==8 && op1&1 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_84
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_88
 			if((op0&14)==12 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_87
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_91
 			if((op0&10)==10 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_86
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_90
 			if(op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_76
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_80
 			UNMATCHED;
 		}
 		if(op0==1 && (op1&2)==2 && (op2&0x10)==0x10 && !(op3&0x30)) {
@@ -458,9 +462,9 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0 && !op1 && !op2)
 				return decode_iclass_sve_int_cterm(ctx, dec);
 			if(op0 && !op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_97
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_101
 			if(op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_98
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_102
 			UNMATCHED;
 		}
 		if(op0==1 && (op1&2)==2 && (op2&0x10)==0x10 && (op3&0x30)==0x10)
@@ -481,8 +485,15 @@ int decode_spec(context *ctx, Instruction *dec)
 				return decode_iclass_sve_int_dup_fpimm(ctx, dec);
 			UNMATCHED;
 		}
-		if(op0==1 && (op1&2)==2 && (op2&0x1c)==0x10 && (op3&0x30)==0x20)
-			return decode_iclass_sve_int_pcount_pred(ctx, dec);
+		if(op0==1 && (op1&2)==2 && (op2&0x1c)==0x10 && (op3&0x30)==0x20) {
+			/* GROUP: sve_pred_count_a */
+			op0 = (INSWORD>>9)&1;
+			if(!op0)
+				return decode_iclass_sve_int_pcount_pred(ctx, dec);
+			if(op0)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_29
+			UNMATCHED;
+		}
 		if(op0==1 && (op1&2)==2 && (op2&0x1c)==0x14 && (op3&0x3c)==0x20) {
 			/* GROUP: sve_pred_count_b */
 			op0 = (INSWORD>>18)&1;
@@ -509,19 +520,19 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0 && !op1 && !op2 && !op3 && !op4)
 				return decode_iclass_sve_int_setffr(ctx, dec);
 			if(op0 && !op1 && !op2 && (op3&8)==8 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_91
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_95
 			if(op0 && !op1 && !op2 && (op3&4)==4 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_90
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_94
 			if(op0 && !op1 && !op2 && (op3&2)==2 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_89
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_93
 			if(op0 && !op1 && !op2 && op3&1 && !op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_88
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_92
 			if(!op1 && !op2 && op4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_107
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_111
 			if(!op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_108
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_112
 			if(op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_109
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_113
 			UNMATCHED;
 		}
 		if(op0==1 && (op1&2)==2 && (op2&0x1c)==0x14 && (op3&0x38)==0x28)
@@ -536,17 +547,17 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && !op1)
 				return decode_iclass_sve_intx_dot(ctx, dec);
 			if(!op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_110
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_114
 			if(op0 && !(op1&4))
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_28
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_31
 			if(op0 && (op1&6)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_29
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_32
 			if(op0 && op1==6)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_30
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_33
 			if(op0 && op1==7 && !op2)
 				return decode_iclass_sve_intx_mixed_dot(ctx, dec);
 			if(op0 && op1==7 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_31
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_34
 			UNMATCHED;
 		}
 		if(op0==2 && !(op1&2) && !(op2&0x10) && (op3&0x20)==0x20)
@@ -558,13 +569,13 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && !op1)
 				return decode_iclass_sve_intx_dot_by_indexed_elem(ctx, dec);
 			if(!op0 && op1==1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_32
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_35
 			if(!op0 && op1==2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_33
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_36
 			if(!op0 && op1==3)
 				return decode_iclass_sve_intx_mixed_dot_by_indexed_elem(ctx, dec);
 			if(op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_111
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_115
 			UNMATCHED;
 		}
 		if(op0==2 && (op1&2)==2 && !(op2&0x10) && !(op3&0x20))
@@ -573,15 +584,15 @@ int decode_spec(context *ctx, Instruction *dec)
 			/* GROUP: sve_intx_constructive */
 			op0 = (INSWORD>>10)&15;
 			if(!(op0&12))
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_34
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_37
 			if((op0&14)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_35
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_38
 			if(op0==6)
 				return decode_iclass_sve_intx_mmla(ctx, dec);
 			if(op0==7)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_36
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_39
 			if((op0&8)==8)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_37
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_40
 			UNMATCHED;
 		}
 		if(op0==2 && (op1&2)==2 && !(op2&0x10) && (op3&0x30)==0x30)
@@ -628,9 +639,9 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && !op1 && !op2)
 				return decode_iclass_sve_fp_fdot_by_indexed_elem(ctx, dec);
 			if(!op0 && !op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_93
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_97
 			if(!op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_38
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_41
 			if(op0)
 				return decode_iclass_sve_fp_fma_long_by_indexed_elem(ctx, dec);
 			UNMATCHED;
@@ -645,9 +656,9 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && !op1 && !op2)
 				return decode_iclass_sve_fp_fdot(ctx, dec);
 			if(!op0 && !op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_39
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_42
 			if(!op0 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_40
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_43
 			if(op0)
 				return decode_iclass_sve_fp_fma_long(ctx, dec);
 			UNMATCHED;
@@ -678,11 +689,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0==2 && !op1)
 				return decode_iclass_sve_fp_ftmad(ctx, dec);
 			if(op0==2 && op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_99
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_103
 			if(op0==3 && !op2)
 				return decode_iclass_sve_fp_2op_i_p_zds(ctx, dec);
 			if(op0==3 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_100
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_104
 			UNMATCHED;
 		}
 		if(op0==3 && (op1&2)==2 && !(op2&0x10) && (op3&0x38)==0x28) {
@@ -710,7 +721,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0)
 				return decode_iclass_sve_fp_2op_u_zd(ctx, dec);
 			if(op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_95
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_99
 			UNMATCHED;
 		}
 		if(op0==3 && (op1&2)==2 && (op2&0x1c)==8 && (op3&0x38)==8) {
@@ -719,11 +730,18 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0)
 				return decode_iclass_sve_fp_2op_p_pd(ctx, dec);
 			if(op0)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_41
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_44
 			UNMATCHED;
 		}
-		if(op0==3 && (op1&2)==2 && (op2&0x1c)==12 && (op3&0x38)==8)
-			return decode_iclass_sve_fp_2op_p_vd(ctx, dec);
+		if(op0==3 && (op1&2)==2 && (op2&0x1c)==12 && (op3&0x38)==8) {
+			/* GROUP: sve_fp_slowreduce */
+			op0 = (INSWORD>>18)&1;
+			if(!op0)
+				return decode_iclass_sve_fp_2op_p_vd(ctx, dec);
+			if(op0)
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_45
+			UNMATCHED;
+		}
 		if(op0==3 && (op1&2)==2 && (op2&0x10)==0x10) {
 			/* GROUP: sve_fp_fma */
 			op0 = (INSWORD>>15)&1;
@@ -742,7 +760,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op0 && op1&1 && !(op2&4) && !op3)
 				return decode_iclass_sve_mem_32b_prfm_sv(ctx, dec);
 			if(!op0 && op1&1 && !(op2&4) && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_44
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_48
 			if(op0==1 && op1&1 && !(op2&4))
 				return decode_iclass_sve_mem_32b_gld_sv_a(ctx, dec);
 			if(op0==2 && op1&1 && !(op2&4))
@@ -750,25 +768,25 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0==3 && !(op1&2) && !op2 && !op3)
 				return decode_iclass_sve_mem_32b_pfill(ctx, dec);
 			if(op0==3 && !(op1&2) && !op2 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_45
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_49
 			if(op0==3 && !(op1&2) && op2==2)
 				return decode_iclass_sve_mem_32b_fill(ctx, dec);
 			if(op0==3 && !(op1&2) && (op2&5)==1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_46
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_50
 			if(op0==3 && (op1&2)==2 && !(op2&4) && !op3)
 				return decode_iclass_sve_mem_prfm_si(ctx, dec);
 			if(op0==3 && (op1&2)==2 && !(op2&4) && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_47
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_51
 			if(op0!=3 && !(op1&1) && !(op2&4))
 				return decode_iclass_sve_mem_32b_gld_vs(ctx, dec);
 			if(!op1 && (op2&6)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_42
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_46
 			if(!op1 && op2==6 && !op3)
 				return decode_iclass_sve_mem_prfm_ss(ctx, dec);
 			if(!op1 && op2==7 && !op3)
 				return decode_iclass_sve_mem_32b_prfm_vi(ctx, dec);
 			if(!op1 && (op2&6)==6 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_43
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_47
 			if(op1==1 && (op2&4)==4)
 				return decode_iclass_sve_mem_32b_gld_vi(ctx, dec);
 			if((op1&2)==2 && (op2&4)==4)
@@ -793,11 +811,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(!op1 && op2==5)
 				return decode_iclass_sve_mem_cld_si(ctx, dec);
 			if(op1 && op2==1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_49
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_53
 			if(op1 && op2==5)
 				return decode_iclass_sve_mem_cldnf_si(ctx, dec);
 			if(op1 && op2==7)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_50
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_54
 			if(!op2)
 				return decode_iclass_sve_mem_ldqr_ss(ctx, dec);
 			if(op2==2)
@@ -805,7 +823,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op2==3)
 				return decode_iclass_sve_mem_cldff_ss(ctx, dec);
 			if(op2==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_48
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_52
 			UNMATCHED;
 		}
 		if(op0==6) {
@@ -815,11 +833,11 @@ int decode_spec(context *ctx, Instruction *dec)
 			op2 = (INSWORD>>13)&7;
 			op3 = (INSWORD>>4)&1;
 			if(!op0 && op1==1 && !(op2&4) && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_54
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_58
 			if(!op0 && op1==3 && (op2&4)==4 && !op3)
 				return decode_iclass_sve_mem_64b_prfm_sv2(ctx, dec);
 			if(!op0 && op1==3 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_55
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_59
 			if(!op0 && op1&1 && !(op2&4) && !op3)
 				return decode_iclass_sve_mem_64b_prfm_sv(ctx, dec);
 			if(op0 && op1==3 && (op2&4)==4)
@@ -827,13 +845,13 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0 && op1&1 && !(op2&4))
 				return decode_iclass_sve_mem_64b_gld_sv(ctx, dec);
 			if(!op1 && (op2&6)==4)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_51
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_55
 			if(!op1 && op2==6)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_52
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_56
 			if(!op1 && op2==7 && !op3)
 				return decode_iclass_sve_mem_64b_prfm_vi(ctx, dec);
 			if(!op1 && op2==7 && op3)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_53
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_57
 			if(op1==1 && (op2&4)==4)
 				return decode_iclass_sve_mem_64b_gld_vi(ctx, dec);
 			if(op1==2 && (op2&4)==4)
@@ -848,17 +866,17 @@ int decode_spec(context *ctx, Instruction *dec)
 			op1 = (INSWORD>>14)&1;
 			op2 = (INSWORD>>4)&1;
 			if(!(op0&4) && !op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_56
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_60
 			if((op0&6)==4 && !op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_58
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_62
 			if(op0==6 && !op1 && !op2)
 				return decode_iclass_sve_mem_pspill(ctx, dec);
 			if(op0==6 && !op1 && op2)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_59
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_63
 			if(op0==6 && op1)
 				return decode_iclass_sve_mem_spill(ctx, dec);
 			if(op0==7 && !op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_60
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_64
 			if(op0!=6 && op1)
 				return decode_iclass_sve_mem_cst_ss(ctx, dec);
 			UNMATCHED;
@@ -872,7 +890,7 @@ int decode_spec(context *ctx, Instruction *dec)
 			if(op0 && op1)
 				return decode_iclass_sve_mem_est_ss(ctx, dec);
 			if(!op1)
-				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_57
+				UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_61
 			UNMATCHED;
 		}
 		if(op0==7 && (op3&0x28)==0x20) {
@@ -974,6 +992,8 @@ int decode_spec(context *ctx, Instruction *dec)
 		op2 = (INSWORD>>23)&3;
 		op3 = (INSWORD>>16)&0x3f;
 		op4 = (INSWORD>>10)&3;
+		if(!(op0&11) && !op1 && !op2 && (op3&0x20)==0x20)
+			return decode_iclass_comswappr(ctx, dec);
 		if(!(op0&11) && op1 && !op2 && !op3)
 			return decode_iclass_asisdlse(ctx, dec);
 		if(!(op0&11) && op1 && op2==1 && !(op3&0x20))
@@ -996,10 +1016,16 @@ int decode_spec(context *ctx, Instruction *dec)
 			UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_advsimd_90
 		if(op0==13 && !op1 && (op2&2)==2 && (op3&0x20)==0x20)
 			return decode_iclass_ldsttags(ctx, dec);
+		if((op0&11)==8 && !op1 && !op2 && (op3&0x20)==0x20)
+			return decode_iclass_ldstexclp(ctx, dec);
 		if((op0&11)==8 && op1)
 			UNALLOCATED(ENC_UNKNOWN); // iclass: UNALLOCATED_advsimd_83
-		if(!(op0&3) && !op1 && !(op2&2))
-			return decode_iclass_ldstexcl(ctx, dec);
+		if(!(op0&3) && !op1 && !op2 && !(op3&0x20))
+			return decode_iclass_ldstexclr(ctx, dec);
+		if(!(op0&3) && !op1 && op2==1 && !(op3&0x20))
+			return decode_iclass_ldstord(ctx, dec);
+		if(!(op0&3) && !op1 && op2==1 && (op3&0x20)==0x20)
+			return decode_iclass_comswap(ctx, dec);
 		if((op0&3)==1 && !op1 && (op2&2)==2 && !(op3&0x20) && !op4)
 			return decode_iclass_ldapstl_unscaled(ctx, dec);
 		if((op0&3)==1 && !(op2&2))

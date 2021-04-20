@@ -526,7 +526,6 @@ enum Group {
 	typedef enum Register Register;
 	typedef enum Condition Condition;
 	typedef enum ShiftType ShiftType;
-	typedef enum FailureCodes FailureCodes;
 	typedef enum Operation Operation;
 	typedef enum Group Group;
 	typedef enum ArrangementSpec ArrangementSpec;

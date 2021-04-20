@@ -1175,13 +1175,13 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_PACIB1716_HI_HINTS:
 		case ENC_PACIBSP_HI_HINTS:
 		case ENC_PACIBZ_HI_HINTS:
-		case ENC_PSSBB_ONLY_BARRIERS:
+		//case ENC_PSSBB_ONLY_BARRIERS:
 		case ENC_RETAA_64E_BRANCH_REG:
 		case ENC_RETAB_64E_BRANCH_REG:
-		case ENC_SB_ONLY_BARRIERS:
+		//case ENC_SB_ONLY_BARRIERS:
 		case ENC_SEVL_HI_HINTS:
 		case ENC_SEV_HI_HINTS:
-		case ENC_SSBB_ONLY_BARRIERS:
+		//case ENC_SSBB_ONLY_BARRIERS:
 		case ENC_WFE_HI_HINTS:
 		case ENC_WFI_HI_HINTS:
 		case ENC_XAFLAG_M_PSTATE:
@@ -4573,10 +4573,10 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_CASPAL_CP32_LDSTEXCL:
-		case ENC_CASPA_CP32_LDSTEXCL:
-		case ENC_CASPL_CP32_LDSTEXCL:
-		case ENC_CASP_CP32_LDSTEXCL:
+		case ENC_CASPAL_CP32_COMSWAPPR:
+		case ENC_CASPA_CP32_COMSWAPPR:
+		case ENC_CASPL_CP32_COMSWAPPR:
+		case ENC_CASP_CP32_COMSWAPPR:
 		{
 			// SYNTAX: <Ws>,<W(s+1)>,<Wt>,<W(t+1)>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WS;
@@ -4587,8 +4587,8 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_STLXP_SP32_LDSTEXCL:
-		case ENC_STXP_SP32_LDSTEXCL:
+		case ENC_STLXP_SP32_LDSTEXCLP:
+		case ENC_STXP_SP32_LDSTEXCLP:
 		{
 			// SYNTAX: <Ws>,<Wt1>,<Wt2>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WS;
@@ -4714,24 +4714,24 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_CASAB_C32_LDSTEXCL:
-		case ENC_CASAH_C32_LDSTEXCL:
-		case ENC_CASALB_C32_LDSTEXCL:
-		case ENC_CASALH_C32_LDSTEXCL:
-		case ENC_CASAL_C32_LDSTEXCL:
-		case ENC_CASA_C32_LDSTEXCL:
-		case ENC_CASB_C32_LDSTEXCL:
-		case ENC_CASH_C32_LDSTEXCL:
-		case ENC_CASLB_C32_LDSTEXCL:
-		case ENC_CASLH_C32_LDSTEXCL:
-		case ENC_CASL_C32_LDSTEXCL:
-		case ENC_CAS_C32_LDSTEXCL:
-		case ENC_STLXRB_SR32_LDSTEXCL:
-		case ENC_STLXRH_SR32_LDSTEXCL:
-		case ENC_STLXR_SR32_LDSTEXCL:
-		case ENC_STXRB_SR32_LDSTEXCL:
-		case ENC_STXRH_SR32_LDSTEXCL:
-		case ENC_STXR_SR32_LDSTEXCL:
+		case ENC_CASAB_C32_COMSWAP:
+		case ENC_CASAH_C32_COMSWAP:
+		case ENC_CASALB_C32_COMSWAP:
+		case ENC_CASALH_C32_COMSWAP:
+		case ENC_CASAL_C32_COMSWAP:
+		case ENC_CASA_C32_COMSWAP:
+		case ENC_CASB_C32_COMSWAP:
+		case ENC_CASH_C32_COMSWAP:
+		case ENC_CASLB_C32_COMSWAP:
+		case ENC_CASLH_C32_COMSWAP:
+		case ENC_CASL_C32_COMSWAP:
+		case ENC_CAS_C32_COMSWAP:
+		case ENC_STLXRB_SR32_LDSTEXCLR:
+		case ENC_STLXRH_SR32_LDSTEXCLR:
+		case ENC_STLXR_SR32_LDSTEXCLR:
+		case ENC_STXRB_SR32_LDSTEXCLR:
+		case ENC_STXRH_SR32_LDSTEXCLR:
+		case ENC_STXR_SR32_LDSTEXCLR:
 		{
 			// SYNTAX: <Ws>,<Wt>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WS;
@@ -4740,8 +4740,8 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_STLXP_SP64_LDSTEXCL:
-		case ENC_STXP_SP64_LDSTEXCL:
+		case ENC_STLXP_SP64_LDSTEXCLP:
+		case ENC_STXP_SP64_LDSTEXCLP:
 		{
 			// SYNTAX: <Ws>,<Xt1>,<Xt2>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WS;
@@ -4751,8 +4751,8 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_STLXR_SR64_LDSTEXCL:
-		case ENC_STXR_SR64_LDSTEXCL:
+		case ENC_STLXR_SR64_LDSTEXCLR:
+		case ENC_STXR_SR64_LDSTEXCLR:
 		{
 			// SYNTAX: <Ws>,<Xt>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WS;
@@ -4795,8 +4795,8 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_LDAXP_LP32_LDSTEXCL:
-		case ENC_LDXP_LP32_LDSTEXCL:
+		case ENC_LDAXP_LP32_LDSTEXCLP:
+		case ENC_LDXP_LP32_LDSTEXCLP:
 		{
 			// SYNTAX: <Wt1>,<Wt2>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WT1;
@@ -4940,24 +4940,24 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_LDAPRB_32L_MEMOP:
 		case ENC_LDAPRH_32L_MEMOP:
 		case ENC_LDAPR_32L_MEMOP:
-		case ENC_LDARB_LR32_LDSTEXCL:
-		case ENC_LDARH_LR32_LDSTEXCL:
-		case ENC_LDAR_LR32_LDSTEXCL:
-		case ENC_LDAXRB_LR32_LDSTEXCL:
-		case ENC_LDAXRH_LR32_LDSTEXCL:
-		case ENC_LDAXR_LR32_LDSTEXCL:
-		case ENC_LDLARB_LR32_LDSTEXCL:
-		case ENC_LDLARH_LR32_LDSTEXCL:
-		case ENC_LDLAR_LR32_LDSTEXCL:
-		case ENC_LDXRB_LR32_LDSTEXCL:
-		case ENC_LDXRH_LR32_LDSTEXCL:
-		case ENC_LDXR_LR32_LDSTEXCL:
-		case ENC_STLLRB_SL32_LDSTEXCL:
-		case ENC_STLLRH_SL32_LDSTEXCL:
-		case ENC_STLLR_SL32_LDSTEXCL:
-		case ENC_STLRB_SL32_LDSTEXCL:
-		case ENC_STLRH_SL32_LDSTEXCL:
-		case ENC_STLR_SL32_LDSTEXCL:
+		case ENC_LDARB_LR32_LDSTORD:
+		case ENC_LDARH_LR32_LDSTORD:
+		case ENC_LDAR_LR32_LDSTORD:
+		case ENC_LDAXRB_LR32_LDSTEXCLR:
+		case ENC_LDAXRH_LR32_LDSTEXCLR:
+		case ENC_LDAXR_LR32_LDSTEXCLR:
+		case ENC_LDLARB_LR32_LDSTORD:
+		case ENC_LDLARH_LR32_LDSTORD:
+		case ENC_LDLAR_LR32_LDSTORD:
+		case ENC_LDXRB_LR32_LDSTEXCLR:
+		case ENC_LDXRH_LR32_LDSTEXCLR:
+		case ENC_LDXR_LR32_LDSTEXCLR:
+		case ENC_STLLRB_SL32_LDSTORD:
+		case ENC_STLLRH_SL32_LDSTORD:
+		case ENC_STLLR_SL32_LDSTORD:
+		case ENC_STLRB_SL32_LDSTORD:
+		case ENC_STLRH_SL32_LDSTORD:
+		case ENC_STLR_SL32_LDSTORD:
 		{
 			// SYNTAX: <Wt>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_WT;
@@ -5801,10 +5801,10 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_CASPAL_CP64_LDSTEXCL:
-		case ENC_CASPA_CP64_LDSTEXCL:
-		case ENC_CASPL_CP64_LDSTEXCL:
-		case ENC_CASP_CP64_LDSTEXCL:
+		case ENC_CASPAL_CP64_COMSWAPPR:
+		case ENC_CASPA_CP64_COMSWAPPR:
+		case ENC_CASPL_CP64_COMSWAPPR:
+		case ENC_CASP_CP64_COMSWAPPR:
 		{
 			// SYNTAX: <Xs>,<X(s+1)>,<Xt>,<X(t+1)>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_XS;
@@ -5859,10 +5859,10 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_CASAL_C64_LDSTEXCL:
-		case ENC_CASA_C64_LDSTEXCL:
-		case ENC_CASL_C64_LDSTEXCL:
-		case ENC_CAS_C64_LDSTEXCL:
+		case ENC_CASAL_C64_COMSWAP:
+		case ENC_CASA_C64_COMSWAP:
+		case ENC_CASL_C64_COMSWAP:
+		case ENC_CAS_C64_COMSWAP:
 		{
 			// SYNTAX: <Xs>,<Xt>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_XS;
@@ -5937,8 +5937,8 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			// SYNTAX-END
 			break;
 		}
-		case ENC_LDAXP_LP64_LDSTEXCL:
-		case ENC_LDXP_LP64_LDSTEXCL:
+		case ENC_LDAXP_LP64_LDSTEXCLP:
+		case ENC_LDXP_LP64_LDSTEXCLP:
 		{
 			// SYNTAX: <Xt1>,<Xt2>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_XT1;
@@ -6091,12 +6091,12 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		}
 
 		case ENC_LDAPR_64L_MEMOP:
-		case ENC_LDAR_LR64_LDSTEXCL:
-		case ENC_LDAXR_LR64_LDSTEXCL:
-		case ENC_LDLAR_LR64_LDSTEXCL:
-		case ENC_LDXR_LR64_LDSTEXCL:
-		case ENC_STLLR_SL64_LDSTEXCL:
-		case ENC_STLR_SL64_LDSTEXCL:
+		case ENC_LDAR_LR64_LDSTORD:
+		case ENC_LDAXR_LR64_LDSTEXCLR:
+		case ENC_LDLAR_LR64_LDSTORD:
+		case ENC_LDXR_LR64_LDSTEXCLR:
+		case ENC_STLLR_SL64_LDSTORD:
+		case ENC_STLR_SL64_LDSTORD:
 		{
 			// SYNTAX: <Xt>, [<Xn|SP>{,#0}]
 			ADD_OPERAND_XT;
@@ -7306,7 +7306,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_DSB_BON_BARRIERS:
 		{
 			const char *table_barrier_limitations[4] = { "oshnXS", "nshnXS", "ishnXS", "synXS" };
-			//int immediates[4] = { 16, 20, 24, 28 };
 			// DSB <option>nXS|#<imm>
 			ADD_OPERAND_NAME(table_barrier_limitations[ctx->imm2]);
 			break;
