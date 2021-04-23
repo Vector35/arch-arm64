@@ -12,7 +12,7 @@
 int ABS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E20B800) {
 		decode_fields32(ENC_ABS_ASISDMISC_R, ctx, instr);
@@ -27,7 +27,7 @@ int ABS_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_ABS_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE20B800) {
 		decode_fields32(ENC_ABS_ASIMDMISC_R, ctx, instr);
@@ -49,7 +49,7 @@ int ABS_advsimd(context *ctx, Instruction *instr)
 int ADC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=0|S=0|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1A000000) {
 		decode_fields32(ENC_ADC_32_ADDSUB_CARRY, ctx, instr);
@@ -69,7 +69,7 @@ int ADC(context *ctx, Instruction *instr)
 int ADCS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x3A000000) {
 		decode_fields32(ENC_ADCS_32_ADDSUB_CARRY, ctx, instr);
@@ -89,7 +89,7 @@ int ADCS(context *ctx, Instruction *instr)
 int ADDG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|op=0|S=0|100011|o2=0|uimm6=xxxxxx|op3=(0)(0)|uimm4=xxxx|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x91800000) {
 		decode_fields32(ENC_ADDG_64_ADDSUB_IMMTAGS, ctx, instr);
@@ -110,7 +110,7 @@ int ADDG(context *ctx, Instruction *instr)
 int ADDHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204000) {
 		decode_fields32(ENC_ADDHN_ASIMDDIFF_N, ctx, instr);
@@ -135,7 +135,7 @@ int ADDHN_advsimd(context *ctx, Instruction *instr)
 int ADDP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01|U=0|11110|size=xx|11000|opcode=11011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E31B800) {
 		decode_fields32(ENC_ADDP_ASISDPAIR_ONLY, ctx, instr);
@@ -157,7 +157,7 @@ int ADDP_advsimd_pair(context *ctx, Instruction *instr)
 int ADDP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20BC00) {
 		decode_fields32(ENC_ADDP_ASIMDSAME_ONLY, ctx, instr);
@@ -179,7 +179,7 @@ int ADDP_advsimd_vec(context *ctx, Instruction *instr)
 int ADDS_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x2B200000) {
 		decode_fields32(ENC_ADDS_32S_ADDSUB_EXT, ctx, instr);
@@ -206,7 +206,7 @@ int ADDS_addsub_ext(context *ctx, Instruction *instr)
 int ADDS_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x31000000) {
 		decode_fields32(ENC_ADDS_32S_ADDSUB_IMM, ctx, instr);
@@ -233,7 +233,7 @@ int ADDS_addsub_imm(context *ctx, Instruction *instr)
 int ADDS_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2B000000) {
 		decode_fields32(ENC_ADDS_32_ADDSUB_SHIFT, ctx, instr);
@@ -263,7 +263,7 @@ int ADDS_addsub_shift(context *ctx, Instruction *instr)
 int ADDV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=0|01110|size=xx|11000|opcode=11011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE31B800) {
 		decode_fields32(ENC_ADDV_ASIMDALL_ONLY, ctx, instr);
@@ -288,7 +288,7 @@ int ADDV_advsimd(context *ctx, Instruction *instr)
 int ADD_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=0|S=0|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0xB200000) {
 		decode_fields32(ENC_ADD_32_ADDSUB_EXT, ctx, instr);
@@ -313,7 +313,7 @@ int ADD_addsub_ext(context *ctx, Instruction *instr)
 int ADD_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=0|S=0|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x11000000) {
 		decode_fields32(ENC_ADD_32_ADDSUB_IMM, ctx, instr);
@@ -340,7 +340,7 @@ int ADD_addsub_imm(context *ctx, Instruction *instr)
 int ADD_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=0|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xB000000) {
 		decode_fields32(ENC_ADD_32_ADDSUB_SHIFT, ctx, instr);
@@ -368,7 +368,7 @@ int ADD_addsub_shift(context *ctx, Instruction *instr)
 int ADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E208400) {
 		decode_fields32(ENC_ADD_ASISDSAME_ONLY, ctx, instr);
@@ -384,7 +384,7 @@ int ADD_advsimd(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->U==1);
 		OK(ENC_ADD_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE208400) {
 		decode_fields32(ENC_ADD_ASIMDSAME_ONLY, ctx, instr);
@@ -407,7 +407,7 @@ int ADD_advsimd(context *ctx, Instruction *instr)
 int ADR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* op=0|immlo=xx|10000|immhi=xxxxxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x9F000000)==0x10000000) {
 		decode_fields32(ENC_ADR_ONLY_PCRELADDR, ctx, instr);
@@ -428,7 +428,7 @@ int ADR(context *ctx, Instruction *instr)
 int ADRP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* op=1|immlo=xx|10000|immhi=xxxxxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x9F000000)==0x90000000) {
 		decode_fields32(ENC_ADRP_ONLY_PCRELADDR, ctx, instr);
@@ -449,7 +449,7 @@ int ADRP(context *ctx, Instruction *instr)
 int AESD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01001110|size=00|10100|0010|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E285800) {
 		decode_fields32(ENC_AESD_B_CRYPTOAES, ctx, instr);
@@ -468,7 +468,7 @@ int AESD_advsimd(context *ctx, Instruction *instr)
 int AESE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01001110|size=00|10100|0010|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E284800) {
 		decode_fields32(ENC_AESE_B_CRYPTOAES, ctx, instr);
@@ -487,7 +487,7 @@ int AESE_advsimd(context *ctx, Instruction *instr)
 int AESIMC_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01001110|size=00|10100|0011|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E287800) {
 		decode_fields32(ENC_AESIMC_B_CRYPTOAES, ctx, instr);
@@ -506,7 +506,7 @@ int AESIMC_advsimd(context *ctx, Instruction *instr)
 int AESMC_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01001110|size=00|10100|0011|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E286800) {
 		decode_fields32(ENC_AESMC_B_CRYPTOAES, ctx, instr);
@@ -525,7 +525,7 @@ int AESMC_advsimd(context *ctx, Instruction *instr)
 int ANDS_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|opc=11|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x72000000) {
 		decode_fields32(ENC_ANDS_32S_LOG_IMM, ctx, instr);
@@ -566,7 +566,7 @@ int ANDS_log_imm(context *ctx, Instruction *instr)
 int ANDS_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|opc=11|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6A000000) {
 		decode_fields32(ENC_ANDS_32_LOG_SHIFT, ctx, instr);
@@ -608,7 +608,7 @@ int ANDS_log_shift(context *ctx, Instruction *instr)
 int AND_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=00|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE201C00) {
 		decode_fields32(ENC_AND_ASIMDSAME_ONLY, ctx, instr);
@@ -629,7 +629,7 @@ int AND_advsimd(context *ctx, Instruction *instr)
 int AND_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=00|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12000000) {
 		decode_fields32(ENC_AND_32_LOG_IMM, ctx, instr);
@@ -668,7 +668,7 @@ int AND_log_imm(context *ctx, Instruction *instr)
 int AND_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=00|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xA000000) {
 		decode_fields32(ENC_AND_32_LOG_SHIFT, ctx, instr);
@@ -708,7 +708,7 @@ int AND_log_shift(context *ctx, Instruction *instr)
 int ASRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
 		decode_fields32(ENC_ASRV_32_DP_2SRC, ctx, instr);
@@ -729,7 +729,7 @@ int ASRV(context *ctx, Instruction *instr)
 int ASR_ASRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
 		decode_fields32(ENC_ASR_ASRV_32_DP_2SRC, ctx, instr);
@@ -743,7 +743,7 @@ int ASR_ASRV(context *ctx, Instruction *instr)
 int ASR_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=x11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F807C00)==0x13007C00) {
 		decode_fields32(ENC_ASR_SBFM_32M_BITFIELD, ctx, instr);
@@ -757,7 +757,7 @@ int ASR_SBFM(context *ctx, Instruction *instr)
 int AT_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=100x|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8FE00)==0xD5087800) {
 		decode_fields32(ENC_AT_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -770,7 +770,7 @@ int AT_SYS(context *ctx, Instruction *instr)
 int AUTDA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=110|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11800) {
 		decode_fields32(ENC_AUTDA_64P_DP_1SRC, ctx, instr);
@@ -800,7 +800,7 @@ int AUTDA(context *ctx, Instruction *instr)
 int AUTDB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11C00) {
 		decode_fields32(ENC_AUTDB_64P_DP_1SRC, ctx, instr);
@@ -830,7 +830,7 @@ int AUTDB(context *ctx, Instruction *instr)
 int AUTIA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=100|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11000) {
 		decode_fields32(ENC_AUTIA_64P_DP_1SRC, ctx, instr);
@@ -853,7 +853,7 @@ int AUTIA(context *ctx, Instruction *instr)
 		if(ctx->Z==0) OK(ENC_AUTIA_64P_DP_1SRC);
 		if(ctx->Z==1 && ctx->Rn==0x1f) OK(ENC_AUTIZA_64Z_DP_1SRC);
 	}
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=00x1|op2=10x|Rt=11111 */
 	if((INSWORD & 0xFFFFFDDF)==0xD503219F) {
 		decode_fields32(ENC_AUTIA1716_HI_HINTS, ctx, instr);
@@ -868,7 +868,7 @@ int AUTIA(context *ctx, Instruction *instr)
 int AUTIB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=101|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC11400) {
 		decode_fields32(ENC_AUTIB_64P_DP_1SRC, ctx, instr);
@@ -891,7 +891,7 @@ int AUTIB(context *ctx, Instruction *instr)
 		if(ctx->Z==0) OK(ENC_AUTIB_64P_DP_1SRC);
 		if(ctx->Z==1 && ctx->Rn==0x1f) OK(ENC_AUTIZB_64Z_DP_1SRC);
 	}
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=00x1|op2=11x|Rt=11111 */
 	if((INSWORD & 0xFFFFFDDF)==0xD50321DF) {
 		decode_fields32(ENC_AUTIB1716_HI_HINTS, ctx, instr);
@@ -906,7 +906,7 @@ int AUTIB(context *ctx, Instruction *instr)
 int AXFLAG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=010|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500405F) {
 		decode_fields32(ENC_AXFLAG_M_PSTATE, ctx, instr);
@@ -922,7 +922,7 @@ int AXFLAG(context *ctx, Instruction *instr)
 int BCAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 110011100|Op0=01|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE200000) {
 		decode_fields32(ENC_BCAX_VVV16_CRYPTO4, ctx, instr);
@@ -942,7 +942,7 @@ int BCAX_advsimd(context *ctx, Instruction *instr)
 int BFCVTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_bf16 */
+	/* class iclass_simd_single_and_bf16 */
 	/* 0|Q=x|U=0|01110|size=10|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEA16800) {
 		decode_fields32(ENC_BFCVTN_ASIMDMISC_4S, ctx, instr);
@@ -962,7 +962,7 @@ int BFCVTN_advsimd(context *ctx, Instruction *instr)
 int BFCVT_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class single_to_bf16 */
+	/* class iclass_single_to_bf16 */
 	/* M=0|0|S=0|11110|ptype=01|1|opcode=000110|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x1E634000) {
 		decode_fields32(ENC_BFCVT_BS_FLOATDP1, ctx, instr);
@@ -980,7 +980,7 @@ int BFCVT_float(context *ctx, Instruction *instr)
 int BFC_BFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class nofill */
+	/* class iclass_nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F8003E0)==0x330003E0) {
 		decode_fields32(ENC_BFC_BFM_32M_BITFIELD, ctx, instr);
@@ -994,7 +994,7 @@ int BFC_BFM(context *ctx, Instruction *instr)
 int BFDOT_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=01|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF40F000) {
 		decode_fields32(ENC_BFDOT_ASIMDELEM_E, ctx, instr);
@@ -1016,7 +1016,7 @@ int BFDOT_advsimd_elt(context *ctx, Instruction *instr)
 int BFDOT_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=01|0|Rm=xxxxx|1|opcode=1111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E40FC00) {
 		decode_fields32(ENC_BFDOT_ASIMDSAME2_D, ctx, instr);
@@ -1037,7 +1037,7 @@ int BFDOT_advsimd_vec(context *ctx, Instruction *instr)
 int BFI_BFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class nofill */
+	/* class iclass_nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000 && (INSWORD & 0x3E0)!=0x3E0) {
 		decode_fields32(ENC_BFI_BFM_32M_BITFIELD, ctx, instr);
@@ -1051,7 +1051,7 @@ int BFI_BFM(context *ctx, Instruction *instr)
 int BFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class nofill */
+	/* class iclass_nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000) {
 		decode_fields32(ENC_BFM_32M_BITFIELD, ctx, instr);
@@ -1098,7 +1098,7 @@ int BFM(context *ctx, Instruction *instr)
 int BFMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=11|L=x|M=x|Rm=xxxx|opcode<3>=1|opcode<2>=1|opcode<1:0>=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xFC0F000) {
 		decode_fields32(ENC_BFMLAL_ASIMDELEM_F, ctx, instr);
@@ -1120,7 +1120,7 @@ int BFMLAL_advsimd_elt(context *ctx, Instruction *instr)
 int BFMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=11|0|Rm=xxxxx|1|opcode<3:2>=11|opcode=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC0FC00) {
 		decode_fields32(ENC_BFMLAL_ASIMDSAME2_F_, ctx, instr);
@@ -1141,7 +1141,7 @@ int BFMLAL_advsimd_vec(context *ctx, Instruction *instr)
 int BFMMLA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=1|U=1|01110|size=01|0|Rm=xxxxx|1|opcode=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6E40EC00) {
 		decode_fields32(ENC_BFMMLA_ASIMDSAME2_E, ctx, instr);
@@ -1160,7 +1160,7 @@ int BFMMLA_advsimd(context *ctx, Instruction *instr)
 int BFXIL_BFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class nofill */
+	/* class iclass_nofill */
 	/* sf=x|opc=01|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x33000000) {
 		decode_fields32(ENC_BFXIL_BFM_32M_BITFIELD, ctx, instr);
@@ -1174,7 +1174,7 @@ int BFXIL_BFM(context *ctx, Instruction *instr)
 int BICS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|opc=11|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6A200000) {
 		decode_fields32(ENC_BICS_32_LOG_SHIFT, ctx, instr);
@@ -1214,7 +1214,7 @@ int BICS(context *ctx, Instruction *instr)
 int BIC_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class shifted_immediate */
+	/* class iclass_shifted_immediate */
 	/* 0|Q=x|op=1|0111100000|a=x|b=x|c=x|cmode=xxx1|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF81C00)==0x2F001400) {
 		decode_fields32(ENC_BIC_ASIMDIMM_L_HL, ctx, instr);
@@ -1274,7 +1274,7 @@ int BIC_advsimd_imm(context *ctx, Instruction *instr)
 int BIC_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=01|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE601C00) {
 		decode_fields32(ENC_BIC_ASIMDSAME_ONLY, ctx, instr);
@@ -1295,7 +1295,7 @@ int BIC_advsimd_reg(context *ctx, Instruction *instr)
 int BIC_and_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=10|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5800000) {
 		decode_fields32(ENC_BIC_AND_Z_ZI_, ctx, instr);
@@ -1308,7 +1308,7 @@ int BIC_and_z_zi(context *ctx, Instruction *instr)
 int BIC_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=00|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0xA200000) {
 		decode_fields32(ENC_BIC_32_LOG_SHIFT, ctx, instr);
@@ -1348,7 +1348,7 @@ int BIC_log_shift(context *ctx, Instruction *instr)
 int BIF_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|opc2=11|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EE01C00) {
 		decode_fields32(ENC_BIF_ASIMDSAME_ONLY, ctx, instr);
@@ -1379,7 +1379,7 @@ int BIF_advsimd(context *ctx, Instruction *instr)
 int BIT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|opc2=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EA01C00) {
 		decode_fields32(ENC_BIT_ASIMDSAME_ONLY, ctx, instr);
@@ -1410,7 +1410,7 @@ int BIT_advsimd(context *ctx, Instruction *instr)
 int BL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br26 */
+	/* class iclass_br26 */
 	/* op=1|00101|imm26=xxxxxxxxxxxxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFC000000)==0x94000000) {
 		decode_fields32(ENC_BL_ONLY_BRANCH_IMM, ctx, instr);
@@ -1425,7 +1425,7 @@ int BL(context *ctx, Instruction *instr)
 int BLR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=0|opc[2:1]=0|op=01|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD63F0000) {
 		decode_fields32(ENC_BLR_64_BRANCH_REG, ctx, instr);
@@ -1473,7 +1473,7 @@ int BLR(context *ctx, Instruction *instr)
 int BLRA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=x|opc[2:1]=0|op=01|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=xxxxx|Rm=xxxxx */
 	if((INSWORD & 0xFEFFF800)==0xD63F0800) {
 		decode_fields32(ENC_BLRAAZ_64_BRANCH_REG, ctx, instr);
@@ -1524,7 +1524,7 @@ int BLRA(context *ctx, Instruction *instr)
 int BR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=0|opc[2:1]=0|op=00|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD61F0000) {
 		decode_fields32(ENC_BR_64_BRANCH_REG, ctx, instr);
@@ -1572,7 +1572,7 @@ int BR(context *ctx, Instruction *instr)
 int BRA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=x|opc[2:1]=0|op=00|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=xxxxx|Rm=xxxxx */
 	if((INSWORD & 0xFEFFF800)==0xD61F0800) {
 		decode_fields32(ENC_BRAAZ_64_BRANCH_REG, ctx, instr);
@@ -1623,7 +1623,7 @@ int BRA(context *ctx, Instruction *instr)
 int BRK(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=001|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
 	if((INSWORD & 0xFFE0001F)==0xD4200000) {
 		decode_fields32(ENC_BRK_EX_EXCEPTION, ctx, instr);
@@ -1640,7 +1640,7 @@ int BRK(context *ctx, Instruction *instr)
 int BSL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|opc2=01|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E601C00) {
 		decode_fields32(ENC_BSL_ASIMDSAME_ONLY, ctx, instr);
@@ -1671,7 +1671,7 @@ int BSL_advsimd(context *ctx, Instruction *instr)
 int BTI(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0100|op2=xx0|Rt=11111 */
 	if((INSWORD & 0xFFFFFF3F)==0xD503241F) {
 		decode_fields32(ENC_BTI_HB_HINTS, ctx, instr);
@@ -1782,7 +1782,7 @@ int BTI(context *ctx, Instruction *instr)
 int B_cond(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br19 */
+	/* class iclass_br19 */
 	/* 0101010|o1=0|imm19=xxxxxxxxxxxxxxxxxxx|o0=0|cond=xxxx */
 	if((INSWORD & 0xFF000010)==0x54000000) {
 		decode_fields32(ENC_B_ONLY_CONDBRANCH, ctx, instr);
@@ -1797,7 +1797,7 @@ int B_cond(context *ctx, Instruction *instr)
 int B_uncond(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br26 */
+	/* class iclass_br26 */
 	/* op=0|00101|imm26=xxxxxxxxxxxxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFC000000)==0x14000000) {
 		decode_fields32(ENC_B_ONLY_BRANCH_IMM, ctx, instr);
@@ -1812,7 +1812,7 @@ int B_uncond(context *ctx, Instruction *instr)
 int CAS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x88A07C00) {
 		decode_fields32(ENC_CAS_C32_COMSWAP, ctx, instr);
@@ -1843,7 +1843,7 @@ int CAS(context *ctx, Instruction *instr)
 int CASB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x8A07C00) {
 		decode_fields32(ENC_CASAB_C32_COMSWAP, ctx, instr);
@@ -1870,7 +1870,7 @@ int CASB(context *ctx, Instruction *instr)
 int CASH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|0010001|L=x|1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA07C00)==0x48A07C00) {
 		decode_fields32(ENC_CASAH_C32_COMSWAP, ctx, instr);
@@ -1897,7 +1897,7 @@ int CASH(context *ctx, Instruction *instr)
 int CASP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* 0|sz=x|001000|o2=0|L=x|o1=1|Rs=xxxxx|o0=x|Rt2=11111|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFA07C00)==0x8207C00) {
 		decode_fields32(ENC_CASP_CP32_COMSWAPPR, ctx, instr);
@@ -1934,7 +1934,7 @@ int CASP(context *ctx, Instruction *instr)
 int CBNZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br19 */
+	/* class iclass_br19 */
 	/* sf=x|011010|op=1|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x35000000) {
 		decode_fields32(ENC_CBNZ_32_COMPBRANCH, ctx, instr);
@@ -1952,7 +1952,7 @@ int CBNZ(context *ctx, Instruction *instr)
 int CBZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br19 */
+	/* class iclass_br19 */
 	/* sf=x|011010|op=0|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x34000000) {
 		decode_fields32(ENC_CBZ_32_COMPBRANCH, ctx, instr);
@@ -1970,7 +1970,7 @@ int CBZ(context *ctx, Instruction *instr)
 int CCMN_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm5u */
+	/* class iclass_imm5u */
 	/* sf=x|op=0|S=1|11010010|imm5=xxxxx|cond=xxxx|1|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x3A400800) {
 		decode_fields32(ENC_CCMN_32_CONDCMP_IMM, ctx, instr);
@@ -1990,7 +1990,7 @@ int CCMN_imm(context *ctx, Instruction *instr)
 int CCMN_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=1|11010010|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x3A400000) {
 		decode_fields32(ENC_CCMN_32_CONDCMP_REG, ctx, instr);
@@ -2010,7 +2010,7 @@ int CCMN_reg(context *ctx, Instruction *instr)
 int CCMP_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm5u */
+	/* class iclass_imm5u */
 	/* sf=x|op=1|S=1|11010010|imm5=xxxxx|cond=xxxx|1|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x7A400800) {
 		decode_fields32(ENC_CCMP_32_CONDCMP_IMM, ctx, instr);
@@ -2030,7 +2030,7 @@ int CCMP_imm(context *ctx, Instruction *instr)
 int CCMP_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=1|11010010|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|o3=0|nzcv=xxxx */
 	if((INSWORD & 0x7FE00C10)==0x7A400000) {
 		decode_fields32(ENC_CCMP_32_CONDCMP_REG, ctx, instr);
@@ -2050,7 +2050,7 @@ int CCMP_reg(context *ctx, Instruction *instr)
 int CFINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=000|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500401F) {
 		decode_fields32(ENC_CFINV_M_PSTATE, ctx, instr);
@@ -2066,7 +2066,7 @@ int CFINV(context *ctx, Instruction *instr)
 int CFP_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=100|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B7380) {
 		decode_fields32(ENC_CFP_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -2079,7 +2079,7 @@ int CFP_SYS(context *ctx, Instruction *instr)
 int CINC_CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010100|Rm!=11111|cond!=111x|0|o2=1|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
 		decode_fields32(ENC_CINC_CSINC_32_CONDSEL, ctx, instr);
@@ -2093,7 +2093,7 @@ int CINC_CSINC(context *ctx, Instruction *instr)
 int CINV_CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=0|11010100|Rm!=11111|cond!=111x|0|o2=0|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
 		decode_fields32(ENC_CINV_CSINV_32_CONDSEL, ctx, instr);
@@ -2107,7 +2107,7 @@ int CINV_CSINV(context *ctx, Instruction *instr)
 int CLREX(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD503305F) {
 		decode_fields32(ENC_CLREX_BN_BARRIERS, ctx, instr);
@@ -2120,7 +2120,7 @@ int CLREX(context *ctx, Instruction *instr)
 int CLS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE204800) {
 		decode_fields32(ENC_CLS_ASIMDMISC_R, ctx, instr);
@@ -2142,7 +2142,7 @@ int CLS_advsimd(context *ctx, Instruction *instr)
 int CLS_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:1]=00010|op=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC01400) {
 		decode_fields32(ENC_CLS_32_DP_1SRC, ctx, instr);
@@ -2160,7 +2160,7 @@ int CLS_int(context *ctx, Instruction *instr)
 int CLZ_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=00100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E204800) {
 		decode_fields32(ENC_CLZ_ASIMDMISC_R, ctx, instr);
@@ -2182,7 +2182,7 @@ int CLZ_advsimd(context *ctx, Instruction *instr)
 int CLZ_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:1]=00010|op=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC01000) {
 		decode_fields32(ENC_CLZ_32_DP_1SRC, ctx, instr);
@@ -2200,7 +2200,7 @@ int CLZ_int(context *ctx, Instruction *instr)
 int CMEQ_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E208C00) {
 		decode_fields32(ENC_CMEQ_ASISDSAME_ONLY, ctx, instr);
@@ -2216,7 +2216,7 @@ int CMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		ctx->and_test = (ctx->U==0);
 		OK(ENC_CMEQ_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E208C00) {
 		decode_fields32(ENC_CMEQ_ASIMDSAME_ONLY, ctx, instr);
@@ -2239,7 +2239,7 @@ int CMEQ_advsimd_reg(context *ctx, Instruction *instr)
 int CMEQ_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E209800) {
 		decode_fields32(ENC_CMEQ_ASISDMISC_Z, ctx, instr);
@@ -2265,7 +2265,7 @@ int CMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_CMEQ_ASISDMISC_Z);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE209800) {
 		decode_fields32(ENC_CMEQ_ASIMDMISC_Z, ctx, instr);
@@ -2298,7 +2298,7 @@ int CMEQ_advsimd_zero(context *ctx, Instruction *instr)
 int CMGE_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203C00) {
 		decode_fields32(ENC_CMGE_ASISDSAME_ONLY, ctx, instr);
@@ -2315,7 +2315,7 @@ int CMGE_advsimd_reg(context *ctx, Instruction *instr)
 		ctx->cmp_eq = (ctx->eq==1);
 		OK(ENC_CMGE_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203C00) {
 		decode_fields32(ENC_CMGE_ASIMDSAME_ONLY, ctx, instr);
@@ -2339,7 +2339,7 @@ int CMGE_advsimd_reg(context *ctx, Instruction *instr)
 int CMGE_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E208800) {
 		decode_fields32(ENC_CMGE_ASISDMISC_Z, ctx, instr);
@@ -2365,7 +2365,7 @@ int CMGE_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_CMGE_ASISDMISC_Z);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E208800) {
 		decode_fields32(ENC_CMGE_ASIMDMISC_Z, ctx, instr);
@@ -2398,7 +2398,7 @@ int CMGE_advsimd_zero(context *ctx, Instruction *instr)
 int CMGT_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203400) {
 		decode_fields32(ENC_CMGT_ASISDSAME_ONLY, ctx, instr);
@@ -2415,7 +2415,7 @@ int CMGT_advsimd_reg(context *ctx, Instruction *instr)
 		ctx->cmp_eq = (ctx->eq==1);
 		OK(ENC_CMGT_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203400) {
 		decode_fields32(ENC_CMGT_ASIMDSAME_ONLY, ctx, instr);
@@ -2439,7 +2439,7 @@ int CMGT_advsimd_reg(context *ctx, Instruction *instr)
 int CMGT_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E208800) {
 		decode_fields32(ENC_CMGT_ASISDMISC_Z, ctx, instr);
@@ -2465,7 +2465,7 @@ int CMGT_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_CMGT_ASISDMISC_Z);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE208800) {
 		decode_fields32(ENC_CMGT_ASIMDMISC_Z, ctx, instr);
@@ -2498,7 +2498,7 @@ int CMGT_advsimd_zero(context *ctx, Instruction *instr)
 int CMHI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203400) {
 		decode_fields32(ENC_CMHI_ASISDSAME_ONLY, ctx, instr);
@@ -2515,7 +2515,7 @@ int CMHI_advsimd(context *ctx, Instruction *instr)
 		ctx->cmp_eq = (ctx->eq==1);
 		OK(ENC_CMHI_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203400) {
 		decode_fields32(ENC_CMHI_ASIMDSAME_ONLY, ctx, instr);
@@ -2539,7 +2539,7 @@ int CMHI_advsimd(context *ctx, Instruction *instr)
 int CMHS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203C00) {
 		decode_fields32(ENC_CMHS_ASISDSAME_ONLY, ctx, instr);
@@ -2556,7 +2556,7 @@ int CMHS_advsimd(context *ctx, Instruction *instr)
 		ctx->cmp_eq = (ctx->eq==1);
 		OK(ENC_CMHS_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203C00) {
 		decode_fields32(ENC_CMHS_ASIMDSAME_ONLY, ctx, instr);
@@ -2580,7 +2580,7 @@ int CMHS_advsimd(context *ctx, Instruction *instr)
 int CMLE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E209800) {
 		decode_fields32(ENC_CMLE_ASISDMISC_Z, ctx, instr);
@@ -2606,7 +2606,7 @@ int CMLE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_CMLE_ASISDMISC_Z);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E209800) {
 		decode_fields32(ENC_CMLE_ASIMDMISC_Z, ctx, instr);
@@ -2639,7 +2639,7 @@ int CMLE_advsimd(context *ctx, Instruction *instr)
 int CMLT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|opcode=01010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E20A800) {
 		decode_fields32(ENC_CMLT_ASISDMISC_Z, ctx, instr);
@@ -2654,7 +2654,7 @@ int CMLT_advsimd(context *ctx, Instruction *instr)
 		ctx->comparison = CompareOp_LT;
 		OK(ENC_CMLT_ASISDMISC_Z);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=01010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE20A800) {
 		decode_fields32(ENC_CMLT_ASIMDMISC_Z, ctx, instr);
@@ -2676,7 +2676,7 @@ int CMLT_advsimd(context *ctx, Instruction *instr)
 int CMN_ADDS_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7FE0001F)==0x2B20001F) {
 		decode_fields32(ENC_CMN_ADDS_32S_ADDSUB_EXT, ctx, instr);
@@ -2690,7 +2690,7 @@ int CMN_ADDS_addsub_ext(context *ctx, Instruction *instr)
 int CMN_ADDS_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x3100001F) {
 		decode_fields32(ENC_CMN_ADDS_32S_ADDSUB_IMM, ctx, instr);
@@ -2704,7 +2704,7 @@ int CMN_ADDS_addsub_imm(context *ctx, Instruction *instr)
 int CMN_ADDS_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=0|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x2B00001F) {
 		decode_fields32(ENC_CMN_ADDS_32_ADDSUB_SHIFT, ctx, instr);
@@ -2718,7 +2718,7 @@ int CMN_ADDS_addsub_shift(context *ctx, Instruction *instr)
 int CMPLE_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class ge */
+	/* class iclass_ge */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008000) {
 		decode_fields32(ENC_CMPLE_CMPGE_P_P_ZZ_, ctx, instr);
@@ -2731,7 +2731,7 @@ int CMPLE_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 int CMPLO_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class hi */
+	/* class iclass_hi */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000010) {
 		decode_fields32(ENC_CMPLO_CMPHI_P_P_ZZ_, ctx, instr);
@@ -2744,7 +2744,7 @@ int CMPLO_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 int CMPLS_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class hs */
+	/* class iclass_hs */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000000) {
 		decode_fields32(ENC_CMPLS_CMPHS_P_P_ZZ_, ctx, instr);
@@ -2757,7 +2757,7 @@ int CMPLS_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 int CMPLT_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class gt */
+	/* class iclass_gt */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008010) {
 		decode_fields32(ENC_CMPLT_CMPGT_P_P_ZZ_, ctx, instr);
@@ -2770,7 +2770,7 @@ int CMPLT_cmpeq_p_p_zz(context *ctx, Instruction *instr)
 int CMPP_SUBPS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|0|S=1|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=11111 */
 	if((INSWORD & 0xFFE0FC1F)==0xBAC0001F) {
 		decode_fields32(ENC_CMPP_SUBPS_64S_DP_2SRC, ctx, instr);
@@ -2783,7 +2783,7 @@ int CMPP_SUBPS(context *ctx, Instruction *instr)
 int CMP_SUBS_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7FE0001F)==0x6B20001F) {
 		decode_fields32(ENC_CMP_SUBS_32S_ADDSUB_EXT, ctx, instr);
@@ -2797,7 +2797,7 @@ int CMP_SUBS_addsub_ext(context *ctx, Instruction *instr)
 int CMP_SUBS_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x7100001F) {
 		decode_fields32(ENC_CMP_SUBS_32S_ADDSUB_IMM, ctx, instr);
@@ -2811,7 +2811,7 @@ int CMP_SUBS_addsub_imm(context *ctx, Instruction *instr)
 int CMP_SUBS_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x6B00001F) {
 		decode_fields32(ENC_CMP_SUBS_32_ADDSUB_SHIFT, ctx, instr);
@@ -2825,7 +2825,7 @@ int CMP_SUBS_addsub_shift(context *ctx, Instruction *instr)
 int CMTST_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E208C00) {
 		decode_fields32(ENC_CMTST_ASISDSAME_ONLY, ctx, instr);
@@ -2841,7 +2841,7 @@ int CMTST_advsimd(context *ctx, Instruction *instr)
 		ctx->and_test = (ctx->U==0);
 		OK(ENC_CMTST_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE208C00) {
 		decode_fields32(ENC_CMTST_ASIMDSAME_ONLY, ctx, instr);
@@ -2864,7 +2864,7 @@ int CMTST_advsimd(context *ctx, Instruction *instr)
 int CNEG_CSNEG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond!=111x|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CNEG_CSNEG_32_CONDSEL, ctx, instr);
@@ -2878,7 +2878,7 @@ int CNEG_CSNEG(context *ctx, Instruction *instr)
 int CNT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE205800) {
 		decode_fields32(ENC_CNT_ASIMDMISC_R, ctx, instr);
@@ -2899,7 +2899,7 @@ int CNT_advsimd(context *ctx, Instruction *instr)
 int CPP_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=111|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B73E0) {
 		decode_fields32(ENC_CPP_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -2912,7 +2912,7 @@ int CPP_SYS(context *ctx, Instruction *instr)
 int CRC32(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class crc */
+	/* class iclass_crc */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=0|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC04000) {
 		decode_fields32(ENC_CRC32B_32C_DP_2SRC, ctx, instr);
@@ -2942,7 +2942,7 @@ int CRC32(context *ctx, Instruction *instr)
 int CRC32C(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class crc */
+	/* class iclass_crc */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=1|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC05000) {
 		decode_fields32(ENC_CRC32CB_32C_DP_2SRC, ctx, instr);
@@ -2972,7 +2972,7 @@ int CRC32C(context *ctx, Instruction *instr)
 int CSDB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=100|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503229F) {
 		decode_fields32(ENC_CSDB_HI_HINTS, ctx, instr);
@@ -3083,7 +3083,7 @@ int CSDB(context *ctx, Instruction *instr)
 int CSEL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800000) {
 		decode_fields32(ENC_CSEL_32_CONDSEL, ctx, instr);
@@ -3104,7 +3104,7 @@ int CSEL(context *ctx, Instruction *instr)
 int CSETM_CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=0|11010100|Rm=11111|cond!=111x|0|o2=0|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x5A9F03E0 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CSETM_CSINV_32_CONDSEL, ctx, instr);
@@ -3118,7 +3118,7 @@ int CSETM_CSINV(context *ctx, Instruction *instr)
 int CSET_CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010100|Rm=11111|cond!=111x|0|o2=1|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x1A9F07E0 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CSET_CSINC_32_CONDSEL, ctx, instr);
@@ -3132,7 +3132,7 @@ int CSET_CSINC(context *ctx, Instruction *instr)
 int CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400) {
 		decode_fields32(ENC_CSINC_32_CONDSEL, ctx, instr);
@@ -3156,7 +3156,7 @@ int CSINC(context *ctx, Instruction *instr)
 int CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000) {
 		decode_fields32(ENC_CSINV_32_CONDSEL, ctx, instr);
@@ -3180,7 +3180,7 @@ int CSINV(context *ctx, Instruction *instr)
 int CSNEG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400) {
 		decode_fields32(ENC_CSNEG_32_CONDSEL, ctx, instr);
@@ -3203,7 +3203,7 @@ int CSNEG(context *ctx, Instruction *instr)
 int DCPS1(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=01 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00001) {
 		decode_fields32(ENC_DCPS1_DC_EXCEPTION, ctx, instr);
@@ -3221,7 +3221,7 @@ int DCPS1(context *ctx, Instruction *instr)
 int DCPS2(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=10 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00002) {
 		decode_fields32(ENC_DCPS2_DC_EXCEPTION, ctx, instr);
@@ -3239,7 +3239,7 @@ int DCPS2(context *ctx, Instruction *instr)
 int DCPS3(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=101|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=11 */
 	if((INSWORD & 0xFFE0001F)==0xD4A00003) {
 		decode_fields32(ENC_DCPS3_DC_EXCEPTION, ctx, instr);
@@ -3257,7 +3257,7 @@ int DCPS3(context *ctx, Instruction *instr)
 int DC_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5087000) {
 		decode_fields32(ENC_DC_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -3270,7 +3270,7 @@ int DC_SYS(context *ctx, Instruction *instr)
 int DGH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=110|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD50320DF) {
 		decode_fields32(ENC_DGH_HI_HINTS, ctx, instr);
@@ -3381,7 +3381,7 @@ int DGH(context *ctx, Instruction *instr)
 int DMB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=01|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330BF) {
 		decode_fields32(ENC_DMB_BO_BARRIERS, ctx, instr);
@@ -3419,7 +3419,7 @@ int DMB(context *ctx, Instruction *instr)
 int DRPS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101011|opc=0101|op2=11111|op3=000000|Rt=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD6BF03E0) {
 		decode_fields32(ENC_DRPS_64E_BRANCH_REG, ctx, instr);
@@ -3433,7 +3433,7 @@ int DRPS(context *ctx, Instruction *instr)
 int DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class dsb_memory */
+	/* class iclass_dsb_memory */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD503309F) {
 		decode_fields32(ENC_DSB_BO_BARRIERS, ctx, instr);
@@ -3468,7 +3468,7 @@ int DSB(context *ctx, Instruction *instr)
 		if(ctx->CRm==0) return SSBB_DSB(ctx, instr);
 		OK(ENC_DSB_BO_BARRIERS);
 	}
-	/* class dsb_nxs */
+	/* class iclass_dsb_nxs */
 	/* 11010101000000110011|imm2=xx|10|op2<2>=0|op2<1:0>=01|Rt=11111 */
 	if((INSWORD & 0xFFFFF3FF)==0xD503323F) {
 		decode_fields32(ENC_DSB_BON_BARRIERS, ctx, instr);
@@ -3501,7 +3501,7 @@ int DSB(context *ctx, Instruction *instr)
 int DUP_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class scalar_from_element */
+	/* class iclass_scalar_from_element */
 	/* 01|op=0|11110000|imm5=xxxxx|0|imm4=0000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000400) {
 		decode_fields32(ENC_DUP_ASISDONE_ONLY, ctx, instr);
@@ -3520,7 +3520,7 @@ int DUP_advsimd_elt(context *ctx, Instruction *instr)
 		if(MOV_DUP_advsimd_elt(ctx, instr)==0) return 0;
 		OK(ENC_DUP_ASISDONE_ONLY);
 	}
-	/* class vector_from_element */
+	/* class iclass_vector_from_element */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4=0000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE000400) {
 		decode_fields32(ENC_DUP_ASIMDINS_DV_V, ctx, instr);
@@ -3549,7 +3549,7 @@ int DUP_advsimd_elt(context *ctx, Instruction *instr)
 int DUP_advsimd_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4=0001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE000C00) {
 		decode_fields32(ENC_DUP_ASIMDINS_DR_R, ctx, instr);
@@ -3574,7 +3574,7 @@ int DUP_advsimd_gen(context *ctx, Instruction *instr)
 int DVP_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=011|CRn=0111|CRm=0011|op2=101|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD50B73A0) {
 		decode_fields32(ENC_DVP_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -3587,7 +3587,7 @@ int DVP_SYS(context *ctx, Instruction *instr)
 int EON(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=10|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4A200000) {
 		decode_fields32(ENC_EON_32_LOG_SHIFT, ctx, instr);
@@ -3627,7 +3627,7 @@ int EON(context *ctx, Instruction *instr)
 int EON_eor_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=01|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5400000) {
 		decode_fields32(ENC_EON_EOR_Z_ZI_, ctx, instr);
@@ -3640,7 +3640,7 @@ int EON_eor_z_zi(context *ctx, Instruction *instr)
 int EOR3_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 110011100|Op0=00|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE000000) {
 		decode_fields32(ENC_EOR3_VVV16_CRYPTO4, ctx, instr);
@@ -3660,7 +3660,7 @@ int EOR3_advsimd(context *ctx, Instruction *instr)
 int EOR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|opc2=00|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E201C00) {
 		decode_fields32(ENC_EOR_ASIMDSAME_ONLY, ctx, instr);
@@ -3691,7 +3691,7 @@ int EOR_advsimd(context *ctx, Instruction *instr)
 int EOR_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=10|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52000000) {
 		decode_fields32(ENC_EOR_32_LOG_IMM, ctx, instr);
@@ -3730,7 +3730,7 @@ int EOR_log_imm(context *ctx, Instruction *instr)
 int EOR_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|opc=10|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4A000000) {
 		decode_fields32(ENC_EOR_32_LOG_SHIFT, ctx, instr);
@@ -3770,7 +3770,7 @@ int EOR_log_shift(context *ctx, Instruction *instr)
 int ERET(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=11111|op4=00000 */
 	if((INSWORD & 0xFFFFFFFF)==0xD69F03E0) {
 		decode_fields32(ENC_ERET_64E_BRANCH_REG, ctx, instr);
@@ -3795,7 +3795,7 @@ int ERET(context *ctx, Instruction *instr)
 int ERETA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|opc[3]=0|opc[2:0]=100|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=11111|op4=11111 */
 	if((INSWORD & 0xFFFFFBFF)==0xD69F0BFF) {
 		decode_fields32(ENC_ERETAA_64E_BRANCH_REG, ctx, instr);
@@ -3821,7 +3821,7 @@ int ERETA(context *ctx, Instruction *instr)
 int ESB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=000|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503221F) {
 		decode_fields32(ENC_ESB_HI_HINTS, ctx, instr);
@@ -3932,7 +3932,7 @@ int ESB(context *ctx, Instruction *instr)
 int EXTR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op21=00|100111|N=x|o0=0|Rm=xxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FA00000)==0x13800000) {
 		decode_fields32(ENC_EXTR_32_EXTRACT, ctx, instr);
@@ -3959,7 +3959,7 @@ int EXTR(context *ctx, Instruction *instr)
 int EXT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|101110|op2=00|0|Rm=xxxxx|0|imm4=xxxx|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE08400)==0x2E000000) {
 		decode_fields32(ENC_EXT_ASIMDEXT_ONLY, ctx, instr);
@@ -3980,7 +3980,7 @@ int EXT_advsimd(context *ctx, Instruction *instr)
 int FABD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|a=1|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC01400) {
 		decode_fields32(ENC_FABD_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -3996,7 +3996,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 		ctx->abs = TRUE;
 		OK(ENC_FABD_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0D400) {
 		decode_fields32(ENC_FABD_ASISDSAME_ONLY, ctx, instr);
@@ -4009,7 +4009,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 		ctx->abs = TRUE;
 		OK(ENC_FABD_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=1|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC01400) {
 		decode_fields32(ENC_FABD_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4025,7 +4025,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 		ctx->abs = (ctx->U==1);
 		OK(ENC_FABD_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0D400) {
 		decode_fields32(ENC_FABD_ASIMDSAME_ONLY, ctx, instr);
@@ -4048,7 +4048,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 int FABS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=1|111100|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8F800) {
 		decode_fields32(ENC_FABS_ASIMDMISCFP16_R, ctx, instr);
@@ -4063,7 +4063,7 @@ int FABS_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_FABS_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0F800) {
 		decode_fields32(ENC_FABS_ASIMDMISC_R, ctx, instr);
@@ -4085,7 +4085,7 @@ int FABS_advsimd(context *ctx, Instruction *instr)
 int FABS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=01|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E20C000) {
 		decode_fields32(ENC_FABS_H_FLOATDP1, ctx, instr);
@@ -4131,7 +4131,7 @@ int FABS_float(context *ctx, Instruction *instr)
 int FACGE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402C00) {
 		decode_fields32(ENC_FACGE_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -4169,7 +4169,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGE_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7E20EC00) {
 		decode_fields32(ENC_FACGE_ASISDSAME_ONLY, ctx, instr);
@@ -4204,7 +4204,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGE_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E402C00) {
 		decode_fields32(ENC_FACGE_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4242,7 +4242,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGE_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20EC00) {
 		decode_fields32(ENC_FACGE_ASIMDSAME_ONLY, ctx, instr);
@@ -4287,7 +4287,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 int FACGT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02C00) {
 		decode_fields32(ENC_FACGT_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -4325,7 +4325,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGT_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0EC00) {
 		decode_fields32(ENC_FACGT_ASISDSAME_ONLY, ctx, instr);
@@ -4360,7 +4360,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGT_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC02C00) {
 		decode_fields32(ENC_FACGT_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4398,7 +4398,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FACGT_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0EC00) {
 		decode_fields32(ENC_FACGT_ASIMDSAME_ONLY, ctx, instr);
@@ -4443,7 +4443,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 int FACLE_facge_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class ge */
+	/* class iclass_ge */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C010) {
 		decode_fields32(ENC_FACLE_FACGE_P_P_ZZ_, ctx, instr);
@@ -4456,7 +4456,7 @@ int FACLE_facge_p_p_zz(context *ctx, Instruction *instr)
 int FACLT_facge_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class gt */
+	/* class iclass_gt */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=1|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500E010) {
 		decode_fields32(ENC_FACLT_FACGT_P_P_ZZ_, ctx, instr);
@@ -4469,7 +4469,7 @@ int FACLT_facge_p_p_zz(context *ctx, Instruction *instr)
 int FADDP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E30D800) {
 		decode_fields32(ENC_FADDP_ASISDPAIR_ONLY_H, ctx, instr);
@@ -4487,7 +4487,7 @@ int FADDP_advsimd_pair(context *ctx, Instruction *instr)
 		ctx->op = ReduceOp_FADD;
 		OK(ENC_FADDP_ASISDPAIR_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=1|11110|0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E30D800) {
 		decode_fields32(ENC_FADDP_ASISDPAIR_ONLY_SD, ctx, instr);
@@ -4506,7 +4506,7 @@ int FADDP_advsimd_pair(context *ctx, Instruction *instr)
 int FADDP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E401400) {
 		decode_fields32(ENC_FADDP_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4522,7 +4522,7 @@ int FADDP_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->pair = (ctx->U==1);
 		OK(ENC_FADDP_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20D400) {
 		decode_fields32(ENC_FADDP_ASIMDSAME_ONLY, ctx, instr);
@@ -4545,7 +4545,7 @@ int FADDP_advsimd_vec(context *ctx, Instruction *instr)
 int FADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE401400) {
 		decode_fields32(ENC_FADD_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4561,7 +4561,7 @@ int FADD_advsimd(context *ctx, Instruction *instr)
 		ctx->pair = (ctx->U==1);
 		OK(ENC_FADD_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20D400) {
 		decode_fields32(ENC_FADD_ASIMDSAME_ONLY, ctx, instr);
@@ -4584,7 +4584,7 @@ int FADD_advsimd(context *ctx, Instruction *instr)
 int FADD_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E202800) {
 		decode_fields32(ENC_FADD_H_FLOATDP2, ctx, instr);
@@ -4620,7 +4620,7 @@ int FADD_float(context *ctx, Instruction *instr)
 int FCADD_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|11|rot=x|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20EC00)==0x2E00E400) {
 		decode_fields32(ENC_FCADD_ASIMDSAME2_C, ctx, instr);
@@ -4651,7 +4651,7 @@ int FCADD_advsimd_vec(context *ctx, Instruction *instr)
 int FCCMPE_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|01|Rn=xxxxx|op=1|nzcv=xxxx */
 	if((INSWORD & 0xFF200C10)==0x1E200410) {
 		decode_fields32(ENC_FCCMPE_H_FLOATCCMP, ctx, instr);
@@ -4688,7 +4688,7 @@ int FCCMPE_float(context *ctx, Instruction *instr)
 int FCCMP_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|01|Rn=xxxxx|op=0|nzcv=xxxx */
 	if((INSWORD & 0xFF200C10)==0x1E200400) {
 		decode_fields32(ENC_FCCMP_H_FLOATCCMP, ctx, instr);
@@ -4725,7 +4725,7 @@ int FCCMP_float(context *ctx, Instruction *instr)
 int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E402400) {
 		decode_fields32(ENC_FCMEQ_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -4763,7 +4763,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20E400) {
 		decode_fields32(ENC_FCMEQ_ASISDSAME_ONLY, ctx, instr);
@@ -4798,7 +4798,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE402400) {
 		decode_fields32(ENC_FCMEQ_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -4836,7 +4836,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20E400) {
 		decode_fields32(ENC_FCMEQ_ASIMDSAME_ONLY, ctx, instr);
@@ -4881,7 +4881,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8D800) {
 		decode_fields32(ENC_FCMEQ_ASISDMISCFP16_FZ, ctx, instr);
@@ -4907,7 +4907,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASISDMISCFP16_FZ);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0D800) {
 		decode_fields32(ENC_FCMEQ_ASISDMISC_FZ, ctx, instr);
@@ -4930,7 +4930,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASISDMISC_FZ);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8D800) {
 		decode_fields32(ENC_FCMEQ_ASIMDMISCFP16_FZ, ctx, instr);
@@ -4956,7 +4956,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMEQ_ASIMDMISCFP16_FZ);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0D800) {
 		decode_fields32(ENC_FCMEQ_ASIMDMISC_FZ, ctx, instr);
@@ -4989,7 +4989,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402400) {
 		decode_fields32(ENC_FCMGE_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -5027,7 +5027,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7E20E400) {
 		decode_fields32(ENC_FCMGE_ASISDSAME_ONLY, ctx, instr);
@@ -5062,7 +5062,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E402400) {
 		decode_fields32(ENC_FCMGE_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -5100,7 +5100,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20E400) {
 		decode_fields32(ENC_FCMGE_ASIMDSAME_ONLY, ctx, instr);
@@ -5145,7 +5145,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8C800) {
 		decode_fields32(ENC_FCMGE_ASISDMISCFP16_FZ, ctx, instr);
@@ -5171,7 +5171,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASISDMISCFP16_FZ);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA0C800) {
 		decode_fields32(ENC_FCMGE_ASISDMISC_FZ, ctx, instr);
@@ -5194,7 +5194,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASISDMISC_FZ);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8C800) {
 		decode_fields32(ENC_FCMGE_ASIMDMISCFP16_FZ, ctx, instr);
@@ -5220,7 +5220,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGE_ASIMDMISCFP16_FZ);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0C800) {
 		decode_fields32(ENC_FCMGE_ASIMDMISC_FZ, ctx, instr);
@@ -5253,7 +5253,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02400) {
 		decode_fields32(ENC_FCMGT_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -5291,7 +5291,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0E400) {
 		decode_fields32(ENC_FCMGT_ASISDSAME_ONLY, ctx, instr);
@@ -5326,7 +5326,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC02400) {
 		decode_fields32(ENC_FCMGT_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -5364,7 +5364,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0E400) {
 		decode_fields32(ENC_FCMGT_ASIMDSAME_ONLY, ctx, instr);
@@ -5409,7 +5409,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8C800) {
 		decode_fields32(ENC_FCMGT_ASISDMISCFP16_FZ, ctx, instr);
@@ -5435,7 +5435,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASISDMISCFP16_FZ);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0C800) {
 		decode_fields32(ENC_FCMGT_ASISDMISC_FZ, ctx, instr);
@@ -5458,7 +5458,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASISDMISC_FZ);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8C800) {
 		decode_fields32(ENC_FCMGT_ASIMDMISCFP16_FZ, ctx, instr);
@@ -5484,7 +5484,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMGT_ASIMDMISCFP16_FZ);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0C800) {
 		decode_fields32(ENC_FCMGT_ASIMDMISC_FZ, ctx, instr);
@@ -5517,7 +5517,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 int FCMLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|rot=xx|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF009400)==0x2F001000) {
 		decode_fields32(ENC_FCMLA_ASIMDELEM_C_H, ctx, instr);
@@ -5558,7 +5558,7 @@ int FCMLA_advsimd_elt(context *ctx, Instruction *instr)
 int FCMLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|10|rot=xx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20E400)==0x2E00C400) {
 		decode_fields32(ENC_FCMLA_ASIMDSAME2_C, ctx, instr);
@@ -5589,7 +5589,7 @@ int FCMLA_advsimd_vec(context *ctx, Instruction *instr)
 int FCMLE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8D800) {
 		decode_fields32(ENC_FCMLE_ASISDMISCFP16_FZ, ctx, instr);
@@ -5615,7 +5615,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMLE_ASISDMISCFP16_FZ);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA0D800) {
 		decode_fields32(ENC_FCMLE_ASISDMISC_FZ, ctx, instr);
@@ -5638,7 +5638,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMLE_ASISDMISC_FZ);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8D800) {
 		decode_fields32(ENC_FCMLE_ASIMDMISCFP16_FZ, ctx, instr);
@@ -5664,7 +5664,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FCMLE_ASIMDMISCFP16_FZ);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0D800) {
 		decode_fields32(ENC_FCMLE_ASIMDMISC_FZ, ctx, instr);
@@ -5697,7 +5697,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 int FCMLE_fcmeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class ge */
+	/* class iclass_ge */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004000) {
 		decode_fields32(ENC_FCMLE_FCMGE_P_P_ZZ_, ctx, instr);
@@ -5710,7 +5710,7 @@ int FCMLE_fcmeq_p_p_zz(context *ctx, Instruction *instr)
 int FCMLT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=1|111100|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8E800) {
 		decode_fields32(ENC_FCMLT_ASISDMISCFP16_FZ, ctx, instr);
@@ -5725,7 +5725,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 		ctx->comparison = CompareOp_LT;
 		OK(ENC_FCMLT_ASISDMISCFP16_FZ);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0E800) {
 		decode_fields32(ENC_FCMLT_ASISDMISC_FZ, ctx, instr);
@@ -5737,7 +5737,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 		ctx->comparison = CompareOp_LT;
 		OK(ENC_FCMLT_ASISDMISC_FZ);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=1|111100|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8E800) {
 		decode_fields32(ENC_FCMLT_ASIMDMISCFP16_FZ, ctx, instr);
@@ -5752,7 +5752,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 		ctx->comparison = CompareOp_LT;
 		OK(ENC_FCMLT_ASIMDMISCFP16_FZ);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0E800) {
 		decode_fields32(ENC_FCMLT_ASIMDMISC_FZ, ctx, instr);
@@ -5774,7 +5774,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 int FCMLT_fcmeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class gt */
+	/* class iclass_gt */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004010) {
 		decode_fields32(ENC_FCMLT_FCMGT_P_P_ZZ_, ctx, instr);
@@ -5787,7 +5787,7 @@ int FCMLT_fcmeq_p_p_zz(context *ctx, Instruction *instr)
 int FCMPE_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=1x|000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202010) {
 		decode_fields32(ENC_FCMPE_H_FLOATCMP, ctx, instr);
@@ -5826,7 +5826,7 @@ int FCMPE_float(context *ctx, Instruction *instr)
 int FCMP_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=0x|000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202000) {
 		decode_fields32(ENC_FCMP_H_FLOATCMP, ctx, instr);
@@ -5865,7 +5865,7 @@ int FCMP_float(context *ctx, Instruction *instr)
 int FCSEL_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|cond=xxxx|11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF200C00)==0x1E200C00) {
 		decode_fields32(ENC_FCSEL_H_FLOATSEL, ctx, instr);
@@ -5901,7 +5901,7 @@ int FCSEL_float(context *ctx, Instruction *instr)
 int FCVTAS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79C800) {
 		decode_fields32(ENC_FCVTAS_ASISDMISCFP16_R, ctx, instr);
@@ -5917,7 +5917,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAS_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21C800) {
 		decode_fields32(ENC_FCVTAS_ASISDMISC_R, ctx, instr);
@@ -5930,7 +5930,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAS_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79C800) {
 		decode_fields32(ENC_FCVTAS_ASIMDMISCFP16_R, ctx, instr);
@@ -5946,7 +5946,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAS_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21C800) {
 		decode_fields32(ENC_FCVTAS_ASIMDMISC_R, ctx, instr);
@@ -5969,7 +5969,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 int FCVTAS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=100|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E240000) {
 		decode_fields32(ENC_FCVTAS_32H_FLOAT2INT, ctx, instr);
@@ -6055,7 +6055,7 @@ int FCVTAS_float(context *ctx, Instruction *instr)
 int FCVTAU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79C800) {
 		decode_fields32(ENC_FCVTAU_ASISDMISCFP16_R, ctx, instr);
@@ -6071,7 +6071,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAU_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21C800) {
 		decode_fields32(ENC_FCVTAU_ASISDMISC_R, ctx, instr);
@@ -6084,7 +6084,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAU_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79C800) {
 		decode_fields32(ENC_FCVTAU_ASIMDMISCFP16_R, ctx, instr);
@@ -6100,7 +6100,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTAU_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21C800) {
 		decode_fields32(ENC_FCVTAU_ASIMDMISC_R, ctx, instr);
@@ -6123,7 +6123,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 int FCVTAU_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=101|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E250000) {
 		decode_fields32(ENC_FCVTAU_32H_FLOAT2INT, ctx, instr);
@@ -6209,7 +6209,7 @@ int FCVTAU_float(context *ctx, Instruction *instr)
 int FCVTL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE217800) {
 		decode_fields32(ENC_FCVTL_ASIMDMISC_L, ctx, instr);
@@ -6228,7 +6228,7 @@ int FCVTL_advsimd(context *ctx, Instruction *instr)
 int FCVTMS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79B800) {
 		decode_fields32(ENC_FCVTMS_ASISDMISCFP16_R, ctx, instr);
@@ -6244,7 +6244,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMS_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21B800) {
 		decode_fields32(ENC_FCVTMS_ASISDMISC_R, ctx, instr);
@@ -6257,7 +6257,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMS_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79B800) {
 		decode_fields32(ENC_FCVTMS_ASIMDMISCFP16_R, ctx, instr);
@@ -6273,7 +6273,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMS_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21B800) {
 		decode_fields32(ENC_FCVTMS_ASIMDMISC_R, ctx, instr);
@@ -6296,7 +6296,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 int FCVTMS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=10|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E300000) {
 		decode_fields32(ENC_FCVTMS_32H_FLOAT2INT, ctx, instr);
@@ -6382,7 +6382,7 @@ int FCVTMS_float(context *ctx, Instruction *instr)
 int FCVTMU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79B800) {
 		decode_fields32(ENC_FCVTMU_ASISDMISCFP16_R, ctx, instr);
@@ -6398,7 +6398,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMU_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21B800) {
 		decode_fields32(ENC_FCVTMU_ASISDMISC_R, ctx, instr);
@@ -6411,7 +6411,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMU_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79B800) {
 		decode_fields32(ENC_FCVTMU_ASIMDMISCFP16_R, ctx, instr);
@@ -6427,7 +6427,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTMU_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21B800) {
 		decode_fields32(ENC_FCVTMU_ASIMDMISC_R, ctx, instr);
@@ -6450,7 +6450,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 int FCVTMU_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=10|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E310000) {
 		decode_fields32(ENC_FCVTMU_32H_FLOAT2INT, ctx, instr);
@@ -6536,7 +6536,7 @@ int FCVTMU_float(context *ctx, Instruction *instr)
 int FCVTNS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79A800) {
 		decode_fields32(ENC_FCVTNS_ASISDMISCFP16_R, ctx, instr);
@@ -6552,7 +6552,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNS_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21A800) {
 		decode_fields32(ENC_FCVTNS_ASISDMISC_R, ctx, instr);
@@ -6565,7 +6565,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNS_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79A800) {
 		decode_fields32(ENC_FCVTNS_ASIMDMISCFP16_R, ctx, instr);
@@ -6581,7 +6581,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNS_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21A800) {
 		decode_fields32(ENC_FCVTNS_ASIMDMISC_R, ctx, instr);
@@ -6604,7 +6604,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 int FCVTNS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E200000) {
 		decode_fields32(ENC_FCVTNS_32H_FLOAT2INT, ctx, instr);
@@ -6690,7 +6690,7 @@ int FCVTNS_float(context *ctx, Instruction *instr)
 int FCVTNU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79A800) {
 		decode_fields32(ENC_FCVTNU_ASISDMISCFP16_R, ctx, instr);
@@ -6706,7 +6706,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNU_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21A800) {
 		decode_fields32(ENC_FCVTNU_ASISDMISC_R, ctx, instr);
@@ -6719,7 +6719,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNU_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79A800) {
 		decode_fields32(ENC_FCVTNU_ASIMDMISCFP16_R, ctx, instr);
@@ -6735,7 +6735,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTNU_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21A800) {
 		decode_fields32(ENC_FCVTNU_ASIMDMISC_R, ctx, instr);
@@ -6758,7 +6758,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 int FCVTNU_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E210000) {
 		decode_fields32(ENC_FCVTNU_32H_FLOAT2INT, ctx, instr);
@@ -6844,7 +6844,7 @@ int FCVTNU_float(context *ctx, Instruction *instr)
 int FCVTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE216800) {
 		decode_fields32(ENC_FCVTN_ASIMDMISC_N, ctx, instr);
@@ -6863,7 +6863,7 @@ int FCVTN_advsimd(context *ctx, Instruction *instr)
 int FCVTPS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9A800) {
 		decode_fields32(ENC_FCVTPS_ASISDMISCFP16_R, ctx, instr);
@@ -6879,7 +6879,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPS_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1A800) {
 		decode_fields32(ENC_FCVTPS_ASISDMISC_R, ctx, instr);
@@ -6892,7 +6892,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPS_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF9A800) {
 		decode_fields32(ENC_FCVTPS_ASIMDMISCFP16_R, ctx, instr);
@@ -6908,7 +6908,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPS_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1A800) {
 		decode_fields32(ENC_FCVTPS_ASIMDMISC_R, ctx, instr);
@@ -6931,7 +6931,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 int FCVTPS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=01|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E280000) {
 		decode_fields32(ENC_FCVTPS_32H_FLOAT2INT, ctx, instr);
@@ -7017,7 +7017,7 @@ int FCVTPS_float(context *ctx, Instruction *instr)
 int FCVTPU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9A800) {
 		decode_fields32(ENC_FCVTPU_ASISDMISCFP16_R, ctx, instr);
@@ -7033,7 +7033,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPU_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1A800) {
 		decode_fields32(ENC_FCVTPU_ASISDMISC_R, ctx, instr);
@@ -7046,7 +7046,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPU_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9A800) {
 		decode_fields32(ENC_FCVTPU_ASIMDMISCFP16_R, ctx, instr);
@@ -7062,7 +7062,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTPU_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1A800) {
 		decode_fields32(ENC_FCVTPU_ASIMDMISC_R, ctx, instr);
@@ -7085,7 +7085,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 int FCVTPU_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=01|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E290000) {
 		decode_fields32(ENC_FCVTPU_32H_FLOAT2INT, ctx, instr);
@@ -7171,7 +7171,7 @@ int FCVTPU_float(context *ctx, Instruction *instr)
 int FCVTXN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E216800) {
 		decode_fields32(ENC_FCVTXN_ASISDMISC_N, ctx, instr);
@@ -7186,7 +7186,7 @@ int FCVTXN_advsimd(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_FCVTXN_ASISDMISC_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E216800) {
 		decode_fields32(ENC_FCVTXN_ASIMDMISC_N, ctx, instr);
@@ -7208,7 +7208,7 @@ int FCVTXN_advsimd(context *ctx, Instruction *instr)
 int FCVTZS_advsimd_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F00FC00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_FCVTZS_ASISDSHF_C, ctx, instr);
@@ -7225,7 +7225,7 @@ int FCVTZS_advsimd_fix(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_ASISDSHF_C);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF00FC00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_FCVTZS_ASIMDSHF_C, ctx, instr);
@@ -7255,7 +7255,7 @@ int FCVTZS_advsimd_fix(context *ctx, Instruction *instr)
 int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9B800) {
 		decode_fields32(ENC_FCVTZS_ASISDMISCFP16_R, ctx, instr);
@@ -7271,7 +7271,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZS_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1B800) {
 		decode_fields32(ENC_FCVTZS_ASISDMISC_R, ctx, instr);
@@ -7284,7 +7284,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZS_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF9B800) {
 		decode_fields32(ENC_FCVTZS_ASIMDMISCFP16_R, ctx, instr);
@@ -7300,7 +7300,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZS_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1B800) {
 		decode_fields32(ENC_FCVTZS_ASIMDMISC_R, ctx, instr);
@@ -7323,7 +7323,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 int FCVTZS_float_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=11|opcode=000|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E180000) {
 		decode_fields32(ENC_FCVTZS_32H_FLOAT2FIX, ctx, instr);
@@ -7378,7 +7378,7 @@ int FCVTZS_float_fix(context *ctx, Instruction *instr)
 int FCVTZS_float_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=11|opcode=000|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E380000) {
 		decode_fields32(ENC_FCVTZS_32H_FLOAT2INT, ctx, instr);
@@ -7464,7 +7464,7 @@ int FCVTZS_float_int(context *ctx, Instruction *instr)
 int FCVTZU_advsimd_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F00FC00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_FCVTZU_ASISDSHF_C, ctx, instr);
@@ -7481,7 +7481,7 @@ int FCVTZU_advsimd_fix(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_ASISDSHF_C);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F00FC00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_FCVTZU_ASIMDSHF_C, ctx, instr);
@@ -7511,7 +7511,7 @@ int FCVTZU_advsimd_fix(context *ctx, Instruction *instr)
 int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9B800) {
 		decode_fields32(ENC_FCVTZU_ASISDMISCFP16_R, ctx, instr);
@@ -7527,7 +7527,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZU_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1B800) {
 		decode_fields32(ENC_FCVTZU_ASISDMISC_R, ctx, instr);
@@ -7540,7 +7540,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZU_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9B800) {
 		decode_fields32(ENC_FCVTZU_ASIMDMISCFP16_R, ctx, instr);
@@ -7556,7 +7556,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_FCVTZU_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1B800) {
 		decode_fields32(ENC_FCVTZU_ASIMDMISC_R, ctx, instr);
@@ -7579,7 +7579,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 int FCVTZU_float_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=11|opcode=001|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E190000) {
 		decode_fields32(ENC_FCVTZU_32H_FLOAT2FIX, ctx, instr);
@@ -7634,7 +7634,7 @@ int FCVTZU_float_fix(context *ctx, Instruction *instr)
 int FCVTZU_float_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=11|opcode=001|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E390000) {
 		decode_fields32(ENC_FCVTZU_32H_FLOAT2INT, ctx, instr);
@@ -7720,7 +7720,7 @@ int FCVTZU_float_int(context *ctx, Instruction *instr)
 int FCVT_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0001|opc=xx|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3E7C00)==0x1E224000) {
 		decode_fields32(ENC_FCVT_SH_FLOATDP1, ctx, instr);
@@ -7767,7 +7767,7 @@ int FCVT_float(context *ctx, Instruction *instr)
 int FDIV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E403C00) {
 		decode_fields32(ENC_FDIV_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -7782,7 +7782,7 @@ int FDIV_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FDIV_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20FC00) {
 		decode_fields32(ENC_FDIV_ASIMDSAME_ONLY, ctx, instr);
@@ -7804,7 +7804,7 @@ int FDIV_advsimd(context *ctx, Instruction *instr)
 int FDIV_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode=0001|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E201800) {
 		decode_fields32(ENC_FDIV_H_FLOATDP2, ctx, instr);
@@ -7839,7 +7839,7 @@ int FDIV_float(context *ctx, Instruction *instr)
 int FJCVTZS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class double_to_32 */
+	/* class iclass_double_to_32 */
 	/* sf=0|0|S=0|11110|ftype=01|1|rmode=11|opcode=110|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x1E7E0000) {
 		decode_fields32(ENC_FJCVTZS_32D_FLOAT2INT, ctx, instr);
@@ -7920,7 +7920,7 @@ int FJCVTZS(context *ctx, Instruction *instr)
 int FMADD_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=0|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F000000) {
 		decode_fields32(ENC_FMADD_H_FLOATDP3, ctx, instr);
@@ -7958,7 +7958,7 @@ int FMADD_float(context *ctx, Instruction *instr)
 int FMAXNMP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|o1=0|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E30C800) {
 		decode_fields32(ENC_FMAXNMP_ASISDPAIR_ONLY_H, ctx, instr);
@@ -7976,7 +7976,7 @@ int FMAXNMP_advsimd_pair(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMAXNMP_ASISDPAIR_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=1|11110|o1=0|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E30C800) {
 		decode_fields32(ENC_FMAXNMP_ASISDPAIR_ONLY_SD, ctx, instr);
@@ -7995,7 +7995,7 @@ int FMAXNMP_advsimd_pair(context *ctx, Instruction *instr)
 int FMAXNMP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E400400) {
 		decode_fields32(ENC_FMAXNMP_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8012,7 +8012,7 @@ int FMAXNMP_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->a==1);
 		OK(ENC_FMAXNMP_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=0|sz=x|1|Rm=xxxxx|opcode=11000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20C400) {
 		decode_fields32(ENC_FMAXNMP_ASIMDSAME_ONLY, ctx, instr);
@@ -8036,7 +8036,7 @@ int FMAXNMP_advsimd_vec(context *ctx, Instruction *instr)
 int FMAXNMV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=0|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE30C800) {
 		decode_fields32(ENC_FMAXNMV_ASIMDALL_ONLY_H, ctx, instr);
@@ -8051,7 +8051,7 @@ int FMAXNMV_advsimd(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMAXNMV_ASIMDALL_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=0|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E30C800) {
 		decode_fields32(ENC_FMAXNMV_ASIMDALL_ONLY_SD, ctx, instr);
@@ -8073,7 +8073,7 @@ int FMAXNMV_advsimd(context *ctx, Instruction *instr)
 int FMAXNM_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE400400) {
 		decode_fields32(ENC_FMAXNM_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8090,7 +8090,7 @@ int FMAXNM_advsimd(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->a==1);
 		OK(ENC_FMAXNM_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o1=0|sz=x|1|Rm=xxxxx|opcode=11000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20C400) {
 		decode_fields32(ENC_FMAXNM_ASIMDSAME_ONLY, ctx, instr);
@@ -8114,7 +8114,7 @@ int FMAXNM_advsimd(context *ctx, Instruction *instr)
 int FMAXNM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E206800) {
 		decode_fields32(ENC_FMAXNM_H_FLOATDP2, ctx, instr);
@@ -8161,7 +8161,7 @@ int FMAXNM_float(context *ctx, Instruction *instr)
 int FMAXP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|o1=0|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E30F800) {
 		decode_fields32(ENC_FMAXP_ASISDPAIR_ONLY_H, ctx, instr);
@@ -8179,7 +8179,7 @@ int FMAXP_advsimd_pair(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMAXP_ASISDPAIR_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=1|11110|o1=0|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E30F800) {
 		decode_fields32(ENC_FMAXP_ASISDPAIR_ONLY_SD, ctx, instr);
@@ -8198,7 +8198,7 @@ int FMAXP_advsimd_pair(context *ctx, Instruction *instr)
 int FMAXP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|o1=0|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E403400) {
 		decode_fields32(ENC_FMAXP_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8215,7 +8215,7 @@ int FMAXP_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->o1==1);
 		OK(ENC_FMAXP_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=0|sz=x|1|Rm=xxxxx|opcode=11110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20F400) {
 		decode_fields32(ENC_FMAXP_ASIMDSAME_ONLY, ctx, instr);
@@ -8239,7 +8239,7 @@ int FMAXP_advsimd_vec(context *ctx, Instruction *instr)
 int FMAXV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=0|0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE30F800) {
 		decode_fields32(ENC_FMAXV_ASIMDALL_ONLY_H, ctx, instr);
@@ -8254,7 +8254,7 @@ int FMAXV_advsimd(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMAXV_ASIMDALL_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=0|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E30F800) {
 		decode_fields32(ENC_FMAXV_ASIMDALL_ONLY_SD, ctx, instr);
@@ -8276,7 +8276,7 @@ int FMAXV_advsimd(context *ctx, Instruction *instr)
 int FMAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=0|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE403400) {
 		decode_fields32(ENC_FMAX_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8293,7 +8293,7 @@ int FMAX_advsimd(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->o1==1);
 		OK(ENC_FMAX_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o1=0|sz=x|1|Rm=xxxxx|opcode=11110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20F400) {
 		decode_fields32(ENC_FMAX_ASIMDSAME_ONLY, ctx, instr);
@@ -8317,7 +8317,7 @@ int FMAX_advsimd(context *ctx, Instruction *instr)
 int FMAX_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=00|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E204800) {
 		decode_fields32(ENC_FMAX_H_FLOATDP2, ctx, instr);
@@ -8364,7 +8364,7 @@ int FMAX_float(context *ctx, Instruction *instr)
 int FMINNMP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|o1=1|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EB0C800) {
 		decode_fields32(ENC_FMINNMP_ASISDPAIR_ONLY_H, ctx, instr);
@@ -8382,7 +8382,7 @@ int FMINNMP_advsimd_pair(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMINNMP_ASISDPAIR_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=1|11110|o1=1|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EB0C800) {
 		decode_fields32(ENC_FMINNMP_ASISDPAIR_ONLY_SD, ctx, instr);
@@ -8401,7 +8401,7 @@ int FMINNMP_advsimd_pair(context *ctx, Instruction *instr)
 int FMINNMP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=1|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC00400) {
 		decode_fields32(ENC_FMINNMP_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8418,7 +8418,7 @@ int FMINNMP_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->a==1);
 		OK(ENC_FMINNMP_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=1|sz=x|1|Rm=xxxxx|opcode=11000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0C400) {
 		decode_fields32(ENC_FMINNMP_ASIMDSAME_ONLY, ctx, instr);
@@ -8442,7 +8442,7 @@ int FMINNMP_advsimd_vec(context *ctx, Instruction *instr)
 int FMINNMV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=1|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEB0C800) {
 		decode_fields32(ENC_FMINNMV_ASIMDALL_ONLY_H, ctx, instr);
@@ -8457,7 +8457,7 @@ int FMINNMV_advsimd(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMINNUM : ReduceOp_FMAXNUM;
 		OK(ENC_FMINNMV_ASIMDALL_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=1|sz=x|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EB0C800) {
 		decode_fields32(ENC_FMINNMV_ASIMDALL_ONLY_SD, ctx, instr);
@@ -8479,7 +8479,7 @@ int FMINNMV_advsimd(context *ctx, Instruction *instr)
 int FMINNM_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|Op3=000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC00400) {
 		decode_fields32(ENC_FMINNM_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8496,7 +8496,7 @@ int FMINNM_advsimd(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->a==1);
 		OK(ENC_FMINNM_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o1=1|sz=x|1|Rm=xxxxx|opcode=11000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0C400) {
 		decode_fields32(ENC_FMINNM_ASIMDSAME_ONLY, ctx, instr);
@@ -8520,7 +8520,7 @@ int FMINNM_advsimd(context *ctx, Instruction *instr)
 int FMINNM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E207800) {
 		decode_fields32(ENC_FMINNM_H_FLOATDP2, ctx, instr);
@@ -8567,7 +8567,7 @@ int FMINNM_float(context *ctx, Instruction *instr)
 int FMINP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|o1=1|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EB0F800) {
 		decode_fields32(ENC_FMINP_ASISDPAIR_ONLY_H, ctx, instr);
@@ -8585,7 +8585,7 @@ int FMINP_advsimd_pair(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMINP_ASISDPAIR_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=1|11110|o1=1|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EB0F800) {
 		decode_fields32(ENC_FMINP_ASISDPAIR_ONLY_SD, ctx, instr);
@@ -8604,7 +8604,7 @@ int FMINP_advsimd_pair(context *ctx, Instruction *instr)
 int FMINP_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|o1=1|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC03400) {
 		decode_fields32(ENC_FMINP_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8621,7 +8621,7 @@ int FMINP_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->o1==1);
 		OK(ENC_FMINP_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=1|sz=x|1|Rm=xxxxx|opcode=11110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0F400) {
 		decode_fields32(ENC_FMINP_ASIMDSAME_ONLY, ctx, instr);
@@ -8645,7 +8645,7 @@ int FMINP_advsimd_vec(context *ctx, Instruction *instr)
 int FMINV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=1|0|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEB0F800) {
 		decode_fields32(ENC_FMINV_ASIMDALL_ONLY_H, ctx, instr);
@@ -8660,7 +8660,7 @@ int FMINV_advsimd(context *ctx, Instruction *instr)
 		ctx->op = (ctx->o1==1) ? ReduceOp_FMIN : ReduceOp_FMAX;
 		OK(ENC_FMINV_ASIMDALL_ONLY_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o1=1|sz=x|11000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EB0F800) {
 		decode_fields32(ENC_FMINV_ASIMDALL_ONLY_SD, ctx, instr);
@@ -8682,7 +8682,7 @@ int FMINV_advsimd(context *ctx, Instruction *instr)
 int FMIN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o1=1|10|Rm=xxxxx|00|opcode=110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC03400) {
 		decode_fields32(ENC_FMIN_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8699,7 +8699,7 @@ int FMIN_advsimd(context *ctx, Instruction *instr)
 		ctx->minimum = (ctx->o1==1);
 		OK(ENC_FMIN_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o1=1|sz=x|1|Rm=xxxxx|opcode=11110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0F400) {
 		decode_fields32(ENC_FMIN_ASIMDSAME_ONLY, ctx, instr);
@@ -8723,7 +8723,7 @@ int FMIN_advsimd(context *ctx, Instruction *instr)
 int FMIN_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E205800) {
 		decode_fields32(ENC_FMIN_H_FLOATDP2, ctx, instr);
@@ -8770,7 +8770,7 @@ int FMIN_float(context *ctx, Instruction *instr)
 int FMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fmlal */
+	/* class iclass_fmlal */
 	/* 0|Q=x|U=0|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=0|S=0|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF800000) {
 		decode_fields32(ENC_FMLAL_ASIMDELEM_LH, ctx, instr);
@@ -8791,7 +8791,7 @@ int FMLAL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_FMLAL_ASIMDELEM_LH);
 	}
-	/* class fmlal2 */
+	/* class iclass_fmlal2 */
 	/* 0|Q=x|U=1|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=1|S=0|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0x2F808000) {
 		decode_fields32(ENC_FMLAL2_ASIMDELEM_LH, ctx, instr);
@@ -8819,7 +8819,7 @@ int FMLAL_advsimd_elt(context *ctx, Instruction *instr)
 int FMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fmlal */
+	/* class iclass_fmlal */
 	/* 0|Q=x|U=0|01110|S=0|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE20EC00) {
 		decode_fields32(ENC_FMLAL_ASIMDSAME_F, ctx, instr);
@@ -8839,7 +8839,7 @@ int FMLAL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_FMLAL_ASIMDSAME_F);
 	}
-	/* class fmlal2 */
+	/* class iclass_fmlal2 */
 	/* 0|Q=x|U=1|01110|S=0|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E20CC00) {
 		decode_fields32(ENC_FMLAL2_ASIMDSAME_F, ctx, instr);
@@ -8866,7 +8866,7 @@ int FMLAL_advsimd_vec(context *ctx, Instruction *instr)
 int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar_half */
+	/* class iclass_2reg_scalar_half */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F001000) {
 		decode_fields32(ENC_FMLA_ASISDELEM_RH_H, ctx, instr);
@@ -8884,7 +8884,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLA_ASISDELEM_RH_H);
 	}
-	/* class 2reg_scalar_single_and_double */
+	/* class iclass_2reg_scalar_single_and_double */
 	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F801000) {
 		decode_fields32(ENC_FMLA_ASISDELEM_R_SD, ctx, instr);
@@ -8908,7 +8908,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLA_ASISDELEM_R_SD);
 	}
-	/* class 2reg_element_half */
+	/* class iclass_2reg_element_half */
 	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF001000) {
 		decode_fields32(ENC_FMLA_ASIMDELEM_RH_H, ctx, instr);
@@ -8926,7 +8926,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLA_ASIMDELEM_RH_H);
 	}
-	/* class 2reg_element_single_and_double */
+	/* class iclass_2reg_element_single_and_double */
 	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF801000) {
 		decode_fields32(ENC_FMLA_ASIMDELEM_R_SD, ctx, instr);
@@ -8960,7 +8960,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 int FMLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE400C00) {
 		decode_fields32(ENC_FMLA_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -8976,7 +8976,7 @@ int FMLA_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->a==1);
 		OK(ENC_FMLA_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|op=0|sz=x|1|Rm=xxxxx|opcode=11001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20CC00) {
 		decode_fields32(ENC_FMLA_ASIMDSAME_ONLY, ctx, instr);
@@ -8999,7 +8999,7 @@ int FMLA_advsimd_vec(context *ctx, Instruction *instr)
 int FMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fmlsl */
+	/* class iclass_fmlsl */
 	/* 0|Q=x|U=0|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=0|S=1|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF804000) {
 		decode_fields32(ENC_FMLSL_ASIMDELEM_LH, ctx, instr);
@@ -9020,7 +9020,7 @@ int FMLSL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_FMLSL_ASIMDELEM_LH);
 	}
-	/* class fmlsl2 */
+	/* class iclass_fmlsl2 */
 	/* 0|Q=x|U=1|01111|size[1]=1|sz=0|L=x|M=x|Rm=xxxx|opcode[3]=1|S=1|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0x2F80C000) {
 		decode_fields32(ENC_FMLSL2_ASIMDELEM_LH, ctx, instr);
@@ -9048,7 +9048,7 @@ int FMLSL_advsimd_elt(context *ctx, Instruction *instr)
 int FMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fmlsl */
+	/* class iclass_fmlsl */
 	/* 0|Q=x|U=0|01110|S=1|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA0EC00) {
 		decode_fields32(ENC_FMLSL_ASIMDSAME_F, ctx, instr);
@@ -9068,7 +9068,7 @@ int FMLSL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_FMLSL_ASIMDSAME_F);
 	}
-	/* class fmlsl2 */
+	/* class iclass_fmlsl2 */
 	/* 0|Q=x|U=1|01110|S=1|sz=0|1|Rm=xxxxx|opcode[4]=1|opcode[3:0]=1001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EA0CC00) {
 		decode_fields32(ENC_FMLSL2_ASIMDSAME_F, ctx, instr);
@@ -9095,7 +9095,7 @@ int FMLSL_advsimd_vec(context *ctx, Instruction *instr)
 int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar_half */
+	/* class iclass_2reg_scalar_half */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F005000) {
 		decode_fields32(ENC_FMLS_ASISDELEM_RH_H, ctx, instr);
@@ -9113,7 +9113,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLS_ASISDELEM_RH_H);
 	}
-	/* class 2reg_scalar_single_and_double */
+	/* class iclass_2reg_scalar_single_and_double */
 	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F805000) {
 		decode_fields32(ENC_FMLS_ASISDELEM_R_SD, ctx, instr);
@@ -9137,7 +9137,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLS_ASISDELEM_R_SD);
 	}
-	/* class 2reg_element_half */
+	/* class iclass_2reg_element_half */
 	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF005000) {
 		decode_fields32(ENC_FMLS_ASIMDELEM_RH_H, ctx, instr);
@@ -9155,7 +9155,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_FMLS_ASIMDELEM_RH_H);
 	}
-	/* class 2reg_element_single_and_double */
+	/* class iclass_2reg_element_single_and_double */
 	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF805000) {
 		decode_fields32(ENC_FMLS_ASIMDELEM_R_SD, ctx, instr);
@@ -9189,7 +9189,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 int FMLS_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|opcode=001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC00C00) {
 		decode_fields32(ENC_FMLS_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -9205,7 +9205,7 @@ int FMLS_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->a==1);
 		OK(ENC_FMLS_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|op=1|sz=x|1|Rm=xxxxx|opcode=11001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0CC00) {
 		decode_fields32(ENC_FMLS_ASIMDSAME_ONLY, ctx, instr);
@@ -9228,7 +9228,7 @@ int FMLS_advsimd_vec(context *ctx, Instruction *instr)
 int FMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class per_half */
+	/* class iclass_per_half */
 	/* 0|Q=x|op=0|0111100000|a=x|b=x|c=x|cmode=1111|o2=1|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF8FC00)==0xF00FC00) {
 		decode_fields32(ENC_FMOV_ASIMDIMM_H_H, ctx, instr);
@@ -9242,7 +9242,7 @@ int FMOV_advsimd(context *ctx, Instruction *instr)
 		ctx->imm = Replicate(ctx->imm16, ((0x10) ? ((ctx->datasize) / (0x10)) : 0), 16);
 		OK(ENC_FMOV_ASIMDIMM_H_H);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|op=x|0111100000|a=x|b=x|c=x|cmode=1111|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0x9FF8FC00)==0xF00F400) {
 		decode_fields32(ENC_FMOV_ASIMDIMM_S_S, ctx, instr);
@@ -9302,7 +9302,7 @@ int FMOV_advsimd(context *ctx, Instruction *instr)
 int FMOV_cpy_z_p_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=0|imm8=00000000|Zd=xxxxx */
 	if((INSWORD & 0xFF30FFE0)==0x5104000) {
 		decode_fields32(ENC_FMOV_CPY_Z_P_I_, ctx, instr);
@@ -9315,7 +9315,7 @@ int FMOV_cpy_z_p_i(context *ctx, Instruction *instr)
 int FMOV_dup_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|111|opc=00|011|sh=0|imm8=00000000|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFFE0)==0x2538C000) {
 		decode_fields32(ENC_FMOV_DUP_Z_I_, ctx, instr);
@@ -9328,7 +9328,7 @@ int FMOV_dup_z_i(context *ctx, Instruction *instr)
 int FMOV_fcpy_z_p_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|110|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30E000)==0x510C000) {
 		decode_fields32(ENC_FMOV_FCPY_Z_P_I_, ctx, instr);
@@ -9341,7 +9341,7 @@ int FMOV_fcpy_z_p_i(context *ctx, Instruction *instr)
 int FMOV_fdup_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|111|opc=00|111|o2=0|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2539C000) {
 		decode_fields32(ENC_FMOV_FDUP_Z_I_, ctx, instr);
@@ -9354,7 +9354,7 @@ int FMOV_fdup_z_i(context *ctx, Instruction *instr)
 int FMOV_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=00|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E204000) {
 		decode_fields32(ENC_FMOV_H_FLOATDP1, ctx, instr);
@@ -9400,7 +9400,7 @@ int FMOV_float(context *ctx, Instruction *instr)
 int FMOV_float_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=0x|opcode=11x|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F36FC00)==0x1E260000) {
 		decode_fields32(ENC_FMOV_32H_FLOAT2INT, ctx, instr);
@@ -9490,7 +9490,7 @@ int FMOV_float_gen(context *ctx, Instruction *instr)
 int FMOV_float_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm8f */
+	/* class iclass_imm8f */
 	/* M=0|0|S=0|11110|ftype=xx|1|imm8=xxxxxxxx|100|imm5=00000|Rd=xxxxx */
 	if((INSWORD & 0xFF201FE0)==0x1E201000) {
 		decode_fields32(ENC_FMOV_H_FLOATIMM, ctx, instr);
@@ -9524,7 +9524,7 @@ int FMOV_float_imm(context *ctx, Instruction *instr)
 int FMSUB_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=0|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F008000) {
 		decode_fields32(ENC_FMSUB_H_FLOATDP3, ctx, instr);
@@ -9562,7 +9562,7 @@ int FMSUB_float(context *ctx, Instruction *instr)
 int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar_half */
+	/* class iclass_2reg_scalar_half */
 	/* 01|U=1|11111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x7F009000) {
 		decode_fields32(ENC_FMULX_ASISDELEM_RH_H, ctx, instr);
@@ -9580,7 +9580,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMULX_ASISDELEM_RH_H);
 	}
-	/* class 2reg_scalar_single_and_double */
+	/* class iclass_2reg_scalar_single_and_double */
 	/* 01|U=1|11111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x7F809000) {
 		decode_fields32(ENC_FMULX_ASISDELEM_R_SD, ctx, instr);
@@ -9604,7 +9604,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMULX_ASISDELEM_R_SD);
 	}
-	/* class 2reg_element_half */
+	/* class iclass_2reg_element_half */
 	/* 0|Q=x|U=1|01111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0x2F009000) {
 		decode_fields32(ENC_FMULX_ASIMDELEM_RH_H, ctx, instr);
@@ -9622,7 +9622,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMULX_ASIMDELEM_RH_H);
 	}
-	/* class 2reg_element_single_and_double */
+	/* class iclass_2reg_element_single_and_double */
 	/* 0|Q=x|U=1|01111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0x2F809000) {
 		decode_fields32(ENC_FMULX_ASIMDELEM_R_SD, ctx, instr);
@@ -9656,7 +9656,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=0|10|Rm=xxxxx|00|opcode=011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E401C00) {
 		decode_fields32(ENC_FMULX_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -9671,7 +9671,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FMULX_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20DC00) {
 		decode_fields32(ENC_FMULX_ASISDSAME_ONLY, ctx, instr);
@@ -9683,7 +9683,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FMULX_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE401C00) {
 		decode_fields32(ENC_FMULX_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -9698,7 +9698,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FMULX_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20DC00) {
 		decode_fields32(ENC_FMULX_ASIMDSAME_ONLY, ctx, instr);
@@ -9720,7 +9720,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar_half */
+	/* class iclass_2reg_scalar_half */
 	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F009000) {
 		decode_fields32(ENC_FMUL_ASISDELEM_RH_H, ctx, instr);
@@ -9738,7 +9738,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMUL_ASISDELEM_RH_H);
 	}
-	/* class 2reg_scalar_single_and_double */
+	/* class iclass_2reg_scalar_single_and_double */
 	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F809000) {
 		decode_fields32(ENC_FMUL_ASISDELEM_R_SD, ctx, instr);
@@ -9762,7 +9762,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMUL_ASISDELEM_R_SD);
 	}
-	/* class 2reg_element_half */
+	/* class iclass_2reg_element_half */
 	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF009000) {
 		decode_fields32(ENC_FMUL_ASIMDELEM_RH_H, ctx, instr);
@@ -9780,7 +9780,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->mulx_op = (ctx->U==1);
 		OK(ENC_FMUL_ASIMDELEM_RH_H);
 	}
-	/* class 2reg_element_single_and_double */
+	/* class iclass_2reg_element_single_and_double */
 	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF809000) {
 		decode_fields32(ENC_FMUL_ASIMDELEM_R_SD, ctx, instr);
@@ -9814,7 +9814,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 int FMUL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=0|10|Rm=xxxxx|00|opcode=011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E401C00) {
 		decode_fields32(ENC_FMUL_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -9829,7 +9829,7 @@ int FMUL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FMUL_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20DC00) {
 		decode_fields32(ENC_FMUL_ASIMDSAME_ONLY, ctx, instr);
@@ -9851,7 +9851,7 @@ int FMUL_advsimd_vec(context *ctx, Instruction *instr)
 int FMUL_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=0|000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E200800) {
 		decode_fields32(ENC_FMUL_H_FLOATDP2, ctx, instr);
@@ -9887,7 +9887,7 @@ int FMUL_float(context *ctx, Instruction *instr)
 int FNEG_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=1|111100|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8F800) {
 		decode_fields32(ENC_FNEG_ASIMDMISCFP16_R, ctx, instr);
@@ -9902,7 +9902,7 @@ int FNEG_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_FNEG_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0F800) {
 		decode_fields32(ENC_FNEG_ASIMDMISC_R, ctx, instr);
@@ -9924,7 +9924,7 @@ int FNEG_advsimd(context *ctx, Instruction *instr)
 int FNEG_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=10|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E214000) {
 		decode_fields32(ENC_FNEG_H_FLOATDP1, ctx, instr);
@@ -9970,7 +9970,7 @@ int FNEG_float(context *ctx, Instruction *instr)
 int FNMADD_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=1|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F200000) {
 		decode_fields32(ENC_FNMADD_H_FLOATDP3, ctx, instr);
@@ -10008,7 +10008,7 @@ int FNMADD_float(context *ctx, Instruction *instr)
 int FNMSUB_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11111|ftype=xx|o1=1|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF208000)==0x1F208000) {
 		decode_fields32(ENC_FNMSUB_H_FLOATDP3, ctx, instr);
@@ -10046,7 +10046,7 @@ int FNMSUB_float(context *ctx, Instruction *instr)
 int FNMUL_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=1|000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E208800) {
 		decode_fields32(ENC_FNMUL_H_FLOATDP2, ctx, instr);
@@ -10082,7 +10082,7 @@ int FNMUL_float(context *ctx, Instruction *instr)
 int FRECPE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|size<1>=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9D800) {
 		decode_fields32(ENC_FRECPE_ASISDMISCFP16_R, ctx, instr);
@@ -10096,7 +10096,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRECPE_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1D800) {
 		decode_fields32(ENC_FRECPE_ASISDMISC_R, ctx, instr);
@@ -10107,7 +10107,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRECPE_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF9D800) {
 		decode_fields32(ENC_FRECPE_ASIMDMISCFP16_R, ctx, instr);
@@ -10121,7 +10121,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FRECPE_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1D800) {
 		decode_fields32(ENC_FRECPE_ASIMDMISC_R, ctx, instr);
@@ -10142,7 +10142,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 int FRECPS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=0|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E403C00) {
 		decode_fields32(ENC_FRECPS_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -10157,7 +10157,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRECPS_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20FC00) {
 		decode_fields32(ENC_FRECPS_ASISDSAME_ONLY, ctx, instr);
@@ -10169,7 +10169,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRECPS_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=0|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE403C00) {
 		decode_fields32(ENC_FRECPS_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -10184,7 +10184,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FRECPS_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20FC00) {
 		decode_fields32(ENC_FRECPS_ASIMDSAME_ONLY, ctx, instr);
@@ -10206,7 +10206,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 int FRECPX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01|U=0|11110|a=1|111100|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9F800) {
 		decode_fields32(ENC_FRECPX_ASISDMISCFP16_R, ctx, instr);
@@ -10220,7 +10220,7 @@ int FRECPX_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRECPX_ASISDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 01|U=0|11110|1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1F800) {
 		decode_fields32(ENC_FRECPX_ASISDMISC_R, ctx, instr);
@@ -10238,7 +10238,7 @@ int FRECPX_advsimd(context *ctx, Instruction *instr)
 int FRINT32X_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|1111|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21E800) {
 		decode_fields32(ENC_FRINT32X_ASIMDMISC_R, ctx, instr);
@@ -10264,7 +10264,7 @@ int FRINT32X_advsimd(context *ctx, Instruction *instr)
 int FRINT32X_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=01|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E28C000) {
 		decode_fields32(ENC_FRINT32X_S_FLOATDP1, ctx, instr);
@@ -10294,7 +10294,7 @@ int FRINT32X_float(context *ctx, Instruction *instr)
 int FRINT32Z_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|1111|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21E800) {
 		decode_fields32(ENC_FRINT32Z_ASIMDMISC_R, ctx, instr);
@@ -10320,7 +10320,7 @@ int FRINT32Z_advsimd(context *ctx, Instruction *instr)
 int FRINT32Z_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=00|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E284000) {
 		decode_fields32(ENC_FRINT32Z_S_FLOATDP1, ctx, instr);
@@ -10350,7 +10350,7 @@ int FRINT32Z_float(context *ctx, Instruction *instr)
 int FRINT64X_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|1111|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21F800) {
 		decode_fields32(ENC_FRINT64X_ASIMDMISC_R, ctx, instr);
@@ -10376,7 +10376,7 @@ int FRINT64X_advsimd(context *ctx, Instruction *instr)
 int FRINT64X_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=11|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E29C000) {
 		decode_fields32(ENC_FRINT64X_S_FLOATDP1, ctx, instr);
@@ -10406,7 +10406,7 @@ int FRINT64X_float(context *ctx, Instruction *instr)
 int FRINT64Z_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|1111|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21F800) {
 		decode_fields32(ENC_FRINT64Z_ASIMDMISC_R, ctx, instr);
@@ -10432,7 +10432,7 @@ int FRINT64Z_advsimd(context *ctx, Instruction *instr)
 int FRINT64Z_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=0x|1|0100|op=10|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x1E294000) {
 		decode_fields32(ENC_FRINT64Z_S_FLOATDP1, ctx, instr);
@@ -10462,7 +10462,7 @@ int FRINT64Z_float(context *ctx, Instruction *instr)
 int FRINTA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E798800) {
 		decode_fields32(ENC_FRINTA_ASIMDMISCFP16_R, ctx, instr);
@@ -10493,7 +10493,7 @@ int FRINTA_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTA_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E218800) {
 		decode_fields32(ENC_FRINTA_ASIMDMISC_R, ctx, instr);
@@ -10531,7 +10531,7 @@ int FRINTA_advsimd(context *ctx, Instruction *instr)
 int FRINTA_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=100|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E264000) {
 		decode_fields32(ENC_FRINTA_H_FLOATDP1, ctx, instr);
@@ -10582,7 +10582,7 @@ int FRINTA_float(context *ctx, Instruction *instr)
 int FRINTI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF99800) {
 		decode_fields32(ENC_FRINTI_ASIMDMISCFP16_R, ctx, instr);
@@ -10613,7 +10613,7 @@ int FRINTI_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTI_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA19800) {
 		decode_fields32(ENC_FRINTI_ASIMDMISC_R, ctx, instr);
@@ -10651,7 +10651,7 @@ int FRINTI_advsimd(context *ctx, Instruction *instr)
 int FRINTI_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=111|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E27C000) {
 		decode_fields32(ENC_FRINTI_H_FLOATDP1, ctx, instr);
@@ -10702,7 +10702,7 @@ int FRINTI_float(context *ctx, Instruction *instr)
 int FRINTM_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE799800) {
 		decode_fields32(ENC_FRINTM_ASIMDMISCFP16_R, ctx, instr);
@@ -10733,7 +10733,7 @@ int FRINTM_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTM_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE219800) {
 		decode_fields32(ENC_FRINTM_ASIMDMISC_R, ctx, instr);
@@ -10771,7 +10771,7 @@ int FRINTM_advsimd(context *ctx, Instruction *instr)
 int FRINTM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=010|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E254000) {
 		decode_fields32(ENC_FRINTM_H_FLOATDP1, ctx, instr);
@@ -10822,7 +10822,7 @@ int FRINTM_float(context *ctx, Instruction *instr)
 int FRINTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE798800) {
 		decode_fields32(ENC_FRINTN_ASIMDMISCFP16_R, ctx, instr);
@@ -10853,7 +10853,7 @@ int FRINTN_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTN_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE218800) {
 		decode_fields32(ENC_FRINTN_ASIMDMISC_R, ctx, instr);
@@ -10891,7 +10891,7 @@ int FRINTN_advsimd(context *ctx, Instruction *instr)
 int FRINTN_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=000|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E244000) {
 		decode_fields32(ENC_FRINTN_H_FLOATDP1, ctx, instr);
@@ -10942,7 +10942,7 @@ int FRINTN_float(context *ctx, Instruction *instr)
 int FRINTP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF98800) {
 		decode_fields32(ENC_FRINTP_ASIMDMISCFP16_R, ctx, instr);
@@ -10973,7 +10973,7 @@ int FRINTP_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTP_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA18800) {
 		decode_fields32(ENC_FRINTP_ASIMDMISC_R, ctx, instr);
@@ -11011,7 +11011,7 @@ int FRINTP_advsimd(context *ctx, Instruction *instr)
 int FRINTP_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=001|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E24C000) {
 		decode_fields32(ENC_FRINTP_H_FLOATDP1, ctx, instr);
@@ -11062,7 +11062,7 @@ int FRINTP_float(context *ctx, Instruction *instr)
 int FRINTX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E799800) {
 		decode_fields32(ENC_FRINTX_ASIMDMISCFP16_R, ctx, instr);
@@ -11093,7 +11093,7 @@ int FRINTX_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTX_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E219800) {
 		decode_fields32(ENC_FRINTX_ASIMDMISC_R, ctx, instr);
@@ -11131,7 +11131,7 @@ int FRINTX_advsimd(context *ctx, Instruction *instr)
 int FRINTX_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=110|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E274000) {
 		decode_fields32(ENC_FRINTX_H_FLOATDP1, ctx, instr);
@@ -11182,7 +11182,7 @@ int FRINTX_float(context *ctx, Instruction *instr)
 int FRINTZ_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF99800) {
 		decode_fields32(ENC_FRINTZ_ASIMDMISCFP16_R, ctx, instr);
@@ -11213,7 +11213,7 @@ int FRINTZ_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_FRINTZ_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA19800) {
 		decode_fields32(ENC_FRINTZ_ASIMDMISC_R, ctx, instr);
@@ -11251,7 +11251,7 @@ int FRINTZ_advsimd(context *ctx, Instruction *instr)
 int FRINTZ_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=011|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E25C000) {
 		decode_fields32(ENC_FRINTZ_H_FLOATDP1, ctx, instr);
@@ -11302,7 +11302,7 @@ int FRINTZ_float(context *ctx, Instruction *instr)
 int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|a=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9D800) {
 		decode_fields32(ENC_FRSQRTE_ASISDMISCFP16_R, ctx, instr);
@@ -11316,7 +11316,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRSQRTE_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1D800) {
 		decode_fields32(ENC_FRSQRTE_ASISDMISC_R, ctx, instr);
@@ -11327,7 +11327,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRSQRTE_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9D800) {
 		decode_fields32(ENC_FRSQRTE_ASIMDMISCFP16_R, ctx, instr);
@@ -11341,7 +11341,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FRSQRTE_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1D800) {
 		decode_fields32(ENC_FRSQRTE_ASIMDMISC_R, ctx, instr);
@@ -11362,7 +11362,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=1|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5EC03C00) {
 		decode_fields32(ENC_FRSQRTS_ASISDSAMEFP16_ONLY, ctx, instr);
@@ -11377,7 +11377,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRSQRTS_ASISDSAMEFP16_ONLY);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5EA0FC00) {
 		decode_fields32(ENC_FRSQRTS_ASISDSAME_ONLY, ctx, instr);
@@ -11389,7 +11389,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_FRSQRTS_ASISDSAME_ONLY);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|opcode=111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC03C00) {
 		decode_fields32(ENC_FRSQRTS_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -11404,7 +11404,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FRSQRTS_ASIMDSAMEFP16_ONLY);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0FC00) {
 		decode_fields32(ENC_FRSQRTS_ASIMDSAME_ONLY, ctx, instr);
@@ -11426,7 +11426,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 int FSQRT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=1|01110|a=1|111100|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9F800) {
 		decode_fields32(ENC_FSQRT_ASIMDMISCFP16_R, ctx, instr);
@@ -11440,7 +11440,7 @@ int FSQRT_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = ((ctx->esize) ? ((ctx->datasize) / (ctx->esize)) : 0);
 		OK(ENC_FSQRT_ASIMDMISCFP16_R);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1F800) {
 		decode_fields32(ENC_FSQRT_ASIMDMISC_R, ctx, instr);
@@ -11461,7 +11461,7 @@ int FSQRT_advsimd(context *ctx, Instruction *instr)
 int FSQRT_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=11|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E21C000) {
 		decode_fields32(ENC_FSQRT_H_FLOATDP1, ctx, instr);
@@ -11507,7 +11507,7 @@ int FSQRT_float(context *ctx, Instruction *instr)
 int FSUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 0|Q=x|U=0|01110|a=1|10|Rm=xxxxx|00|opcode=010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEC01400) {
 		decode_fields32(ENC_FSUB_ASIMDSAMEFP16_ONLY, ctx, instr);
@@ -11523,7 +11523,7 @@ int FSUB_advsimd(context *ctx, Instruction *instr)
 		ctx->abs = (ctx->U==1);
 		OK(ENC_FSUB_ASIMDSAMEFP16_ONLY);
 	}
-	/* class single_and_double */
+	/* class iclass_single_and_double */
 	/* 0|Q=x|U=0|01110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0D400) {
 		decode_fields32(ENC_FSUB_ASIMDSAME_ONLY, ctx, instr);
@@ -11546,7 +11546,7 @@ int FSUB_advsimd(context *ctx, Instruction *instr)
 int FSUB_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E203800) {
 		decode_fields32(ENC_FSUB_H_FLOATDP2, ctx, instr);
@@ -11582,7 +11582,7 @@ int FSUB_float(context *ctx, Instruction *instr)
 int GMI(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000101|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC01400) {
 		decode_fields32(ENC_GMI_64G_DP_2SRC, ctx, instr);
@@ -11601,7 +11601,7 @@ int GMI(context *ctx, Instruction *instr)
 int HINT(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=xxxx|op2=xxx|Rt=11111 */
 	if((INSWORD & 0xFFFFF01F)==0xD503201F) {
 		decode_fields32(ENC_HINT_HM_HINTS, ctx, instr);
@@ -11712,7 +11712,7 @@ int HINT(context *ctx, Instruction *instr)
 int HLT(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=010|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
 	if((INSWORD & 0xFFE0001F)==0xD4400000) {
 		decode_fields32(ENC_HLT_EX_EXCEPTION, ctx, instr);
@@ -11731,7 +11731,7 @@ int HLT(context *ctx, Instruction *instr)
 int HVC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=10 */
 	if((INSWORD & 0xFFE0001F)==0xD4000002) {
 		decode_fields32(ENC_HVC_EX_EXCEPTION, ctx, instr);
@@ -11744,7 +11744,7 @@ int HVC(context *ctx, Instruction *instr)
 int IC_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=0111|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5087000) {
 		decode_fields32(ENC_IC_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -11757,7 +11757,7 @@ int IC_SYS(context *ctx, Instruction *instr)
 int INS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=1|op=1|01110000|imm5=xxxxx|0|imm4=xxxx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08400)==0x6E000400) {
 		decode_fields32(ENC_INS_ASIMDINS_IV_V, ctx, instr);
@@ -11782,7 +11782,7 @@ int INS_advsimd_elt(context *ctx, Instruction *instr)
 int INS_advsimd_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=1|op=0|01110000|imm5=xxxxx|0|imm4=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E001C00) {
 		decode_fields32(ENC_INS_ASIMDINS_IR_R, ctx, instr);
@@ -11806,7 +11806,7 @@ int INS_advsimd_gen(context *ctx, Instruction *instr)
 int IRG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000100|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC01000) {
 		decode_fields32(ENC_IRG_64I_DP_2SRC, ctx, instr);
@@ -11825,7 +11825,7 @@ int IRG(context *ctx, Instruction *instr)
 int ISB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=10|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330DF) {
 		decode_fields32(ENC_ISB_BI_BARRIERS, ctx, instr);
@@ -11838,7 +11838,7 @@ int ISB(context *ctx, Instruction *instr)
 int LD1R_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD40C000) {
 		decode_fields32(ENC_LD1R_ASISDLSO_R1, ctx, instr);
@@ -11849,7 +11849,7 @@ int LD1R_advsimd(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD1R_ASISDLSO_R1);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=0|Rm=xxxxx|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xDC0C000) {
 		decode_fields32(ENC_LD1R_ASISDLSOP_R1_I, ctx, instr);
@@ -11907,7 +11907,7 @@ int LD1R_advsimd(context *ctx, Instruction *instr)
 int LD1_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=1|000000|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xC402000) {
 		decode_fields32(ENC_LD1_ASISDLSE_R1_1V, ctx, instr);
@@ -11921,7 +11921,7 @@ int LD1_advsimd_mult(context *ctx, Instruction *instr)
 		if(ctx->opcode==6) OK(ENC_LD1_ASISDLSE_R3_3V);
 		if(ctx->opcode==2) OK(ENC_LD1_ASISDLSE_R4_4V);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=1|0|Rm=xxxxx|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xCC02000) {
 		decode_fields32(ENC_LD1_ASISDLSEP_I1_I1, ctx, instr);
@@ -11985,7 +11985,7 @@ int LD1_advsimd_mult(context *ctx, Instruction *instr)
 int LD1_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD400000) {
 		decode_fields32(ENC_LD1_ASISDLSO_B1_1B, ctx, instr);
@@ -11999,7 +11999,7 @@ int LD1_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==4 && ctx->size==0) OK(ENC_LD1_ASISDLSO_S1_1S);
 		if(ctx->opcode==4 && ctx->S==0 && ctx->size==1) OK(ENC_LD1_ASISDLSO_D1_1D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=0|Rm=xxxxx|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDC00000) {
 		decode_fields32(ENC_LD1_ASISDLSOP_B1_I1B, ctx, instr);
@@ -12063,7 +12063,7 @@ int LD1_advsimd_sngl(context *ctx, Instruction *instr)
 int LD2R_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD60C000) {
 		decode_fields32(ENC_LD2R_ASISDLSO_R2, ctx, instr);
@@ -12074,7 +12074,7 @@ int LD2R_advsimd(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD2R_ASISDLSO_R2);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=1|Rm=xxxxx|opcode=110|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xDE0C000) {
 		decode_fields32(ENC_LD2R_ASISDLSOP_R2_I, ctx, instr);
@@ -12132,7 +12132,7 @@ int LD2R_advsimd(context *ctx, Instruction *instr)
 int LD2_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=1|000000|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC408000) {
 		decode_fields32(ENC_LD2_ASISDLSE_R2, ctx, instr);
@@ -12143,7 +12143,7 @@ int LD2_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD2_ASISDLSE_R2);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=1|0|Rm=xxxxx|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xCC08000) {
 		decode_fields32(ENC_LD2_ASISDLSEP_I2_I, ctx, instr);
@@ -12201,7 +12201,7 @@ int LD2_advsimd_mult(context *ctx, Instruction *instr)
 int LD2_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD600000) {
 		decode_fields32(ENC_LD2_ASISDLSO_B2_2B, ctx, instr);
@@ -12215,7 +12215,7 @@ int LD2_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==4 && ctx->size==0) OK(ENC_LD2_ASISDLSO_S2_2S);
 		if(ctx->opcode==4 && ctx->S==0 && ctx->size==1) OK(ENC_LD2_ASISDLSO_D2_2D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=1|Rm=xxxxx|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDE00000) {
 		decode_fields32(ENC_LD2_ASISDLSOP_B2_I2B, ctx, instr);
@@ -12279,7 +12279,7 @@ int LD2_advsimd_sngl(context *ctx, Instruction *instr)
 int LD3R_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD40E000) {
 		decode_fields32(ENC_LD3R_ASISDLSO_R3, ctx, instr);
@@ -12290,7 +12290,7 @@ int LD3R_advsimd(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD3R_ASISDLSO_R3);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=0|Rm=xxxxx|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xDC0E000) {
 		decode_fields32(ENC_LD3R_ASISDLSOP_R3_I, ctx, instr);
@@ -12348,7 +12348,7 @@ int LD3R_advsimd(context *ctx, Instruction *instr)
 int LD3_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=1|000000|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC404000) {
 		decode_fields32(ENC_LD3_ASISDLSE_R3, ctx, instr);
@@ -12359,7 +12359,7 @@ int LD3_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD3_ASISDLSE_R3);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=1|0|Rm=xxxxx|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xCC04000) {
 		decode_fields32(ENC_LD3_ASISDLSEP_I3_I, ctx, instr);
@@ -12417,7 +12417,7 @@ int LD3_advsimd_mult(context *ctx, Instruction *instr)
 int LD3_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=0|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD402000) {
 		decode_fields32(ENC_LD3_ASISDLSO_B3_3B, ctx, instr);
@@ -12431,7 +12431,7 @@ int LD3_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==5 && ctx->size==0) OK(ENC_LD3_ASISDLSO_S3_3S);
 		if(ctx->opcode==5 && ctx->S==0 && ctx->size==1) OK(ENC_LD3_ASISDLSO_D3_3D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=0|Rm=xxxxx|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDC02000) {
 		decode_fields32(ENC_LD3_ASISDLSOP_B3_I3B, ctx, instr);
@@ -12495,7 +12495,7 @@ int LD3_advsimd_sngl(context *ctx, Instruction *instr)
 int LD4R_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xD60E000) {
 		decode_fields32(ENC_LD4R_ASISDLSO_R4, ctx, instr);
@@ -12506,7 +12506,7 @@ int LD4R_advsimd(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD4R_ASISDLSO_R4);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=1|Rm=xxxxx|opcode=111|S=0|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xDE0E000) {
 		decode_fields32(ENC_LD4R_ASISDLSOP_R4_I, ctx, instr);
@@ -12564,7 +12564,7 @@ int LD4R_advsimd(context *ctx, Instruction *instr)
 int LD4_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=1|000000|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC400000) {
 		decode_fields32(ENC_LD4_ASISDLSE_R4, ctx, instr);
@@ -12575,7 +12575,7 @@ int LD4_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_LD4_ASISDLSE_R4);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=1|0|Rm=xxxxx|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xCC00000) {
 		decode_fields32(ENC_LD4_ASISDLSEP_I4_I, ctx, instr);
@@ -12633,7 +12633,7 @@ int LD4_advsimd_mult(context *ctx, Instruction *instr)
 int LD4_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=1|R=1|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD602000) {
 		decode_fields32(ENC_LD4_ASISDLSO_B4_4B, ctx, instr);
@@ -12647,7 +12647,7 @@ int LD4_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==5 && ctx->size==0) OK(ENC_LD4_ASISDLSO_S4_4S);
 		if(ctx->opcode==5 && ctx->S==0 && ctx->size==1) OK(ENC_LD4_ASISDLSO_D4_4D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=1|R=1|Rm=xxxxx|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDE02000) {
 		decode_fields32(ENC_LD4_ASISDLSOP_B4_I4B, ctx, instr);
@@ -12711,7 +12711,7 @@ int LD4_advsimd_sngl(context *ctx, Instruction *instr)
 int LD64B(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=11|111|V=0|00|A=0|R=0|1|Rs=11111|o3=1|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xF83FD000) {
 		decode_fields32(ENC_LD64B_64L_MEMOP, ctx, instr);
@@ -12733,7 +12733,7 @@ int LD64B(context *ctx, Instruction *instr)
 int LDADD(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8200000) {
 		decode_fields32(ENC_LDADD_32_MEMOP, ctx, instr);
@@ -12790,7 +12790,7 @@ int LDADD(context *ctx, Instruction *instr)
 int LDADDB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38200000) {
 		decode_fields32(ENC_LDADDAB_32_MEMOP, ctx, instr);
@@ -12843,7 +12843,7 @@ int LDADDB(context *ctx, Instruction *instr)
 int LDADDH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78200000) {
 		decode_fields32(ENC_LDADDAH_32_MEMOP, ctx, instr);
@@ -12896,7 +12896,7 @@ int LDADDH(context *ctx, Instruction *instr)
 int LDAPR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xB8A0C000) {
 		decode_fields32(ENC_LDAPR_32L_MEMOP, ctx, instr);
@@ -12918,7 +12918,7 @@ int LDAPR(context *ctx, Instruction *instr)
 int LDAPRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x38A0C000) {
 		decode_fields32(ENC_LDAPRB_32L_MEMOP, ctx, instr);
@@ -12939,7 +12939,7 @@ int LDAPRB(context *ctx, Instruction *instr)
 int LDAPRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=1|R=0|1|Rs=(1)(1)(1)(1)(1)|o3=1|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x78A0C000) {
 		decode_fields32(ENC_LDAPRH_32L_MEMOP, ctx, instr);
@@ -12960,7 +12960,7 @@ int LDAPRH(context *ctx, Instruction *instr)
 int LDAPURB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x19400000) {
 		decode_fields32(ENC_LDAPURB_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -13022,7 +13022,7 @@ int LDAPURB(context *ctx, Instruction *instr)
 int LDAPURH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x59400000) {
 		decode_fields32(ENC_LDAPURH_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -13084,7 +13084,7 @@ int LDAPURH(context *ctx, Instruction *instr)
 int LDAPURSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|011001|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x19800000) {
 		decode_fields32(ENC_LDAPURSB_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -13147,7 +13147,7 @@ int LDAPURSB(context *ctx, Instruction *instr)
 int LDAPURSH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|011001|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x59800000) {
 		decode_fields32(ENC_LDAPURSH_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -13210,7 +13210,7 @@ int LDAPURSH(context *ctx, Instruction *instr)
 int LDAPURSW(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=10|011001|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x99800000) {
 		decode_fields32(ENC_LDAPURSW_64_LDAPSTL_UNSCALED, ctx, instr);
@@ -13272,7 +13272,7 @@ int LDAPURSW(context *ctx, Instruction *instr)
 int LDAPUR_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|011001|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0x99400000) {
 		decode_fields32(ENC_LDAPUR_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -13335,7 +13335,7 @@ int LDAPUR_gen(context *ctx, Instruction *instr)
 int LDAR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C08000) {
 		decode_fields32(ENC_LDAR_LR32_LDSTORD, ctx, instr);
@@ -13359,7 +13359,7 @@ int LDAR(context *ctx, Instruction *instr)
 int LDARB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C08000) {
 		decode_fields32(ENC_LDARB_LR32_LDSTORD, ctx, instr);
@@ -13382,7 +13382,7 @@ int LDARB(context *ctx, Instruction *instr)
 int LDARH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C08000) {
 		decode_fields32(ENC_LDARH_LR32_LDSTORD, ctx, instr);
@@ -13405,7 +13405,7 @@ int LDARH(context *ctx, Instruction *instr)
 int LDAXP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88608000) {
 		decode_fields32(ENC_LDAXP_LP32_LDSTEXCLP, ctx, instr);
@@ -13449,7 +13449,7 @@ int LDAXP(context *ctx, Instruction *instr)
 int LDAXR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88408000) {
 		decode_fields32(ENC_LDAXR_LR32_LDSTEXCLR, ctx, instr);
@@ -13493,7 +13493,7 @@ int LDAXR(context *ctx, Instruction *instr)
 int LDAXRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8408000) {
 		decode_fields32(ENC_LDAXRB_LR32_LDSTEXCLR, ctx, instr);
@@ -13536,7 +13536,7 @@ int LDAXRB(context *ctx, Instruction *instr)
 int LDAXRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48408000) {
 		decode_fields32(ENC_LDAXRH_LR32_LDSTEXCLR, ctx, instr);
@@ -13579,7 +13579,7 @@ int LDAXRH(context *ctx, Instruction *instr)
 int LDCLR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8201000) {
 		decode_fields32(ENC_LDCLR_32_MEMOP, ctx, instr);
@@ -13636,7 +13636,7 @@ int LDCLR(context *ctx, Instruction *instr)
 int LDCLRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38201000) {
 		decode_fields32(ENC_LDCLRAB_32_MEMOP, ctx, instr);
@@ -13689,7 +13689,7 @@ int LDCLRB(context *ctx, Instruction *instr)
 int LDCLRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78201000) {
 		decode_fields32(ENC_LDCLRAH_32_MEMOP, ctx, instr);
@@ -13742,7 +13742,7 @@ int LDCLRH(context *ctx, Instruction *instr)
 int LDEOR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8202000) {
 		decode_fields32(ENC_LDEOR_32_MEMOP, ctx, instr);
@@ -13799,7 +13799,7 @@ int LDEOR(context *ctx, Instruction *instr)
 int LDEORB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38202000) {
 		decode_fields32(ENC_LDEORAB_32_MEMOP, ctx, instr);
@@ -13852,7 +13852,7 @@ int LDEORB(context *ctx, Instruction *instr)
 int LDEORH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78202000) {
 		decode_fields32(ENC_LDEORAH_32_MEMOP, ctx, instr);
@@ -13905,7 +13905,7 @@ int LDEORH(context *ctx, Instruction *instr)
 int LDG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600000) {
 		decode_fields32(ENC_LDG_64LOFFSET_LDSTTAGS, ctx, instr);
@@ -13924,7 +13924,7 @@ int LDG(context *ctx, Instruction *instr)
 int LDGM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 11011001|opc=11|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9E00000) {
 		decode_fields32(ENC_LDGM_64BULK_LDSTTAGS, ctx, instr);
@@ -13942,7 +13942,7 @@ int LDGM(context *ctx, Instruction *instr)
 int LDLAR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88C00000) {
 		decode_fields32(ENC_LDLAR_LR32_LDSTORD, ctx, instr);
@@ -13966,7 +13966,7 @@ int LDLAR(context *ctx, Instruction *instr)
 int LDLARB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8C00000) {
 		decode_fields32(ENC_LDLARB_LR32_LDSTORD, ctx, instr);
@@ -13989,7 +13989,7 @@ int LDLARB(context *ctx, Instruction *instr)
 int LDLARH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=1|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48C00000) {
 		decode_fields32(ENC_LDLARH_LR32_LDSTORD, ctx, instr);
@@ -14012,7 +14012,7 @@ int LDLARH(context *ctx, Instruction *instr)
 int LDNP_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=xx|101|V=1|000|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C400000) {
 		decode_fields32(ENC_LDNP_S_LDSTNAPAIR_OFFS, ctx, instr);
@@ -14046,7 +14046,7 @@ int LDNP_fpsimd(context *ctx, Instruction *instr)
 int LDNP_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=x0|101|V=0|000|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28400000) {
 		decode_fields32(ENC_LDNP_32_LDSTNAPAIR_OFFS, ctx, instr);
@@ -14079,19 +14079,19 @@ int LDNP_gen(context *ctx, Instruction *instr)
 int LDPSW(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=01|101|V=0|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x68C00000) {
 		decode_fields32(ENC_LDPSW_64_LDSTPAIR_POST, ctx, instr);
 		OK(ENC_LDPSW_64_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=01|101|V=0|011|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x69C00000) {
 		decode_fields32(ENC_LDPSW_64_LDSTPAIR_PRE, ctx, instr);
 		OK(ENC_LDPSW_64_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=01|101|V=0|010|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x69400000) {
 		decode_fields32(ENC_LDPSW_64_LDSTPAIR_OFF, ctx, instr);
@@ -14135,7 +14135,7 @@ int LDPSW(context *ctx, Instruction *instr)
 int LDP_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=xx|101|V=1|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2CC00000) {
 		decode_fields32(ENC_LDP_S_LDSTPAIR_POST, ctx, instr);
@@ -14143,7 +14143,7 @@ int LDP_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->opc==1) OK(ENC_LDP_D_LDSTPAIR_POST);
 		if(ctx->opc==2) OK(ENC_LDP_Q_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=xx|101|V=1|011|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2DC00000) {
 		decode_fields32(ENC_LDP_S_LDSTPAIR_PRE, ctx, instr);
@@ -14151,7 +14151,7 @@ int LDP_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->opc==1) OK(ENC_LDP_D_LDSTPAIR_PRE);
 		if(ctx->opc==2) OK(ENC_LDP_Q_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=xx|101|V=1|010|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2D400000) {
 		decode_fields32(ENC_LDP_S_LDSTPAIR_OFF, ctx, instr);
@@ -14185,21 +14185,21 @@ int LDP_fpsimd(context *ctx, Instruction *instr)
 int LDP_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=x0|101|V=0|001|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28C00000) {
 		decode_fields32(ENC_LDP_32_LDSTPAIR_POST, ctx, instr);
 		if(ctx->opc==0) OK(ENC_LDP_32_LDSTPAIR_POST);
 		if(ctx->opc==2) OK(ENC_LDP_64_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=x0|101|V=0|011|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x29C00000) {
 		decode_fields32(ENC_LDP_32_LDSTPAIR_PRE, ctx, instr);
 		if(ctx->opc==0) OK(ENC_LDP_32_LDSTPAIR_PRE);
 		if(ctx->opc==2) OK(ENC_LDP_64_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=x0|101|V=0|010|L=1|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x29400000) {
 		decode_fields32(ENC_LDP_32_LDSTPAIR_OFF, ctx, instr);
@@ -14244,7 +14244,7 @@ int LDP_gen(context *ctx, Instruction *instr)
 int LDRA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=11|111|V=0|00|M=x|S=x|1|imm9=xxxxxxxxx|W=x|1|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF200400)==0xF8200400) {
 		decode_fields32(ENC_LDRAA_64_LDST_PAC, ctx, instr);
@@ -14271,7 +14271,7 @@ int LDRA(context *ctx, Instruction *instr)
 int LDRB_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400400) {
 		decode_fields32(ENC_LDRB_32_LDST_IMMPOST, ctx, instr);
@@ -14281,7 +14281,7 @@ int LDRB_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRB_32_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400C00) {
 		decode_fields32(ENC_LDRB_32_LDST_IMMPRE, ctx, instr);
@@ -14291,7 +14291,7 @@ int LDRB_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRB_32_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=00|111|V=0|01|opc=01|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x39400000) {
 		decode_fields32(ENC_LDRB_32_LDST_POS, ctx, instr);
@@ -14350,7 +14350,7 @@ int LDRB_imm(context *ctx, Instruction *instr)
 int LDRB_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32 */
+	/* class iclass_32 */
 	/* size=00|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38600800) {
 		decode_fields32(ENC_LDRB_32B_LDST_REGOFF, ctx, instr);
@@ -14418,7 +14418,7 @@ int LDRB_reg(context *ctx, Instruction *instr)
 int LDRH_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400400) {
 		decode_fields32(ENC_LDRH_32_LDST_IMMPOST, ctx, instr);
@@ -14428,7 +14428,7 @@ int LDRH_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRH_32_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400C00) {
 		decode_fields32(ENC_LDRH_32_LDST_IMMPRE, ctx, instr);
@@ -14438,7 +14438,7 @@ int LDRH_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRH_32_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=01|111|V=0|01|opc=01|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x79400000) {
 		decode_fields32(ENC_LDRH_32_LDST_POS, ctx, instr);
@@ -14497,7 +14497,7 @@ int LDRH_imm(context *ctx, Instruction *instr)
 int LDRH_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32 */
+	/* class iclass_32 */
 	/* size=01|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78600800) {
 		decode_fields32(ENC_LDRH_32_LDST_REGOFF, ctx, instr);
@@ -14564,7 +14564,7 @@ int LDRH_reg(context *ctx, Instruction *instr)
 int LDRSB_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800400) {
 		decode_fields32(ENC_LDRSB_32_LDST_IMMPOST, ctx, instr);
@@ -14575,7 +14575,7 @@ int LDRSB_imm(context *ctx, Instruction *instr)
 		if(ctx->opc==3) OK(ENC_LDRSB_32_LDST_IMMPOST);
 		if(ctx->opc==2) OK(ENC_LDRSB_64_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800C00) {
 		decode_fields32(ENC_LDRSB_32_LDST_IMMPRE, ctx, instr);
@@ -14586,7 +14586,7 @@ int LDRSB_imm(context *ctx, Instruction *instr)
 		if(ctx->opc==3) OK(ENC_LDRSB_32_LDST_IMMPRE);
 		if(ctx->opc==2) OK(ENC_LDRSB_64_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=00|111|V=0|01|opc=1x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF800000)==0x39800000) {
 		decode_fields32(ENC_LDRSB_32_LDST_POS, ctx, instr);
@@ -14646,7 +14646,7 @@ int LDRSB_imm(context *ctx, Instruction *instr)
 int LDRSB_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|opc=1x|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38A00800) {
 		decode_fields32(ENC_LDRSB_32B_LDST_REGOFF, ctx, instr);
@@ -14716,7 +14716,7 @@ int LDRSB_reg(context *ctx, Instruction *instr)
 int LDRSH_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800400) {
 		decode_fields32(ENC_LDRSH_32_LDST_IMMPOST, ctx, instr);
@@ -14727,7 +14727,7 @@ int LDRSH_imm(context *ctx, Instruction *instr)
 		if(ctx->opc==3) OK(ENC_LDRSH_32_LDST_IMMPOST);
 		if(ctx->opc==2) OK(ENC_LDRSH_64_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800C00) {
 		decode_fields32(ENC_LDRSH_32_LDST_IMMPRE, ctx, instr);
@@ -14738,7 +14738,7 @@ int LDRSH_imm(context *ctx, Instruction *instr)
 		if(ctx->opc==3) OK(ENC_LDRSH_32_LDST_IMMPRE);
 		if(ctx->opc==2) OK(ENC_LDRSH_64_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=01|111|V=0|01|opc=1x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF800000)==0x79800000) {
 		decode_fields32(ENC_LDRSH_32_LDST_POS, ctx, instr);
@@ -14798,7 +14798,7 @@ int LDRSH_imm(context *ctx, Instruction *instr)
 int LDRSH_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|opc=1x|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78A00800) {
 		decode_fields32(ENC_LDRSH_32_LDST_REGOFF, ctx, instr);
@@ -14866,7 +14866,7 @@ int LDRSH_reg(context *ctx, Instruction *instr)
 int LDRSW_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800400) {
 		decode_fields32(ENC_LDRSW_64_LDST_IMMPOST, ctx, instr);
@@ -14876,7 +14876,7 @@ int LDRSW_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRSW_64_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800C00) {
 		decode_fields32(ENC_LDRSW_64_LDST_IMMPRE, ctx, instr);
@@ -14886,7 +14886,7 @@ int LDRSW_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_LDRSW_64_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=10|111|V=0|01|opc=10|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0xB9800000) {
 		decode_fields32(ENC_LDRSW_64_LDST_POS, ctx, instr);
@@ -14945,7 +14945,7 @@ int LDRSW_imm(context *ctx, Instruction *instr)
 int LDRSW_lit(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* opc=10|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF000000)==0x98000000) {
 		decode_fields32(ENC_LDRSW_64_LOADLIT, ctx, instr);
@@ -14976,7 +14976,7 @@ int LDRSW_lit(context *ctx, Instruction *instr)
 int LDRSW_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* size=10|111|V=0|00|opc=10|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8A00800) {
 		decode_fields32(ENC_LDRSW_64_LDST_REGOFF, ctx, instr);
@@ -15043,7 +15043,7 @@ int LDRSW_reg(context *ctx, Instruction *instr)
 int LDR_imm_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=xx|111|V=1|00|opc=x1|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C400400) {
 		decode_fields32(ENC_LDR_B_LDST_IMMPOST, ctx, instr);
@@ -15060,7 +15060,7 @@ int LDR_imm_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->size==3 && ctx->opc==1) OK(ENC_LDR_D_LDST_IMMPOST);
 		if(ctx->size==0 && ctx->opc==3) OK(ENC_LDR_Q_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=xx|111|V=1|00|opc=x1|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C400C00) {
 		decode_fields32(ENC_LDR_B_LDST_IMMPRE, ctx, instr);
@@ -15077,7 +15077,7 @@ int LDR_imm_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->size==3 && ctx->opc==1) OK(ENC_LDR_D_LDST_IMMPRE);
 		if(ctx->size==0 && ctx->opc==3) OK(ENC_LDR_Q_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=xx|111|V=1|01|opc=x1|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F400000)==0x3D400000) {
 		decode_fields32(ENC_LDR_B_LDST_POS, ctx, instr);
@@ -15108,7 +15108,7 @@ int LDR_imm_fpsimd(context *ctx, Instruction *instr)
 int LDR_imm_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400400) {
 		decode_fields32(ENC_LDR_32_LDST_IMMPOST, ctx, instr);
@@ -15119,7 +15119,7 @@ int LDR_imm_gen(context *ctx, Instruction *instr)
 		if(ctx->size==2) OK(ENC_LDR_32_LDST_IMMPOST);
 		if(ctx->size==3) OK(ENC_LDR_64_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400C00) {
 		decode_fields32(ENC_LDR_32_LDST_IMMPRE, ctx, instr);
@@ -15130,7 +15130,7 @@ int LDR_imm_gen(context *ctx, Instruction *instr)
 		if(ctx->size==2) OK(ENC_LDR_32_LDST_IMMPRE);
 		if(ctx->size==3) OK(ENC_LDR_64_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=1x|111|V=0|01|opc=01|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFC00000)==0xB9400000) {
 		decode_fields32(ENC_LDR_32_LDST_POS, ctx, instr);
@@ -15190,7 +15190,7 @@ int LDR_imm_gen(context *ctx, Instruction *instr)
 int LDR_lit_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* opc=xx|011|V=1|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F000000)==0x1C000000) {
 		decode_fields32(ENC_LDR_S_LOADLIT, ctx, instr);
@@ -15220,7 +15220,7 @@ int LDR_lit_fpsimd(context *ctx, Instruction *instr)
 int LDR_lit_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* opc=0x|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF000000)==0x18000000) {
 		decode_fields32(ENC_LDR_32_LOADLIT, ctx, instr);
@@ -15252,7 +15252,7 @@ int LDR_lit_gen(context *ctx, Instruction *instr)
 int LDR_reg_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fpsimd */
+	/* class iclass_fpsimd */
 	/* size=xx|111|V=1|00|opc=x1|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C600800) {
 		decode_fields32(ENC_LDR_B_LDST_REGOFF, ctx, instr);
@@ -15289,7 +15289,7 @@ int LDR_reg_fpsimd(context *ctx, Instruction *instr)
 int LDR_reg_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|opc=01|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8600800) {
 		decode_fields32(ENC_LDR_32_LDST_REGOFF, ctx, instr);
@@ -15357,7 +15357,7 @@ int LDR_reg_gen(context *ctx, Instruction *instr)
 int LDSET(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8203000) {
 		decode_fields32(ENC_LDSET_32_MEMOP, ctx, instr);
@@ -15414,7 +15414,7 @@ int LDSET(context *ctx, Instruction *instr)
 int LDSETB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38203000) {
 		decode_fields32(ENC_LDSETAB_32_MEMOP, ctx, instr);
@@ -15467,7 +15467,7 @@ int LDSETB(context *ctx, Instruction *instr)
 int LDSETH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78203000) {
 		decode_fields32(ENC_LDSETAH_32_MEMOP, ctx, instr);
@@ -15520,7 +15520,7 @@ int LDSETH(context *ctx, Instruction *instr)
 int LDSMAX(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8204000) {
 		decode_fields32(ENC_LDSMAX_32_MEMOP, ctx, instr);
@@ -15577,7 +15577,7 @@ int LDSMAX(context *ctx, Instruction *instr)
 int LDSMAXB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38204000) {
 		decode_fields32(ENC_LDSMAXAB_32_MEMOP, ctx, instr);
@@ -15630,7 +15630,7 @@ int LDSMAXB(context *ctx, Instruction *instr)
 int LDSMAXH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78204000) {
 		decode_fields32(ENC_LDSMAXAH_32_MEMOP, ctx, instr);
@@ -15683,7 +15683,7 @@ int LDSMAXH(context *ctx, Instruction *instr)
 int LDSMIN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8205000) {
 		decode_fields32(ENC_LDSMIN_32_MEMOP, ctx, instr);
@@ -15740,7 +15740,7 @@ int LDSMIN(context *ctx, Instruction *instr)
 int LDSMINB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38205000) {
 		decode_fields32(ENC_LDSMINAB_32_MEMOP, ctx, instr);
@@ -15793,7 +15793,7 @@ int LDSMINB(context *ctx, Instruction *instr)
 int LDSMINH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78205000) {
 		decode_fields32(ENC_LDSMINAH_32_MEMOP, ctx, instr);
@@ -15846,7 +15846,7 @@ int LDSMINH(context *ctx, Instruction *instr)
 int LDTR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400800) {
 		decode_fields32(ENC_LDTR_32_LDST_UNPRIV, ctx, instr);
@@ -15914,7 +15914,7 @@ int LDTR(context *ctx, Instruction *instr)
 int LDTRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400800) {
 		decode_fields32(ENC_LDTRB_32_LDST_UNPRIV, ctx, instr);
@@ -15981,7 +15981,7 @@ int LDTRB(context *ctx, Instruction *instr)
 int LDTRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400800) {
 		decode_fields32(ENC_LDTRH_32_LDST_UNPRIV, ctx, instr);
@@ -16048,7 +16048,7 @@ int LDTRH(context *ctx, Instruction *instr)
 int LDTRSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800800) {
 		decode_fields32(ENC_LDTRSB_32_LDST_UNPRIV, ctx, instr);
@@ -16116,7 +16116,7 @@ int LDTRSB(context *ctx, Instruction *instr)
 int LDTRSH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800800) {
 		decode_fields32(ENC_LDTRSH_32_LDST_UNPRIV, ctx, instr);
@@ -16184,7 +16184,7 @@ int LDTRSH(context *ctx, Instruction *instr)
 int LDTRSW(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800800) {
 		decode_fields32(ENC_LDTRSW_64_LDST_UNPRIV, ctx, instr);
@@ -16251,7 +16251,7 @@ int LDTRSW(context *ctx, Instruction *instr)
 int LDUMAX(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8206000) {
 		decode_fields32(ENC_LDUMAX_32_MEMOP, ctx, instr);
@@ -16308,7 +16308,7 @@ int LDUMAX(context *ctx, Instruction *instr)
 int LDUMAXB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38206000) {
 		decode_fields32(ENC_LDUMAXAB_32_MEMOP, ctx, instr);
@@ -16361,7 +16361,7 @@ int LDUMAXB(context *ctx, Instruction *instr)
 int LDUMAXH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78206000) {
 		decode_fields32(ENC_LDUMAXAH_32_MEMOP, ctx, instr);
@@ -16414,7 +16414,7 @@ int LDUMAXH(context *ctx, Instruction *instr)
 int LDUMIN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8207000) {
 		decode_fields32(ENC_LDUMIN_32_MEMOP, ctx, instr);
@@ -16471,7 +16471,7 @@ int LDUMIN(context *ctx, Instruction *instr)
 int LDUMINB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38207000) {
 		decode_fields32(ENC_LDUMINAB_32_MEMOP, ctx, instr);
@@ -16524,7 +16524,7 @@ int LDUMINB(context *ctx, Instruction *instr)
 int LDUMINH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78207000) {
 		decode_fields32(ENC_LDUMINAH_32_MEMOP, ctx, instr);
@@ -16577,7 +16577,7 @@ int LDUMINH(context *ctx, Instruction *instr)
 int LDURB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38400000) {
 		decode_fields32(ENC_LDURB_32_LDST_UNSCALED, ctx, instr);
@@ -16639,7 +16639,7 @@ int LDURB(context *ctx, Instruction *instr)
 int LDURH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78400000) {
 		decode_fields32(ENC_LDURH_32_LDST_UNSCALED, ctx, instr);
@@ -16701,7 +16701,7 @@ int LDURH(context *ctx, Instruction *instr)
 int LDURSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x38800000) {
 		decode_fields32(ENC_LDURSB_32_LDST_UNSCALED, ctx, instr);
@@ -16764,7 +16764,7 @@ int LDURSB(context *ctx, Instruction *instr)
 int LDURSH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=1x|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFA00C00)==0x78800000) {
 		decode_fields32(ENC_LDURSH_32_LDST_UNSCALED, ctx, instr);
@@ -16827,7 +16827,7 @@ int LDURSH(context *ctx, Instruction *instr)
 int LDURSW(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=10|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xB8800000) {
 		decode_fields32(ENC_LDURSW_64_LDST_UNSCALED, ctx, instr);
@@ -16889,7 +16889,7 @@ int LDURSW(context *ctx, Instruction *instr)
 int LDUR_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=xx|111|V=1|00|opc=x1|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C400000) {
 		decode_fields32(ENC_LDUR_B_LDST_UNSCALED, ctx, instr);
@@ -16920,7 +16920,7 @@ int LDUR_fpsimd(context *ctx, Instruction *instr)
 int LDUR_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|111|V=0|00|opc=01|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8400000) {
 		decode_fields32(ENC_LDUR_32_LDST_UNSCALED, ctx, instr);
@@ -16983,7 +16983,7 @@ int LDUR_gen(context *ctx, Instruction *instr)
 int LDXP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* 1|sz=x|001000|o2=0|L=1|o1=1|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88600000) {
 		decode_fields32(ENC_LDXP_LP32_LDSTEXCLP, ctx, instr);
@@ -17027,7 +17027,7 @@ int LDXP(context *ctx, Instruction *instr)
 int LDXR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88400000) {
 		decode_fields32(ENC_LDXR_LR32_LDSTEXCLR, ctx, instr);
@@ -17071,7 +17071,7 @@ int LDXR(context *ctx, Instruction *instr)
 int LDXRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8400000) {
 		decode_fields32(ENC_LDXRB_LR32_LDSTEXCLR, ctx, instr);
@@ -17114,7 +17114,7 @@ int LDXRB(context *ctx, Instruction *instr)
 int LDXRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=0|L=1|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48400000) {
 		decode_fields32(ENC_LDXRH_LR32_LDSTEXCLR, ctx, instr);
@@ -17157,7 +17157,7 @@ int LDXRH(context *ctx, Instruction *instr)
 int LSLV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
 		decode_fields32(ENC_LSLV_32_DP_2SRC, ctx, instr);
@@ -17178,7 +17178,7 @@ int LSLV(context *ctx, Instruction *instr)
 int LSL_LSLV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
 		decode_fields32(ENC_LSL_LSLV_32_DP_2SRC, ctx, instr);
@@ -17192,7 +17192,7 @@ int LSL_LSLV(context *ctx, Instruction *instr)
 int LSL_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
 		decode_fields32(ENC_LSL_UBFM_32M_BITFIELD, ctx, instr);
@@ -17206,7 +17206,7 @@ int LSL_UBFM(context *ctx, Instruction *instr)
 int LSRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
 		decode_fields32(ENC_LSRV_32_DP_2SRC, ctx, instr);
@@ -17227,7 +17227,7 @@ int LSRV(context *ctx, Instruction *instr)
 int LSR_LSRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
 		decode_fields32(ENC_LSR_LSRV_32_DP_2SRC, ctx, instr);
@@ -17241,7 +17241,7 @@ int LSR_LSRV(context *ctx, Instruction *instr)
 int LSR_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=x11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F807C00)==0x53007C00) {
 		decode_fields32(ENC_LSR_UBFM_32M_BITFIELD, ctx, instr);
@@ -17255,7 +17255,7 @@ int LSR_UBFM(context *ctx, Instruction *instr)
 int MADD(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE08000)==0x1B000000) {
 		decode_fields32(ENC_MADD_32A_DP_3SRC, ctx, instr);
@@ -17278,7 +17278,7 @@ int MADD(context *ctx, Instruction *instr)
 int MLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F000000) {
 		decode_fields32(ENC_MLA_ASIMDELEM_R, ctx, instr);
@@ -17310,7 +17310,7 @@ int MLA_advsimd_elt(context *ctx, Instruction *instr)
 int MLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209400) {
 		decode_fields32(ENC_MLA_ASIMDSAME_ONLY, ctx, instr);
@@ -17333,7 +17333,7 @@ int MLA_advsimd_vec(context *ctx, Instruction *instr)
 int MLS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F004000) {
 		decode_fields32(ENC_MLS_ASIMDELEM_R, ctx, instr);
@@ -17365,7 +17365,7 @@ int MLS_advsimd_elt(context *ctx, Instruction *instr)
 int MLS_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E209400) {
 		decode_fields32(ENC_MLS_ASIMDSAME_ONLY, ctx, instr);
@@ -17388,7 +17388,7 @@ int MLS_advsimd_vec(context *ctx, Instruction *instr)
 int MNEG_MSUB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1B00FC00) {
 		decode_fields32(ENC_MNEG_MSUB_32A_DP_3SRC, ctx, instr);
@@ -17402,7 +17402,7 @@ int MNEG_MSUB(context *ctx, Instruction *instr)
 int MOVI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=x|0111100000|a=x|b=x|c=x|cmode=xxxx|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0x9FF80C00)==0xF000400) {
 		decode_fields32(ENC_MOVI_ASIMDIMM_N_B, ctx, instr);
@@ -17466,7 +17466,7 @@ int MOVI_advsimd(context *ctx, Instruction *instr)
 int MOVK(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm18_packed */
+	/* class iclass_imm18_packed */
 	/* sf=x|opc=11|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x72800000) {
 		decode_fields32(ENC_MOVK_32_MOVEWIDE, ctx, instr);
@@ -17499,7 +17499,7 @@ int MOVK(context *ctx, Instruction *instr)
 int MOVN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm18_packed */
+	/* class iclass_imm18_packed */
 	/* sf=x|opc=00|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12800000) {
 		decode_fields32(ENC_MOVN_32_MOVEWIDE, ctx, instr);
@@ -17536,7 +17536,7 @@ int MOVN(context *ctx, Instruction *instr)
 int MOVS_and_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404000) {
 		decode_fields32(ENC_MOVS_ANDS_P_P_PP_Z, ctx, instr);
@@ -17549,7 +17549,7 @@ int MOVS_and_p_p_pp(context *ctx, Instruction *instr)
 int MOVS_orr_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04000) {
 		decode_fields32(ENC_MOVS_ORRS_P_P_PP_Z, ctx, instr);
@@ -17562,7 +17562,7 @@ int MOVS_orr_p_p_pp(context *ctx, Instruction *instr)
 int MOVZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm18_packed */
+	/* class iclass_imm18_packed */
 	/* sf=x|opc=10|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52800000) {
 		decode_fields32(ENC_MOVZ_32_MOVEWIDE, ctx, instr);
@@ -17597,7 +17597,7 @@ int MOVZ(context *ctx, Instruction *instr)
 int MOV_ADD_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=0|S=0|100010|sh=0|imm12=000000000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x11000000) {
 		decode_fields32(ENC_MOV_ADD_32_ADDSUB_IMM, ctx, instr);
@@ -17611,7 +17611,7 @@ int MOV_ADD_addsub_imm(context *ctx, Instruction *instr)
 int MOV_DUP_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class scalar_from_element */
+	/* class iclass_scalar_from_element */
 	/* 01|op=0|11110000|imm5=xxxxx|0|imm4=0000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000400) {
 		decode_fields32(ENC_MOV_DUP_ASISDONE_ONLY, ctx, instr);
@@ -17624,7 +17624,7 @@ int MOV_DUP_advsimd_elt(context *ctx, Instruction *instr)
 int MOV_INS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=1|op=1|01110000|imm5=xxxxx|0|imm4=xxxx|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08400)==0x6E000400) {
 		decode_fields32(ENC_MOV_INS_ASIMDINS_IV_V, ctx, instr);
@@ -17637,7 +17637,7 @@ int MOV_INS_advsimd_elt(context *ctx, Instruction *instr)
 int MOV_INS_advsimd_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=1|op=0|01110000|imm5=xxxxx|0|imm4=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E001C00) {
 		decode_fields32(ENC_MOV_INS_ASIMDINS_IR_R, ctx, instr);
@@ -17650,7 +17650,7 @@ int MOV_INS_advsimd_gen(context *ctx, Instruction *instr)
 int MOV_MOVN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm18_packed */
+	/* class iclass_imm18_packed */
 	/* sf=x|opc=00|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x12800000) {
 		decode_fields32(ENC_MOV_MOVN_32_MOVEWIDE, ctx, instr);
@@ -17664,7 +17664,7 @@ int MOV_MOVN(context *ctx, Instruction *instr)
 int MOV_MOVZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class imm18_packed */
+	/* class iclass_imm18_packed */
 	/* sf=x|opc=10|100101|hw=xx|imm16=xxxxxxxxxxxxxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x52800000) {
 		decode_fields32(ENC_MOV_MOVZ_32_MOVEWIDE, ctx, instr);
@@ -17678,7 +17678,7 @@ int MOV_MOVZ(context *ctx, Instruction *instr)
 int MOV_ORR_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA01C00) {
 		decode_fields32(ENC_MOV_ORR_ASIMDSAME_ONLY, ctx, instr);
@@ -17691,7 +17691,7 @@ int MOV_ORR_advsimd_reg(context *ctx, Instruction *instr)
 int MOV_ORR_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F8003E0)==0x320003E0) {
 		decode_fields32(ENC_MOV_ORR_32_LOG_IMM, ctx, instr);
@@ -17705,7 +17705,7 @@ int MOV_ORR_log_imm(context *ctx, Instruction *instr)
 int MOV_ORR_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|01010|shift=00|N=0|Rm=xxxxx|imm6=000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x2A0003E0) {
 		decode_fields32(ENC_MOV_ORR_32_LOG_SHIFT, ctx, instr);
@@ -17719,7 +17719,7 @@ int MOV_ORR_log_shift(context *ctx, Instruction *instr)
 int MOV_UMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxx00|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE3FC00)==0xE003C00) {
 		decode_fields32(ENC_MOV_UMOV_ASIMDINS_W_W, ctx, instr);
@@ -17733,7 +17733,7 @@ int MOV_UMOV_advsimd(context *ctx, Instruction *instr)
 int MOV_and_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004000) {
 		decode_fields32(ENC_MOV_AND_P_P_PP_Z, ctx, instr);
@@ -17746,7 +17746,7 @@ int MOV_and_p_p_pp(context *ctx, Instruction *instr)
 int MOV_cpy_z_o_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=0|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5100000) {
 		decode_fields32(ENC_MOV_CPY_Z_O_I_, ctx, instr);
@@ -17759,7 +17759,7 @@ int MOV_cpy_z_o_i(context *ctx, Instruction *instr)
 int MOV_cpy_z_p_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5104000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_I_, ctx, instr);
@@ -17772,7 +17772,7 @@ int MOV_cpy_z_p_i(context *ctx, Instruction *instr)
 int MOV_cpy_z_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|101000101|Pg=xxx|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x528A000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_R_, ctx, instr);
@@ -17785,7 +17785,7 @@ int MOV_cpy_z_p_r(context *ctx, Instruction *instr)
 int MOV_cpy_z_p_v(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100000100|Pg=xxx|Vn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5208000) {
 		decode_fields32(ENC_MOV_CPY_Z_P_V_, ctx, instr);
@@ -17798,7 +17798,7 @@ int MOV_cpy_z_p_v(context *ctx, Instruction *instr)
 int MOV_dup_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|111|opc=00|011|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2538C000) {
 		decode_fields32(ENC_MOV_DUP_Z_I_, ctx, instr);
@@ -17811,7 +17811,7 @@ int MOV_dup_z_i(context *ctx, Instruction *instr)
 int MOV_dup_z_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100000001110|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5203800) {
 		decode_fields32(ENC_MOV_DUP_Z_R_, ctx, instr);
@@ -17824,7 +17824,7 @@ int MOV_dup_z_r(context *ctx, Instruction *instr)
 int MOV_dup_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|imm2=xx|1|tsz=xxxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202000) {
 		decode_fields32(ENC_MOV_DUP_Z_ZI_, ctx, instr);
@@ -17838,7 +17838,7 @@ int MOV_dup_z_zi(context *ctx, Instruction *instr)
 int MOV_dupm_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101110000|imm13=xxxxxxxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5C00000) {
 		decode_fields32(ENC_MOV_DUPM_Z_I_, ctx, instr);
@@ -17851,7 +17851,7 @@ int MOV_dupm_z_i(context *ctx, Instruction *instr)
 int MOV_orr_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804000) {
 		decode_fields32(ENC_MOV_ORR_P_P_PP_Z, ctx, instr);
@@ -17864,7 +17864,7 @@ int MOV_orr_p_p_pp(context *ctx, Instruction *instr)
 int MOV_orr_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=01|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603000) {
 		decode_fields32(ENC_MOV_ORR_Z_ZZ_, ctx, instr);
@@ -17877,7 +17877,7 @@ int MOV_orr_z_zz(context *ctx, Instruction *instr)
 int MOV_sel_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004210) {
 		decode_fields32(ENC_MOV_SEL_P_P_PP_, ctx, instr);
@@ -17890,7 +17890,7 @@ int MOV_sel_p_p_pp(context *ctx, Instruction *instr)
 int MOV_sel_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|1|Zm=xxxxx|11|Pg=xxxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20C000)==0x520C000) {
 		decode_fields32(ENC_MOV_SEL_Z_P_ZZ_, ctx, instr);
@@ -17903,7 +17903,7 @@ int MOV_sel_z_p_zz(context *ctx, Instruction *instr)
 int MRS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=1|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5300000) {
 		decode_fields32(ENC_MRS_RS_SYSTEMMOVE, ctx, instr);
@@ -17924,7 +17924,7 @@ int MRS(context *ctx, Instruction *instr)
 int MSR_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=xxx|CRn=0100|CRm=xxxx|op2=xxx|Rt =11111 */
 	if((INSWORD & 0xFFF8F01F)==0xD500401F) {
 		decode_fields32(ENC_MSR_SI_PSTATE, ctx, instr);
@@ -18018,7 +18018,7 @@ int MSR_imm(context *ctx, Instruction *instr)
 int MSR_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5100000) {
 		decode_fields32(ENC_MSR_SR_SYSTEMMOVE, ctx, instr);
@@ -18039,7 +18039,7 @@ int MSR_reg(context *ctx, Instruction *instr)
 int MSUB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE08000)==0x1B008000) {
 		decode_fields32(ENC_MSUB_32A_DP_3SRC, ctx, instr);
@@ -18062,7 +18062,7 @@ int MSUB(context *ctx, Instruction *instr)
 int MUL_MADD(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op54=00|11011|op31=000|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1B007C00) {
 		decode_fields32(ENC_MUL_MADD_32A_DP_3SRC, ctx, instr);
@@ -18076,7 +18076,7 @@ int MUL_MADD(context *ctx, Instruction *instr)
 int MUL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1000|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF008000) {
 		decode_fields32(ENC_MUL_ASIMDELEM_R, ctx, instr);
@@ -18107,7 +18107,7 @@ int MUL_advsimd_elt(context *ctx, Instruction *instr)
 int MUL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209C00) {
 		decode_fields32(ENC_MUL_ASIMDSAME_ONLY, ctx, instr);
@@ -18133,7 +18133,7 @@ int MUL_advsimd_vec(context *ctx, Instruction *instr)
 int MVNI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=1|0111100000|a=x|b=x|c=x|cmode=xxxx|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF80C00)==0x2F000400) {
 		decode_fields32(ENC_MVNI_ASIMDIMM_L_HL, ctx, instr);
@@ -18194,7 +18194,7 @@ int MVNI_advsimd(context *ctx, Instruction *instr)
 int MVN_NOT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=00|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E205800) {
 		decode_fields32(ENC_MVN_NOT_ASIMDMISC_R, ctx, instr);
@@ -18207,7 +18207,7 @@ int MVN_NOT_advsimd(context *ctx, Instruction *instr)
 int MVN_ORN_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F2003E0)==0x2A2003E0) {
 		decode_fields32(ENC_MVN_ORN_32_LOG_SHIFT, ctx, instr);
@@ -18221,7 +18221,7 @@ int MVN_ORN_log_shift(context *ctx, Instruction *instr)
 int NEGS_SUBS_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd!=11111 */
 	if((INSWORD & 0x7F2003E0)==0x6B0003E0 && (INSWORD & 0x1F)!=0x1F) {
 		decode_fields32(ENC_NEGS_SUBS_32_ADDSUB_SHIFT, ctx, instr);
@@ -18235,7 +18235,7 @@ int NEGS_SUBS_addsub_shift(context *ctx, Instruction *instr)
 int NEG_SUB_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7F2003E0)==0x4B0003E0) {
 		decode_fields32(ENC_NEG_SUB_32_ADDSUB_SHIFT, ctx, instr);
@@ -18249,7 +18249,7 @@ int NEG_SUB_addsub_shift(context *ctx, Instruction *instr)
 int NEG_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E20B800) {
 		decode_fields32(ENC_NEG_ASISDMISC_R, ctx, instr);
@@ -18264,7 +18264,7 @@ int NEG_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_NEG_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=01011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E20B800) {
 		decode_fields32(ENC_NEG_ASIMDMISC_R, ctx, instr);
@@ -18286,7 +18286,7 @@ int NEG_advsimd(context *ctx, Instruction *instr)
 int NGCS_SBCS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|11010000|Rm=xxxxx|000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x7A0003E0) {
 		decode_fields32(ENC_NGCS_SBCS_32_ADDSUB_CARRY, ctx, instr);
@@ -18300,7 +18300,7 @@ int NGCS_SBCS(context *ctx, Instruction *instr)
 int NGC_SBC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|11010000|Rm=xxxxx|000000|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FFE0)==0x5A0003E0) {
 		decode_fields32(ENC_NGC_SBC_32_ADDSUB_CARRY, ctx, instr);
@@ -18314,7 +18314,7 @@ int NGC_SBC(context *ctx, Instruction *instr)
 int NOP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=000|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503201F) {
 		decode_fields32(ENC_NOP_HI_HINTS, ctx, instr);
@@ -18425,7 +18425,7 @@ int NOP(context *ctx, Instruction *instr)
 int NOTS_eor_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404200) {
 		decode_fields32(ENC_NOTS_EORS_P_P_PP_Z, ctx, instr);
@@ -18438,7 +18438,7 @@ int NOTS_eor_p_p_pp(context *ctx, Instruction *instr)
 int NOT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=00|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E205800) {
 		decode_fields32(ENC_NOT_ASIMDMISC_R, ctx, instr);
@@ -18458,7 +18458,7 @@ int NOT_advsimd(context *ctx, Instruction *instr)
 int NOT_eor_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004200) {
 		decode_fields32(ENC_NOT_EOR_P_P_PP_Z, ctx, instr);
@@ -18471,7 +18471,7 @@ int NOT_eor_p_p_pp(context *ctx, Instruction *instr)
 int ORN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=11|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEE01C00) {
 		decode_fields32(ENC_ORN_ASIMDSAME_ONLY, ctx, instr);
@@ -18492,7 +18492,7 @@ int ORN_advsimd(context *ctx, Instruction *instr)
 int ORN_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=1|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2A200000) {
 		decode_fields32(ENC_ORN_32_LOG_SHIFT, ctx, instr);
@@ -18534,7 +18534,7 @@ int ORN_log_shift(context *ctx, Instruction *instr)
 int ORN_orr_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=00|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5000000) {
 		decode_fields32(ENC_ORN_ORR_Z_ZI_, ctx, instr);
@@ -18547,7 +18547,7 @@ int ORN_orr_z_zi(context *ctx, Instruction *instr)
 int ORR_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class shifted_immediate */
+	/* class iclass_shifted_immediate */
 	/* 0|Q=x|op=0|0111100000|a=x|b=x|c=x|cmode=xxx1|o2=0|1|d=x|e=x|f=x|g=x|h=x|Rd=xxxxx */
 	if((INSWORD & 0xBFF81C00)==0xF001400) {
 		decode_fields32(ENC_ORR_ASIMDIMM_L_HL, ctx, instr);
@@ -18607,7 +18607,7 @@ int ORR_advsimd_imm(context *ctx, Instruction *instr)
 int ORR_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=10|1|Rm=xxxxx|opcode=00011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xEA01C00) {
 		decode_fields32(ENC_ORR_ASIMDSAME_ONLY, ctx, instr);
@@ -18630,7 +18630,7 @@ int ORR_advsimd_reg(context *ctx, Instruction *instr)
 int ORR_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x32000000) {
 		decode_fields32(ENC_ORR_32_LOG_IMM, ctx, instr);
@@ -18671,7 +18671,7 @@ int ORR_log_imm(context *ctx, Instruction *instr)
 int ORR_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|opc=01|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x2A000000) {
 		decode_fields32(ENC_ORR_32_LOG_SHIFT, ctx, instr);
@@ -18713,7 +18713,7 @@ int ORR_log_shift(context *ctx, Instruction *instr)
 int PACDA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=010|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10800) {
 		decode_fields32(ENC_PACDA_64P_DP_1SRC, ctx, instr);
@@ -18743,7 +18743,7 @@ int PACDA(context *ctx, Instruction *instr)
 int PACDB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=011|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10C00) {
 		decode_fields32(ENC_PACDB_64P_DP_1SRC, ctx, instr);
@@ -18773,7 +18773,7 @@ int PACDB(context *ctx, Instruction *instr)
 int PACGA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|op=0|S=0|11010110|Rm=xxxxx|opcode2=001100|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC03000) {
 		decode_fields32(ENC_PACGA_64P_DP_2SRC, ctx, instr);
@@ -18796,7 +18796,7 @@ int PACGA(context *ctx, Instruction *instr)
 int PACIA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10000) {
 		decode_fields32(ENC_PACIA_64P_DP_1SRC, ctx, instr);
@@ -18819,7 +18819,7 @@ int PACIA(context *ctx, Instruction *instr)
 		if(ctx->Z==0) OK(ENC_PACIA_64P_DP_1SRC);
 		if(ctx->Z==1 && ctx->Rn==0x1f) OK(ENC_PACIZA_64Z_DP_1SRC);
 	}
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=00x1|op2=00x|Rt=11111 */
 	if((INSWORD & 0xFFFFFDDF)==0xD503211F) {
 		decode_fields32(ENC_PACIA1716_HI_HINTS, ctx, instr);
@@ -18874,7 +18874,7 @@ int PACIA(context *ctx, Instruction *instr)
 int PACIB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=0|Z=x|opcode[2:0]=001|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFDC00)==0xDAC10400) {
 		decode_fields32(ENC_PACIB_64P_DP_1SRC, ctx, instr);
@@ -18897,7 +18897,7 @@ int PACIB(context *ctx, Instruction *instr)
 		if(ctx->Z==0) OK(ENC_PACIB_64P_DP_1SRC);
 		if(ctx->Z==1 && ctx->Rn==0x1f) OK(ENC_PACIZB_64Z_DP_1SRC);
 	}
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=00x1|op2=01x|Rt=11111 */
 	if((INSWORD & 0xFFFFFDDF)==0xD503215F) {
 		decode_fields32(ENC_PACIB1716_HI_HINTS, ctx, instr);
@@ -18952,7 +18952,7 @@ int PACIB(context *ctx, Instruction *instr)
 int PMULL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1110|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20E000) {
 		decode_fields32(ENC_PMULL_ASIMDDIFF_L, ctx, instr);
@@ -18978,7 +18978,7 @@ int PMULL_advsimd(context *ctx, Instruction *instr)
 int PMUL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E209C00) {
 		decode_fields32(ENC_PMUL_ASIMDSAME_ONLY, ctx, instr);
@@ -19004,7 +19004,7 @@ int PMUL_advsimd(context *ctx, Instruction *instr)
 int PRFM_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=11|111|V=0|01|opc=10|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0xF9800000) {
 		decode_fields32(ENC_PRFM_P_LDST_POS, ctx, instr);
@@ -19066,7 +19066,7 @@ int PRFM_imm(context *ctx, Instruction *instr)
 int PRFM_lit(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class literal */
+	/* class iclass_literal */
 	/* opc=11|011|V=0|00|imm19=xxxxxxxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF000000)==0xD8000000) {
 		decode_fields32(ENC_PRFM_P_LOADLIT, ctx, instr);
@@ -19097,7 +19097,7 @@ int PRFM_lit(context *ctx, Instruction *instr)
 int PRFM_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=11|111|V=0|00|opc=10|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xF8A00800) {
 		decode_fields32(ENC_PRFM_P_LDST_REGOFF, ctx, instr);
@@ -19164,7 +19164,7 @@ int PRFM_reg(context *ctx, Instruction *instr)
 int PRFUM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=11|111|V=0|00|opc=10|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xF8800000) {
 		decode_fields32(ENC_PRFUM_P_LDST_UNSCALED, ctx, instr);
@@ -19226,7 +19226,7 @@ int PRFUM(context *ctx, Instruction *instr)
 int PSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=001|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503223F) {
 		decode_fields32(ENC_PSB_HC_HINTS, ctx, instr);
@@ -19337,7 +19337,7 @@ int PSB(context *ctx, Instruction *instr)
 int PSSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class dsb_memory */
+	/* class iclass_dsb_memory */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0100|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503349F) {
 		decode_fields32(ENC_PSSBB_DSB_BO_BARRIERS, ctx, instr);
@@ -19350,7 +19350,7 @@ int PSSBB_DSB(context *ctx, Instruction *instr)
 int RADDHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204000) {
 		decode_fields32(ENC_RADDHN_ASIMDDIFF_N, ctx, instr);
@@ -19375,7 +19375,7 @@ int RADDHN_advsimd(context *ctx, Instruction *instr)
 int RAX1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608C00) {
 		decode_fields32(ENC_RAX1_VVV2_CRYPTOSHA512_3, ctx, instr);
@@ -19394,7 +19394,7 @@ int RAX1_advsimd(context *ctx, Instruction *instr)
 int RBIT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=01|10000|opcode=00101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E605800) {
 		decode_fields32(ENC_RBIT_ASIMDMISC_R, ctx, instr);
@@ -19412,7 +19412,7 @@ int RBIT_advsimd(context *ctx, Instruction *instr)
 int RBIT_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opcode[1:0]=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC00000) {
 		decode_fields32(ENC_RBIT_32_DP_1SRC, ctx, instr);
@@ -19429,7 +19429,7 @@ int RBIT_int(context *ctx, Instruction *instr)
 int RET(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=0|opc[2:1]=0|op=10|op2=11111|op3[5:2]=0000|A=0|M=0|Rn=xxxxx|Rm=00000 */
 	if((INSWORD & 0xFFFFFC1F)==0xD65F0000) {
 		decode_fields32(ENC_RET_64R_BRANCH_REG, ctx, instr);
@@ -19477,7 +19477,7 @@ int RET(context *ctx, Instruction *instr)
 int RETA(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 1101011|Z=0|opc[2:1]=0|op=10|op2=11111|op3[5:2]=0000|A=1|M=x|Rn=11111|Rm=11111 */
 	if((INSWORD & 0xFFFFFBFF)==0xD65F0BFF) {
 		decode_fields32(ENC_RETAA_64E_BRANCH_REG, ctx, instr);
@@ -19526,7 +19526,7 @@ int RETA(context *ctx, Instruction *instr)
 int REV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=1x|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFF800)==0x5AC00800) {
 		decode_fields32(ENC_REV_32_DP_1SRC, ctx, instr);
@@ -19558,7 +19558,7 @@ int REV(context *ctx, Instruction *instr)
 int REV16_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE201800) {
 		decode_fields32(ENC_REV16_ASIMDMISC_R, ctx, instr);
@@ -19590,7 +19590,7 @@ int REV16_advsimd(context *ctx, Instruction *instr)
 int REV16_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FFFFC00)==0x5AC00400) {
 		decode_fields32(ENC_REV16_32_DP_1SRC, ctx, instr);
@@ -19622,7 +19622,7 @@ int REV16_int(context *ctx, Instruction *instr)
 int REV32_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E200800) {
 		decode_fields32(ENC_REV32_ASIMDMISC_R, ctx, instr);
@@ -19654,7 +19654,7 @@ int REV32_advsimd(context *ctx, Instruction *instr)
 int REV32_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xDAC00800) {
 		decode_fields32(ENC_REV32_64_DP_1SRC, ctx, instr);
@@ -19685,7 +19685,7 @@ int REV32_int(context *ctx, Instruction *instr)
 int REV64_REV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00000|opcode[5:2]=0000|opc=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xDAC00C00) {
 		decode_fields32(ENC_REV64_REV_64_DP_1SRC, ctx, instr);
@@ -19698,7 +19698,7 @@ int REV64_REV(context *ctx, Instruction *instr)
 int REV64_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE200800) {
 		decode_fields32(ENC_REV64_ASIMDMISC_R, ctx, instr);
@@ -19730,7 +19730,7 @@ int REV64_advsimd(context *ctx, Instruction *instr)
 int RMIF(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|op=0|S=1|11010000|imm6=xxxxxx|00001|Rn=xxxxx|o2=0|mask=xxxx */
 	if((INSWORD & 0xFFE07C10)==0xBA000400) {
 		decode_fields32(ENC_RMIF_ONLY_RMIF, ctx, instr);
@@ -19748,7 +19748,7 @@ int RMIF(context *ctx, Instruction *instr)
 int RORV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
 		decode_fields32(ENC_RORV_32_DP_2SRC, ctx, instr);
@@ -19769,7 +19769,7 @@ int RORV(context *ctx, Instruction *instr)
 int ROR_EXTR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op21=00|100111|N=x|o0=0|Rm=xxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FA00000)==0x13800000) {
 		decode_fields32(ENC_ROR_EXTR_32_EXTRACT, ctx, instr);
@@ -19783,7 +19783,7 @@ int ROR_EXTR(context *ctx, Instruction *instr)
 int ROR_RORV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
 		decode_fields32(ENC_ROR_RORV_32_DP_2SRC, ctx, instr);
@@ -19797,7 +19797,7 @@ int ROR_RORV(context *ctx, Instruction *instr)
 int RSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_RSHRN_ASIMDSHF_N, ctx, instr);
@@ -19824,7 +19824,7 @@ int RSHRN_advsimd(context *ctx, Instruction *instr)
 int RSUBHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206000) {
 		decode_fields32(ENC_RSUBHN_ASIMDDIFF_N, ctx, instr);
@@ -19849,7 +19849,7 @@ int RSUBHN_advsimd(context *ctx, Instruction *instr)
 int SABAL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205000) {
 		decode_fields32(ENC_SABAL_ASIMDDIFF_L, ctx, instr);
@@ -19874,7 +19874,7 @@ int SABAL_advsimd(context *ctx, Instruction *instr)
 int SABA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207C00) {
 		decode_fields32(ENC_SABA_ASIMDSAME_ONLY, ctx, instr);
@@ -19898,7 +19898,7 @@ int SABA_advsimd(context *ctx, Instruction *instr)
 int SABDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207000) {
 		decode_fields32(ENC_SABDL_ASIMDDIFF_L, ctx, instr);
@@ -19923,7 +19923,7 @@ int SABDL_advsimd(context *ctx, Instruction *instr)
 int SABD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207400) {
 		decode_fields32(ENC_SABD_ASIMDSAME_ONLY, ctx, instr);
@@ -19947,7 +19947,7 @@ int SABD_advsimd(context *ctx, Instruction *instr)
 int SADALP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE206800) {
 		decode_fields32(ENC_SADALP_ASIMDMISC_P, ctx, instr);
@@ -19970,7 +19970,7 @@ int SADALP_advsimd(context *ctx, Instruction *instr)
 int SADDLP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE202800) {
 		decode_fields32(ENC_SADDLP_ASIMDMISC_P, ctx, instr);
@@ -19993,7 +19993,7 @@ int SADDLP_advsimd(context *ctx, Instruction *instr)
 int SADDLV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=0|01110|size=xx|11000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE303800) {
 		decode_fields32(ENC_SADDLV_ASIMDALL_ONLY, ctx, instr);
@@ -20018,7 +20018,7 @@ int SADDLV_advsimd(context *ctx, Instruction *instr)
 int SADDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200000) {
 		decode_fields32(ENC_SADDL_ASIMDDIFF_L, ctx, instr);
@@ -20043,7 +20043,7 @@ int SADDL_advsimd(context *ctx, Instruction *instr)
 int SADDW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE201000) {
 		decode_fields32(ENC_SADDW_ASIMDDIFF_W, ctx, instr);
@@ -20068,7 +20068,7 @@ int SADDW_advsimd(context *ctx, Instruction *instr)
 int SB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=(0)(0)(0)(0)|1|opc=11|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330FF) {
 		decode_fields32(ENC_SB_ONLY_BARRIERS, ctx, instr);
@@ -20084,7 +20084,7 @@ int SB(context *ctx, Instruction *instr)
 int SBC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x5A000000) {
 		decode_fields32(ENC_SBC_32_ADDSUB_CARRY, ctx, instr);
@@ -20106,7 +20106,7 @@ int SBC(context *ctx, Instruction *instr)
 int SBCS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|11010000|Rm=xxxxx|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x7A000000) {
 		decode_fields32(ENC_SBCS_32_ADDSUB_CARRY, ctx, instr);
@@ -20128,7 +20128,7 @@ int SBCS(context *ctx, Instruction *instr)
 int SBFIZ_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
 		decode_fields32(ENC_SBFIZ_SBFM_32M_BITFIELD, ctx, instr);
@@ -20142,7 +20142,7 @@ int SBFIZ_SBFM(context *ctx, Instruction *instr)
 int SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
 		decode_fields32(ENC_SBFM_32M_BITFIELD, ctx, instr);
@@ -20194,7 +20194,7 @@ int SBFM(context *ctx, Instruction *instr)
 int SBFX_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x13000000) {
 		decode_fields32(ENC_SBFX_SBFM_32M_BITFIELD, ctx, instr);
@@ -20208,7 +20208,7 @@ int SBFX_SBFM(context *ctx, Instruction *instr)
 int SCVTF_advsimd_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F00E400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SCVTF_ASISDSHF_C, ctx, instr);
@@ -20225,7 +20225,7 @@ int SCVTF_advsimd_fix(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_ASISDSHF_C);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF00E400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SCVTF_ASIMDSHF_C, ctx, instr);
@@ -20255,7 +20255,7 @@ int SCVTF_advsimd_fix(context *ctx, Instruction *instr)
 int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=0|11110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79D800) {
 		decode_fields32(ENC_SCVTF_ASISDMISCFP16_R, ctx, instr);
@@ -20270,7 +20270,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SCVTF_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=0|11110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21D800) {
 		decode_fields32(ENC_SCVTF_ASISDMISC_R, ctx, instr);
@@ -20282,7 +20282,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SCVTF_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=0|01110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79D800) {
 		decode_fields32(ENC_SCVTF_ASIMDMISCFP16_R, ctx, instr);
@@ -20297,7 +20297,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SCVTF_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21D800) {
 		decode_fields32(ENC_SCVTF_ASIMDMISC_R, ctx, instr);
@@ -20319,7 +20319,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 int SCVTF_float_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=00|opcode=010|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E020000) {
 		decode_fields32(ENC_SCVTF_H32_FLOAT2FIX, ctx, instr);
@@ -20374,7 +20374,7 @@ int SCVTF_float_fix(context *ctx, Instruction *instr)
 int SCVTF_float_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=010|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E220000) {
 		decode_fields32(ENC_SCVTF_H32_FLOAT2INT, ctx, instr);
@@ -20460,7 +20460,7 @@ int SCVTF_float_int(context *ctx, Instruction *instr)
 int SDIV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00C00) {
 		decode_fields32(ENC_SDIV_32_DP_2SRC, ctx, instr);
@@ -20479,7 +20479,7 @@ int SDIV(context *ctx, Instruction *instr)
 int SDOT_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1110|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00E000) {
 		decode_fields32(ENC_SDOT_ASIMDELEM_D, ctx, instr);
@@ -20506,7 +20506,7 @@ int SDOT_advsimd_elt(context *ctx, Instruction *instr)
 int SDOT_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|0|Rm=xxxxx|1|opcode=0010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE009400) {
 		decode_fields32(ENC_SDOT_ASIMDSAME2_D, ctx, instr);
@@ -20532,7 +20532,7 @@ int SDOT_advsimd_vec(context *ctx, Instruction *instr)
 int SETF(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=0|op=0|S=1|11010000|opcode2=000000|sz=x|0010|Rn=xxxxx|o3=0|mask=1101 */
 	if((INSWORD & 0xFFFFBC1F)==0x3A00080D) {
 		decode_fields32(ENC_SETF8_ONLY_SETF, ctx, instr);
@@ -20551,7 +20551,7 @@ int SETF(context *ctx, Instruction *instr)
 int SEV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=100|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503209F) {
 		decode_fields32(ENC_SEV_HI_HINTS, ctx, instr);
@@ -20662,7 +20662,7 @@ int SEV(context *ctx, Instruction *instr)
 int SEVL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=101|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD50320BF) {
 		decode_fields32(ENC_SEVL_HI_HINTS, ctx, instr);
@@ -20773,7 +20773,7 @@ int SEVL(context *ctx, Instruction *instr)
 int SHA1C_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=000|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E000000) {
 		decode_fields32(ENC_SHA1C_QSV_CRYPTOSHA3, ctx, instr);
@@ -20792,7 +20792,7 @@ int SHA1C_advsimd(context *ctx, Instruction *instr)
 int SHA1H_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|10100|opcode=00000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E280800) {
 		decode_fields32(ENC_SHA1H_SS_CRYPTOSHA2, ctx, instr);
@@ -20810,7 +20810,7 @@ int SHA1H_advsimd(context *ctx, Instruction *instr)
 int SHA1M_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=010|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E002000) {
 		decode_fields32(ENC_SHA1M_QSV_CRYPTOSHA3, ctx, instr);
@@ -20829,7 +20829,7 @@ int SHA1M_advsimd(context *ctx, Instruction *instr)
 int SHA1P_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=001|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E001000) {
 		decode_fields32(ENC_SHA1P_QSV_CRYPTOSHA3, ctx, instr);
@@ -20848,7 +20848,7 @@ int SHA1P_advsimd(context *ctx, Instruction *instr)
 int SHA1SU0_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=011|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E003000) {
 		decode_fields32(ENC_SHA1SU0_VVV_CRYPTOSHA3, ctx, instr);
@@ -20867,7 +20867,7 @@ int SHA1SU0_advsimd(context *ctx, Instruction *instr)
 int SHA1SU1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|10100|opcode=00001|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E281800) {
 		decode_fields32(ENC_SHA1SU1_VV_CRYPTOSHA2, ctx, instr);
@@ -20885,7 +20885,7 @@ int SHA1SU1_advsimd(context *ctx, Instruction *instr)
 int SHA256H2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E005000) {
 		decode_fields32(ENC_SHA256H2_QQV_CRYPTOSHA3, ctx, instr);
@@ -20905,7 +20905,7 @@ int SHA256H2_advsimd(context *ctx, Instruction *instr)
 int SHA256H_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E004000) {
 		decode_fields32(ENC_SHA256H_QQV_CRYPTOSHA3, ctx, instr);
@@ -20925,7 +20925,7 @@ int SHA256H_advsimd(context *ctx, Instruction *instr)
 int SHA256SU0_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|10100|opcode=00010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E282800) {
 		decode_fields32(ENC_SHA256SU0_VV_CRYPTOSHA2, ctx, instr);
@@ -20943,7 +20943,7 @@ int SHA256SU0_advsimd(context *ctx, Instruction *instr)
 int SHA256SU1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 01011110|size=00|0|Rm=xxxxx|0|opcode=110|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E006000) {
 		decode_fields32(ENC_SHA256SU1_VVV_CRYPTOSHA3, ctx, instr);
@@ -20962,7 +20962,7 @@ int SHA256SU1_advsimd(context *ctx, Instruction *instr)
 int SHA512H2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608400) {
 		decode_fields32(ENC_SHA512H2_QQV_CRYPTOSHA512_3, ctx, instr);
@@ -20981,7 +20981,7 @@ int SHA512H2_advsimd(context *ctx, Instruction *instr)
 int SHA512H_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608000) {
 		decode_fields32(ENC_SHA512H_QQV_CRYPTOSHA512_3, ctx, instr);
@@ -21000,7 +21000,7 @@ int SHA512H_advsimd(context *ctx, Instruction *instr)
 int SHA512SU0_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110110000001000|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xCEC08000) {
 		decode_fields32(ENC_SHA512SU0_VV2_CRYPTOSHA512_2, ctx, instr);
@@ -21018,7 +21018,7 @@ int SHA512SU0_advsimd(context *ctx, Instruction *instr)
 int SHA512SU1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=0|00|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE608800) {
 		decode_fields32(ENC_SHA512SU1_VVV2_CRYPTOSHA512_3, ctx, instr);
@@ -21037,7 +21037,7 @@ int SHA512SU1_advsimd(context *ctx, Instruction *instr)
 int SHADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200400) {
 		decode_fields32(ENC_SHADD_ASIMDSAME_ONLY, ctx, instr);
@@ -21060,7 +21060,7 @@ int SHADD_advsimd(context *ctx, Instruction *instr)
 int SHLL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=10011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E213800) {
 		decode_fields32(ENC_SHLL_ASIMDMISC_S, ctx, instr);
@@ -21084,7 +21084,7 @@ int SHLL_advsimd(context *ctx, Instruction *instr)
 int SHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F005400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SHL_ASISDSHF_R, ctx, instr);
@@ -21099,7 +21099,7 @@ int SHL_advsimd(context *ctx, Instruction *instr)
 		ctx->shift = UINT(((ctx->immh<<3)|ctx->immb))-ctx->esize;
 		OK(ENC_SHL_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF005400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SHL_ASIMDSHF_R, ctx, instr);
@@ -21124,7 +21124,7 @@ int SHL_advsimd(context *ctx, Instruction *instr)
 int SHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SHRN_ASIMDSHF_N, ctx, instr);
@@ -21151,7 +21151,7 @@ int SHRN_advsimd(context *ctx, Instruction *instr)
 int SHSUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202400) {
 		decode_fields32(ENC_SHSUB_ASIMDSAME_ONLY, ctx, instr);
@@ -21174,7 +21174,7 @@ int SHSUB_advsimd(context *ctx, Instruction *instr)
 int SLI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F005400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SLI_ASISDSHF_R, ctx, instr);
@@ -21189,7 +21189,7 @@ int SLI_advsimd(context *ctx, Instruction *instr)
 		ctx->shift = UINT(((ctx->immh<<3)|ctx->immb))-ctx->esize;
 		OK(ENC_SLI_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=01010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F005400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SLI_ASIMDSHF_R, ctx, instr);
@@ -21214,7 +21214,7 @@ int SLI_advsimd(context *ctx, Instruction *instr)
 int SM3PARTW1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C000) {
 		decode_fields32(ENC_SM3PARTW1_VVV4_CRYPTOSHA512_3, ctx, instr);
@@ -21233,7 +21233,7 @@ int SM3PARTW1_advsimd(context *ctx, Instruction *instr)
 int SM3PARTW2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C400) {
 		decode_fields32(ENC_SM3PARTW2_VVV4_CRYPTOSHA512_3, ctx, instr);
@@ -21252,7 +21252,7 @@ int SM3PARTW2_advsimd(context *ctx, Instruction *instr)
 int SM3SS1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 110011100|Op0=10|Rm=xxxxx|0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0xCE400000) {
 		decode_fields32(ENC_SM3SS1_VVV4_CRYPTO4, ctx, instr);
@@ -21272,7 +21272,7 @@ int SM3SS1_advsimd(context *ctx, Instruction *instr)
 int SM3TT1A_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408000) {
 		decode_fields32(ENC_SM3TT1A_VVV4_CRYPTO3_IMM2, ctx, instr);
@@ -21292,7 +21292,7 @@ int SM3TT1A_advsimd(context *ctx, Instruction *instr)
 int SM3TT1B_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408400) {
 		decode_fields32(ENC_SM3TT1B_VVV4_CRYPTO3_IMM2, ctx, instr);
@@ -21312,7 +21312,7 @@ int SM3TT1B_advsimd(context *ctx, Instruction *instr)
 int SM3TT2A_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408800) {
 		decode_fields32(ENC_SM3TT2A_VVV4_CRYPTO3_IMM2, ctx, instr);
@@ -21332,7 +21332,7 @@ int SM3TT2A_advsimd(context *ctx, Instruction *instr)
 int SM3TT2B_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110010|Rm=xxxxx|10|imm2=xx|opcode=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0CC00)==0xCE408C00) {
 		decode_fields32(ENC_SM3TT2B_VVV_CRYPTO3_IMM2, ctx, instr);
@@ -21352,7 +21352,7 @@ int SM3TT2B_advsimd(context *ctx, Instruction *instr)
 int SM4EKEY_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110011|Rm=xxxxx|1|O=1|00|opcode=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xCE60C800) {
 		decode_fields32(ENC_SM4EKEY_VVV4_CRYPTOSHA512_3, ctx, instr);
@@ -21371,7 +21371,7 @@ int SM4EKEY_advsimd(context *ctx, Instruction *instr)
 int SM4E_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110110000001000|opcode=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xCEC08400) {
 		decode_fields32(ENC_SM4E_VV4_CRYPTOSHA512_2, ctx, instr);
@@ -21389,7 +21389,7 @@ int SM4E_advsimd(context *ctx, Instruction *instr)
 int SMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B200000) {
 		decode_fields32(ENC_SMADDL_64WA_DP_3SRC, ctx, instr);
@@ -21412,7 +21412,7 @@ int SMADDL(context *ctx, Instruction *instr)
 int SMAXP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A400) {
 		decode_fields32(ENC_SMAXP_ASIMDSAME_ONLY, ctx, instr);
@@ -21436,7 +21436,7 @@ int SMAXP_advsimd(context *ctx, Instruction *instr)
 int SMAXV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=0|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE30A800) {
 		decode_fields32(ENC_SMAXV_ASIMDALL_ONLY, ctx, instr);
@@ -21462,7 +21462,7 @@ int SMAXV_advsimd(context *ctx, Instruction *instr)
 int SMAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206400) {
 		decode_fields32(ENC_SMAX_ASIMDSAME_ONLY, ctx, instr);
@@ -21486,7 +21486,7 @@ int SMAX_advsimd(context *ctx, Instruction *instr)
 int SMC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=11 */
 	if((INSWORD & 0xFFE0001F)==0xD4000003) {
 		decode_fields32(ENC_SMC_EX_EXCEPTION, ctx, instr);
@@ -21499,7 +21499,7 @@ int SMC(context *ctx, Instruction *instr)
 int SMINP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20AC00) {
 		decode_fields32(ENC_SMINP_ASIMDSAME_ONLY, ctx, instr);
@@ -21523,7 +21523,7 @@ int SMINP_advsimd(context *ctx, Instruction *instr)
 int SMINV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=0|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE31A800) {
 		decode_fields32(ENC_SMINV_ASIMDALL_ONLY, ctx, instr);
@@ -21549,7 +21549,7 @@ int SMINV_advsimd(context *ctx, Instruction *instr)
 int SMIN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206C00) {
 		decode_fields32(ENC_SMIN_ASIMDSAME_ONLY, ctx, instr);
@@ -21573,7 +21573,7 @@ int SMIN_advsimd(context *ctx, Instruction *instr)
 int SMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF002000) {
 		decode_fields32(ENC_SMLAL_ASIMDELEM_L, ctx, instr);
@@ -21607,7 +21607,7 @@ int SMLAL_advsimd_elt(context *ctx, Instruction *instr)
 int SMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE208000) {
 		decode_fields32(ENC_SMLAL_ASIMDDIFF_L, ctx, instr);
@@ -21632,7 +21632,7 @@ int SMLAL_advsimd_vec(context *ctx, Instruction *instr)
 int SMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF006000) {
 		decode_fields32(ENC_SMLSL_ASIMDELEM_L, ctx, instr);
@@ -21666,7 +21666,7 @@ int SMLSL_advsimd_elt(context *ctx, Instruction *instr)
 int SMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A000) {
 		decode_fields32(ENC_SMLSL_ASIMDDIFF_L, ctx, instr);
@@ -21691,7 +21691,7 @@ int SMLSL_advsimd_vec(context *ctx, Instruction *instr)
 int SMMLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=1|U=0|01110|size=10|0|Rm=xxxxx|1|010|B=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E80A400) {
 		decode_fields32(ENC_SMMLA_ASIMDSAME2_G, ctx, instr);
@@ -21725,7 +21725,7 @@ int SMMLA_advsimd_vec(context *ctx, Instruction *instr)
 int SMNEGL_SMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B20FC00) {
 		decode_fields32(ENC_SMNEGL_SMSUBL_64WA_DP_3SRC, ctx, instr);
@@ -21738,7 +21738,7 @@ int SMNEGL_SMSUBL(context *ctx, Instruction *instr)
 int SMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=01|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE002C00) {
 		decode_fields32(ENC_SMOV_ASIMDINS_W_W, ctx, instr);
@@ -21770,7 +21770,7 @@ int SMOV_advsimd(context *ctx, Instruction *instr)
 int SMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B208000) {
 		decode_fields32(ENC_SMSUBL_64WA_DP_3SRC, ctx, instr);
@@ -21793,7 +21793,7 @@ int SMSUBL(context *ctx, Instruction *instr)
 int SMULH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=0|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B400000) {
 		decode_fields32(ENC_SMULH_64_DP_3SRC, ctx, instr);
@@ -21813,7 +21813,7 @@ int SMULH(context *ctx, Instruction *instr)
 int SMULL_SMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B207C00) {
 		decode_fields32(ENC_SMULL_SMADDL_64WA_DP_3SRC, ctx, instr);
@@ -21826,7 +21826,7 @@ int SMULL_SMADDL(context *ctx, Instruction *instr)
 int SMULL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1010|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00A000) {
 		decode_fields32(ENC_SMULL_ASIMDELEM_L, ctx, instr);
@@ -21859,7 +21859,7 @@ int SMULL_advsimd_elt(context *ctx, Instruction *instr)
 int SMULL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20C000) {
 		decode_fields32(ENC_SMULL_ASIMDDIFF_L, ctx, instr);
@@ -21883,7 +21883,7 @@ int SMULL_advsimd_vec(context *ctx, Instruction *instr)
 int SQABS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E207800) {
 		decode_fields32(ENC_SQABS_ASISDMISC_R, ctx, instr);
@@ -21895,7 +21895,7 @@ int SQABS_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_SQABS_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE207800) {
 		decode_fields32(ENC_SQABS_ASIMDMISC_R, ctx, instr);
@@ -21917,7 +21917,7 @@ int SQABS_advsimd(context *ctx, Instruction *instr)
 int SQADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E200C00) {
 		decode_fields32(ENC_SQADD_ASISDSAME_ONLY, ctx, instr);
@@ -21930,7 +21930,7 @@ int SQADD_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SQADD_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200C00) {
 		decode_fields32(ENC_SQADD_ASIMDSAME_ONLY, ctx, instr);
@@ -21953,7 +21953,7 @@ int SQADD_advsimd(context *ctx, Instruction *instr)
 int SQDMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F003000) {
 		decode_fields32(ENC_SQDMLAL_ASISDELEM_L, ctx, instr);
@@ -21979,7 +21979,7 @@ int SQDMLAL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_SQDMLAL_ASISDELEM_L);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF003000) {
 		decode_fields32(ENC_SQDMLAL_ASIMDELEM_L, ctx, instr);
@@ -22012,7 +22012,7 @@ int SQDMLAL_advsimd_elt(context *ctx, Instruction *instr)
 int SQDMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E209000) {
 		decode_fields32(ENC_SQDMLAL_ASISDDIFF_ONLY, ctx, instr);
@@ -22029,7 +22029,7 @@ int SQDMLAL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o1==1);
 		OK(ENC_SQDMLAL_ASISDDIFF_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209000) {
 		decode_fields32(ENC_SQDMLAL_ASIMDDIFF_L, ctx, instr);
@@ -22053,7 +22053,7 @@ int SQDMLAL_advsimd_vec(context *ctx, Instruction *instr)
 int SQDMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F007000) {
 		decode_fields32(ENC_SQDMLSL_ASISDELEM_L, ctx, instr);
@@ -22079,7 +22079,7 @@ int SQDMLSL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o2==1);
 		OK(ENC_SQDMLSL_ASISDELEM_L);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF007000) {
 		decode_fields32(ENC_SQDMLSL_ASIMDELEM_L, ctx, instr);
@@ -22112,7 +22112,7 @@ int SQDMLSL_advsimd_elt(context *ctx, Instruction *instr)
 int SQDMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20B000) {
 		decode_fields32(ENC_SQDMLSL_ASISDDIFF_ONLY, ctx, instr);
@@ -22129,7 +22129,7 @@ int SQDMLSL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->o1==1);
 		OK(ENC_SQDMLSL_ASISDDIFF_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20B000) {
 		decode_fields32(ENC_SQDMLSL_ASIMDDIFF_L, ctx, instr);
@@ -22153,7 +22153,7 @@ int SQDMLSL_advsimd_vec(context *ctx, Instruction *instr)
 int SQDMULH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00C000) {
 		decode_fields32(ENC_SQDMULH_ASISDELEM_R, ctx, instr);
@@ -22178,7 +22178,7 @@ int SQDMULH_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->round = (ctx->op==1);
 		OK(ENC_SQDMULH_ASISDELEM_R);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00C000) {
 		decode_fields32(ENC_SQDMULH_ASIMDELEM_R, ctx, instr);
@@ -22210,7 +22210,7 @@ int SQDMULH_advsimd_elt(context *ctx, Instruction *instr)
 int SQDMULH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20B400) {
 		decode_fields32(ENC_SQDMULH_ASISDSAME_ONLY, ctx, instr);
@@ -22226,7 +22226,7 @@ int SQDMULH_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->rounding = (ctx->U==1);
 		OK(ENC_SQDMULH_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20B400) {
 		decode_fields32(ENC_SQDMULH_ASIMDSAME_ONLY, ctx, instr);
@@ -22249,7 +22249,7 @@ int SQDMULH_advsimd_vec(context *ctx, Instruction *instr)
 int SQDMULL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode=1011|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00B000) {
 		decode_fields32(ENC_SQDMULL_ASISDELEM_L, ctx, instr);
@@ -22274,7 +22274,7 @@ int SQDMULL_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_SQDMULL_ASISDELEM_L);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1011|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00B000) {
 		decode_fields32(ENC_SQDMULL_ASIMDELEM_L, ctx, instr);
@@ -22306,7 +22306,7 @@ int SQDMULL_advsimd_elt(context *ctx, Instruction *instr)
 int SQDMULL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=1101|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20D000) {
 		decode_fields32(ENC_SQDMULL_ASISDDIFF_ONLY, ctx, instr);
@@ -22322,7 +22322,7 @@ int SQDMULL_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_SQDMULL_ASISDDIFF_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1101|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20D000) {
 		decode_fields32(ENC_SQDMULL_ASIMDDIFF_L, ctx, instr);
@@ -22345,7 +22345,7 @@ int SQDMULL_advsimd_vec(context *ctx, Instruction *instr)
 int SQNEG_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E207800) {
 		decode_fields32(ENC_SQNEG_ASISDMISC_R, ctx, instr);
@@ -22357,7 +22357,7 @@ int SQNEG_advsimd(context *ctx, Instruction *instr)
 		ctx->neg = (ctx->U==1);
 		OK(ENC_SQNEG_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=00111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E207800) {
 		decode_fields32(ENC_SQNEG_ASIMDMISC_R, ctx, instr);
@@ -22379,7 +22379,7 @@ int SQNEG_advsimd(context *ctx, Instruction *instr)
 int SQRDMLAH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=0|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00D000) {
 		decode_fields32(ENC_SQRDMLAH_ASISDELEM_R, ctx, instr);
@@ -22408,7 +22408,7 @@ int SQRDMLAH_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->S==1);
 		OK(ENC_SQRDMLAH_ASISDELEM_R);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|11|S=0|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00D000) {
 		decode_fields32(ENC_SQRDMLAH_ASIMDELEM_R, ctx, instr);
@@ -22444,7 +22444,7 @@ int SQRDMLAH_advsimd_elt(context *ctx, Instruction *instr)
 int SQRDMLAH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008400) {
 		decode_fields32(ENC_SQRDMLAH_ASISDSAME2_ONLY, ctx, instr);
@@ -22464,7 +22464,7 @@ int SQRDMLAH_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->S==1);
 		OK(ENC_SQRDMLAH_ASISDSAME2_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|000|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E008400) {
 		decode_fields32(ENC_SQRDMLAH_ASIMDSAME2_ONLY, ctx, instr);
@@ -22491,7 +22491,7 @@ int SQRDMLAH_advsimd_vec(context *ctx, Instruction *instr)
 int SQRDMLSH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=1|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00F000) {
 		decode_fields32(ENC_SQRDMLSH_ASISDELEM_R, ctx, instr);
@@ -22520,7 +22520,7 @@ int SQRDMLSH_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->S==1);
 		OK(ENC_SQRDMLSH_ASISDELEM_R);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|11|S=1|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00F000) {
 		decode_fields32(ENC_SQRDMLSH_ASIMDELEM_R, ctx, instr);
@@ -22556,7 +22556,7 @@ int SQRDMLSH_advsimd_elt(context *ctx, Instruction *instr)
 int SQRDMLSH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008C00) {
 		decode_fields32(ENC_SQRDMLSH_ASISDSAME2_ONLY, ctx, instr);
@@ -22576,7 +22576,7 @@ int SQRDMLSH_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->S==1);
 		OK(ENC_SQRDMLSH_ASISDSAME2_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|000|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E008C00) {
 		decode_fields32(ENC_SQRDMLSH_ASIMDSAME2_ONLY, ctx, instr);
@@ -22603,7 +22603,7 @@ int SQRDMLSH_advsimd_vec(context *ctx, Instruction *instr)
 int SQRDMULH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_scalar */
+	/* class iclass_2reg_scalar */
 	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00D000) {
 		decode_fields32(ENC_SQRDMULH_ASISDELEM_R, ctx, instr);
@@ -22628,7 +22628,7 @@ int SQRDMULH_advsimd_elt(context *ctx, Instruction *instr)
 		ctx->round = (ctx->op==1);
 		OK(ENC_SQRDMULH_ASISDELEM_R);
 	}
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00D000) {
 		decode_fields32(ENC_SQRDMULH_ASIMDELEM_R, ctx, instr);
@@ -22660,7 +22660,7 @@ int SQRDMULH_advsimd_elt(context *ctx, Instruction *instr)
 int SQRDMULH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E20B400) {
 		decode_fields32(ENC_SQRDMULH_ASISDSAME_ONLY, ctx, instr);
@@ -22676,7 +22676,7 @@ int SQRDMULH_advsimd_vec(context *ctx, Instruction *instr)
 		ctx->rounding = (ctx->U==1);
 		OK(ENC_SQRDMULH_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10110|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20B400) {
 		decode_fields32(ENC_SQRDMULH_ASIMDSAME_ONLY, ctx, instr);
@@ -22699,7 +22699,7 @@ int SQRDMULH_advsimd_vec(context *ctx, Instruction *instr)
 int SQRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205C00) {
 		decode_fields32(ENC_SQRSHL_ASISDSAME_ONLY, ctx, instr);
@@ -22717,7 +22717,7 @@ int SQRSHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SQRSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205C00) {
 		decode_fields32(ENC_SQRSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -22742,7 +22742,7 @@ int SQRSHL_advsimd(context *ctx, Instruction *instr)
 int SQRSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRN_ASISDSHF_N, ctx, instr);
@@ -22763,7 +22763,7 @@ int SQRSHRN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SQRSHRN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRN_ASIMDSHF_N, ctx, instr);
@@ -22791,7 +22791,7 @@ int SQRSHRN_advsimd(context *ctx, Instruction *instr)
 int SQRSHRUN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRUN_ASISDSHF_N, ctx, instr);
@@ -22811,7 +22811,7 @@ int SQRSHRUN_advsimd(context *ctx, Instruction *instr)
 		ctx->round = (ctx->op==1);
 		OK(ENC_SQRSHRUN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRUN_ASIMDSHF_N, ctx, instr);
@@ -22838,7 +22838,7 @@ int SQRSHRUN_advsimd(context *ctx, Instruction *instr)
 int SQSHLU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F006400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHLU_ASISDSHF_R, ctx, instr);
@@ -22868,7 +22868,7 @@ int SQSHLU_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SQSHLU_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|011|op=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F006400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHLU_ASIMDSHF_R, ctx, instr);
@@ -22908,7 +22908,7 @@ int SQSHLU_advsimd(context *ctx, Instruction *instr)
 int SQSHL_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHL_ASISDSHF_R, ctx, instr);
@@ -22938,7 +22938,7 @@ int SQSHL_advsimd_imm(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SQSHL_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHL_ASIMDSHF_R, ctx, instr);
@@ -22978,7 +22978,7 @@ int SQSHL_advsimd_imm(context *ctx, Instruction *instr)
 int SQSHL_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204C00) {
 		decode_fields32(ENC_SQSHL_ASISDSAME_ONLY, ctx, instr);
@@ -22996,7 +22996,7 @@ int SQSHL_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SQSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204C00) {
 		decode_fields32(ENC_SQSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -23021,7 +23021,7 @@ int SQSHL_advsimd_reg(context *ctx, Instruction *instr)
 int SQSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRN_ASISDSHF_N, ctx, instr);
@@ -23042,7 +23042,7 @@ int SQSHRN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SQSHRN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRN_ASIMDSHF_N, ctx, instr);
@@ -23070,7 +23070,7 @@ int SQSHRN_advsimd(context *ctx, Instruction *instr)
 int SQSHRUN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRUN_ASISDSHF_N, ctx, instr);
@@ -23090,7 +23090,7 @@ int SQSHRUN_advsimd(context *ctx, Instruction *instr)
 		ctx->round = (ctx->op==1);
 		OK(ENC_SQSHRUN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRUN_ASIMDSHF_N, ctx, instr);
@@ -23117,7 +23117,7 @@ int SQSHRUN_advsimd(context *ctx, Instruction *instr)
 int SQSUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E202C00) {
 		decode_fields32(ENC_SQSUB_ASISDSAME_ONLY, ctx, instr);
@@ -23130,7 +23130,7 @@ int SQSUB_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SQSUB_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202C00) {
 		decode_fields32(ENC_SQSUB_ASIMDSAME_ONLY, ctx, instr);
@@ -23153,7 +23153,7 @@ int SQSUB_advsimd(context *ctx, Instruction *instr)
 int SQXTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E214800) {
 		decode_fields32(ENC_SQXTN_ASISDMISC_N, ctx, instr);
@@ -23169,7 +23169,7 @@ int SQXTN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SQXTN_ASISDMISC_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE214800) {
 		decode_fields32(ENC_SQXTN_ASIMDMISC_N, ctx, instr);
@@ -23192,7 +23192,7 @@ int SQXTN_advsimd(context *ctx, Instruction *instr)
 int SQXTUN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|opcode=10010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E212800) {
 		decode_fields32(ENC_SQXTUN_ASISDMISC_N, ctx, instr);
@@ -23207,7 +23207,7 @@ int SQXTUN_advsimd(context *ctx, Instruction *instr)
 		ctx->elements = 1;
 		OK(ENC_SQXTUN_ASISDMISC_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=10010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E212800) {
 		decode_fields32(ENC_SQXTUN_ASIMDMISC_N, ctx, instr);
@@ -23229,7 +23229,7 @@ int SQXTUN_advsimd(context *ctx, Instruction *instr)
 int SRHADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=00010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE201400) {
 		decode_fields32(ENC_SRHADD_ASIMDSAME_ONLY, ctx, instr);
@@ -23252,7 +23252,7 @@ int SRHADD_advsimd(context *ctx, Instruction *instr)
 int SRI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=01000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F004400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRI_ASISDSHF_R, ctx, instr);
@@ -23267,7 +23267,7 @@ int SRI_advsimd(context *ctx, Instruction *instr)
 		ctx->shift = ((ctx->esize) * (2))-UINT(((ctx->immh<<3)|ctx->immb));
 		OK(ENC_SRI_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=01000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F004400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRI_ASIMDSHF_R, ctx, instr);
@@ -23292,7 +23292,7 @@ int SRI_advsimd(context *ctx, Instruction *instr)
 int SRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205400) {
 		decode_fields32(ENC_SRSHL_ASISDSAME_ONLY, ctx, instr);
@@ -23310,7 +23310,7 @@ int SRSHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SRSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205400) {
 		decode_fields32(ENC_SRSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -23335,7 +23335,7 @@ int SRSHL_advsimd(context *ctx, Instruction *instr)
 int SRSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSHR_ASISDSHF_R, ctx, instr);
@@ -23353,7 +23353,7 @@ int SRSHR_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_SRSHR_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSHR_ASIMDSHF_R, ctx, instr);
@@ -23381,7 +23381,7 @@ int SRSHR_advsimd(context *ctx, Instruction *instr)
 int SRSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSRA_ASISDSHF_R, ctx, instr);
@@ -23399,7 +23399,7 @@ int SRSRA_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_SRSRA_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSRA_ASIMDSHF_R, ctx, instr);
@@ -23427,7 +23427,7 @@ int SRSRA_advsimd(context *ctx, Instruction *instr)
 int SSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class dsb_memory */
+	/* class iclass_dsb_memory */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503309F) {
 		decode_fields32(ENC_SSBB_DSB_BO_BARRIERS, ctx, instr);
@@ -23440,7 +23440,7 @@ int SSBB_DSB(context *ctx, Instruction *instr)
 int SSHLL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSHLL_ASIMDSHF_L, ctx, instr);
@@ -23469,7 +23469,7 @@ int SSHLL_advsimd(context *ctx, Instruction *instr)
 int SSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204400) {
 		decode_fields32(ENC_SSHL_ASISDSAME_ONLY, ctx, instr);
@@ -23487,7 +23487,7 @@ int SSHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_SSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204400) {
 		decode_fields32(ENC_SSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -23512,7 +23512,7 @@ int SSHL_advsimd(context *ctx, Instruction *instr)
 int SSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSHR_ASISDSHF_R, ctx, instr);
@@ -23530,7 +23530,7 @@ int SSHR_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_SSHR_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSHR_ASIMDSHF_R, ctx, instr);
@@ -23558,7 +23558,7 @@ int SSHR_advsimd(context *ctx, Instruction *instr)
 int SSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSRA_ASISDSHF_R, ctx, instr);
@@ -23576,7 +23576,7 @@ int SSRA_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_SSRA_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSRA_ASIMDSHF_R, ctx, instr);
@@ -23604,7 +23604,7 @@ int SSRA_advsimd(context *ctx, Instruction *instr)
 int SSUBL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202000) {
 		decode_fields32(ENC_SSUBL_ASIMDDIFF_L, ctx, instr);
@@ -23629,7 +23629,7 @@ int SSUBL_advsimd(context *ctx, Instruction *instr)
 int SSUBW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203000) {
 		decode_fields32(ENC_SSUBW_ASIMDDIFF_W, ctx, instr);
@@ -23654,7 +23654,7 @@ int SSUBW_advsimd(context *ctx, Instruction *instr)
 int ST1_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=0|000000|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xC002000) {
 		decode_fields32(ENC_ST1_ASISDLSE_R1_1V, ctx, instr);
@@ -23668,7 +23668,7 @@ int ST1_advsimd_mult(context *ctx, Instruction *instr)
 		if(ctx->opcode==6) OK(ENC_ST1_ASISDLSE_R3_3V);
 		if(ctx->opcode==2) OK(ENC_ST1_ASISDLSE_R4_4V);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=0|0|Rm=xxxxx|opcode=xx1x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xC802000) {
 		decode_fields32(ENC_ST1_ASISDLSEP_I1_I1, ctx, instr);
@@ -23732,7 +23732,7 @@ int ST1_advsimd_mult(context *ctx, Instruction *instr)
 int ST1_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=0|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD000000) {
 		decode_fields32(ENC_ST1_ASISDLSO_B1_1B, ctx, instr);
@@ -23746,7 +23746,7 @@ int ST1_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==4 && ctx->size==0) OK(ENC_ST1_ASISDLSO_S1_1S);
 		if(ctx->opcode==4 && ctx->S==0 && ctx->size==1) OK(ENC_ST1_ASISDLSO_D1_1D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=0|R=0|Rm=xxxxx|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xD800000) {
 		decode_fields32(ENC_ST1_ASISDLSOP_B1_I1B, ctx, instr);
@@ -23810,7 +23810,7 @@ int ST1_advsimd_sngl(context *ctx, Instruction *instr)
 int ST2G(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* 11011001|opc=10|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9A00400) {
 		decode_fields32(ENC_ST2G_64SPOST_LDSTTAGS, ctx, instr);
@@ -23825,7 +23825,7 @@ int ST2G(context *ctx, Instruction *instr)
 		ctx->zero_data = FALSE;
 		OK(ENC_ST2G_64SPOST_LDSTTAGS);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* 11011001|opc=10|1|imm9=xxxxxxxxx|op2=11|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9A00C00) {
 		decode_fields32(ENC_ST2G_64SPRE_LDSTTAGS, ctx, instr);
@@ -23840,7 +23840,7 @@ int ST2G(context *ctx, Instruction *instr)
 		ctx->zero_data = FALSE;
 		OK(ENC_ST2G_64SPRE_LDSTTAGS);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* 11011001|opc=10|1|imm9=xxxxxxxxx|op2=10|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9A00800) {
 		decode_fields32(ENC_ST2G_64SOFFSET_LDSTTAGS, ctx, instr);
@@ -23862,7 +23862,7 @@ int ST2G(context *ctx, Instruction *instr)
 int ST2_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=0|000000|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC008000) {
 		decode_fields32(ENC_ST2_ASISDLSE_R2, ctx, instr);
@@ -23873,7 +23873,7 @@ int ST2_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_ST2_ASISDLSE_R2);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=0|0|Rm=xxxxx|opcode=1000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xC808000) {
 		decode_fields32(ENC_ST2_ASISDLSEP_I2_I, ctx, instr);
@@ -23931,7 +23931,7 @@ int ST2_advsimd_mult(context *ctx, Instruction *instr)
 int ST2_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=1|00000|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD200000) {
 		decode_fields32(ENC_ST2_ASISDLSO_B2_2B, ctx, instr);
@@ -23945,7 +23945,7 @@ int ST2_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==4 && ctx->size==0) OK(ENC_ST2_ASISDLSO_S2_2S);
 		if(ctx->opcode==4 && ctx->S==0 && ctx->size==1) OK(ENC_ST2_ASISDLSO_D2_2D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=0|R=1|Rm=xxxxx|opcode=xx0|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDA00000) {
 		decode_fields32(ENC_ST2_ASISDLSOP_B2_I2B, ctx, instr);
@@ -24009,7 +24009,7 @@ int ST2_advsimd_sngl(context *ctx, Instruction *instr)
 int ST3_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=0|000000|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC004000) {
 		decode_fields32(ENC_ST3_ASISDLSE_R3, ctx, instr);
@@ -24020,7 +24020,7 @@ int ST3_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_ST3_ASISDLSE_R3);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=0|0|Rm=xxxxx|opcode=0100|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xC804000) {
 		decode_fields32(ENC_ST3_ASISDLSEP_I3_I, ctx, instr);
@@ -24078,7 +24078,7 @@ int ST3_advsimd_mult(context *ctx, Instruction *instr)
 int ST3_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=0|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD002000) {
 		decode_fields32(ENC_ST3_ASISDLSO_B3_3B, ctx, instr);
@@ -24092,7 +24092,7 @@ int ST3_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==5 && ctx->size==0) OK(ENC_ST3_ASISDLSO_S3_3S);
 		if(ctx->opcode==5 && ctx->S==0 && ctx->size==1) OK(ENC_ST3_ASISDLSO_D3_3D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=0|R=0|Rm=xxxxx|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xD802000) {
 		decode_fields32(ENC_ST3_ASISDLSOP_B3_I3B, ctx, instr);
@@ -24156,7 +24156,7 @@ int ST3_advsimd_sngl(context *ctx, Instruction *instr)
 int ST4_advsimd_mult(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011000|L=0|000000|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFFF000)==0xC000000) {
 		decode_fields32(ENC_ST4_ASISDLSE_R4, ctx, instr);
@@ -24167,7 +24167,7 @@ int ST4_advsimd_mult(context *ctx, Instruction *instr)
 		ctx->tag_checked = ctx->wback || ctx->n!=0x1f;
 		OK(ENC_ST4_ASISDLSE_R4);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011001|L=0|0|Rm=xxxxx|opcode=0000|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE0F000)==0xC800000) {
 		decode_fields32(ENC_ST4_ASISDLSEP_I4_I, ctx, instr);
@@ -24225,7 +24225,7 @@ int ST4_advsimd_mult(context *ctx, Instruction *instr)
 int ST4_advsimd_sngl(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class as_no_post_index */
+	/* class iclass_as_no_post_index */
 	/* 0|Q=x|0011010|L=0|R=1|00000|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFFF2000)==0xD202000) {
 		decode_fields32(ENC_ST4_ASISDLSO_B4_4B, ctx, instr);
@@ -24239,7 +24239,7 @@ int ST4_advsimd_sngl(context *ctx, Instruction *instr)
 		if(ctx->opcode==5 && ctx->size==0) OK(ENC_ST4_ASISDLSO_S4_4S);
 		if(ctx->opcode==5 && ctx->S==0 && ctx->size==1) OK(ENC_ST4_ASISDLSO_D4_4D);
 	}
-	/* class as_post_index */
+	/* class iclass_as_post_index */
 	/* 0|Q=x|0011011|L=0|R=1|Rm=xxxxx|opcode=xx1|S=x|size=xx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE02000)==0xDA02000) {
 		decode_fields32(ENC_ST4_ASISDLSOP_B4_I4B, ctx, instr);
@@ -24303,7 +24303,7 @@ int ST4_advsimd_sngl(context *ctx, Instruction *instr)
 int ST64B(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=11|111|V=0|00|A=0|R=0|1|Rs=11111|o3=1|opc=001|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xF83F9000) {
 		decode_fields32(ENC_ST64B_64L_MEMOP, ctx, instr);
@@ -24325,7 +24325,7 @@ int ST64B(context *ctx, Instruction *instr)
 int ST64BV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=11|111|V=0|00|A=0|R=0|1|Rs=xxxxx|o3=1|opc=011|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xF820B000) {
 		decode_fields32(ENC_ST64BV_64_MEMOP, ctx, instr);
@@ -24348,7 +24348,7 @@ int ST64BV(context *ctx, Instruction *instr)
 int ST64BV0(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=11|111|V=0|00|A=0|R=0|1|Rs=xxxxx|o3=1|opc=010|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xF820A000) {
 		decode_fields32(ENC_ST64BV0_64_MEMOP, ctx, instr);
@@ -24371,7 +24371,7 @@ int ST64BV0(context *ctx, Instruction *instr)
 int STADDB_LDADDB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820001F) {
 		decode_fields32(ENC_STADDB_LDADDB_32_MEMOP, ctx, instr);
@@ -24385,7 +24385,7 @@ int STADDB_LDADDB(context *ctx, Instruction *instr)
 int STADDH_LDADDH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820001F) {
 		decode_fields32(ENC_STADDH_LDADDH_32_MEMOP, ctx, instr);
@@ -24399,7 +24399,7 @@ int STADDH_LDADDH(context *ctx, Instruction *instr)
 int STADD_LDADD(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=000|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820001F) {
 		decode_fields32(ENC_STADD_LDADD_32_MEMOP, ctx, instr);
@@ -24415,7 +24415,7 @@ int STADD_LDADD(context *ctx, Instruction *instr)
 int STCLRB_LDCLRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820101F) {
 		decode_fields32(ENC_STCLRB_LDCLRB_32_MEMOP, ctx, instr);
@@ -24429,7 +24429,7 @@ int STCLRB_LDCLRB(context *ctx, Instruction *instr)
 int STCLRH_LDCLRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820101F) {
 		decode_fields32(ENC_STCLRH_LDCLRH_32_MEMOP, ctx, instr);
@@ -24443,7 +24443,7 @@ int STCLRH_LDCLRH(context *ctx, Instruction *instr)
 int STCLR_LDCLR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=001|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820101F) {
 		decode_fields32(ENC_STCLR_LDCLR_32_MEMOP, ctx, instr);
@@ -24459,7 +24459,7 @@ int STCLR_LDCLR(context *ctx, Instruction *instr)
 int STEORB_LDEORB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820201F) {
 		decode_fields32(ENC_STEORB_LDEORB_32_MEMOP, ctx, instr);
@@ -24473,7 +24473,7 @@ int STEORB_LDEORB(context *ctx, Instruction *instr)
 int STEORH_LDEORH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820201F) {
 		decode_fields32(ENC_STEORH_LDEORH_32_MEMOP, ctx, instr);
@@ -24487,7 +24487,7 @@ int STEORH_LDEORH(context *ctx, Instruction *instr)
 int STEOR_LDEOR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=010|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820201F) {
 		decode_fields32(ENC_STEOR_LDEOR_32_MEMOP, ctx, instr);
@@ -24503,7 +24503,7 @@ int STEOR_LDEOR(context *ctx, Instruction *instr)
 int STG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* 11011001|opc=00|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9200400) {
 		decode_fields32(ENC_STG_64SPOST_LDSTTAGS, ctx, instr);
@@ -24518,7 +24518,7 @@ int STG(context *ctx, Instruction *instr)
 		ctx->zero_data = FALSE;
 		OK(ENC_STG_64SPOST_LDSTTAGS);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* 11011001|opc=00|1|imm9=xxxxxxxxx|op2=11|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9200C00) {
 		decode_fields32(ENC_STG_64SPRE_LDSTTAGS, ctx, instr);
@@ -24533,7 +24533,7 @@ int STG(context *ctx, Instruction *instr)
 		ctx->zero_data = FALSE;
 		OK(ENC_STG_64SPRE_LDSTTAGS);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* 11011001|opc=00|1|imm9=xxxxxxxxx|op2=10|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9200800) {
 		decode_fields32(ENC_STG_64SOFFSET_LDSTTAGS, ctx, instr);
@@ -24555,7 +24555,7 @@ int STG(context *ctx, Instruction *instr)
 int STGM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 11011001|opc=10|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9A00000) {
 		decode_fields32(ENC_STGM_64BULK_LDSTTAGS, ctx, instr);
@@ -24573,7 +24573,7 @@ int STGM(context *ctx, Instruction *instr)
 int STGP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=01|101|V=0|001|L=0|simm7=xxxxxxx|Xt2=xxxxx|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x68800000) {
 		decode_fields32(ENC_STGP_64_LDSTPAIR_POST, ctx, instr);
@@ -24588,7 +24588,7 @@ int STGP(context *ctx, Instruction *instr)
 		ctx->postindex = TRUE;
 		OK(ENC_STGP_64_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=01|101|V=0|011|L=0|simm7=xxxxxxx|Xt2=xxxxx|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x69800000) {
 		decode_fields32(ENC_STGP_64_LDSTPAIR_PRE, ctx, instr);
@@ -24603,7 +24603,7 @@ int STGP(context *ctx, Instruction *instr)
 		ctx->postindex = FALSE;
 		OK(ENC_STGP_64_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=01|101|V=0|010|L=0|simm7=xxxxxxx|Xt2=xxxxx|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x69000000) {
 		decode_fields32(ENC_STGP_64_LDSTPAIR_OFF, ctx, instr);
@@ -24625,7 +24625,7 @@ int STGP(context *ctx, Instruction *instr)
 int STLLR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88800000) {
 		decode_fields32(ENC_STLLR_SL32_LDSTORD, ctx, instr);
@@ -24649,7 +24649,7 @@ int STLLR(context *ctx, Instruction *instr)
 int STLLRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8800000) {
 		decode_fields32(ENC_STLLRB_SL32_LDSTORD, ctx, instr);
@@ -24672,7 +24672,7 @@ int STLLRB(context *ctx, Instruction *instr)
 int STLLRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48800000) {
 		decode_fields32(ENC_STLLRH_SL32_LDSTORD, ctx, instr);
@@ -24695,7 +24695,7 @@ int STLLRH(context *ctx, Instruction *instr)
 int STLR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88808000) {
 		decode_fields32(ENC_STLR_SL32_LDSTORD, ctx, instr);
@@ -24719,7 +24719,7 @@ int STLR(context *ctx, Instruction *instr)
 int STLRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8808000) {
 		decode_fields32(ENC_STLRB_SL32_LDSTORD, ctx, instr);
@@ -24742,7 +24742,7 @@ int STLRB(context *ctx, Instruction *instr)
 int STLRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=1|L=0|o1=0|Rs=(1)(1)(1)(1)(1)|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48808000) {
 		decode_fields32(ENC_STLRH_SL32_LDSTORD, ctx, instr);
@@ -24765,7 +24765,7 @@ int STLRH(context *ctx, Instruction *instr)
 int STLURB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x19000000) {
 		decode_fields32(ENC_STLURB_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -24827,7 +24827,7 @@ int STLURB(context *ctx, Instruction *instr)
 int STLURH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x59000000) {
 		decode_fields32(ENC_STLURH_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -24889,7 +24889,7 @@ int STLURH(context *ctx, Instruction *instr)
 int STLUR_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|011001|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0x99000000) {
 		decode_fields32(ENC_STLUR_32_LDAPSTL_UNSCALED, ctx, instr);
@@ -24952,7 +24952,7 @@ int STLUR_gen(context *ctx, Instruction *instr)
 int STLXP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=1|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88208000) {
 		decode_fields32(ENC_STLXP_SP32_LDSTEXCLP, ctx, instr);
@@ -24996,7 +24996,7 @@ int STLXP(context *ctx, Instruction *instr)
 int STLXR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88008000) {
 		decode_fields32(ENC_STLXR_SR32_LDSTEXCLR, ctx, instr);
@@ -25040,7 +25040,7 @@ int STLXR(context *ctx, Instruction *instr)
 int STLXRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8008000) {
 		decode_fields32(ENC_STLXRB_SR32_LDSTEXCLR, ctx, instr);
@@ -25083,7 +25083,7 @@ int STLXRB(context *ctx, Instruction *instr)
 int STLXRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=1|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48008000) {
 		decode_fields32(ENC_STLXRH_SR32_LDSTEXCLR, ctx, instr);
@@ -25126,7 +25126,7 @@ int STLXRH(context *ctx, Instruction *instr)
 int STNP_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=xx|101|V=1|000|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C000000) {
 		decode_fields32(ENC_STNP_S_LDSTNAPAIR_OFFS, ctx, instr);
@@ -25160,7 +25160,7 @@ int STNP_fpsimd(context *ctx, Instruction *instr)
 int STNP_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=x0|101|V=0|000|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28000000) {
 		decode_fields32(ENC_STNP_32_LDSTNAPAIR_OFFS, ctx, instr);
@@ -25193,7 +25193,7 @@ int STNP_gen(context *ctx, Instruction *instr)
 int STP_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=xx|101|V=1|001|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2C800000) {
 		decode_fields32(ENC_STP_S_LDSTPAIR_POST, ctx, instr);
@@ -25201,7 +25201,7 @@ int STP_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->opc==1) OK(ENC_STP_D_LDSTPAIR_POST);
 		if(ctx->opc==2) OK(ENC_STP_Q_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=xx|101|V=1|011|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2D800000) {
 		decode_fields32(ENC_STP_S_LDSTPAIR_PRE, ctx, instr);
@@ -25209,7 +25209,7 @@ int STP_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->opc==1) OK(ENC_STP_D_LDSTPAIR_PRE);
 		if(ctx->opc==2) OK(ENC_STP_Q_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=xx|101|V=1|010|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3FC00000)==0x2D000000) {
 		decode_fields32(ENC_STP_S_LDSTPAIR_OFF, ctx, instr);
@@ -25243,21 +25243,21 @@ int STP_fpsimd(context *ctx, Instruction *instr)
 int STP_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* opc=x0|101|V=0|001|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x28800000) {
 		decode_fields32(ENC_STP_32_LDSTPAIR_POST, ctx, instr);
 		if(ctx->opc==0) OK(ENC_STP_32_LDSTPAIR_POST);
 		if(ctx->opc==2) OK(ENC_STP_64_LDSTPAIR_POST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* opc=x0|101|V=0|011|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x29800000) {
 		decode_fields32(ENC_STP_32_LDSTPAIR_PRE, ctx, instr);
 		if(ctx->opc==0) OK(ENC_STP_32_LDSTPAIR_PRE);
 		if(ctx->opc==2) OK(ENC_STP_64_LDSTPAIR_PRE);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* opc=x0|101|V=0|010|L=0|imm7=xxxxxxx|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7FC00000)==0x29000000) {
 		decode_fields32(ENC_STP_32_LDSTPAIR_OFF, ctx, instr);
@@ -25302,7 +25302,7 @@ int STP_gen(context *ctx, Instruction *instr)
 int STRB_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000400) {
 		decode_fields32(ENC_STRB_32_LDST_IMMPOST, ctx, instr);
@@ -25312,7 +25312,7 @@ int STRB_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_STRB_32_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000C00) {
 		decode_fields32(ENC_STRB_32_LDST_IMMPRE, ctx, instr);
@@ -25322,7 +25322,7 @@ int STRB_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_STRB_32_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=00|111|V=0|01|opc=00|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x39000000) {
 		decode_fields32(ENC_STRB_32_LDST_POS, ctx, instr);
@@ -25381,7 +25381,7 @@ int STRB_imm(context *ctx, Instruction *instr)
 int STRB_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32 */
+	/* class iclass_32 */
 	/* size=00|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38200800) {
 		decode_fields32(ENC_STRB_32B_LDST_REGOFF, ctx, instr);
@@ -25449,7 +25449,7 @@ int STRB_reg(context *ctx, Instruction *instr)
 int STRH_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000400) {
 		decode_fields32(ENC_STRH_32_LDST_IMMPOST, ctx, instr);
@@ -25459,7 +25459,7 @@ int STRH_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_STRH_32_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000C00) {
 		decode_fields32(ENC_STRH_32_LDST_IMMPRE, ctx, instr);
@@ -25469,7 +25469,7 @@ int STRH_imm(context *ctx, Instruction *instr)
 		ctx->offset = SignExtend(ctx->imm9,9);
 		OK(ENC_STRH_32_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=01|111|V=0|01|opc=00|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFC00000)==0x79000000) {
 		decode_fields32(ENC_STRH_32_LDST_POS, ctx, instr);
@@ -25528,7 +25528,7 @@ int STRH_imm(context *ctx, Instruction *instr)
 int STRH_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32 */
+	/* class iclass_32 */
 	/* size=01|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78200800) {
 		decode_fields32(ENC_STRH_32_LDST_REGOFF, ctx, instr);
@@ -25595,7 +25595,7 @@ int STRH_reg(context *ctx, Instruction *instr)
 int STR_imm_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=xx|111|V=1|00|opc=x0|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C000400) {
 		decode_fields32(ENC_STR_B_LDST_IMMPOST, ctx, instr);
@@ -25612,7 +25612,7 @@ int STR_imm_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->size==3 && ctx->opc==0) OK(ENC_STR_D_LDST_IMMPOST);
 		if(ctx->size==0 && ctx->opc==2) OK(ENC_STR_Q_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=xx|111|V=1|00|opc=x0|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C000C00) {
 		decode_fields32(ENC_STR_B_LDST_IMMPRE, ctx, instr);
@@ -25629,7 +25629,7 @@ int STR_imm_fpsimd(context *ctx, Instruction *instr)
 		if(ctx->size==3 && ctx->opc==0) OK(ENC_STR_D_LDST_IMMPRE);
 		if(ctx->size==0 && ctx->opc==2) OK(ENC_STR_Q_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=xx|111|V=1|01|opc=x0|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F400000)==0x3D000000) {
 		decode_fields32(ENC_STR_B_LDST_POS, ctx, instr);
@@ -25660,7 +25660,7 @@ int STR_imm_fpsimd(context *ctx, Instruction *instr)
 int STR_imm_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|01|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000400) {
 		decode_fields32(ENC_STR_32_LDST_IMMPOST, ctx, instr);
@@ -25671,7 +25671,7 @@ int STR_imm_gen(context *ctx, Instruction *instr)
 		if(ctx->size==2) OK(ENC_STR_32_LDST_IMMPOST);
 		if(ctx->size==3) OK(ENC_STR_64_LDST_IMMPOST);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|11|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000C00) {
 		decode_fields32(ENC_STR_32_LDST_IMMPRE, ctx, instr);
@@ -25682,7 +25682,7 @@ int STR_imm_gen(context *ctx, Instruction *instr)
 		if(ctx->size==2) OK(ENC_STR_32_LDST_IMMPRE);
 		if(ctx->size==3) OK(ENC_STR_64_LDST_IMMPRE);
 	}
-	/* class unsigned_scaled_offset */
+	/* class iclass_unsigned_scaled_offset */
 	/* size=1x|111|V=0|01|opc=00|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFC00000)==0xB9000000) {
 		decode_fields32(ENC_STR_32_LDST_POS, ctx, instr);
@@ -25742,7 +25742,7 @@ int STR_imm_gen(context *ctx, Instruction *instr)
 int STR_reg_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class fpsimd */
+	/* class iclass_fpsimd */
 	/* size=xx|111|V=1|00|opc=x0|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C200800) {
 		decode_fields32(ENC_STR_B_LDST_REGOFF, ctx, instr);
@@ -25779,7 +25779,7 @@ int STR_reg_fpsimd(context *ctx, Instruction *instr)
 int STR_reg_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|opc=00|1|Rm=xxxxx|option=xxx|S=x|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8200800) {
 		decode_fields32(ENC_STR_32_LDST_REGOFF, ctx, instr);
@@ -25847,7 +25847,7 @@ int STR_reg_gen(context *ctx, Instruction *instr)
 int STSETB_LDSETB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820301F) {
 		decode_fields32(ENC_STSETB_LDSETB_32_MEMOP, ctx, instr);
@@ -25861,7 +25861,7 @@ int STSETB_LDSETB(context *ctx, Instruction *instr)
 int STSETH_LDSETH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820301F) {
 		decode_fields32(ENC_STSETH_LDSETH_32_MEMOP, ctx, instr);
@@ -25875,7 +25875,7 @@ int STSETH_LDSETH(context *ctx, Instruction *instr)
 int STSET_LDSET(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=011|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820301F) {
 		decode_fields32(ENC_STSET_LDSET_32_MEMOP, ctx, instr);
@@ -25891,7 +25891,7 @@ int STSET_LDSET(context *ctx, Instruction *instr)
 int STSMAXB_LDSMAXB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820401F) {
 		decode_fields32(ENC_STSMAXB_LDSMAXB_32_MEMOP, ctx, instr);
@@ -25905,7 +25905,7 @@ int STSMAXB_LDSMAXB(context *ctx, Instruction *instr)
 int STSMAXH_LDSMAXH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820401F) {
 		decode_fields32(ENC_STSMAXH_LDSMAXH_32_MEMOP, ctx, instr);
@@ -25919,7 +25919,7 @@ int STSMAXH_LDSMAXH(context *ctx, Instruction *instr)
 int STSMAX_LDSMAX(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=100|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820401F) {
 		decode_fields32(ENC_STSMAX_LDSMAX_32_MEMOP, ctx, instr);
@@ -25935,7 +25935,7 @@ int STSMAX_LDSMAX(context *ctx, Instruction *instr)
 int STSMINB_LDSMINB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820501F) {
 		decode_fields32(ENC_STSMINB_LDSMINB_32_MEMOP, ctx, instr);
@@ -25949,7 +25949,7 @@ int STSMINB_LDSMINB(context *ctx, Instruction *instr)
 int STSMINH_LDSMINH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820501F) {
 		decode_fields32(ENC_STSMINH_LDSMINH_32_MEMOP, ctx, instr);
@@ -25963,7 +25963,7 @@ int STSMINH_LDSMINH(context *ctx, Instruction *instr)
 int STSMIN_LDSMIN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=101|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820501F) {
 		decode_fields32(ENC_STSMIN_LDSMIN_32_MEMOP, ctx, instr);
@@ -25979,7 +25979,7 @@ int STSMIN_LDSMIN(context *ctx, Instruction *instr)
 int STTR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000800) {
 		decode_fields32(ENC_STTR_32_LDST_UNPRIV, ctx, instr);
@@ -26047,7 +26047,7 @@ int STTR(context *ctx, Instruction *instr)
 int STTRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000800) {
 		decode_fields32(ENC_STTRB_32_LDST_UNPRIV, ctx, instr);
@@ -26114,7 +26114,7 @@ int STTRB(context *ctx, Instruction *instr)
 int STTRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|10|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000800) {
 		decode_fields32(ENC_STTRH_32_LDST_UNPRIV, ctx, instr);
@@ -26181,7 +26181,7 @@ int STTRH(context *ctx, Instruction *instr)
 int STUMAXB_LDUMAXB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820601F) {
 		decode_fields32(ENC_STUMAXB_LDUMAXB_32_MEMOP, ctx, instr);
@@ -26195,7 +26195,7 @@ int STUMAXB_LDUMAXB(context *ctx, Instruction *instr)
 int STUMAXH_LDUMAXH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820601F) {
 		decode_fields32(ENC_STUMAXH_LDUMAXH_32_MEMOP, ctx, instr);
@@ -26209,7 +26209,7 @@ int STUMAXH_LDUMAXH(context *ctx, Instruction *instr)
 int STUMAX_LDUMAX(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=110|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820601F) {
 		decode_fields32(ENC_STUMAX_LDUMAX_32_MEMOP, ctx, instr);
@@ -26225,7 +26225,7 @@ int STUMAX_LDUMAX(context *ctx, Instruction *instr)
 int STUMINB_LDUMINB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x3820701F) {
 		decode_fields32(ENC_STUMINB_LDUMINB_32_MEMOP, ctx, instr);
@@ -26239,7 +26239,7 @@ int STUMINB_LDUMINB(context *ctx, Instruction *instr)
 int STUMINH_LDUMINH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xFFA0FC1F)==0x7820701F) {
 		decode_fields32(ENC_STUMINH_LDUMINH_32_MEMOP, ctx, instr);
@@ -26253,7 +26253,7 @@ int STUMINH_LDUMINH(context *ctx, Instruction *instr)
 int STUMIN_LDUMIN(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=0|R=x|1|Rs=xxxxx|o3=0|opc=111|00|Rn=xxxxx|Rt=11111 */
 	if((INSWORD & 0xBFA0FC1F)==0xB820701F) {
 		decode_fields32(ENC_STUMIN_LDUMIN_32_MEMOP, ctx, instr);
@@ -26269,7 +26269,7 @@ int STUMIN_LDUMIN(context *ctx, Instruction *instr)
 int STURB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=00|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x38000000) {
 		decode_fields32(ENC_STURB_32_LDST_UNSCALED, ctx, instr);
@@ -26331,7 +26331,7 @@ int STURB(context *ctx, Instruction *instr)
 int STURH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=01|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0x78000000) {
 		decode_fields32(ENC_STURH_32_LDST_UNSCALED, ctx, instr);
@@ -26393,7 +26393,7 @@ int STURH(context *ctx, Instruction *instr)
 int STUR_fpsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=xx|111|V=1|00|opc=x0|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0x3F600C00)==0x3C000000) {
 		decode_fields32(ENC_STUR_B_LDST_UNSCALED, ctx, instr);
@@ -26424,7 +26424,7 @@ int STUR_fpsimd(context *ctx, Instruction *instr)
 int STUR_gen(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_plus_offset */
+	/* class iclass_base_plus_offset */
 	/* size=1x|111|V=0|00|opc=00|0|imm9=xxxxxxxxx|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE00C00)==0xB8000000) {
 		decode_fields32(ENC_STUR_32_LDST_UNSCALED, ctx, instr);
@@ -26487,7 +26487,7 @@ int STUR_gen(context *ctx, Instruction *instr)
 int STXP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* 1|sz=x|001000|o2=0|L=0|o1=1|Rs=xxxxx|o0=0|Rt2=xxxxx|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88200000) {
 		decode_fields32(ENC_STXP_SP32_LDSTEXCLP, ctx, instr);
@@ -26531,7 +26531,7 @@ int STXP(context *ctx, Instruction *instr)
 int STXR(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=1x|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBFE08000)==0x88000000) {
 		decode_fields32(ENC_STXR_SR32_LDSTEXCLR, ctx, instr);
@@ -26575,7 +26575,7 @@ int STXR(context *ctx, Instruction *instr)
 int STXRB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=00|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x8000000) {
 		decode_fields32(ENC_STXRB_SR32_LDSTEXCLR, ctx, instr);
@@ -26618,7 +26618,7 @@ int STXRB(context *ctx, Instruction *instr)
 int STXRH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class base_register */
+	/* class iclass_base_register */
 	/* size=01|001000|o2=0|L=0|o1=0|Rs=xxxxx|o0=0|Rt2=(1)(1)(1)(1)(1)|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x48000000) {
 		decode_fields32(ENC_STXRH_SR32_LDSTEXCLR, ctx, instr);
@@ -26661,7 +26661,7 @@ int STXRH(context *ctx, Instruction *instr)
 int STZ2G(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* 11011001|opc=11|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9E00400) {
 		decode_fields32(ENC_STZ2G_64SPOST_LDSTTAGS, ctx, instr);
@@ -26676,7 +26676,7 @@ int STZ2G(context *ctx, Instruction *instr)
 		ctx->zero_data = TRUE;
 		OK(ENC_STZ2G_64SPOST_LDSTTAGS);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* 11011001|opc=11|1|imm9=xxxxxxxxx|op2=11|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9E00C00) {
 		decode_fields32(ENC_STZ2G_64SPRE_LDSTTAGS, ctx, instr);
@@ -26691,7 +26691,7 @@ int STZ2G(context *ctx, Instruction *instr)
 		ctx->zero_data = TRUE;
 		OK(ENC_STZ2G_64SPRE_LDSTTAGS);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* 11011001|opc=11|1|imm9=xxxxxxxxx|op2=10|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9E00800) {
 		decode_fields32(ENC_STZ2G_64SOFFSET_LDSTTAGS, ctx, instr);
@@ -26713,7 +26713,7 @@ int STZ2G(context *ctx, Instruction *instr)
 int STZG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class post_indexed */
+	/* class iclass_post_indexed */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=01|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600400) {
 		decode_fields32(ENC_STZG_64SPOST_LDSTTAGS, ctx, instr);
@@ -26728,7 +26728,7 @@ int STZG(context *ctx, Instruction *instr)
 		ctx->zero_data = TRUE;
 		OK(ENC_STZG_64SPOST_LDSTTAGS);
 	}
-	/* class pre_indexed */
+	/* class iclass_pre_indexed */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=11|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600C00) {
 		decode_fields32(ENC_STZG_64SPRE_LDSTTAGS, ctx, instr);
@@ -26743,7 +26743,7 @@ int STZG(context *ctx, Instruction *instr)
 		ctx->zero_data = TRUE;
 		OK(ENC_STZG_64SPRE_LDSTTAGS);
 	}
-	/* class signed_scaled_offset */
+	/* class iclass_signed_scaled_offset */
 	/* 11011001|opc=01|1|imm9=xxxxxxxxx|op2=10|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFE00C00)==0xD9600800) {
 		decode_fields32(ENC_STZG_64SOFFSET_LDSTTAGS, ctx, instr);
@@ -26765,7 +26765,7 @@ int STZG(context *ctx, Instruction *instr)
 int STZGM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 11011001|opc=00|1|imm9=000000000|op2=00|Xn=xxxxx|Xt=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0xD9200000) {
 		decode_fields32(ENC_STZGM_64BULK_LDSTTAGS, ctx, instr);
@@ -26783,7 +26783,7 @@ int STZGM(context *ctx, Instruction *instr)
 int SUBG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|op=1|S=0|100011|o2=0|uimm6=xxxxxx|op3=(0)(0)|uimm4=xxxx|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFC00000)==0xD1800000) {
 		decode_fields32(ENC_SUBG_64_ADDSUB_IMMTAGS, ctx, instr);
@@ -26804,7 +26804,7 @@ int SUBG(context *ctx, Instruction *instr)
 int SUBHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206000) {
 		decode_fields32(ENC_SUBHN_ASIMDDIFF_N, ctx, instr);
@@ -26829,7 +26829,7 @@ int SUBHN_advsimd(context *ctx, Instruction *instr)
 int SUBP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|0|S=0|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9AC00000) {
 		decode_fields32(ENC_SUBP_64S_DP_2SRC, ctx, instr);
@@ -26849,7 +26849,7 @@ int SUBP(context *ctx, Instruction *instr)
 int SUBPS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|0|S=1|11010110|Xm=xxxxx|opcode=000000|Xn=xxxxx|Xd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0xBAC00000) {
 		decode_fields32(ENC_SUBPS_64S_DP_2SRC, ctx, instr);
@@ -26871,7 +26871,7 @@ int SUBPS(context *ctx, Instruction *instr)
 int SUBS_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x6B200000) {
 		decode_fields32(ENC_SUBS_32S_ADDSUB_EXT, ctx, instr);
@@ -26898,7 +26898,7 @@ int SUBS_addsub_ext(context *ctx, Instruction *instr)
 int SUBS_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x71000000) {
 		decode_fields32(ENC_SUBS_32S_ADDSUB_IMM, ctx, instr);
@@ -26925,7 +26925,7 @@ int SUBS_addsub_imm(context *ctx, Instruction *instr)
 int SUBS_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|op=1|S=1|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x6B000000) {
 		decode_fields32(ENC_SUBS_32_ADDSUB_SHIFT, ctx, instr);
@@ -26956,7 +26956,7 @@ int SUBS_addsub_shift(context *ctx, Instruction *instr)
 int SUB_addsub_ext(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|01011|opt=00|1|Rm=xxxxx|option=xxx|imm3=xxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00000)==0x4B200000) {
 		decode_fields32(ENC_SUB_32_ADDSUB_EXT, ctx, instr);
@@ -26981,7 +26981,7 @@ int SUB_addsub_ext(context *ctx, Instruction *instr)
 int SUB_addsub_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|100010|sh=x|imm12=xxxxxxxxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x51000000) {
 		decode_fields32(ENC_SUB_32_ADDSUB_IMM, ctx, instr);
@@ -27006,7 +27006,7 @@ int SUB_addsub_imm(context *ctx, Instruction *instr)
 int SUB_addsub_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* sf=x|op=1|S=0|01011|shift=xx|0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F200000)==0x4B000000) {
 		decode_fields32(ENC_SUB_32_ADDSUB_SHIFT, ctx, instr);
@@ -27036,7 +27036,7 @@ int SUB_addsub_shift(context *ctx, Instruction *instr)
 int SUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E208400) {
 		decode_fields32(ENC_SUB_ASISDSAME_ONLY, ctx, instr);
@@ -27052,7 +27052,7 @@ int SUB_advsimd(context *ctx, Instruction *instr)
 		ctx->sub_op = (ctx->U==1);
 		OK(ENC_SUB_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=10000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E208400) {
 		decode_fields32(ENC_SUB_ASIMDSAME_ONLY, ctx, instr);
@@ -27075,7 +27075,7 @@ int SUB_advsimd(context *ctx, Instruction *instr)
 int SUDOT_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|US=0|0|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF00F000) {
 		decode_fields32(ENC_SUDOT_ASIMDELEM_D, ctx, instr);
@@ -27099,7 +27099,7 @@ int SUDOT_advsimd_elt(context *ctx, Instruction *instr)
 int SUQADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=0|11110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E203800) {
 		decode_fields32(ENC_SUQADD_ASISDMISC_R, ctx, instr);
@@ -27111,7 +27111,7 @@ int SUQADD_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_SUQADD_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE203800) {
 		decode_fields32(ENC_SUQADD_ASIMDMISC_R, ctx, instr);
@@ -27133,7 +27133,7 @@ int SUQADD_advsimd(context *ctx, Instruction *instr)
 int SVC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010100|opc=000|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=01 */
 	if((INSWORD & 0xFFE0001F)==0xD4000001) {
 		decode_fields32(ENC_SVC_EX_EXCEPTION, ctx, instr);
@@ -27146,7 +27146,7 @@ int SVC(context *ctx, Instruction *instr)
 int SWP(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=1x|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xB8208000) {
 		decode_fields32(ENC_SWP_32_MEMOP, ctx, instr);
@@ -27177,7 +27177,7 @@ int SWP(context *ctx, Instruction *instr)
 int SWPB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=00|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x38208000) {
 		decode_fields32(ENC_SWPAB_32_MEMOP, ctx, instr);
@@ -27204,7 +27204,7 @@ int SWPB(context *ctx, Instruction *instr)
 int SWPH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* size=01|111|V=0|00|A=x|R=x|1|Rs=xxxxx|o3=1|opc=000|00|Rn=xxxxx|Rt=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x78208000) {
 		decode_fields32(ENC_SWPAH_32_MEMOP, ctx, instr);
@@ -27231,7 +27231,7 @@ int SWPH(context *ctx, Instruction *instr)
 int SXTB_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=000000|imms=000111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FBFFC00)==0x13001C00) {
 		decode_fields32(ENC_SXTB_SBFM_32M_BITFIELD, ctx, instr);
@@ -27245,7 +27245,7 @@ int SXTB_SBFM(context *ctx, Instruction *instr)
 int SXTH_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=x|opc=00|100110|N=x|immr=000000|imms=001111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FBFFC00)==0x13003C00) {
 		decode_fields32(ENC_SXTH_SBFM_32M_BITFIELD, ctx, instr);
@@ -27259,7 +27259,7 @@ int SXTH_SBFM(context *ctx, Instruction *instr)
 int SXTL_SSHLL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|011110|immh!=0000|immb=000|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF87FC00)==0xF00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SXTL_SSHLL_ASIMDSHF_L, ctx, instr);
@@ -27272,7 +27272,7 @@ int SXTL_SSHLL_advsimd(context *ctx, Instruction *instr)
 int SXTW_SBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class signed_fill */
+	/* class iclass_signed_fill */
 	/* sf=1|opc=00|100110|N=1|immr=000000|imms=011111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x93407C00) {
 		decode_fields32(ENC_SXTW_SBFM_64M_BITFIELD, ctx, instr);
@@ -27285,7 +27285,7 @@ int SXTW_SBFM(context *ctx, Instruction *instr)
 int SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF80000)==0xD5080000) {
 		decode_fields32(ENC_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -27314,7 +27314,7 @@ int SYS(context *ctx, Instruction *instr)
 int SYSL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=1|op0=01|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF80000)==0xD5280000) {
 		decode_fields32(ENC_SYSL_RC_SYSTEMINSTRS, ctx, instr);
@@ -27335,7 +27335,7 @@ int SYSL(context *ctx, Instruction *instr)
 int TBL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|op2=00|0|Rm=xxxxx|0|len=xx|op=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE09C00)==0xE000000) {
 		decode_fields32(ENC_TBL_ASIMDTBL_L2_2, ctx, instr);
@@ -27358,7 +27358,7 @@ int TBL_advsimd(context *ctx, Instruction *instr)
 int TBNZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br14 */
+	/* class iclass_br14 */
 	/* b5=x|011011|op=1|b40=xxxxx|imm14=xxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x37000000) {
 		decode_fields32(ENC_TBNZ_ONLY_TESTBRANCH, ctx, instr);
@@ -27376,7 +27376,7 @@ int TBNZ(context *ctx, Instruction *instr)
 int TBX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|op2=00|0|Rm=xxxxx|0|len=xx|op=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE09C00)==0xE001000) {
 		decode_fields32(ENC_TBX_ASIMDTBL_L2_2, ctx, instr);
@@ -27399,7 +27399,7 @@ int TBX_advsimd(context *ctx, Instruction *instr)
 int TBZ(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class br14 */
+	/* class iclass_br14 */
 	/* b5=x|011011|op=0|b40=xxxxx|imm14=xxxxxxxxxxxxxx|Rt=xxxxx */
 	if((INSWORD & 0x7F000000)==0x36000000) {
 		decode_fields32(ENC_TBZ_ONLY_TESTBRANCH, ctx, instr);
@@ -27413,11 +27413,45 @@ int TBZ(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* tcancel.xml */
+int TCANCEL(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 11010100|opc=011|imm16=xxxxxxxxxxxxxxxx|op2=000|LL=00 */
+	if((INSWORD & 0xFFE0001F)==0xD4600000) {
+		decode_fields32(ENC_TCANCEL_EX_EXCEPTION, ctx, instr);
+		if(!HaveTME()) {
+			UNDEFINED;
+		}
+		ctx->retry = (SLICE(ctx->imm16,15,15)==1);
+		ctx->reason = SLICE(ctx->imm16,14,0);
+		OK(ENC_TCANCEL_EX_EXCEPTION);
+	}
+	return rc;
+}
+
+/* tcommit.xml */
+int TCOMMIT(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|op2=011|Rt=11111 */
+	if((INSWORD & 0xFFFFFFFF)==0xD503307F) {
+		decode_fields32(ENC_TCOMMIT_ONLY_BARRIERS, ctx, instr);
+		if(!HaveTME()) {
+			UNDEFINED;
+		}
+		OK(ENC_TCOMMIT_ONLY_BARRIERS);
+	}
+	return rc;
+}
+
 /* tlbi_sys.xml */
 int TLBI_SYS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=01|op1=xxx|CRn=1000|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF8F000)==0xD5088000) {
 		decode_fields32(ENC_TLBI_SYS_CR_SYSTEMINSTRS, ctx, instr);
@@ -27430,7 +27464,7 @@ int TLBI_SYS(context *ctx, Instruction *instr)
 int TRN1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE002800) {
 		decode_fields32(ENC_TRN1_ASIMDPERM_ONLY, ctx, instr);
@@ -27454,7 +27488,7 @@ int TRN1_advsimd(context *ctx, Instruction *instr)
 int TRN2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE006800) {
 		decode_fields32(ENC_TRN2_ASIMDPERM_ONLY, ctx, instr);
@@ -27478,7 +27512,7 @@ int TRN2_advsimd(context *ctx, Instruction *instr)
 int TSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0010|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503225F) {
 		decode_fields32(ENC_TSB_HC_HINTS, ctx, instr);
@@ -27585,11 +27619,28 @@ int TSB(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* tstart.xml */
+int TSTART(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 1101010100|L=1|op0=00|op1=011|CRn=0011|CRm=0000|op2=011|Rt=xxxxx */
+	if((INSWORD & 0xFFFFFFE0)==0xD5233060) {
+		decode_fields32(ENC_TSTART_BR_SYSTEMRESULT, ctx, instr);
+		if(!HaveTME()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Rt);
+		OK(ENC_TSTART_BR_SYSTEMRESULT);
+	}
+	return rc;
+}
+
 /* tst_ands_log_imm.xml */
 int TST_ANDS_log_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|opc=11|100100|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F80001F)==0x7200001F) {
 		decode_fields32(ENC_TST_ANDS_32S_LOG_IMM, ctx, instr);
@@ -27603,7 +27654,7 @@ int TST_ANDS_log_imm(context *ctx, Instruction *instr)
 int TST_ANDS_log_shift(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class s */
+	/* class iclass_s */
 	/* sf=x|opc=11|01010|shift=xx|N=0|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=11111 */
 	if((INSWORD & 0x7F20001F)==0x6A00001F) {
 		decode_fields32(ENC_TST_ANDS_32_LOG_SHIFT, ctx, instr);
@@ -27613,11 +27664,28 @@ int TST_ANDS_log_shift(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ttest.xml */
+int TTEST(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 1101010100|L=1|op0=00|op1=011|CRn=0011|CRm=0001|op2=011|Rt=xxxxx */
+	if((INSWORD & 0xFFFFFFE0)==0xD5233160) {
+		decode_fields32(ENC_TTEST_BR_SYSTEMRESULT, ctx, instr);
+		if(!HaveTME()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Rt);
+		OK(ENC_TTEST_BR_SYSTEMRESULT);
+	}
+	return rc;
+}
+
 /* uabal_advsimd.xml */
 int UABAL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205000) {
 		decode_fields32(ENC_UABAL_ASIMDDIFF_L, ctx, instr);
@@ -27642,7 +27710,7 @@ int UABAL_advsimd(context *ctx, Instruction *instr)
 int UABA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207C00) {
 		decode_fields32(ENC_UABA_ASIMDSAME_ONLY, ctx, instr);
@@ -27666,7 +27734,7 @@ int UABA_advsimd(context *ctx, Instruction *instr)
 int UABDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207000) {
 		decode_fields32(ENC_UABDL_ASIMDDIFF_L, ctx, instr);
@@ -27691,7 +27759,7 @@ int UABDL_advsimd(context *ctx, Instruction *instr)
 int UABD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207400) {
 		decode_fields32(ENC_UABD_ASIMDSAME_ONLY, ctx, instr);
@@ -27715,7 +27783,7 @@ int UABD_advsimd(context *ctx, Instruction *instr)
 int UADALP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E206800) {
 		decode_fields32(ENC_UADALP_ASIMDMISC_P, ctx, instr);
@@ -27738,7 +27806,7 @@ int UADALP_advsimd(context *ctx, Instruction *instr)
 int UADDLP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E202800) {
 		decode_fields32(ENC_UADDLP_ASIMDMISC_P, ctx, instr);
@@ -27761,7 +27829,7 @@ int UADDLP_advsimd(context *ctx, Instruction *instr)
 int UADDLV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=1|01110|size=xx|11000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E303800) {
 		decode_fields32(ENC_UADDLV_ASIMDALL_ONLY, ctx, instr);
@@ -27786,7 +27854,7 @@ int UADDLV_advsimd(context *ctx, Instruction *instr)
 int UADDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200000) {
 		decode_fields32(ENC_UADDL_ASIMDDIFF_L, ctx, instr);
@@ -27811,7 +27879,7 @@ int UADDL_advsimd(context *ctx, Instruction *instr)
 int UADDW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E201000) {
 		decode_fields32(ENC_UADDW_ASIMDDIFF_W, ctx, instr);
@@ -27836,7 +27904,7 @@ int UADDW_advsimd(context *ctx, Instruction *instr)
 int UBFIZ_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
 		decode_fields32(ENC_UBFIZ_UBFM_32M_BITFIELD, ctx, instr);
@@ -27850,7 +27918,7 @@ int UBFIZ_UBFM(context *ctx, Instruction *instr)
 int UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
 		decode_fields32(ENC_UBFM_32M_BITFIELD, ctx, instr);
@@ -27902,7 +27970,7 @@ int UBFM(context *ctx, Instruction *instr)
 int UBFX_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=x|opc=10|100110|N=x|immr=xxxxxx|imms=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F800000)==0x53000000) {
 		decode_fields32(ENC_UBFX_UBFM_32M_BITFIELD, ctx, instr);
@@ -27916,7 +27984,7 @@ int UBFX_UBFM(context *ctx, Instruction *instr)
 int UCVTF_advsimd_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F00E400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UCVTF_ASISDSHF_C, ctx, instr);
@@ -27933,7 +28001,7 @@ int UCVTF_advsimd_fix(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_ASISDSHF_C);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=11100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F00E400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UCVTF_ASIMDSHF_C, ctx, instr);
@@ -27963,7 +28031,7 @@ int UCVTF_advsimd_fix(context *ctx, Instruction *instr)
 int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd_half */
+	/* class iclass_sisd_half */
 	/* 01|U=1|11110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79D800) {
 		decode_fields32(ENC_UCVTF_ASISDMISCFP16_R, ctx, instr);
@@ -27978,7 +28046,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UCVTF_ASISDMISCFP16_R);
 	}
-	/* class sisd_single_and_double */
+	/* class iclass_sisd_single_and_double */
 	/* 01|U=1|11110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21D800) {
 		decode_fields32(ENC_UCVTF_ASISDMISC_R, ctx, instr);
@@ -27990,7 +28058,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UCVTF_ASISDMISC_R);
 	}
-	/* class simd_half */
+	/* class iclass_simd_half */
 	/* 0|Q=x|U=1|01110|a=0|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79D800) {
 		decode_fields32(ENC_UCVTF_ASIMDMISCFP16_R, ctx, instr);
@@ -28005,7 +28073,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UCVTF_ASIMDMISCFP16_R);
 	}
-	/* class simd_single_and_double */
+	/* class iclass_simd_single_and_double */
 	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21D800) {
 		decode_fields32(ENC_UCVTF_ASIMDMISC_R, ctx, instr);
@@ -28027,7 +28095,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 int UCVTF_float_fix(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|0|rmode=00|opcode=011|scale=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3F0000)==0x1E030000) {
 		decode_fields32(ENC_UCVTF_H32_FLOAT2FIX, ctx, instr);
@@ -28082,7 +28150,7 @@ int UCVTF_float_fix(context *ctx, Instruction *instr)
 int UCVTF_float_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class float */
+	/* class iclass_float */
 	/* sf=x|0|S=0|11110|ftype=xx|1|rmode=00|opcode=011|000000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7F3FFC00)==0x1E230000) {
 		decode_fields32(ENC_UCVTF_H32_FLOAT2INT, ctx, instr);
@@ -28168,7 +28236,7 @@ int UCVTF_float_int(context *ctx, Instruction *instr)
 int UDF_perm_undef(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* 0000000000000000|imm16=xxxxxxxxxxxxxxxx */
 	if((INSWORD & 0xFFFF0000)==0x0) {
 		decode_fields32(ENC_UDF_ONLY_PERM_UNDEF, ctx, instr);
@@ -28181,7 +28249,7 @@ int UDF_perm_undef(context *ctx, Instruction *instr)
 int UDIV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00800) {
 		decode_fields32(ENC_UDIV_32_DP_2SRC, ctx, instr);
@@ -28200,7 +28268,7 @@ int UDIV(context *ctx, Instruction *instr)
 int UDOT_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1110|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00E000) {
 		decode_fields32(ENC_UDOT_ASIMDELEM_D, ctx, instr);
@@ -28227,7 +28295,7 @@ int UDOT_advsimd_elt(context *ctx, Instruction *instr)
 int UDOT_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|opcode=0010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E009400) {
 		decode_fields32(ENC_UDOT_ASIMDSAME2_D, ctx, instr);
@@ -28253,7 +28321,7 @@ int UDOT_advsimd_vec(context *ctx, Instruction *instr)
 int UHADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00000|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200400) {
 		decode_fields32(ENC_UHADD_ASIMDSAME_ONLY, ctx, instr);
@@ -28276,7 +28344,7 @@ int UHADD_advsimd(context *ctx, Instruction *instr)
 int UHSUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202400) {
 		decode_fields32(ENC_UHSUB_ASIMDSAME_ONLY, ctx, instr);
@@ -28299,7 +28367,7 @@ int UHSUB_advsimd(context *ctx, Instruction *instr)
 int UMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA00000) {
 		decode_fields32(ENC_UMADDL_64WA_DP_3SRC, ctx, instr);
@@ -28322,7 +28390,7 @@ int UMADDL(context *ctx, Instruction *instr)
 int UMAXP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A400) {
 		decode_fields32(ENC_UMAXP_ASIMDSAME_ONLY, ctx, instr);
@@ -28346,7 +28414,7 @@ int UMAXP_advsimd(context *ctx, Instruction *instr)
 int UMAXV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=1|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E30A800) {
 		decode_fields32(ENC_UMAXV_ASIMDALL_ONLY, ctx, instr);
@@ -28372,7 +28440,7 @@ int UMAXV_advsimd(context *ctx, Instruction *instr)
 int UMAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206400) {
 		decode_fields32(ENC_UMAX_ASIMDSAME_ONLY, ctx, instr);
@@ -28396,7 +28464,7 @@ int UMAX_advsimd(context *ctx, Instruction *instr)
 int UMINP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20AC00) {
 		decode_fields32(ENC_UMINP_ASIMDSAME_ONLY, ctx, instr);
@@ -28420,7 +28488,7 @@ int UMINP_advsimd(context *ctx, Instruction *instr)
 int UMINV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|U=1|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E31A800) {
 		decode_fields32(ENC_UMINV_ASIMDALL_ONLY, ctx, instr);
@@ -28446,7 +28514,7 @@ int UMINV_advsimd(context *ctx, Instruction *instr)
 int UMIN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206C00) {
 		decode_fields32(ENC_UMIN_ASIMDSAME_ONLY, ctx, instr);
@@ -28470,7 +28538,7 @@ int UMIN_advsimd(context *ctx, Instruction *instr)
 int UMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F002000) {
 		decode_fields32(ENC_UMLAL_ASIMDELEM_L, ctx, instr);
@@ -28504,7 +28572,7 @@ int UMLAL_advsimd_elt(context *ctx, Instruction *instr)
 int UMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E208000) {
 		decode_fields32(ENC_UMLAL_ASIMDDIFF_L, ctx, instr);
@@ -28529,7 +28597,7 @@ int UMLAL_advsimd_vec(context *ctx, Instruction *instr)
 int UMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F006000) {
 		decode_fields32(ENC_UMLSL_ASIMDELEM_L, ctx, instr);
@@ -28563,7 +28631,7 @@ int UMLSL_advsimd_elt(context *ctx, Instruction *instr)
 int UMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A000) {
 		decode_fields32(ENC_UMLSL_ASIMDDIFF_L, ctx, instr);
@@ -28588,7 +28656,7 @@ int UMLSL_advsimd_vec(context *ctx, Instruction *instr)
 int UMMLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=1|U=1|01110|size=10|0|Rm=xxxxx|1|010|B=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6E80A400) {
 		decode_fields32(ENC_UMMLA_ASIMDSAME2_G, ctx, instr);
@@ -28622,7 +28690,7 @@ int UMMLA_advsimd_vec(context *ctx, Instruction *instr)
 int UMNEGL_UMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA0FC00) {
 		decode_fields32(ENC_UMNEGL_UMSUBL_64WA_DP_3SRC, ctx, instr);
@@ -28635,7 +28703,7 @@ int UMNEGL_UMSUBL(context *ctx, Instruction *instr)
 int UMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE003C00) {
 		decode_fields32(ENC_UMOV_ASIMDINS_W_W, ctx, instr);
@@ -28672,7 +28740,7 @@ int UMOV_advsimd(context *ctx, Instruction *instr)
 int UMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA08000) {
 		decode_fields32(ENC_UMSUBL_64WA_DP_3SRC, ctx, instr);
@@ -28695,7 +28763,7 @@ int UMSUBL(context *ctx, Instruction *instr)
 int UMULH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=1|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BC00000) {
 		decode_fields32(ENC_UMULH_64_DP_3SRC, ctx, instr);
@@ -28715,7 +28783,7 @@ int UMULH(context *ctx, Instruction *instr)
 int UMULL_UMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 64 */
+	/* class iclass_64 */
 	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA07C00) {
 		decode_fields32(ENC_UMULL_UMADDL_64WA_DP_3SRC, ctx, instr);
@@ -28728,7 +28796,7 @@ int UMULL_UMADDL(context *ctx, Instruction *instr)
 int UMULL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode=1010|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00A000) {
 		decode_fields32(ENC_UMULL_ASIMDELEM_L, ctx, instr);
@@ -28761,7 +28829,7 @@ int UMULL_advsimd_elt(context *ctx, Instruction *instr)
 int UMULL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20C000) {
 		decode_fields32(ENC_UMULL_ASIMDDIFF_L, ctx, instr);
@@ -28785,7 +28853,7 @@ int UMULL_advsimd_vec(context *ctx, Instruction *instr)
 int UQADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E200C00) {
 		decode_fields32(ENC_UQADD_ASISDSAME_ONLY, ctx, instr);
@@ -28798,7 +28866,7 @@ int UQADD_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UQADD_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00001|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200C00) {
 		decode_fields32(ENC_UQADD_ASIMDSAME_ONLY, ctx, instr);
@@ -28821,7 +28889,7 @@ int UQADD_advsimd(context *ctx, Instruction *instr)
 int UQRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205C00) {
 		decode_fields32(ENC_UQRSHL_ASISDSAME_ONLY, ctx, instr);
@@ -28839,7 +28907,7 @@ int UQRSHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_UQRSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205C00) {
 		decode_fields32(ENC_UQRSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -28864,7 +28932,7 @@ int UQRSHL_advsimd(context *ctx, Instruction *instr)
 int UQRSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQRSHRN_ASISDSHF_N, ctx, instr);
@@ -28885,7 +28953,7 @@ int UQRSHRN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UQRSHRN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQRSHRN_ASIMDSHF_N, ctx, instr);
@@ -28913,7 +28981,7 @@ int UQRSHRN_advsimd(context *ctx, Instruction *instr)
 int UQSHL_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHL_ASISDSHF_R, ctx, instr);
@@ -28943,7 +29011,7 @@ int UQSHL_advsimd_imm(context *ctx, Instruction *instr)
 		}
 		OK(ENC_UQSHL_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHL_ASIMDSHF_R, ctx, instr);
@@ -28983,7 +29051,7 @@ int UQSHL_advsimd_imm(context *ctx, Instruction *instr)
 int UQSHL_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204C00) {
 		decode_fields32(ENC_UQSHL_ASISDSAME_ONLY, ctx, instr);
@@ -29001,7 +29069,7 @@ int UQSHL_advsimd_reg(context *ctx, Instruction *instr)
 		}
 		OK(ENC_UQSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204C00) {
 		decode_fields32(ENC_UQSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -29026,7 +29094,7 @@ int UQSHL_advsimd_reg(context *ctx, Instruction *instr)
 int UQSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHRN_ASISDSHF_N, ctx, instr);
@@ -29047,7 +29115,7 @@ int UQSHRN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UQSHRN_ASISDSHF_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHRN_ASIMDSHF_N, ctx, instr);
@@ -29075,7 +29143,7 @@ int UQSHRN_advsimd(context *ctx, Instruction *instr)
 int UQSUB_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E202C00) {
 		decode_fields32(ENC_UQSUB_ASISDSAME_ONLY, ctx, instr);
@@ -29088,7 +29156,7 @@ int UQSUB_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UQSUB_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00101|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202C00) {
 		decode_fields32(ENC_UQSUB_ASIMDSAME_ONLY, ctx, instr);
@@ -29111,7 +29179,7 @@ int UQSUB_advsimd(context *ctx, Instruction *instr)
 int UQXTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E214800) {
 		decode_fields32(ENC_UQXTN_ASISDMISC_N, ctx, instr);
@@ -29127,7 +29195,7 @@ int UQXTN_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_UQXTN_ASISDMISC_N);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=10100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E214800) {
 		decode_fields32(ENC_UQXTN_ASIMDMISC_N, ctx, instr);
@@ -29150,7 +29218,7 @@ int UQXTN_advsimd(context *ctx, Instruction *instr)
 int URECPE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1C800) {
 		decode_fields32(ENC_URECPE_ASIMDMISC_R, ctx, instr);
@@ -29171,7 +29239,7 @@ int URECPE_advsimd(context *ctx, Instruction *instr)
 int URHADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_same */
+	/* class iclass_3reg_same */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=00010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E201400) {
 		decode_fields32(ENC_URHADD_ASIMDSAME_ONLY, ctx, instr);
@@ -29194,7 +29262,7 @@ int URHADD_advsimd(context *ctx, Instruction *instr)
 int URSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205400) {
 		decode_fields32(ENC_URSHL_ASISDSAME_ONLY, ctx, instr);
@@ -29212,7 +29280,7 @@ int URSHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_URSHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205400) {
 		decode_fields32(ENC_URSHL_ASIMDSAME_ONLY, ctx, instr);
@@ -29237,7 +29305,7 @@ int URSHL_advsimd(context *ctx, Instruction *instr)
 int URSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSHR_ASISDSHF_R, ctx, instr);
@@ -29255,7 +29323,7 @@ int URSHR_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_URSHR_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSHR_ASIMDSHF_R, ctx, instr);
@@ -29283,7 +29351,7 @@ int URSHR_advsimd(context *ctx, Instruction *instr)
 int URSQRTE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1C800) {
 		decode_fields32(ENC_URSQRTE_ASIMDMISC_R, ctx, instr);
@@ -29304,7 +29372,7 @@ int URSQRTE_advsimd(context *ctx, Instruction *instr)
 int URSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSRA_ASISDSHF_R, ctx, instr);
@@ -29322,7 +29390,7 @@ int URSRA_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_URSRA_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSRA_ASIMDSHF_R, ctx, instr);
@@ -29350,7 +29418,7 @@ int URSRA_advsimd(context *ctx, Instruction *instr)
 int USDOT_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 2reg_element */
+	/* class iclass_2reg_element */
 	/* 0|Q=x|U=0|01111|US=1|0|L=x|M=x|Rm=xxxx|opcode=1111|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF80F000) {
 		decode_fields32(ENC_USDOT_ASIMDELEM_D, ctx, instr);
@@ -29374,7 +29442,7 @@ int USDOT_advsimd_elt(context *ctx, Instruction *instr)
 int USDOT_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=10|0|Rm=xxxxx|1|opcode=0011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE809C00) {
 		decode_fields32(ENC_USDOT_ASIMDSAME2_D, ctx, instr);
@@ -29395,7 +29463,7 @@ int USDOT_advsimd_vec(context *ctx, Instruction *instr)
 int USHLL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USHLL_ASIMDSHF_L, ctx, instr);
@@ -29424,7 +29492,7 @@ int USHLL_advsimd(context *ctx, Instruction *instr)
 int USHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204400) {
 		decode_fields32(ENC_USHL_ASISDSAME_ONLY, ctx, instr);
@@ -29442,7 +29510,7 @@ int USHL_advsimd(context *ctx, Instruction *instr)
 		}
 		OK(ENC_USHL_ASISDSAME_ONLY);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204400) {
 		decode_fields32(ENC_USHL_ASIMDSAME_ONLY, ctx, instr);
@@ -29467,7 +29535,7 @@ int USHL_advsimd(context *ctx, Instruction *instr)
 int USHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USHR_ASISDSHF_R, ctx, instr);
@@ -29485,7 +29553,7 @@ int USHR_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_USHR_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USHR_ASIMDSHF_R, ctx, instr);
@@ -29513,7 +29581,7 @@ int USHR_advsimd(context *ctx, Instruction *instr)
 int USMMLA_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=1|U=0|01110|size=10|0|Rm=xxxxx|1|010|B=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E80AC00) {
 		decode_fields32(ENC_USMMLA_ASIMDSAME2_G, ctx, instr);
@@ -29547,7 +29615,7 @@ int USMMLA_advsimd_vec(context *ctx, Instruction *instr)
 int USQADD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|11110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E203800) {
 		decode_fields32(ENC_USQADD_ASISDMISC_R, ctx, instr);
@@ -29559,7 +29627,7 @@ int USQADD_advsimd(context *ctx, Instruction *instr)
 		ctx->unsigned_ = (ctx->U==1);
 		OK(ENC_USQADD_ASISDMISC_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|01110|size=xx|10000|opcode=00011|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E203800) {
 		decode_fields32(ENC_USQADD_ASIMDMISC_R, ctx, instr);
@@ -29581,7 +29649,7 @@ int USQADD_advsimd(context *ctx, Instruction *instr)
 int USRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sisd */
+	/* class iclass_sisd */
 	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USRA_ASISDSHF_R, ctx, instr);
@@ -29599,7 +29667,7 @@ int USRA_advsimd(context *ctx, Instruction *instr)
 		ctx->accumulate = (ctx->o0==1);
 		OK(ENC_USRA_ASISDSHF_R);
 	}
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USRA_ASIMDSHF_R, ctx, instr);
@@ -29627,7 +29695,7 @@ int USRA_advsimd(context *ctx, Instruction *instr)
 int USUBL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202000) {
 		decode_fields32(ENC_USUBL_ASIMDDIFF_L, ctx, instr);
@@ -29652,7 +29720,7 @@ int USUBL_advsimd(context *ctx, Instruction *instr)
 int USUBW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 3reg_diff */
+	/* class iclass_3reg_diff */
 	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203000) {
 		decode_fields32(ENC_USUBW_ASIMDDIFF_W, ctx, instr);
@@ -29677,7 +29745,7 @@ int USUBW_advsimd(context *ctx, Instruction *instr)
 int UXTB_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=0|opc=10|100110|N=0|immr=000000|imms=000111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x53001C00) {
 		decode_fields32(ENC_UXTB_UBFM_32M_BITFIELD, ctx, instr);
@@ -29690,7 +29758,7 @@ int UXTB_UBFM(context *ctx, Instruction *instr)
 int UXTH_UBFM(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class zero_fill */
+	/* class iclass_zero_fill */
 	/* sf=0|opc=10|100110|N=0|immr=000000|imms=001111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x53003C00) {
 		decode_fields32(ENC_UXTH_UBFM_32M_BITFIELD, ctx, instr);
@@ -29703,7 +29771,7 @@ int UXTH_UBFM(context *ctx, Instruction *instr)
 int UXTL_USHLL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=1|011110|immh!=0000|immb=000|opcode=10100|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF87FC00)==0x2F00A400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UXTL_USHLL_ASIMDSHF_L, ctx, instr);
@@ -29716,7 +29784,7 @@ int UXTL_USHLL_advsimd(context *ctx, Instruction *instr)
 int UZP1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE001800) {
 		decode_fields32(ENC_UZP1_ASIMDPERM_ONLY, ctx, instr);
@@ -29739,7 +29807,7 @@ int UZP1_advsimd(context *ctx, Instruction *instr)
 int UZP2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE005800) {
 		decode_fields32(ENC_UZP2_ASIMDPERM_ONLY, ctx, instr);
@@ -29762,7 +29830,7 @@ int UZP2_advsimd(context *ctx, Instruction *instr)
 int WFE(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503205F) {
 		decode_fields32(ENC_WFE_HI_HINTS, ctx, instr);
@@ -29873,7 +29941,7 @@ int WFE(context *ctx, Instruction *instr)
 int WFET(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010101000000110001|CRm=0000|op2=000|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD5031000) {
 		decode_fields32(ENC_WFET_ONLY_SYSTEMINSTRSWITHREG, ctx, instr);
@@ -29896,7 +29964,7 @@ int WFET(context *ctx, Instruction *instr)
 int WFI(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=011|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503207F) {
 		decode_fields32(ENC_WFI_HI_HINTS, ctx, instr);
@@ -30007,7 +30075,7 @@ int WFI(context *ctx, Instruction *instr)
 int WFIT(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 11010101000000110001|CRm=0000|op2=001|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFFE0)==0xD5031020) {
 		decode_fields32(ENC_WFIT_ONLY_SYSTEMINSTRSWITHREG, ctx, instr);
@@ -30030,7 +30098,7 @@ int WFIT(context *ctx, Instruction *instr)
 int XAFLAG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=001|Rt =11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500403F) {
 		decode_fields32(ENC_XAFLAG_M_PSTATE, ctx, instr);
@@ -30046,7 +30114,7 @@ int XAFLAG(context *ctx, Instruction *instr)
 int XAR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 11001110100|Rm=xxxxx|imm6=xxxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE00000)==0xCE800000) {
 		decode_fields32(ENC_XAR_VVV2_CRYPTO3_IMM6, ctx, instr);
@@ -30065,7 +30133,7 @@ int XAR_advsimd(context *ctx, Instruction *instr)
 int XPAC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class general */
+	/* class iclass_general */
 	/* sf=1|1|S=0|11010110|opcode2=00001|opcode[5]=0|opcode[4]=1|opcode[3:1]=000|D=x|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFBE0)==0xDAC143E0) {
 		decode_fields32(ENC_XPACD_64Z_DP_1SRC, ctx, instr);
@@ -30081,7 +30149,7 @@ int XPAC(context *ctx, Instruction *instr)
 		if(ctx->D==1) OK(ENC_XPACD_64Z_DP_1SRC);
 		if(ctx->D==0) OK(ENC_XPACI_64Z_DP_1SRC);
 	}
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=111|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD50320FF) {
 		decode_fields32(ENC_XPACLRI_HI_HINTS, ctx, instr);
@@ -30094,7 +30162,7 @@ int XPAC(context *ctx, Instruction *instr)
 int XTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class simd */
+	/* class iclass_simd */
 	/* 0|Q=x|U=0|01110|size=xx|10000|opcode=10010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE212800) {
 		decode_fields32(ENC_XTN_ASIMDMISC_N, ctx, instr);
@@ -30116,7 +30184,7 @@ int XTN_advsimd(context *ctx, Instruction *instr)
 int YIELD(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class system */
+	/* class iclass_system */
 	/* 1101010100|L=0|op0=00|op1=011|CRn=0010|CRm=0000|op2=001|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503203F) {
 		decode_fields32(ENC_YIELD_HI_HINTS, ctx, instr);
@@ -30227,7 +30295,7 @@ int YIELD(context *ctx, Instruction *instr)
 int ZIP1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE003800) {
 		decode_fields32(ENC_ZIP1_ASIMDPERM_ONLY, ctx, instr);
@@ -30251,7 +30319,7 @@ int ZIP1_advsimd(context *ctx, Instruction *instr)
 int ZIP2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class advsimd */
+	/* class iclass_advsimd */
 	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE007800) {
 		decode_fields32(ENC_ZIP2_ASIMDPERM_ONLY, ctx, instr);
@@ -30275,7 +30343,7 @@ int ZIP2_advsimd(context *ctx, Instruction *instr)
 int abs_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x416A000) {
 		decode_fields32(ENC_ABS_Z_P_Z_, ctx, instr);
@@ -30291,11 +30359,51 @@ int abs_z_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* adclb_z_zzz.xml */
+int adclb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|0|sz=x|0|Zm=xxxxx|11010|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500D000) {
+		decode_fields32(ENC_ADCLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (0x20) << (UINT(ctx->sz));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_ADCLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* adclt_z_zzz.xml */
+int adclt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|0|sz=x|0|Zm=xxxxx|11010|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500D400) {
+		decode_fields32(ENC_ADCLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (0x20) << (UINT(ctx->sz));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_ADCLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* add_z_p_zz.xml */
 int add_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4000000) {
 		decode_fields32(ENC_ADD_Z_P_ZZ_, ctx, instr);
@@ -30315,7 +30423,7 @@ int add_z_p_zz(context *ctx, Instruction *instr)
 int add_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2520C000) {
 		decode_fields32(ENC_ADD_Z_ZI_, ctx, instr);
@@ -30340,7 +30448,7 @@ int add_z_zi(context *ctx, Instruction *instr)
 int add_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200000) {
 		decode_fields32(ENC_ADD_Z_ZZ_, ctx, instr);
@@ -30356,11 +30464,77 @@ int add_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* addhnb_z_zz.xml */
+int addhnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45206000) {
+		decode_fields32(ENC_ADDHNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_ADDHNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* addhnt_z_zz.xml */
+int addhnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45206400) {
+		decode_fields32(ENC_ADDHNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_ADDHNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* addp_z_p_zz.xml */
+int addp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|opc=00|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4411A000) {
+		decode_fields32(ENC_ADDP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_ADDP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* addpl_r_ri.xml */
 int addpl_r_ri(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 000001000|op=1|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4605000) {
 		decode_fields32(ENC_ADDPL_R_RI_, ctx, instr);
@@ -30379,7 +30553,7 @@ int addpl_r_ri(context *ctx, Instruction *instr)
 int addvl_r_ri(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 000001000|op=0|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4205000) {
 		decode_fields32(ENC_ADDVL_R_RI_, ctx, instr);
@@ -30398,7 +30572,7 @@ int addvl_r_ri(context *ctx, Instruction *instr)
 int adr_z_az(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_pkd */
+	/* class iclass_off_pkd */
 	/* 00000100|1|sz=x|1|Zm=xxxxx|1010|msz=xx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0F000)==0x4A0A000) {
 		decode_fields32(ENC_ADR_Z_AZ_SD_SAME_SCALED, ctx, instr);
@@ -30414,7 +30588,7 @@ int adr_z_az(context *ctx, Instruction *instr)
 		ctx->mbytes = (1) << (UINT(ctx->msz));
 		OK(ENC_ADR_Z_AZ_SD_SAME_SCALED);
 	}
-	/* class off_s_s32 */
+	/* class iclass_off_s_s32 */
 	/* 00000100|opc=00|1|Zm=xxxxx|1010|msz=xx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x420A000) {
 		decode_fields32(ENC_ADR_Z_AZ_D_S32_SCALED, ctx, instr);
@@ -30430,7 +30604,7 @@ int adr_z_az(context *ctx, Instruction *instr)
 		ctx->mbytes = (1) << (UINT(ctx->msz));
 		OK(ENC_ADR_Z_AZ_D_S32_SCALED);
 	}
-	/* class off_s_u32 */
+	/* class iclass_off_s_u32 */
 	/* 00000100|opc=01|1|Zm=xxxxx|1010|msz=xx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x460A000) {
 		decode_fields32(ENC_ADR_Z_AZ_D_U32_SCALED, ctx, instr);
@@ -30449,11 +30623,81 @@ int adr_z_az(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* aesd_z_zz.xml */
+int aesd_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|10001|op=0|11100|o2=1|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFFFFC00)==0x4522E400) {
+		decode_fields32(ENC_AESD_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2AES()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_AESD_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* aese_z_zz.xml */
+int aese_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|10001|op=0|11100|o2=0|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFFFFC00)==0x4522E000) {
+		decode_fields32(ENC_AESE_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2AES()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_AESE_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* aesimc_z_z.xml */
+int aesimc_z_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|10000011100|op=1|00000|Zdn=xxxxx */
+	if((INSWORD & 0xFFFFFFE0)==0x4520E400) {
+		decode_fields32(ENC_AESIMC_Z_Z_, ctx, instr);
+		if(!HaveSVE2AES()) {
+			UNDEFINED;
+		}
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_AESIMC_Z_Z_);
+	}
+	return rc;
+}
+
+/* aesmc_z_z.xml */
+int aesmc_z_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|10000011100|op=0|00000|Zdn=xxxxx */
+	if((INSWORD & 0xFFFFFFE0)==0x4520E000) {
+		decode_fields32(ENC_AESMC_Z_Z_, ctx, instr);
+		if(!HaveSVE2AES()) {
+			UNDEFINED;
+		}
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_AESMC_Z_Z_);
+	}
+	return rc;
+}
+
 /* and_p_p_pp.xml */
 int and_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004000) {
 		decode_fields32(ENC_AND_P_P_PP_Z, ctx, instr);
@@ -30471,7 +30715,7 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
 		OK(ENC_AND_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404000) {
 		decode_fields32(ENC_ANDS_P_P_PP_Z, ctx, instr);
@@ -30496,7 +30740,7 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 int and_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A0000) {
 		decode_fields32(ENC_AND_Z_P_ZZ_, ctx, instr);
@@ -30516,7 +30760,7 @@ int and_z_p_zz(context *ctx, Instruction *instr)
 int and_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=10|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5800000) {
 		decode_fields32(ENC_AND_Z_ZI_, ctx, instr);
@@ -30536,7 +30780,7 @@ int and_z_zi(context *ctx, Instruction *instr)
 int and_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=00|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4203000) {
 		decode_fields32(ENC_AND_Z_ZZ_, ctx, instr);
@@ -30555,7 +30799,7 @@ int and_z_zz(context *ctx, Instruction *instr)
 int andv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0110|opc=10|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A2000) {
 		decode_fields32(ENC_ANDV_R_P_Z_, ctx, instr);
@@ -30575,7 +30819,7 @@ int andv_r_p_z(context *ctx, Instruction *instr)
 int asr_z_p_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4008000) {
 		decode_fields32(ENC_ASR_Z_P_ZI_, ctx, instr);
@@ -30610,7 +30854,7 @@ int asr_z_p_zi(context *ctx, Instruction *instr)
 int asr_z_p_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4188000) {
 		decode_fields32(ENC_ASR_Z_P_ZW_, ctx, instr);
@@ -30633,7 +30877,7 @@ int asr_z_p_zw(context *ctx, Instruction *instr)
 int asr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4108000) {
 		decode_fields32(ENC_ASR_Z_P_ZZ_, ctx, instr);
@@ -30653,7 +30897,7 @@ int asr_z_p_zz(context *ctx, Instruction *instr)
 int asr_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209000) {
 		decode_fields32(ENC_ASR_Z_ZI_, ctx, instr);
@@ -30688,7 +30932,7 @@ int asr_z_zi(context *ctx, Instruction *instr)
 int asr_z_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208000) {
 		decode_fields32(ENC_ASR_Z_ZW_, ctx, instr);
@@ -30711,7 +30955,7 @@ int asr_z_zw(context *ctx, Instruction *instr)
 int asrd_z_p_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|00|opc=01|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4048000) {
 		decode_fields32(ENC_ASRD_Z_P_ZI_, ctx, instr);
@@ -30746,7 +30990,7 @@ int asrd_z_p_zi(context *ctx, Instruction *instr)
 int asrr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=1|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4148000) {
 		decode_fields32(ENC_ASRR_Z_P_ZZ_, ctx, instr);
@@ -30762,11 +31006,70 @@ int asrr_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* bcax_z_zzz.xml */
+int bcax_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=01|1|Zm=xxxxx|00111|o2=0|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4603800) {
+		decode_fields32(ENC_BCAX_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_BCAX_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* bdep_z_zz.xml */
+int bdep_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1011|opc=01|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500B400) {
+		decode_fields32(ENC_BDEP_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2BitPerm()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_BDEP_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* bext_z_zz.xml */
+int bext_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1011|opc=00|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500B000) {
+		decode_fields32(ENC_BEXT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2BitPerm()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_BEXT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* bfcvt_z_p_z.xml */
 int bfcvt_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x658AA000) {
 		decode_fields32(ENC_BFCVT_Z_P_Z_S2BF, ctx, instr);
@@ -30785,7 +31088,7 @@ int bfcvt_z_p_z(context *ctx, Instruction *instr)
 int bfcvtnt_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100100|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x648AA000) {
 		decode_fields32(ENC_BFCVTNT_Z_P_Z_S2BF, ctx, instr);
@@ -30804,7 +31107,7 @@ int bfcvtnt_z_p_z(context *ctx, Instruction *instr)
 int bfdot_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001000|op=1|1|Zm=xxxxx|100000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64608000) {
 		decode_fields32(ENC_BFDOT_Z_ZZZ_, ctx, instr);
@@ -30823,7 +31126,7 @@ int bfdot_z_zzz(context *ctx, Instruction *instr)
 int bfdot_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001000|op=1|1|i2=xx|Zm=xxx|010000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64604000) {
 		decode_fields32(ENC_BFDOT_Z_ZZZI_, ctx, instr);
@@ -30843,7 +31146,7 @@ int bfdot_z_zzzi(context *ctx, Instruction *instr)
 int bfmlalb_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08000) {
 		decode_fields32(ENC_BFMLALB_Z_ZZZ_, ctx, instr);
@@ -30862,7 +31165,7 @@ int bfmlalb_z_zzz(context *ctx, Instruction *instr)
 int bfmlalb_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04000) {
 		decode_fields32(ENC_BFMLALB_Z_ZZZI_, ctx, instr);
@@ -30882,7 +31185,7 @@ int bfmlalb_z_zzzi(context *ctx, Instruction *instr)
 int bfmlalt_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08400) {
 		decode_fields32(ENC_BFMLALT_Z_ZZZ_, ctx, instr);
@@ -30901,7 +31204,7 @@ int bfmlalt_z_zzz(context *ctx, Instruction *instr)
 int bfmlalt_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04400) {
 		decode_fields32(ENC_BFMLALT_Z_ZZZI_, ctx, instr);
@@ -30921,7 +31224,7 @@ int bfmlalt_z_zzzi(context *ctx, Instruction *instr)
 int bfmmla_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100100|opc=01|1|Zm=xxxxx|111001|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x6460E400) {
 		decode_fields32(ENC_BFMMLA_Z_ZZZ_, ctx, instr);
@@ -30936,11 +31239,31 @@ int bfmmla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* bgrp_z_zz.xml */
+int bgrp_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1011|opc=10|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500B800) {
+		decode_fields32(ENC_BGRP_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2BitPerm()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_BGRP_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* bic_p_p_pp.xml */
 int bic_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004010) {
 		decode_fields32(ENC_BIC_P_P_PP_Z, ctx, instr);
@@ -30955,7 +31278,7 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BIC_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404010) {
 		decode_fields32(ENC_BICS_P_P_PP_Z, ctx, instr);
@@ -30977,7 +31300,7 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 int bic_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B0000) {
 		decode_fields32(ENC_BIC_Z_P_ZZ_, ctx, instr);
@@ -30997,7 +31320,7 @@ int bic_z_p_zz(context *ctx, Instruction *instr)
 int bic_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=11|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E03000) {
 		decode_fields32(ENC_BIC_Z_ZZ_, ctx, instr);
@@ -31016,7 +31339,7 @@ int bic_z_zz(context *ctx, Instruction *instr)
 int brka_p_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|B=0|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25104000) {
 		decode_fields32(ENC_BRKA_P_P_P_, ctx, instr);
@@ -31031,7 +31354,7 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKA_P_P_P_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|B=0|S=1|01000001|Pg=xxxx|0|Pn=xxxx|M=0|Pd=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25504000) {
 		decode_fields32(ENC_BRKAS_P_P_P_Z, ctx, instr);
@@ -31053,7 +31376,7 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 int brkb_p_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|B=1|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25904000) {
 		decode_fields32(ENC_BRKB_P_P_P_, ctx, instr);
@@ -31068,7 +31391,7 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKB_P_P_P_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|B=1|S=1|01000001|Pg=xxxx|0|Pn=xxxx|M=0|Pd=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25D04000) {
 		decode_fields32(ENC_BRKBS_P_P_P_Z, ctx, instr);
@@ -31090,7 +31413,7 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 int brkn_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 001001010|S=0|01100001|Pg=xxxx|0|Pn=xxxx|0|Pdm=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25184000) {
 		decode_fields32(ENC_BRKN_P_P_PP_, ctx, instr);
@@ -31103,7 +31426,7 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKN_P_P_PP_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 001001010|S=1|01100001|Pg=xxxx|0|Pn=xxxx|0|Pdm=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25584000) {
 		decode_fields32(ENC_BRKNS_P_P_PP_, ctx, instr);
@@ -31123,7 +31446,7 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 int brkpa_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C000) {
 		decode_fields32(ENC_BRKPA_P_P_PP_, ctx, instr);
@@ -31138,7 +31461,7 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKPA_P_P_PP_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2540C000) {
 		decode_fields32(ENC_BRKPAS_P_P_PP_, ctx, instr);
@@ -31160,7 +31483,7 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 int brkpb_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C010) {
 		decode_fields32(ENC_BRKPB_P_P_PP_, ctx, instr);
@@ -31175,7 +31498,7 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_BRKPB_P_P_PP_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2540C010) {
 		decode_fields32(ENC_BRKPBS_P_P_PP_, ctx, instr);
@@ -31193,11 +31516,156 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* bsl1n_z_zzz.xml */
+int bsl1n_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=01|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4603C00) {
+		decode_fields32(ENC_BSL1N_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_BSL1N_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* bsl2n_z_zzz.xml */
+int bsl2n_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=10|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4A03C00) {
+		decode_fields32(ENC_BSL2N_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_BSL2N_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* bsl_z_zzz.xml */
+int bsl_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=00|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4203C00) {
+		decode_fields32(ENC_BSL_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_BSL_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* cadd_z_zz.xml */
+int cadd_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|00000|op=0|11011|rot=x|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FF800)==0x4500D800) {
+		decode_fields32(ENC_CADD_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->sub_i = (ctx->rot==0);
+		ctx->sub_r = (ctx->rot==1);
+		OK(ENC_CADD_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* cdot_z_zzz.xml */
+int cdot_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20F000)==0x44001000) {
+		decode_fields32(ENC_CDOT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(!(ctx->size&2)) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_i = (SLICE(ctx->rot,0,0)==SLICE(ctx->rot,1,1));
+		OK(ENC_CDOT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* cdot_z_zzzi.xml */
+int cdot_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|0100|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44A04000) {
+		decode_fields32(ENC_CDOT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_i = (SLICE(ctx->rot,0,0)==SLICE(ctx->rot,1,1));
+		OK(ENC_CDOT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|0100|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44E04000) {
+		decode_fields32(ENC_CDOT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_i = (SLICE(ctx->rot,0,0)==SLICE(ctx->rot,1,1));
+		OK(ENC_CDOT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
 /* clasta_r_p_z.xml */
 int clasta_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|11000|B=0|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x530A000) {
 		decode_fields32(ENC_CLASTA_R_P_Z_, ctx, instr);
@@ -31219,7 +31687,7 @@ int clasta_r_p_z(context *ctx, Instruction *instr)
 int clasta_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10101|B=0|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52A8000) {
 		decode_fields32(ENC_CLASTA_V_P_Z_, ctx, instr);
@@ -31240,7 +31708,7 @@ int clasta_v_p_z(context *ctx, Instruction *instr)
 int clasta_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10100|B=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5288000) {
 		decode_fields32(ENC_CLASTA_Z_P_ZZ_, ctx, instr);
@@ -31261,7 +31729,7 @@ int clasta_z_p_zz(context *ctx, Instruction *instr)
 int clastb_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|11000|B=1|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x531A000) {
 		decode_fields32(ENC_CLASTB_R_P_Z_, ctx, instr);
@@ -31283,7 +31751,7 @@ int clastb_r_p_z(context *ctx, Instruction *instr)
 int clastb_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10101|B=1|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52B8000) {
 		decode_fields32(ENC_CLASTB_V_P_Z_, ctx, instr);
@@ -31304,7 +31772,7 @@ int clastb_v_p_z(context *ctx, Instruction *instr)
 int clastb_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10100|B=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5298000) {
 		decode_fields32(ENC_CLASTB_Z_P_ZZ_, ctx, instr);
@@ -31325,7 +31793,7 @@ int clastb_z_p_zz(context *ctx, Instruction *instr)
 int cls_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x418A000) {
 		decode_fields32(ENC_CLS_Z_P_Z_, ctx, instr);
@@ -31345,7 +31813,7 @@ int cls_z_p_z(context *ctx, Instruction *instr)
 int clz_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x419A000) {
 		decode_fields32(ENC_CLZ_Z_P_Z_, ctx, instr);
@@ -31361,11 +31829,78 @@ int clz_z_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* cmla_z_zzz.xml */
+int cmla_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|001|op=0|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20F000)==0x44002000) {
+		decode_fields32(ENC_CMLA_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_CMLA_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* cmla_z_zzzi.xml */
+int cmla_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|0110|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44A06000) {
+		decode_fields32(ENC_CMLA_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_CMLA_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|0110|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44E06000) {
+		decode_fields32(ENC_CMLA_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_CMLA_Z_ZZZI_S);
+	}
+	return rc;
+}
+
 /* cmpeq_p_p_zi.xml */
 int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25008000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZI_, ctx, instr);
@@ -31381,7 +31916,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPEQ_P_P_ZI_);
 	}
-	/* class gt */
+	/* class iclass_gt */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25000010) {
 		decode_fields32(ENC_CMPGT_P_P_ZI_, ctx, instr);
@@ -31397,7 +31932,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGT_P_P_ZI_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25000000) {
 		decode_fields32(ENC_CMPGE_P_P_ZI_, ctx, instr);
@@ -31413,7 +31948,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGE_P_P_ZI_);
 	}
-	/* class hi */
+	/* class iclass_hi */
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24200010) {
 		decode_fields32(ENC_CMPHI_P_P_ZI_, ctx, instr);
@@ -31429,7 +31964,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHI_P_P_ZI_);
 	}
-	/* class hs */
+	/* class iclass_hs */
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24200000) {
 		decode_fields32(ENC_CMPHS_P_P_ZI_, ctx, instr);
@@ -31445,7 +31980,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHS_P_P_ZI_);
 	}
-	/* class lt */
+	/* class iclass_lt */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25002000) {
 		decode_fields32(ENC_CMPLT_P_P_ZI_, ctx, instr);
@@ -31461,7 +31996,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPLT_P_P_ZI_);
 	}
-	/* class le */
+	/* class iclass_le */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25002010) {
 		decode_fields32(ENC_CMPLE_P_P_ZI_, ctx, instr);
@@ -31477,7 +32012,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPLE_P_P_ZI_);
 	}
-	/* class lo */
+	/* class iclass_lo */
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24202000) {
 		decode_fields32(ENC_CMPLO_P_P_ZI_, ctx, instr);
@@ -31493,7 +32028,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPLO_P_P_ZI_);
 	}
-	/* class ls */
+	/* class iclass_ls */
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24202010) {
 		decode_fields32(ENC_CMPLS_P_P_ZI_, ctx, instr);
@@ -31509,7 +32044,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPLS_P_P_ZI_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 00100101|size=xx|0|imm5=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25008010) {
 		decode_fields32(ENC_CMPNE_P_P_ZI_, ctx, instr);
@@ -31532,7 +32067,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24002000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZW_, ctx, instr);
@@ -31551,7 +32086,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPEQ_P_P_ZW_);
 	}
-	/* class gt */
+	/* class iclass_gt */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24004010) {
 		decode_fields32(ENC_CMPGT_P_P_ZW_, ctx, instr);
@@ -31570,7 +32105,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGT_P_P_ZW_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24004000) {
 		decode_fields32(ENC_CMPGE_P_P_ZW_, ctx, instr);
@@ -31589,7 +32124,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGE_P_P_ZW_);
 	}
-	/* class hi */
+	/* class iclass_hi */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400C010) {
 		decode_fields32(ENC_CMPHI_P_P_ZW_, ctx, instr);
@@ -31608,7 +32143,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHI_P_P_ZW_);
 	}
-	/* class hs */
+	/* class iclass_hs */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400C000) {
 		decode_fields32(ENC_CMPHS_P_P_ZW_, ctx, instr);
@@ -31627,7 +32162,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHS_P_P_ZW_);
 	}
-	/* class lt */
+	/* class iclass_lt */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24006000) {
 		decode_fields32(ENC_CMPLT_P_P_ZW_, ctx, instr);
@@ -31646,7 +32181,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPLT_P_P_ZW_);
 	}
-	/* class le */
+	/* class iclass_le */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24006010) {
 		decode_fields32(ENC_CMPLE_P_P_ZW_, ctx, instr);
@@ -31665,7 +32200,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPLE_P_P_ZW_);
 	}
-	/* class lo */
+	/* class iclass_lo */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400E000) {
 		decode_fields32(ENC_CMPLO_P_P_ZW_, ctx, instr);
@@ -31684,7 +32219,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPLO_P_P_ZW_);
 	}
-	/* class ls */
+	/* class iclass_ls */
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400E010) {
 		decode_fields32(ENC_CMPLS_P_P_ZW_, ctx, instr);
@@ -31703,7 +32238,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPLS_P_P_ZW_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24002010) {
 		decode_fields32(ENC_CMPNE_P_P_ZW_, ctx, instr);
@@ -31729,7 +32264,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400A000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZZ_, ctx, instr);
@@ -31745,7 +32280,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPEQ_P_P_ZZ_);
 	}
-	/* class gt */
+	/* class iclass_gt */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008010) {
 		decode_fields32(ENC_CMPGT_P_P_ZZ_, ctx, instr);
@@ -31761,7 +32296,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGT_P_P_ZZ_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008000) {
 		decode_fields32(ENC_CMPGE_P_P_ZZ_, ctx, instr);
@@ -31777,7 +32312,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_CMPGE_P_P_ZZ_);
 	}
-	/* class hi */
+	/* class iclass_hi */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000010) {
 		decode_fields32(ENC_CMPHI_P_P_ZZ_, ctx, instr);
@@ -31793,7 +32328,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHI_P_P_ZZ_);
 	}
-	/* class hs */
+	/* class iclass_hs */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000000) {
 		decode_fields32(ENC_CMPHS_P_P_ZZ_, ctx, instr);
@@ -31809,7 +32344,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_CMPHS_P_P_ZZ_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400A010) {
 		decode_fields32(ENC_CMPNE_P_P_ZZ_, ctx, instr);
@@ -31832,7 +32367,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 int cnot_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41BA000) {
 		decode_fields32(ENC_CNOT_Z_P_Z_, ctx, instr);
@@ -31852,7 +32387,7 @@ int cnot_z_p_z(context *ctx, Instruction *instr)
 int cnt_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41AA000) {
 		decode_fields32(ENC_CNT_Z_P_Z_, ctx, instr);
@@ -31872,7 +32407,7 @@ int cnt_z_p_z(context *ctx, Instruction *instr)
 int cntb_r_s(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000100|size=00|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420E000) {
 		decode_fields32(ENC_CNTB_R_S_, ctx, instr);
@@ -31885,7 +32420,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_CNTB_R_S_);
 	}
-	/* class esize_doubleword */
+	/* class iclass_esize_doubleword */
 	/* 00000100|size=11|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0E000) {
 		decode_fields32(ENC_CNTD_R_S_, ctx, instr);
@@ -31898,7 +32433,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_CNTD_R_S_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=01|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460E000) {
 		decode_fields32(ENC_CNTH_R_S_, ctx, instr);
@@ -31911,7 +32446,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_CNTH_R_S_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=10|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0E000) {
 		decode_fields32(ENC_CNTW_R_S_, ctx, instr);
@@ -31931,7 +32466,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 int cntp_r_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|10|Pg=xxxx|0|Pn=xxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FC200)==0x25208000) {
 		decode_fields32(ENC_CNTP_R_P_P_, ctx, instr);
@@ -31951,7 +32486,7 @@ int cntp_r_p_p(context *ctx, Instruction *instr)
 int compact_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100001100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5218000) {
 		decode_fields32(ENC_COMPACT_Z_P_Z_, ctx, instr);
@@ -31974,7 +32509,7 @@ int compact_z_p_z(context *ctx, Instruction *instr)
 int cpy_z_o_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=0|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5100000) {
 		decode_fields32(ENC_CPY_Z_O_I_, ctx, instr);
@@ -32003,7 +32538,7 @@ int cpy_z_o_i(context *ctx, Instruction *instr)
 int cpy_z_p_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5104000) {
 		decode_fields32(ENC_CPY_Z_P_I_, ctx, instr);
@@ -32032,7 +32567,7 @@ int cpy_z_p_i(context *ctx, Instruction *instr)
 int cpy_z_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|101000101|Pg=xxx|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x528A000) {
 		decode_fields32(ENC_CPY_Z_P_R_, ctx, instr);
@@ -32054,7 +32589,7 @@ int cpy_z_p_r(context *ctx, Instruction *instr)
 int cpy_z_p_v(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100000100|Pg=xxx|Vn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5208000) {
 		decode_fields32(ENC_CPY_Z_P_V_, ctx, instr);
@@ -32076,7 +32611,7 @@ int cpy_z_p_v(context *ctx, Instruction *instr)
 int ctermeq_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 00|100101|op=1|sz=x|1|Rm=xxxxx|001000|Rn=xxxxx|ne=0|0|0|00 */
 	if((INSWORD & 0xFFA0FC1F)==0x25A02000) {
 		decode_fields32(ENC_CTERMEQ_RR_, ctx, instr);
@@ -32089,7 +32624,7 @@ int ctermeq_rr(context *ctx, Instruction *instr)
 		ctx->op = Cmp_EQ;
 		OK(ENC_CTERMEQ_RR_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 00|100101|op=1|sz=x|1|Rm=xxxxx|001000|Rn=xxxxx|ne=1|0|0|00 */
 	if((INSWORD & 0xFFA0FC1F)==0x25A02010) {
 		decode_fields32(ENC_CTERMNE_RR_, ctx, instr);
@@ -32109,7 +32644,7 @@ int ctermeq_rr(context *ctx, Instruction *instr)
 int decb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E400) {
 		decode_fields32(ENC_DECB_R_RS_, ctx, instr);
@@ -32122,7 +32657,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_DECB_R_RS_);
 	}
-	/* class esize_doubleword */
+	/* class iclass_esize_doubleword */
 	/* 00000100|size=11|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0E400) {
 		decode_fields32(ENC_DECD_R_RS_, ctx, instr);
@@ -32135,7 +32670,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_DECD_R_RS_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=01|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470E400) {
 		decode_fields32(ENC_DECH_R_RS_, ctx, instr);
@@ -32148,7 +32683,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_DECH_R_RS_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=10|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0E400) {
 		decode_fields32(ENC_DECW_R_RS_, ctx, instr);
@@ -32168,7 +32703,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 int decd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_doubleword */
+	/* class iclass_esize_doubleword */
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C400) {
 		decode_fields32(ENC_DECD_Z_ZS_, ctx, instr);
@@ -32181,7 +32716,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_DECD_Z_ZS_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=01|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470C400) {
 		decode_fields32(ENC_DECH_Z_ZS_, ctx, instr);
@@ -32194,7 +32729,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_DECH_Z_ZS_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=10|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0C400) {
 		decode_fields32(ENC_DECW_Z_ZS_, ctx, instr);
@@ -32214,7 +32749,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 int decp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1011|op=0|D=1|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8800) {
 		decode_fields32(ENC_DECP_R_P_R_, ctx, instr);
@@ -32233,7 +32768,7 @@ int decp_r_p_r(context *ctx, Instruction *instr)
 int decp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1011|op=0|D=1|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8000) {
 		decode_fields32(ENC_DECP_Z_P_Z_, ctx, instr);
@@ -32255,7 +32790,7 @@ int decp_z_p_z(context *ctx, Instruction *instr)
 int dup_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|111|opc=00|011|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2538C000) {
 		decode_fields32(ENC_DUP_Z_I_, ctx, instr);
@@ -32282,7 +32817,7 @@ int dup_z_i(context *ctx, Instruction *instr)
 int dup_z_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100000001110|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5203800) {
 		decode_fields32(ENC_DUP_Z_R_, ctx, instr);
@@ -32303,7 +32838,7 @@ int dup_z_r(context *ctx, Instruction *instr)
 int dup_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|imm2=xx|1|tsz=xxxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202000) {
 		decode_fields32(ENC_DUP_Z_ZI_, ctx, instr);
@@ -32347,7 +32882,7 @@ int dup_z_zi(context *ctx, Instruction *instr)
 int dupm_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101110000|imm13=xxxxxxxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5C00000) {
 		decode_fields32(ENC_DUPM_Z_I_, ctx, instr);
@@ -32366,11 +32901,30 @@ int dupm_z_i(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* eor3_z_zzz.xml */
+int eor3_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=00|1|Zm=xxxxx|00111|o2=0|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4203800) {
+		decode_fields32(ENC_EOR3_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_EOR3_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* eor_p_p_pp.xml */
 int eor_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004200) {
 		decode_fields32(ENC_EOR_P_P_PP_Z, ctx, instr);
@@ -32388,7 +32942,7 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
 		OK(ENC_EOR_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25404200) {
 		decode_fields32(ENC_EORS_P_P_PP_Z, ctx, instr);
@@ -32413,7 +32967,7 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 int eor_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4190000) {
 		decode_fields32(ENC_EOR_Z_P_ZZ_, ctx, instr);
@@ -32433,7 +32987,7 @@ int eor_z_p_zz(context *ctx, Instruction *instr)
 int eor_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=01|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5400000) {
 		decode_fields32(ENC_EOR_Z_ZI_, ctx, instr);
@@ -32453,7 +33007,7 @@ int eor_z_zi(context *ctx, Instruction *instr)
 int eor_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=10|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4A03000) {
 		decode_fields32(ENC_EOR_Z_ZZ_, ctx, instr);
@@ -32468,11 +33022,55 @@ int eor_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* eorbt_z_zz.xml */
+int eorbt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|10010|tb=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45009000) {
+		decode_fields32(ENC_EORBT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 1;
+		OK(ENC_EORBT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* eortb_z_zz.xml */
+int eortb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|10010|tb=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45009400) {
+		decode_fields32(ENC_EORTB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 0;
+		OK(ENC_EORTB_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* eorv_r_p_z.xml */
 int eorv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0110|opc=01|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4192000) {
 		decode_fields32(ENC_EORV_R_P_Z_, ctx, instr);
@@ -32492,7 +33090,21 @@ int eorv_r_p_z(context *ctx, Instruction *instr)
 int ext_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve_const */
+	/* 00000101011|imm8h=xxxxx|000|imm8l=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x5600000) {
+		decode_fields32(ENC_EXT_Z_ZI_CON, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->dst = UINT(ctx->Zd);
+		ctx->s1 = UINT(ctx->Zn);
+		ctx->s2 = ((ctx->s1+1)) % 32;
+		ctx->position = UINT(((ctx->imm8h<<3)|ctx->imm8l));
+		OK(ENC_EXT_Z_ZI_CON);
+	}
+	/* class iclass_sve_dest */
 	/* 00000101001|imm8h=xxxxx|000|imm8l=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x5200000) {
 		decode_fields32(ENC_EXT_Z_ZI_DES, ctx, instr);
@@ -32500,8 +33112,9 @@ int ext_z_zi(context *ctx, Instruction *instr)
 			UNDEFINED;
 		}
 		ctx->esize = 8;
-		ctx->dn = UINT(ctx->Zdn);
-		ctx->m = UINT(ctx->Zm);
+		ctx->dst = UINT(ctx->Zdn);
+		ctx->s1 = ctx->dst;
+		ctx->s2 = UINT(ctx->Zm);
 		ctx->position = UINT(((ctx->imm8h<<3)|ctx->imm8l));
 		OK(ENC_EXT_Z_ZI_DES);
 	}
@@ -32512,7 +33125,7 @@ int ext_z_zi(context *ctx, Instruction *instr)
 int fabd_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65088000) {
 		decode_fields32(ENC_FABD_Z_P_ZZ_, ctx, instr);
@@ -32535,7 +33148,7 @@ int fabd_z_p_zz(context *ctx, Instruction *instr)
 int fabs_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41CA000) {
 		decode_fields32(ENC_FABS_Z_P_Z_, ctx, instr);
@@ -32558,7 +33171,7 @@ int fabs_z_p_z(context *ctx, Instruction *instr)
 int facge_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class gt */
+	/* class iclass_gt */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=1|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500E010) {
 		decode_fields32(ENC_FACGT_P_P_ZZ_, ctx, instr);
@@ -32576,7 +33189,7 @@ int facge_p_p_zz(context *ctx, Instruction *instr)
 		ctx->op = Cmp_GT;
 		OK(ENC_FACGT_P_P_ZZ_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C010) {
 		decode_fields32(ENC_FACGE_P_P_ZZ_, ctx, instr);
@@ -32601,7 +33214,7 @@ int facge_p_p_zz(context *ctx, Instruction *instr)
 int fadd_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65188000) {
 		decode_fields32(ENC_FADD_Z_P_ZS_, ctx, instr);
@@ -32624,7 +33237,7 @@ int fadd_z_p_zs(context *ctx, Instruction *instr)
 int fadd_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65008000) {
 		decode_fields32(ENC_FADD_Z_P_ZZ_, ctx, instr);
@@ -32647,7 +33260,7 @@ int fadd_z_p_zz(context *ctx, Instruction *instr)
 int fadd_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000000) {
 		decode_fields32(ENC_FADD_Z_ZZ_, ctx, instr);
@@ -32670,7 +33283,7 @@ int fadd_z_zz(context *ctx, Instruction *instr)
 int fadda_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0110|opc=00|001|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65182000) {
 		decode_fields32(ENC_FADDA_V_P_Z_, ctx, instr);
@@ -32689,11 +33302,34 @@ int fadda_v_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* faddp_z_p_zz.xml */
+int faddp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100100|size=xx|010|opc<2:1>=00|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x64108000) {
+		decode_fields32(ENC_FADDP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_FADDP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* faddv_v_p_z.xml */
 int faddv_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65002000) {
 		decode_fields32(ENC_FADDV_V_P_Z_, ctx, instr);
@@ -32716,7 +33352,7 @@ int faddv_v_p_z(context *ctx, Instruction *instr)
 int fcadd_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100100|size=xx|00000|rot=x|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x64008000) {
 		decode_fields32(ENC_FCADD_Z_P_ZZ_, ctx, instr);
@@ -32741,7 +33377,7 @@ int fcadd_z_p_zz(context *ctx, Instruction *instr)
 int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 01100101|size=xx|0100|eq=1|lt=0|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65122000) {
 		decode_fields32(ENC_FCMEQ_P_P_Z0_, ctx, instr);
@@ -32758,7 +33394,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 		ctx->op = Cmp_EQ;
 		OK(ENC_FCMEQ_P_P_Z0_);
 	}
-	/* class gt */
+	/* class iclass_gt */
 	/* 01100101|size=xx|0100|eq=0|lt=0|001|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65102010) {
 		decode_fields32(ENC_FCMGT_P_P_Z0_, ctx, instr);
@@ -32775,7 +33411,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 		ctx->op = Cmp_GT;
 		OK(ENC_FCMGT_P_P_Z0_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 01100101|size=xx|0100|eq=0|lt=0|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65102000) {
 		decode_fields32(ENC_FCMGE_P_P_Z0_, ctx, instr);
@@ -32792,7 +33428,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 		ctx->op = Cmp_GE;
 		OK(ENC_FCMGE_P_P_Z0_);
 	}
-	/* class lt */
+	/* class iclass_lt */
 	/* 01100101|size=xx|0100|eq=0|lt=1|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65112000) {
 		decode_fields32(ENC_FCMLT_P_P_Z0_, ctx, instr);
@@ -32809,7 +33445,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 		ctx->op = Cmp_LT;
 		OK(ENC_FCMLT_P_P_Z0_);
 	}
-	/* class le */
+	/* class iclass_le */
 	/* 01100101|size=xx|0100|eq=0|lt=1|001|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65112010) {
 		decode_fields32(ENC_FCMLE_P_P_Z0_, ctx, instr);
@@ -32826,7 +33462,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 		ctx->op = Cmp_LE;
 		OK(ENC_FCMLE_P_P_Z0_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 01100101|size=xx|0100|eq=1|lt=1|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65132000) {
 		decode_fields32(ENC_FCMNE_P_P_Z0_, ctx, instr);
@@ -32850,7 +33486,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class eq */
+	/* class iclass_eq */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=1|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65006000) {
 		decode_fields32(ENC_FCMEQ_P_P_ZZ_, ctx, instr);
@@ -32868,7 +33504,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->op = Cmp_EQ;
 		OK(ENC_FCMEQ_P_P_ZZ_);
 	}
-	/* class gt */
+	/* class iclass_gt */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004010) {
 		decode_fields32(ENC_FCMGT_P_P_ZZ_, ctx, instr);
@@ -32886,7 +33522,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->op = Cmp_GT;
 		OK(ENC_FCMGT_P_P_ZZ_);
 	}
-	/* class ge */
+	/* class iclass_ge */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004000) {
 		decode_fields32(ENC_FCMGE_P_P_ZZ_, ctx, instr);
@@ -32904,7 +33540,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->op = Cmp_GE;
 		OK(ENC_FCMGE_P_P_ZZ_);
 	}
-	/* class ne */
+	/* class iclass_ne */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=1|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65006010) {
 		decode_fields32(ENC_FCMNE_P_P_ZZ_, ctx, instr);
@@ -32922,7 +33558,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 		ctx->op = Cmp_NE;
 		OK(ENC_FCMNE_P_P_ZZ_);
 	}
-	/* class uo */
+	/* class iclass_uo */
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C000) {
 		decode_fields32(ENC_FCMUO_P_P_ZZ_, ctx, instr);
@@ -32947,7 +33583,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 int fcmla_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100100|size=xx|0|Zm=xxxxx|0|rot=xx|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF208000)==0x64000000) {
 		decode_fields32(ENC_FCMLA_Z_P_ZZZ_, ctx, instr);
@@ -32975,7 +33611,7 @@ int fcmla_z_p_zzz(context *ctx, Instruction *instr)
 int fcmla_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x64A01000) {
 		decode_fields32(ENC_FCMLA_Z_ZZZI_H, ctx, instr);
@@ -32993,7 +33629,7 @@ int fcmla_z_zzzi(context *ctx, Instruction *instr)
 		ctx->neg_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
 		OK(ENC_FCMLA_Z_ZZZI_H);
 	}
-	/* class single */
+	/* class iclass_single */
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x64E01000) {
 		decode_fields32(ENC_FCMLA_Z_ZZZI_S, ctx, instr);
@@ -33018,7 +33654,7 @@ int fcmla_z_zzzi(context *ctx, Instruction *instr)
 int fcpy_z_p_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|01|Pg=xxxx|110|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30E000)==0x510C000) {
 		decode_fields32(ENC_FCPY_Z_P_I_, ctx, instr);
@@ -33043,7 +33679,7 @@ int fcpy_z_p_i(context *ctx, Instruction *instr)
 int fcvt_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half_to_single */
+	/* class iclass_half_to_single */
 	/* 01100101|opc=10|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6589A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_H2S, ctx, instr);
@@ -33058,7 +33694,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 		ctx->d_esize = 0x20;
 		OK(ENC_FCVT_Z_P_Z_H2S);
 	}
-	/* class half_to_double */
+	/* class iclass_half_to_double */
 	/* 01100101|opc=11|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65C9A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_H2D, ctx, instr);
@@ -33073,7 +33709,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 		ctx->d_esize = 0x40;
 		OK(ENC_FCVT_Z_P_Z_H2D);
 	}
-	/* class single_to_half */
+	/* class iclass_single_to_half */
 	/* 01100101|opc=10|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6588A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_S2H, ctx, instr);
@@ -33088,7 +33724,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 		ctx->d_esize = 0x10;
 		OK(ENC_FCVT_Z_P_Z_S2H);
 	}
-	/* class single_to_double */
+	/* class iclass_single_to_double */
 	/* 01100101|opc=11|0010|opc2=11|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65CBA000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_S2D, ctx, instr);
@@ -33103,7 +33739,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 		ctx->d_esize = 0x40;
 		OK(ENC_FCVT_Z_P_Z_S2D);
 	}
-	/* class double_to_half */
+	/* class iclass_double_to_half */
 	/* 01100101|opc=11|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65C8A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_D2H, ctx, instr);
@@ -33118,7 +33754,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 		ctx->d_esize = 0x10;
 		OK(ENC_FCVT_Z_P_Z_D2H);
 	}
-	/* class double_to_single */
+	/* class iclass_double_to_single */
 	/* 01100101|opc=11|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65CAA000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_D2S, ctx, instr);
@@ -33136,11 +33772,119 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fcvtlt_z_p_z.xml */
+int fcvtlt_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_half_to_single */
+	/* 01100100|opc=10|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x6489A000) {
+		decode_fields32(ENC_FCVTLT_Z_P_Z_H2S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FCVTLT_Z_P_Z_H2S);
+	}
+	/* class iclass_single_to_double */
+	/* 01100100|opc=11|0010|opc2=11|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x64CBA000) {
+		decode_fields32(ENC_FCVTLT_Z_P_Z_S2D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FCVTLT_Z_P_Z_S2D);
+	}
+	return rc;
+}
+
+/* fcvtnt_z_p_z.xml */
+int fcvtnt_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_single_to_half */
+	/* 01100100|opc=10|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x6488A000) {
+		decode_fields32(ENC_FCVTNT_Z_P_Z_S2H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FCVTNT_Z_P_Z_S2H);
+	}
+	/* class iclass_double_to_single */
+	/* 01100100|opc=11|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x64CAA000) {
+		decode_fields32(ENC_FCVTNT_Z_P_Z_D2S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FCVTNT_Z_P_Z_D2S);
+	}
+	return rc;
+}
+
+/* fcvtx_z_p_z.xml */
+int fcvtx_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_double_to_single */
+	/* 01100101|opc=00|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x650AA000) {
+		decode_fields32(ENC_FCVTX_Z_P_Z_D2S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->s_esize = 0x40;
+		ctx->d_esize = 0x20;
+		OK(ENC_FCVTX_Z_P_Z_D2S);
+	}
+	return rc;
+}
+
+/* fcvtxnt_z_p_z.xml */
+int fcvtxnt_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_double_to_single */
+	/* 01100100|opc=00|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x640AA000) {
+		decode_fields32(ENC_FCVTXNT_Z_P_Z_D2S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FCVTXNT_Z_P_Z_D2S);
+	}
+	return rc;
+}
+
 /* fcvtzs_z_p_z.xml */
 int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half_to_16 */
+	/* class iclass_half_to_16 */
 	/* 01100101|opc=01|011|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655AA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162H, ctx, instr);
@@ -33157,7 +33901,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_FP162H);
 	}
-	/* class half_to_32 */
+	/* class iclass_half_to_32 */
 	/* 01100101|opc=01|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655CA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162W, ctx, instr);
@@ -33174,7 +33918,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_FP162W);
 	}
-	/* class half_to_64 */
+	/* class iclass_half_to_64 */
 	/* 01100101|opc=01|011|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655EA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162X, ctx, instr);
@@ -33191,7 +33935,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_FP162X);
 	}
-	/* class single_to_32 */
+	/* class iclass_single_to_32 */
 	/* 01100101|opc=10|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x659CA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_S2W, ctx, instr);
@@ -33208,7 +33952,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_S2W);
 	}
-	/* class single_to_64 */
+	/* class iclass_single_to_64 */
 	/* 01100101|opc=11|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DCA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_S2X, ctx, instr);
@@ -33225,7 +33969,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_S2X);
 	}
-	/* class double_to_32 */
+	/* class iclass_double_to_32 */
 	/* 01100101|opc=11|011|opc2=00|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D8A000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_D2W, ctx, instr);
@@ -33242,7 +33986,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZS_Z_P_Z_D2W);
 	}
-	/* class double_to_64 */
+	/* class iclass_double_to_64 */
 	/* 01100101|opc=11|011|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DEA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_D2X, ctx, instr);
@@ -33266,7 +34010,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half_to_16 */
+	/* class iclass_half_to_16 */
 	/* 01100101|opc=01|011|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655BA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162H, ctx, instr);
@@ -33283,7 +34027,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_FP162H);
 	}
-	/* class half_to_32 */
+	/* class iclass_half_to_32 */
 	/* 01100101|opc=01|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655DA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162W, ctx, instr);
@@ -33300,7 +34044,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_FP162W);
 	}
-	/* class half_to_64 */
+	/* class iclass_half_to_64 */
 	/* 01100101|opc=01|011|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655FA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162X, ctx, instr);
@@ -33317,7 +34061,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_FP162X);
 	}
-	/* class single_to_32 */
+	/* class iclass_single_to_32 */
 	/* 01100101|opc=10|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x659DA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_S2W, ctx, instr);
@@ -33334,7 +34078,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_S2W);
 	}
-	/* class single_to_64 */
+	/* class iclass_single_to_64 */
 	/* 01100101|opc=11|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DDA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_S2X, ctx, instr);
@@ -33351,7 +34095,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_S2X);
 	}
-	/* class double_to_32 */
+	/* class iclass_double_to_32 */
 	/* 01100101|opc=11|011|opc2=00|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D9A000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_D2W, ctx, instr);
@@ -33368,7 +34112,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FCVTZU_Z_P_Z_D2W);
 	}
-	/* class double_to_64 */
+	/* class iclass_double_to_64 */
 	/* 01100101|opc=11|011|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DFA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_D2X, ctx, instr);
@@ -33392,7 +34136,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 int fdiv_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650D8000) {
 		decode_fields32(ENC_FDIV_Z_P_ZZ_, ctx, instr);
@@ -33415,7 +34159,7 @@ int fdiv_z_p_zz(context *ctx, Instruction *instr)
 int fdivr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650C8000) {
 		decode_fields32(ENC_FDIVR_Z_P_ZZ_, ctx, instr);
@@ -33438,7 +34182,7 @@ int fdivr_z_p_zz(context *ctx, Instruction *instr)
 int fdup_z_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|111|opc=00|111|o2=0|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2539C000) {
 		decode_fields32(ENC_FDUP_Z_I_, ctx, instr);
@@ -33462,7 +34206,7 @@ int fdup_z_i(context *ctx, Instruction *instr)
 int fexpa_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|opc<4:1>=0000|opc<0>=0|101110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x420B800) {
 		decode_fields32(ENC_FEXPA_Z_Z_, ctx, instr);
@@ -33480,11 +34224,34 @@ int fexpa_z_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* flogb_z_p_z.xml */
+int flogb_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100101|opc=00|011|size=xx|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFF9E000)==0x6518A000) {
+		decode_fields32(ENC_FLOGB_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_FLOGB_Z_P_Z_);
+	}
+	return rc;
+}
+
 /* fmad_z_p_zzz.xml */
 int fmad_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65208000) {
 		decode_fields32(ENC_FMAD_Z_P_ZZZ_, ctx, instr);
@@ -33510,7 +34277,7 @@ int fmad_z_p_zzz(context *ctx, Instruction *instr)
 int fmax_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651E8000) {
 		decode_fields32(ENC_FMAX_Z_P_ZS_, ctx, instr);
@@ -33533,7 +34300,7 @@ int fmax_z_p_zs(context *ctx, Instruction *instr)
 int fmax_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65068000) {
 		decode_fields32(ENC_FMAX_Z_P_ZZ_, ctx, instr);
@@ -33556,7 +34323,7 @@ int fmax_z_p_zz(context *ctx, Instruction *instr)
 int fmaxnm_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651C8000) {
 		decode_fields32(ENC_FMAXNM_Z_P_ZS_, ctx, instr);
@@ -33579,7 +34346,7 @@ int fmaxnm_z_p_zs(context *ctx, Instruction *instr)
 int fmaxnm_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65048000) {
 		decode_fields32(ENC_FMAXNM_Z_P_ZZ_, ctx, instr);
@@ -33598,11 +34365,34 @@ int fmaxnm_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fmaxnmp_z_p_zz.xml */
+int fmaxnmp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100100|size=xx|010|opc<2:1>=10|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x64148000) {
+		decode_fields32(ENC_FMAXNMP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_FMAXNMP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* fmaxnmv_v_p_z.xml */
 int fmaxnmv_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65042000) {
 		decode_fields32(ENC_FMAXNMV_V_P_Z_, ctx, instr);
@@ -33621,11 +34411,34 @@ int fmaxnmv_v_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fmaxp_z_p_zz.xml */
+int fmaxp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100100|size=xx|010|opc<2:1>=11|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x64168000) {
+		decode_fields32(ENC_FMAXP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_FMAXP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* fmaxv_v_p_z.xml */
 int fmaxv_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65062000) {
 		decode_fields32(ENC_FMAXV_V_P_Z_, ctx, instr);
@@ -33648,7 +34461,7 @@ int fmaxv_v_p_z(context *ctx, Instruction *instr)
 int fmin_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651F8000) {
 		decode_fields32(ENC_FMIN_Z_P_ZS_, ctx, instr);
@@ -33671,7 +34484,7 @@ int fmin_z_p_zs(context *ctx, Instruction *instr)
 int fmin_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65078000) {
 		decode_fields32(ENC_FMIN_Z_P_ZZ_, ctx, instr);
@@ -33694,7 +34507,7 @@ int fmin_z_p_zz(context *ctx, Instruction *instr)
 int fminnm_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651D8000) {
 		decode_fields32(ENC_FMINNM_Z_P_ZS_, ctx, instr);
@@ -33717,7 +34530,7 @@ int fminnm_z_p_zs(context *ctx, Instruction *instr)
 int fminnm_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65058000) {
 		decode_fields32(ENC_FMINNM_Z_P_ZZ_, ctx, instr);
@@ -33736,11 +34549,34 @@ int fminnm_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fminnmp_z_p_zz.xml */
+int fminnmp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100100|size=xx|010|opc<2:1>=10|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x64158000) {
+		decode_fields32(ENC_FMINNMP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_FMINNMP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* fminnmv_v_p_z.xml */
 int fminnmv_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65052000) {
 		decode_fields32(ENC_FMINNMV_V_P_Z_, ctx, instr);
@@ -33759,11 +34595,34 @@ int fminnmv_v_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fminp_z_p_zz.xml */
+int fminp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01100100|size=xx|010|opc<2:1>=11|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x64178000) {
+		decode_fields32(ENC_FMINP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_FMINP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* fminv_v_p_z.xml */
 int fminv_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65072000) {
 		decode_fields32(ENC_FMINV_V_P_Z_, ctx, instr);
@@ -33786,7 +34645,7 @@ int fminv_v_p_z(context *ctx, Instruction *instr)
 int fmla_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65200000) {
 		decode_fields32(ENC_FMLA_Z_P_ZZZ_, ctx, instr);
@@ -33812,7 +34671,7 @@ int fmla_z_p_zzz(context *ctx, Instruction *instr)
 int fmla_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_H, ctx, instr);
@@ -33828,7 +34687,7 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 		ctx->op3_neg = FALSE;
 		OK(ENC_FMLA_Z_ZZZI_H);
 	}
-	/* class single */
+	/* class iclass_single */
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A00000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_S, ctx, instr);
@@ -33844,7 +34703,7 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 		ctx->op3_neg = FALSE;
 		OK(ENC_FMLA_Z_ZZZI_S);
 	}
-	/* class double */
+	/* class iclass_double */
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E00000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_D, ctx, instr);
@@ -33863,11 +34722,97 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fmlalb_z_zzz.xml */
+int fmlalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 011001001|o2=0|1|Zm=xxxxx|10|op=0|00|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x64A08000) {
+		decode_fields32(ENC_FMLALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->op1_neg = FALSE;
+		OK(ENC_FMLALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* fmlalb_z_zzzi.xml */
+int fmlalb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_single */
+	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x64A04000) {
+		decode_fields32(ENC_FMLALB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->op1_neg = FALSE;
+		OK(ENC_FMLALB_Z_ZZZI_S);
+	}
+	return rc;
+}
+
+/* fmlalt_z_zzz.xml */
+int fmlalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 011001001|o2=0|1|Zm=xxxxx|10|op=0|00|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x64A08400) {
+		decode_fields32(ENC_FMLALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->op1_neg = FALSE;
+		OK(ENC_FMLALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* fmlalt_z_zzzi.xml */
+int fmlalt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_single */
+	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x64A04400) {
+		decode_fields32(ENC_FMLALT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->op1_neg = FALSE;
+		OK(ENC_FMLALT_Z_ZZZI_S);
+	}
+	return rc;
+}
+
 /* fmls_z_p_zzz.xml */
 int fmls_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65202000) {
 		decode_fields32(ENC_FMLS_Z_P_ZZZ_, ctx, instr);
@@ -33893,7 +34838,7 @@ int fmls_z_p_zzz(context *ctx, Instruction *instr)
 int fmls_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_H, ctx, instr);
@@ -33909,7 +34854,7 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 		ctx->op3_neg = FALSE;
 		OK(ENC_FMLS_Z_ZZZI_H);
 	}
-	/* class single */
+	/* class iclass_single */
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A00400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_S, ctx, instr);
@@ -33925,7 +34870,7 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 		ctx->op3_neg = FALSE;
 		OK(ENC_FMLS_Z_ZZZI_S);
 	}
-	/* class double */
+	/* class iclass_double */
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E00400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_D, ctx, instr);
@@ -33944,11 +34889,97 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fmlslb_z_zzz.xml */
+int fmlslb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 011001001|o2=0|1|Zm=xxxxx|10|op=1|00|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x64A0A000) {
+		decode_fields32(ENC_FMLSLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->op1_neg = TRUE;
+		OK(ENC_FMLSLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* fmlslb_z_zzzi.xml */
+int fmlslb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_single */
+	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=1|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x64A06000) {
+		decode_fields32(ENC_FMLSLB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->op1_neg = TRUE;
+		OK(ENC_FMLSLB_Z_ZZZI_S);
+	}
+	return rc;
+}
+
+/* fmlslt_z_zzz.xml */
+int fmlslt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 011001001|o2=0|1|Zm=xxxxx|10|op=1|00|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x64A0A400) {
+		decode_fields32(ENC_FMLSLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->op1_neg = TRUE;
+		OK(ENC_FMLSLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* fmlslt_z_zzzi.xml */
+int fmlslt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_single */
+	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=1|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x64A06400) {
+		decode_fields32(ENC_FMLSLT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->op1_neg = TRUE;
+		OK(ENC_FMLSLT_Z_ZZZI_S);
+	}
+	return rc;
+}
+
 /* fmmla_z_zzz.xml */
 int fmmla_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 01100100|opc=10|1|Zm=xxxxx|111001|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A0E400) {
 		decode_fields32(ENC_FMMLA_Z_ZZZ_S, ctx, instr);
@@ -33961,7 +34992,7 @@ int fmmla_z_zzz(context *ctx, Instruction *instr)
 		ctx->da = UINT(ctx->Zda);
 		OK(ENC_FMMLA_Z_ZZZ_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 01100100|opc=11|1|Zm=xxxxx|111001|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E0E400) {
 		decode_fields32(ENC_FMMLA_Z_ZZZ_D, ctx, instr);
@@ -33981,7 +35012,7 @@ int fmmla_z_zzz(context *ctx, Instruction *instr)
 int fmsb_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520A000) {
 		decode_fields32(ENC_FMSB_Z_P_ZZZ_, ctx, instr);
@@ -34007,7 +35038,7 @@ int fmsb_z_p_zzz(context *ctx, Instruction *instr)
 int fmul_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651A8000) {
 		decode_fields32(ENC_FMUL_Z_P_ZS_, ctx, instr);
@@ -34030,7 +35061,7 @@ int fmul_z_p_zs(context *ctx, Instruction *instr)
 int fmul_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65028000) {
 		decode_fields32(ENC_FMUL_Z_P_ZZ_, ctx, instr);
@@ -34053,7 +35084,7 @@ int fmul_z_p_zz(context *ctx, Instruction *instr)
 int fmul_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=01|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000800) {
 		decode_fields32(ENC_FMUL_Z_ZZ_, ctx, instr);
@@ -34076,7 +35107,7 @@ int fmul_z_zz(context *ctx, Instruction *instr)
 int fmul_z_zzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class half */
+	/* class iclass_half */
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64202000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_H, ctx, instr);
@@ -34090,7 +35121,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Zd);
 		OK(ENC_FMUL_Z_ZZI_H);
 	}
-	/* class single */
+	/* class iclass_single */
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A02000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_S, ctx, instr);
@@ -34104,7 +35135,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Zd);
 		OK(ENC_FMUL_Z_ZZI_S);
 	}
-	/* class double */
+	/* class iclass_double */
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E02000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_D, ctx, instr);
@@ -34125,7 +35156,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 int fmulx_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=101|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650A8000) {
 		decode_fields32(ENC_FMULX_Z_P_ZZ_, ctx, instr);
@@ -34148,7 +35179,7 @@ int fmulx_z_p_zz(context *ctx, Instruction *instr)
 int fneg_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41DA000) {
 		decode_fields32(ENC_FNEG_Z_P_Z_, ctx, instr);
@@ -34171,7 +35202,7 @@ int fneg_z_p_z(context *ctx, Instruction *instr)
 int fnmad_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520C000) {
 		decode_fields32(ENC_FNMAD_Z_P_ZZZ_, ctx, instr);
@@ -34197,7 +35228,7 @@ int fnmad_z_p_zzz(context *ctx, Instruction *instr)
 int fnmla_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65204000) {
 		decode_fields32(ENC_FNMLA_Z_P_ZZZ_, ctx, instr);
@@ -34223,7 +35254,7 @@ int fnmla_z_p_zzz(context *ctx, Instruction *instr)
 int fnmls_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65206000) {
 		decode_fields32(ENC_FNMLS_Z_P_ZZZ_, ctx, instr);
@@ -34249,7 +35280,7 @@ int fnmls_z_p_zzz(context *ctx, Instruction *instr)
 int fnmsb_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520E000) {
 		decode_fields32(ENC_FNMSB_Z_P_ZZZ_, ctx, instr);
@@ -34275,7 +35306,7 @@ int fnmsb_z_p_zzz(context *ctx, Instruction *instr)
 int frecpe_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=0|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650E3000) {
 		decode_fields32(ENC_FRECPE_Z_Z_, ctx, instr);
@@ -34297,7 +35328,7 @@ int frecpe_z_z(context *ctx, Instruction *instr)
 int frecps_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001800) {
 		decode_fields32(ENC_FRECPS_Z_ZZ_, ctx, instr);
@@ -34320,7 +35351,7 @@ int frecps_z_zz(context *ctx, Instruction *instr)
 int frecpx_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0011|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650CA000) {
 		decode_fields32(ENC_FRECPX_Z_P_Z_, ctx, instr);
@@ -34343,7 +35374,7 @@ int frecpx_z_p_z(context *ctx, Instruction *instr)
 int frinta_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class frint_i */
+	/* class iclass_frint_i */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6507A000) {
 		decode_fields32(ENC_FRINTI_Z_P_Z_, ctx, instr);
@@ -34361,7 +35392,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINTI_Z_P_Z_);
 	}
-	/* class frint_x */
+	/* class iclass_frint_x */
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6506A000) {
 		decode_fields32(ENC_FRINTX_Z_P_Z_, ctx, instr);
@@ -34379,7 +35410,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_FRINTX_Z_P_Z_);
 	}
-	/* class frint_a */
+	/* class iclass_frint_a */
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6504A000) {
 		decode_fields32(ENC_FRINTA_Z_P_Z_, ctx, instr);
@@ -34397,7 +35428,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_TIEAWAY;
 		OK(ENC_FRINTA_Z_P_Z_);
 	}
-	/* class frint_n */
+	/* class iclass_frint_n */
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6500A000) {
 		decode_fields32(ENC_FRINTN_Z_P_Z_, ctx, instr);
@@ -34415,7 +35446,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_TIEEVEN;
 		OK(ENC_FRINTN_Z_P_Z_);
 	}
-	/* class frint_z */
+	/* class iclass_frint_z */
 	/* 01100101|size=xx|000|opc<2:1>=01|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6503A000) {
 		decode_fields32(ENC_FRINTZ_Z_P_Z_, ctx, instr);
@@ -34433,7 +35464,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_ZERO;
 		OK(ENC_FRINTZ_Z_P_Z_);
 	}
-	/* class frint_m */
+	/* class iclass_frint_m */
 	/* 01100101|size=xx|000|opc<2:1>=01|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6502A000) {
 		decode_fields32(ENC_FRINTM_Z_P_Z_, ctx, instr);
@@ -34451,7 +35482,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRounding_NEGINF;
 		OK(ENC_FRINTM_Z_P_Z_);
 	}
-	/* class frint_p */
+	/* class iclass_frint_p */
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6501A000) {
 		decode_fields32(ENC_FRINTP_Z_P_Z_, ctx, instr);
@@ -34476,7 +35507,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 int frsqrte_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=1|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650F3000) {
 		decode_fields32(ENC_FRSQRTE_Z_Z_, ctx, instr);
@@ -34498,7 +35529,7 @@ int frsqrte_z_z(context *ctx, Instruction *instr)
 int frsqrts_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001C00) {
 		decode_fields32(ENC_FRSQRTS_Z_ZZ_, ctx, instr);
@@ -34521,7 +35552,7 @@ int frsqrts_z_zz(context *ctx, Instruction *instr)
 int fscale_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65098000) {
 		decode_fields32(ENC_FSCALE_Z_P_ZZ_, ctx, instr);
@@ -34544,7 +35575,7 @@ int fscale_z_p_zz(context *ctx, Instruction *instr)
 int fsqrt_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0011|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650DA000) {
 		decode_fields32(ENC_FSQRT_Z_P_Z_, ctx, instr);
@@ -34567,7 +35598,7 @@ int fsqrt_z_p_z(context *ctx, Instruction *instr)
 int fsub_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65198000) {
 		decode_fields32(ENC_FSUB_Z_P_ZS_, ctx, instr);
@@ -34590,7 +35621,7 @@ int fsub_z_p_zs(context *ctx, Instruction *instr)
 int fsub_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65018000) {
 		decode_fields32(ENC_FSUB_Z_P_ZZ_, ctx, instr);
@@ -34613,7 +35644,7 @@ int fsub_z_p_zz(context *ctx, Instruction *instr)
 int fsub_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000400) {
 		decode_fields32(ENC_FSUB_Z_ZZ_, ctx, instr);
@@ -34636,7 +35667,7 @@ int fsub_z_zz(context *ctx, Instruction *instr)
 int fsubr_z_p_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651B8000) {
 		decode_fields32(ENC_FSUBR_Z_P_ZS_, ctx, instr);
@@ -34659,7 +35690,7 @@ int fsubr_z_p_zs(context *ctx, Instruction *instr)
 int fsubr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65038000) {
 		decode_fields32(ENC_FSUBR_Z_P_ZZ_, ctx, instr);
@@ -34682,7 +35713,7 @@ int fsubr_z_p_zz(context *ctx, Instruction *instr)
 int ftmad_z_zzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|010|imm3=xxx|100000|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF38FC00)==0x65108000) {
 		decode_fields32(ENC_FTMAD_Z_ZZI_, ctx, instr);
@@ -34705,7 +35736,7 @@ int ftmad_z_zzi(context *ctx, Instruction *instr)
 int ftsmul_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=01|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000C00) {
 		decode_fields32(ENC_FTSMUL_Z_ZZ_, ctx, instr);
@@ -34728,7 +35759,7 @@ int ftsmul_z_zz(context *ctx, Instruction *instr)
 int ftssel_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|10110|op=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x420B000) {
 		decode_fields32(ENC_FTSSEL_Z_ZZ_, ctx, instr);
@@ -34747,11 +35778,58 @@ int ftssel_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* histcnt_z_p_zz.xml */
+int histcnt_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|110|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20E000)==0x4520C000) {
+		decode_fields32(ENC_HISTCNT_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(!(ctx->size&2)) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->d = UINT(ctx->Zd);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_HISTCNT_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* histseg_z_zz.xml */
+int histseg_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|101000|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4520A000) {
+		decode_fields32(ENC_HISTSEG_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size!=0) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->d = UINT(ctx->Zd);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_HISTSEG_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* incb_r_rs.xml */
 int incb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E000) {
 		decode_fields32(ENC_INCB_R_RS_, ctx, instr);
@@ -34764,7 +35842,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_INCB_R_RS_);
 	}
-	/* class esize_doubleword */
+	/* class iclass_esize_doubleword */
 	/* 00000100|size=11|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0E000) {
 		decode_fields32(ENC_INCD_R_RS_, ctx, instr);
@@ -34777,7 +35855,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_INCD_R_RS_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=01|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470E000) {
 		decode_fields32(ENC_INCH_R_RS_, ctx, instr);
@@ -34790,7 +35868,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_INCH_R_RS_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=10|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0E000) {
 		decode_fields32(ENC_INCW_R_RS_, ctx, instr);
@@ -34810,7 +35888,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 int incd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_doubleword */
+	/* class iclass_esize_doubleword */
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C000) {
 		decode_fields32(ENC_INCD_Z_ZS_, ctx, instr);
@@ -34823,7 +35901,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_INCD_Z_ZS_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=01|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470C000) {
 		decode_fields32(ENC_INCH_Z_ZS_, ctx, instr);
@@ -34836,7 +35914,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 		ctx->imm = UINT(ctx->imm4)+1;
 		OK(ENC_INCH_Z_ZS_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=10|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0C000) {
 		decode_fields32(ENC_INCW_Z_ZS_, ctx, instr);
@@ -34856,7 +35934,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 int incp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1011|op=0|D=0|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8800) {
 		decode_fields32(ENC_INCP_R_P_R_, ctx, instr);
@@ -34875,7 +35953,7 @@ int incp_r_p_r(context *ctx, Instruction *instr)
 int incp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1011|op=0|D=0|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8000) {
 		decode_fields32(ENC_INCP_Z_P_Z_, ctx, instr);
@@ -34897,7 +35975,7 @@ int incp_z_p_z(context *ctx, Instruction *instr)
 int index_z_ii(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|imm5b=xxxxx|010000|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204000) {
 		decode_fields32(ENC_INDEX_Z_II_, ctx, instr);
@@ -34917,7 +35995,7 @@ int index_z_ii(context *ctx, Instruction *instr)
 int index_z_ir(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Rm=xxxxx|010010|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204800) {
 		decode_fields32(ENC_INDEX_Z_IR_, ctx, instr);
@@ -34937,7 +36015,7 @@ int index_z_ir(context *ctx, Instruction *instr)
 int index_z_ri(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|imm5=xxxxx|010001|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204400) {
 		decode_fields32(ENC_INDEX_Z_RI_, ctx, instr);
@@ -34957,7 +36035,7 @@ int index_z_ri(context *ctx, Instruction *instr)
 int index_z_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Rm=xxxxx|010011|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204C00) {
 		decode_fields32(ENC_INDEX_Z_RR_, ctx, instr);
@@ -34977,7 +36055,7 @@ int index_z_rr(context *ctx, Instruction *instr)
 int insr_z_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|100100001110|Rm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5243800) {
 		decode_fields32(ENC_INSR_Z_R_, ctx, instr);
@@ -34996,7 +36074,7 @@ int insr_z_r(context *ctx, Instruction *instr)
 int insr_z_v(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|110100001110|Vm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5343800) {
 		decode_fields32(ENC_INSR_Z_V_, ctx, instr);
@@ -35015,7 +36093,7 @@ int insr_z_v(context *ctx, Instruction *instr)
 int lasta_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10000|B=0|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x520A000) {
 		decode_fields32(ENC_LASTA_R_P_Z_, ctx, instr);
@@ -35037,7 +36115,7 @@ int lasta_r_p_z(context *ctx, Instruction *instr)
 int lasta_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10001|B=0|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5228000) {
 		decode_fields32(ENC_LASTA_V_P_Z_, ctx, instr);
@@ -35058,7 +36136,7 @@ int lasta_v_p_z(context *ctx, Instruction *instr)
 int lastb_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10000|B=1|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x521A000) {
 		decode_fields32(ENC_LASTB_R_P_Z_, ctx, instr);
@@ -35080,7 +36158,7 @@ int lastb_r_p_z(context *ctx, Instruction *instr)
 int lastb_v_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|10001|B=1|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5238000) {
 		decode_fields32(ENC_LASTB_V_P_Z_, ctx, instr);
@@ -35101,7 +36179,7 @@ int lastb_v_p_z(context *ctx, Instruction *instr)
 int ld1b_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420C000) {
 		decode_fields32(ENC_LD1B_Z_P_AI_S, ctx, instr);
@@ -35117,7 +36195,7 @@ int ld1b_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LD1B_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=00|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC420C000) {
 		decode_fields32(ENC_LD1B_Z_P_AI_D, ctx, instr);
@@ -35140,7 +36218,7 @@ int ld1b_z_p_ai(context *ctx, Instruction *instr)
 int ld1b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 8_elem */
+	/* class iclass_8_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U8, ctx, instr);
@@ -35156,7 +36234,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1B_Z_P_BI_U8);
 	}
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA420A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U16, ctx, instr);
@@ -35172,7 +36250,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1B_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA440A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U32, ctx, instr);
@@ -35188,7 +36266,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1B_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA460A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U64, ctx, instr);
@@ -35211,7 +36289,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 int ld1b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 8_elem */
+	/* class iclass_8_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4004000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U8, ctx, instr);
@@ -35230,7 +36308,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1B_Z_P_BR_U8);
 	}
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4204000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U16, ctx, instr);
@@ -35249,7 +36327,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1B_Z_P_BR_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4404000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U32, ctx, instr);
@@ -35268,7 +36346,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1B_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4604000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U64, ctx, instr);
@@ -35294,7 +36372,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 int ld1b_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4004000) {
 		decode_fields32(ENC_LD1B_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -35313,7 +36391,7 @@ int ld1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1B_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=00|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84004000) {
 		decode_fields32(ENC_LD1B_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -35332,7 +36410,7 @@ int ld1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1B_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=00|10|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC440C000) {
 		decode_fields32(ENC_LD1B_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -35358,7 +36436,7 @@ int ld1b_z_p_bz(context *ctx, Instruction *instr)
 int ld1d_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1100010|msz=11|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5A0C000) {
 		decode_fields32(ENC_LD1D_Z_P_AI_D, ctx, instr);
@@ -35381,7 +36459,7 @@ int ld1d_z_p_ai(context *ctx, Instruction *instr)
 int ld1d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0A000) {
 		decode_fields32(ENC_LD1D_Z_P_BI_U64, ctx, instr);
@@ -35404,7 +36482,7 @@ int ld1d_z_p_bi(context *ctx, Instruction *instr)
 int ld1d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E04000) {
 		decode_fields32(ENC_LD1D_Z_P_BR_U64, ctx, instr);
@@ -35430,7 +36508,7 @@ int ld1d_z_p_br(context *ctx, Instruction *instr)
 int ld1d_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=11|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5A04000) {
 		decode_fields32(ENC_LD1D_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -35449,7 +36527,7 @@ int ld1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_LD1D_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=11|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5804000) {
 		decode_fields32(ENC_LD1D_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -35468,7 +36546,7 @@ int ld1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1D_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=11|11|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5E0C000) {
 		decode_fields32(ENC_LD1D_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -35487,7 +36565,7 @@ int ld1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_LD1D_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=11|10|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5C0C000) {
 		decode_fields32(ENC_LD1D_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -35513,7 +36591,7 @@ int ld1d_z_p_bz(context *ctx, Instruction *instr)
 int ld1h_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0C000) {
 		decode_fields32(ENC_LD1H_Z_P_AI_S, ctx, instr);
@@ -35529,7 +36607,7 @@ int ld1h_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LD1H_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=01|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4A0C000) {
 		decode_fields32(ENC_LD1H_Z_P_AI_D, ctx, instr);
@@ -35552,7 +36630,7 @@ int ld1h_z_p_ai(context *ctx, Instruction *instr)
 int ld1h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U16, ctx, instr);
@@ -35568,7 +36646,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1H_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4C0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U32, ctx, instr);
@@ -35584,7 +36662,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1H_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4E0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U64, ctx, instr);
@@ -35607,7 +36685,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 int ld1h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U16, ctx, instr);
@@ -35626,7 +36704,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1H_Z_P_BR_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U32, ctx, instr);
@@ -35645,7 +36723,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1H_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U64, ctx, instr);
@@ -35671,7 +36749,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 int ld1h_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A04000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -35690,7 +36768,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1H_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=01|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4A04000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -35709,7 +36787,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1H_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=01|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4804000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -35728,7 +36806,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1H_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=01|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84804000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -35747,7 +36825,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1H_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=01|11|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4E0C000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -35766,7 +36844,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1H_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=01|10|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4C0C000) {
 		decode_fields32(ENC_LD1H_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -35792,7 +36870,7 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 8_elem */
+	/* class iclass_8_elem */
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84408000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U8, ctx, instr);
@@ -35808,7 +36886,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RB_Z_P_BI_U8);
 	}
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440A000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U16, ctx, instr);
@@ -35824,7 +36902,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RB_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440C000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U32, ctx, instr);
@@ -35840,7 +36918,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RB_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440E000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U64, ctx, instr);
@@ -35863,7 +36941,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 int ld1rd_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0E000) {
 		decode_fields32(ENC_LD1RD_Z_P_BI_U64, ctx, instr);
@@ -35886,7 +36964,7 @@ int ld1rd_z_p_bi(context *ctx, Instruction *instr)
 int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0A000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U16, ctx, instr);
@@ -35902,7 +36980,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RH_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0C000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U32, ctx, instr);
@@ -35918,7 +36996,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RH_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0E000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U64, ctx, instr);
@@ -35941,7 +37019,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 int ld1rob_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4202000) {
 		decode_fields32(ENC_LD1ROB_Z_P_BI_U8, ctx, instr);
@@ -35962,7 +37040,7 @@ int ld1rob_z_p_bi(context *ctx, Instruction *instr)
 int ld1rob_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4200000) {
 		decode_fields32(ENC_LD1ROB_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -35986,7 +37064,7 @@ int ld1rob_z_p_br(context *ctx, Instruction *instr)
 int ld1rod_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A02000) {
 		decode_fields32(ENC_LD1ROD_Z_P_BI_U64, ctx, instr);
@@ -36007,7 +37085,7 @@ int ld1rod_z_p_bi(context *ctx, Instruction *instr)
 int ld1rod_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A00000) {
 		decode_fields32(ENC_LD1ROD_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36031,7 +37109,7 @@ int ld1rod_z_p_br(context *ctx, Instruction *instr)
 int ld1roh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A02000) {
 		decode_fields32(ENC_LD1ROH_Z_P_BI_U16, ctx, instr);
@@ -36052,7 +37130,7 @@ int ld1roh_z_p_bi(context *ctx, Instruction *instr)
 int ld1roh_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A00000) {
 		decode_fields32(ENC_LD1ROH_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36076,7 +37154,7 @@ int ld1roh_z_p_br(context *ctx, Instruction *instr)
 int ld1row_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|ssz=01|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5202000) {
 		decode_fields32(ENC_LD1ROW_Z_P_BI_U32, ctx, instr);
@@ -36097,7 +37175,7 @@ int ld1row_z_p_bi(context *ctx, Instruction *instr)
 int ld1row_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|ssz=01|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5200000) {
 		decode_fields32(ENC_LD1ROW_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36121,7 +37199,7 @@ int ld1row_z_p_br(context *ctx, Instruction *instr)
 int ld1rqb_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4002000) {
 		decode_fields32(ENC_LD1RQB_Z_P_BI_U8, ctx, instr);
@@ -36142,7 +37220,7 @@ int ld1rqb_z_p_bi(context *ctx, Instruction *instr)
 int ld1rqb_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4000000) {
 		decode_fields32(ENC_LD1RQB_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36166,7 +37244,7 @@ int ld1rqb_z_p_br(context *ctx, Instruction *instr)
 int ld1rqd_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5802000) {
 		decode_fields32(ENC_LD1RQD_Z_P_BI_U64, ctx, instr);
@@ -36187,7 +37265,7 @@ int ld1rqd_z_p_bi(context *ctx, Instruction *instr)
 int ld1rqd_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5800000) {
 		decode_fields32(ENC_LD1RQD_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36211,7 +37289,7 @@ int ld1rqd_z_p_br(context *ctx, Instruction *instr)
 int ld1rqh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4802000) {
 		decode_fields32(ENC_LD1RQH_Z_P_BI_U16, ctx, instr);
@@ -36232,7 +37310,7 @@ int ld1rqh_z_p_bi(context *ctx, Instruction *instr)
 int ld1rqh_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4800000) {
 		decode_fields32(ENC_LD1RQH_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36256,7 +37334,7 @@ int ld1rqh_z_p_br(context *ctx, Instruction *instr)
 int ld1rqw_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5002000) {
 		decode_fields32(ENC_LD1RQW_Z_P_BI_U32, ctx, instr);
@@ -36277,7 +37355,7 @@ int ld1rqw_z_p_bi(context *ctx, Instruction *instr)
 int ld1rqw_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5000000) {
 		decode_fields32(ENC_LD1RQW_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -36301,7 +37379,7 @@ int ld1rqw_z_p_br(context *ctx, Instruction *instr)
 int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0C000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S16, ctx, instr);
@@ -36317,7 +37395,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RSB_Z_P_BI_S16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0A000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S32, ctx, instr);
@@ -36333,7 +37411,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RSB_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C08000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S64, ctx, instr);
@@ -36356,7 +37434,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 int ld1rsh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540A000) {
 		decode_fields32(ENC_LD1RSH_Z_P_BI_S32, ctx, instr);
@@ -36372,7 +37450,7 @@ int ld1rsh_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RSH_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85408000) {
 		decode_fields32(ENC_LD1RSH_Z_P_BI_S64, ctx, instr);
@@ -36395,7 +37473,7 @@ int ld1rsh_z_p_bi(context *ctx, Instruction *instr)
 int ld1rsw_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C08000) {
 		decode_fields32(ENC_LD1RSW_Z_P_BI_S64, ctx, instr);
@@ -36418,7 +37496,7 @@ int ld1rsw_z_p_bi(context *ctx, Instruction *instr)
 int ld1rw_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540C000) {
 		decode_fields32(ENC_LD1RW_Z_P_BI_U32, ctx, instr);
@@ -36434,7 +37512,7 @@ int ld1rw_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm6);
 		OK(ENC_LD1RW_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540E000) {
 		decode_fields32(ENC_LD1RW_Z_P_BI_U64, ctx, instr);
@@ -36457,7 +37535,7 @@ int ld1rw_z_p_bi(context *ctx, Instruction *instr)
 int ld1sb_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84208000) {
 		decode_fields32(ENC_LD1SB_Z_P_AI_S, ctx, instr);
@@ -36473,7 +37551,7 @@ int ld1sb_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LD1SB_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=00|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4208000) {
 		decode_fields32(ENC_LD1SB_Z_P_AI_D, ctx, instr);
@@ -36496,7 +37574,7 @@ int ld1sb_z_p_ai(context *ctx, Instruction *instr)
 int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S16, ctx, instr);
@@ -36512,7 +37590,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1SB_Z_P_BI_S16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A0A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S32, ctx, instr);
@@ -36528,7 +37606,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1SB_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA580A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S64, ctx, instr);
@@ -36551,7 +37629,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 int ld1sb_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C04000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S16, ctx, instr);
@@ -36570,7 +37648,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LD1SB_Z_P_BR_S16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A04000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S32, ctx, instr);
@@ -36589,7 +37667,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LD1SB_Z_P_BR_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5804000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S64, ctx, instr);
@@ -36615,7 +37693,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 int ld1sb_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4000000) {
 		decode_fields32(ENC_LD1SB_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -36634,7 +37712,7 @@ int ld1sb_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1SB_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=00|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84000000) {
 		decode_fields32(ENC_LD1SB_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -36653,7 +37731,7 @@ int ld1sb_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1SB_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=00|10|Zm=xxxxx|1|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4408000) {
 		decode_fields32(ENC_LD1SB_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -36679,7 +37757,7 @@ int ld1sb_z_p_bz(context *ctx, Instruction *instr)
 int ld1sh_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A08000) {
 		decode_fields32(ENC_LD1SH_Z_P_AI_S, ctx, instr);
@@ -36695,7 +37773,7 @@ int ld1sh_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LD1SH_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=01|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4A08000) {
 		decode_fields32(ENC_LD1SH_Z_P_AI_D, ctx, instr);
@@ -36718,7 +37796,7 @@ int ld1sh_z_p_ai(context *ctx, Instruction *instr)
 int ld1sh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520A000) {
 		decode_fields32(ENC_LD1SH_Z_P_BI_S32, ctx, instr);
@@ -36734,7 +37812,7 @@ int ld1sh_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1SH_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA500A000) {
 		decode_fields32(ENC_LD1SH_Z_P_BI_S64, ctx, instr);
@@ -36757,7 +37835,7 @@ int ld1sh_z_p_bi(context *ctx, Instruction *instr)
 int ld1sh_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5204000) {
 		decode_fields32(ENC_LD1SH_Z_P_BR_S32, ctx, instr);
@@ -36776,7 +37854,7 @@ int ld1sh_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LD1SH_Z_P_BR_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5004000) {
 		decode_fields32(ENC_LD1SH_Z_P_BR_S64, ctx, instr);
@@ -36802,7 +37880,7 @@ int ld1sh_z_p_br(context *ctx, Instruction *instr)
 int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A00000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -36821,7 +37899,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1SH_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=01|xs=x|1|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4A00000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -36840,7 +37918,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1SH_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=01|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4800000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -36859,7 +37937,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1SH_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=01|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84800000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -36878,7 +37956,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1SH_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=01|11|Zm=xxxxx|1|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4E08000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -36897,7 +37975,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LD1SH_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=01|10|Zm=xxxxx|1|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4C08000) {
 		decode_fields32(ENC_LD1SH_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -36923,7 +38001,7 @@ int ld1sh_z_p_bz(context *ctx, Instruction *instr)
 int ld1sw_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=0|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5208000) {
 		decode_fields32(ENC_LD1SW_Z_P_AI_D, ctx, instr);
@@ -36946,7 +38024,7 @@ int ld1sw_z_p_ai(context *ctx, Instruction *instr)
 int ld1sw_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480A000) {
 		decode_fields32(ENC_LD1SW_Z_P_BI_S64, ctx, instr);
@@ -36969,7 +38047,7 @@ int ld1sw_z_p_bi(context *ctx, Instruction *instr)
 int ld1sw_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4804000) {
 		decode_fields32(ENC_LD1SW_Z_P_BR_S64, ctx, instr);
@@ -36995,7 +38073,7 @@ int ld1sw_z_p_br(context *ctx, Instruction *instr)
 int ld1sw_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5200000) {
 		decode_fields32(ENC_LD1SW_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -37014,7 +38092,7 @@ int ld1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LD1SW_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=10|xs=x|0|Zm=xxxxx|0|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5000000) {
 		decode_fields32(ENC_LD1SW_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -37033,7 +38111,7 @@ int ld1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1SW_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=10|11|Zm=xxxxx|1|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5608000) {
 		decode_fields32(ENC_LD1SW_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -37052,7 +38130,7 @@ int ld1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LD1SW_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=10|10|Zm=xxxxx|1|U=0|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5408000) {
 		decode_fields32(ENC_LD1SW_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -37078,7 +38156,7 @@ int ld1sw_z_p_bz(context *ctx, Instruction *instr)
 int ld1w_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=10|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8520C000) {
 		decode_fields32(ENC_LD1W_Z_P_AI_S, ctx, instr);
@@ -37094,7 +38172,7 @@ int ld1w_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LD1W_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=1|ff=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC520C000) {
 		decode_fields32(ENC_LD1W_Z_P_AI_D, ctx, instr);
@@ -37117,7 +38195,7 @@ int ld1w_z_p_ai(context *ctx, Instruction *instr)
 int ld1w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540A000) {
 		decode_fields32(ENC_LD1W_Z_P_BI_U32, ctx, instr);
@@ -37133,7 +38211,7 @@ int ld1w_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LD1W_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA560A000) {
 		decode_fields32(ENC_LD1W_Z_P_BI_U64, ctx, instr);
@@ -37156,7 +38234,7 @@ int ld1w_z_p_bi(context *ctx, Instruction *instr)
 int ld1w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5404000) {
 		decode_fields32(ENC_LD1W_Z_P_BR_U32, ctx, instr);
@@ -37175,7 +38253,7 @@ int ld1w_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LD1W_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5604000) {
 		decode_fields32(ENC_LD1W_Z_P_BR_U64, ctx, instr);
@@ -37201,7 +38279,7 @@ int ld1w_z_p_br(context *ctx, Instruction *instr)
 int ld1w_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001010|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85204000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -37220,7 +38298,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LD1W_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5204000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -37239,7 +38317,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LD1W_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=10|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5004000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -37258,7 +38336,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1W_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=10|xs=x|0|Zm=xxxxx|0|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85004000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -37277,7 +38355,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LD1W_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=10|11|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC560C000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -37296,7 +38374,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LD1W_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=10|10|Zm=xxxxx|1|U=1|ff=0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC540C000) {
 		decode_fields32(ENC_LD1W_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -37322,7 +38400,7 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 int ld2b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA420E000) {
 		decode_fields32(ENC_LD2B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37344,7 +38422,7 @@ int ld2b_z_p_bi(context *ctx, Instruction *instr)
 int ld2b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA420C000) {
 		decode_fields32(ENC_LD2B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37369,7 +38447,7 @@ int ld2b_z_p_br(context *ctx, Instruction *instr)
 int ld2d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A0E000) {
 		decode_fields32(ENC_LD2D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37391,7 +38469,7 @@ int ld2d_z_p_bi(context *ctx, Instruction *instr)
 int ld2d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A0C000) {
 		decode_fields32(ENC_LD2D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37416,7 +38494,7 @@ int ld2d_z_p_br(context *ctx, Instruction *instr)
 int ld2h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0E000) {
 		decode_fields32(ENC_LD2H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37438,7 +38516,7 @@ int ld2h_z_p_bi(context *ctx, Instruction *instr)
 int ld2h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A0C000) {
 		decode_fields32(ENC_LD2H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37463,7 +38541,7 @@ int ld2h_z_p_br(context *ctx, Instruction *instr)
 int ld2w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520E000) {
 		decode_fields32(ENC_LD2W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37485,7 +38563,7 @@ int ld2w_z_p_bi(context *ctx, Instruction *instr)
 int ld2w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA520C000) {
 		decode_fields32(ENC_LD2W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37510,7 +38588,7 @@ int ld2w_z_p_br(context *ctx, Instruction *instr)
 int ld3b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA440E000) {
 		decode_fields32(ENC_LD3B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37532,7 +38610,7 @@ int ld3b_z_p_bi(context *ctx, Instruction *instr)
 int ld3b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA440C000) {
 		decode_fields32(ENC_LD3B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37557,7 +38635,7 @@ int ld3b_z_p_br(context *ctx, Instruction *instr)
 int ld3d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0E000) {
 		decode_fields32(ENC_LD3D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37579,7 +38657,7 @@ int ld3d_z_p_bi(context *ctx, Instruction *instr)
 int ld3d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C0C000) {
 		decode_fields32(ENC_LD3D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37604,7 +38682,7 @@ int ld3d_z_p_br(context *ctx, Instruction *instr)
 int ld3h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4C0E000) {
 		decode_fields32(ENC_LD3H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37626,7 +38704,7 @@ int ld3h_z_p_bi(context *ctx, Instruction *instr)
 int ld3h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C0C000) {
 		decode_fields32(ENC_LD3H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37651,7 +38729,7 @@ int ld3h_z_p_br(context *ctx, Instruction *instr)
 int ld3w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540E000) {
 		decode_fields32(ENC_LD3W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37673,7 +38751,7 @@ int ld3w_z_p_bi(context *ctx, Instruction *instr)
 int ld3w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA540C000) {
 		decode_fields32(ENC_LD3W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37698,7 +38776,7 @@ int ld3w_z_p_br(context *ctx, Instruction *instr)
 int ld4b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA460E000) {
 		decode_fields32(ENC_LD4B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37720,7 +38798,7 @@ int ld4b_z_p_bi(context *ctx, Instruction *instr)
 int ld4b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA460C000) {
 		decode_fields32(ENC_LD4B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37745,7 +38823,7 @@ int ld4b_z_p_br(context *ctx, Instruction *instr)
 int ld4d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0E000) {
 		decode_fields32(ENC_LD4D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37767,7 +38845,7 @@ int ld4d_z_p_bi(context *ctx, Instruction *instr)
 int ld4d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E0C000) {
 		decode_fields32(ENC_LD4D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37792,7 +38870,7 @@ int ld4d_z_p_br(context *ctx, Instruction *instr)
 int ld4h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4E0E000) {
 		decode_fields32(ENC_LD4H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37814,7 +38892,7 @@ int ld4h_z_p_bi(context *ctx, Instruction *instr)
 int ld4h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E0C000) {
 		decode_fields32(ENC_LD4H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37839,7 +38917,7 @@ int ld4h_z_p_br(context *ctx, Instruction *instr)
 int ld4w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA560E000) {
 		decode_fields32(ENC_LD4W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -37861,7 +38939,7 @@ int ld4w_z_p_bi(context *ctx, Instruction *instr)
 int ld4w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA560C000) {
 		decode_fields32(ENC_LD4W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -37886,7 +38964,7 @@ int ld4w_z_p_br(context *ctx, Instruction *instr)
 int ldff1b_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420E000) {
 		decode_fields32(ENC_LDFF1B_Z_P_AI_S, ctx, instr);
@@ -37902,7 +38980,7 @@ int ldff1b_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LDFF1B_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=00|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC420E000) {
 		decode_fields32(ENC_LDFF1B_Z_P_AI_D, ctx, instr);
@@ -37925,7 +39003,7 @@ int ldff1b_z_p_ai(context *ctx, Instruction *instr)
 int ldff1b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 8_elem */
+	/* class iclass_8_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4006000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BR_U8, ctx, instr);
@@ -37941,7 +39019,7 @@ int ldff1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1B_Z_P_BR_U8);
 	}
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4206000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BR_U16, ctx, instr);
@@ -37957,7 +39035,7 @@ int ldff1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1B_Z_P_BR_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4406000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BR_U32, ctx, instr);
@@ -37973,7 +39051,7 @@ int ldff1b_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1B_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4606000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BR_U64, ctx, instr);
@@ -37996,7 +39074,7 @@ int ldff1b_z_p_br(context *ctx, Instruction *instr)
 int ldff1b_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4006000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38015,7 +39093,7 @@ int ldff1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1B_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=00|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84006000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -38034,7 +39112,7 @@ int ldff1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1B_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=00|10|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC440E000) {
 		decode_fields32(ENC_LDFF1B_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38060,7 +39138,7 @@ int ldff1b_z_p_bz(context *ctx, Instruction *instr)
 int ldff1d_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1100010|msz=11|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5A0E000) {
 		decode_fields32(ENC_LDFF1D_Z_P_AI_D, ctx, instr);
@@ -38083,7 +39161,7 @@ int ldff1d_z_p_ai(context *ctx, Instruction *instr)
 int ldff1d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E06000) {
 		decode_fields32(ENC_LDFF1D_Z_P_BR_U64, ctx, instr);
@@ -38106,7 +39184,7 @@ int ldff1d_z_p_br(context *ctx, Instruction *instr)
 int ldff1d_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=11|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5A06000) {
 		decode_fields32(ENC_LDFF1D_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -38125,7 +39203,7 @@ int ldff1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_LDFF1D_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=11|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5806000) {
 		decode_fields32(ENC_LDFF1D_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38144,7 +39222,7 @@ int ldff1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1D_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=11|11|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5E0E000) {
 		decode_fields32(ENC_LDFF1D_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -38163,7 +39241,7 @@ int ldff1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_LDFF1D_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=11|10|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC5C0E000) {
 		decode_fields32(ENC_LDFF1D_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38189,7 +39267,7 @@ int ldff1d_z_p_bz(context *ctx, Instruction *instr)
 int ldff1h_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0E000) {
 		decode_fields32(ENC_LDFF1H_Z_P_AI_S, ctx, instr);
@@ -38205,7 +39283,7 @@ int ldff1h_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LDFF1H_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=01|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4A0E000) {
 		decode_fields32(ENC_LDFF1H_Z_P_AI_D, ctx, instr);
@@ -38228,7 +39306,7 @@ int ldff1h_z_p_ai(context *ctx, Instruction *instr)
 int ldff1h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A06000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BR_U16, ctx, instr);
@@ -38244,7 +39322,7 @@ int ldff1h_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1H_Z_P_BR_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C06000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BR_U32, ctx, instr);
@@ -38260,7 +39338,7 @@ int ldff1h_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1H_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E06000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BR_U64, ctx, instr);
@@ -38283,7 +39361,7 @@ int ldff1h_z_p_br(context *ctx, Instruction *instr)
 int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A06000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -38302,7 +39380,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1H_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=01|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4A06000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -38321,7 +39399,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1H_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=01|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4806000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38340,7 +39418,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1H_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=01|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84806000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -38359,7 +39437,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1H_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=01|11|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4E0E000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -38378,7 +39456,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1H_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=01|10|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4C0E000) {
 		decode_fields32(ENC_LDFF1H_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38404,7 +39482,7 @@ int ldff1h_z_p_bz(context *ctx, Instruction *instr)
 int ldff1sb_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=00|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8420A000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_AI_S, ctx, instr);
@@ -38420,7 +39498,7 @@ int ldff1sb_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LDFF1SB_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=00|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC420A000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_AI_D, ctx, instr);
@@ -38443,7 +39521,7 @@ int ldff1sb_z_p_ai(context *ctx, Instruction *instr)
 int ldff1sb_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C06000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BR_S16, ctx, instr);
@@ -38459,7 +39537,7 @@ int ldff1sb_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LDFF1SB_Z_P_BR_S16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A06000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BR_S32, ctx, instr);
@@ -38475,7 +39553,7 @@ int ldff1sb_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LDFF1SB_Z_P_BR_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5806000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BR_S64, ctx, instr);
@@ -38498,7 +39576,7 @@ int ldff1sb_z_p_br(context *ctx, Instruction *instr)
 int ldff1sb_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=00|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4002000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38517,7 +39595,7 @@ int ldff1sb_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1SB_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=00|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84002000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -38536,7 +39614,7 @@ int ldff1sb_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1SB_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=00|10|Zm=xxxxx|1|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC440A000) {
 		decode_fields32(ENC_LDFF1SB_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38562,7 +39640,7 @@ int ldff1sb_z_p_bz(context *ctx, Instruction *instr)
 int ldff1sh_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=01|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x84A0A000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_AI_S, ctx, instr);
@@ -38578,7 +39656,7 @@ int ldff1sh_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LDFF1SH_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=01|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4A0A000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_AI_D, ctx, instr);
@@ -38601,7 +39679,7 @@ int ldff1sh_z_p_ai(context *ctx, Instruction *instr)
 int ldff1sh_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5206000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BR_S32, ctx, instr);
@@ -38617,7 +39695,7 @@ int ldff1sh_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_LDFF1SH_Z_P_BR_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5006000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BR_S64, ctx, instr);
@@ -38640,7 +39718,7 @@ int ldff1sh_z_p_br(context *ctx, Instruction *instr)
 int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001001|xs=x|1|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84A02000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -38659,7 +39737,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1SH_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=01|xs=x|1|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4A02000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -38678,7 +39756,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1SH_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=01|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC4802000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38697,7 +39775,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1SH_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=01|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x84802000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -38716,7 +39794,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1SH_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=01|11|Zm=xxxxx|1|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4E0A000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -38735,7 +39813,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_LDFF1SH_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=01|10|Zm=xxxxx|1|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC4C0A000) {
 		decode_fields32(ENC_LDFF1SH_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38761,7 +39839,7 @@ int ldff1sh_z_p_bz(context *ctx, Instruction *instr)
 int ldff1sw_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=0|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC520A000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_AI_D, ctx, instr);
@@ -38784,7 +39862,7 @@ int ldff1sw_z_p_ai(context *ctx, Instruction *instr)
 int ldff1sw_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4806000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_BR_S64, ctx, instr);
@@ -38807,7 +39885,7 @@ int ldff1sw_z_p_br(context *ctx, Instruction *instr)
 int ldff1sw_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5202000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -38826,7 +39904,7 @@ int ldff1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LDFF1SW_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=10|xs=x|0|Zm=xxxxx|0|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5002000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -38845,7 +39923,7 @@ int ldff1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1SW_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=10|11|Zm=xxxxx|1|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC560A000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -38864,7 +39942,7 @@ int ldff1sw_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LDFF1SW_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=10|10|Zm=xxxxx|1|U=0|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC540A000) {
 		decode_fields32(ENC_LDFF1SW_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -38890,7 +39968,7 @@ int ldff1sw_z_p_bz(context *ctx, Instruction *instr)
 int ldff1w_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=10|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x8520E000) {
 		decode_fields32(ENC_LDFF1W_Z_P_AI_S, ctx, instr);
@@ -38906,7 +39984,7 @@ int ldff1w_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_LDFF1W_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=10|01|imm5=xxxxx|1|U=1|ff=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC520E000) {
 		decode_fields32(ENC_LDFF1W_Z_P_AI_D, ctx, instr);
@@ -38929,7 +40007,7 @@ int ldff1w_z_p_ai(context *ctx, Instruction *instr)
 int ldff1w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5406000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BR_U32, ctx, instr);
@@ -38945,7 +40023,7 @@ int ldff1w_z_p_br(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_LDFF1W_Z_P_BR_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5606000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BR_U64, ctx, instr);
@@ -38968,7 +40046,7 @@ int ldff1w_z_p_br(context *ctx, Instruction *instr)
 int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001010|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85206000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -38987,7 +40065,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LDFF1W_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1100010|opc=10|xs=x|1|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5206000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -39006,7 +40084,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LDFF1W_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1100010|msz=10|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0xC5006000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -39025,7 +40103,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1W_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1000010|opc=10|xs=x|0|Zm=xxxxx|0|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFA0E000)==0x85006000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -39044,7 +40122,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_LDFF1W_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1100010|opc=10|11|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC560E000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -39063,7 +40141,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_LDFF1W_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1100010|msz=10|10|Zm=xxxxx|1|U=1|ff=1|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xC540E000) {
 		decode_fields32(ENC_LDFF1W_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -39089,7 +40167,7 @@ int ldff1w_z_p_bz(context *ctx, Instruction *instr)
 int ldnf1b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 8_elem */
+	/* class iclass_8_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA410A000) {
 		decode_fields32(ENC_LDNF1B_Z_P_BI_U8, ctx, instr);
@@ -39105,7 +40183,7 @@ int ldnf1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1B_Z_P_BI_U8);
 	}
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA430A000) {
 		decode_fields32(ENC_LDNF1B_Z_P_BI_U16, ctx, instr);
@@ -39121,7 +40199,7 @@ int ldnf1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1B_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA450A000) {
 		decode_fields32(ENC_LDNF1B_Z_P_BI_U32, ctx, instr);
@@ -39137,7 +40215,7 @@ int ldnf1b_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1B_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA470A000) {
 		decode_fields32(ENC_LDNF1B_Z_P_BI_U64, ctx, instr);
@@ -39160,7 +40238,7 @@ int ldnf1b_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5F0A000) {
 		decode_fields32(ENC_LDNF1D_Z_P_BI_U64, ctx, instr);
@@ -39183,7 +40261,7 @@ int ldnf1d_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4B0A000) {
 		decode_fields32(ENC_LDNF1H_Z_P_BI_U16, ctx, instr);
@@ -39199,7 +40277,7 @@ int ldnf1h_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1H_Z_P_BI_U16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4D0A000) {
 		decode_fields32(ENC_LDNF1H_Z_P_BI_U32, ctx, instr);
@@ -39215,7 +40293,7 @@ int ldnf1h_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1H_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4F0A000) {
 		decode_fields32(ENC_LDNF1H_Z_P_BI_U64, ctx, instr);
@@ -39238,7 +40316,7 @@ int ldnf1h_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1sb_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_elem */
+	/* class iclass_16_elem */
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5D0A000) {
 		decode_fields32(ENC_LDNF1SB_Z_P_BI_S16, ctx, instr);
@@ -39254,7 +40332,7 @@ int ldnf1sb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1SB_Z_P_BI_S16);
 	}
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5B0A000) {
 		decode_fields32(ENC_LDNF1SB_Z_P_BI_S32, ctx, instr);
@@ -39270,7 +40348,7 @@ int ldnf1sb_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1SB_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA590A000) {
 		decode_fields32(ENC_LDNF1SB_Z_P_BI_S64, ctx, instr);
@@ -39293,7 +40371,7 @@ int ldnf1sb_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1sh_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA530A000) {
 		decode_fields32(ENC_LDNF1SH_Z_P_BI_S32, ctx, instr);
@@ -39309,7 +40387,7 @@ int ldnf1sh_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1SH_Z_P_BI_S32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA510A000) {
 		decode_fields32(ENC_LDNF1SH_Z_P_BI_S64, ctx, instr);
@@ -39332,7 +40410,7 @@ int ldnf1sh_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1sw_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA490A000) {
 		decode_fields32(ENC_LDNF1SW_Z_P_BI_S64, ctx, instr);
@@ -39355,7 +40433,7 @@ int ldnf1sw_z_p_bi(context *ctx, Instruction *instr)
 int ldnf1w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA550A000) {
 		decode_fields32(ENC_LDNF1W_Z_P_BI_U32, ctx, instr);
@@ -39371,7 +40449,7 @@ int ldnf1w_z_p_bi(context *ctx, Instruction *instr)
 		ctx->offset = SInt(ctx->imm4,4);
 		OK(ENC_LDNF1W_Z_P_BI_U32);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|1|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA570A000) {
 		decode_fields32(ENC_LDNF1W_Z_P_BI_U64, ctx, instr);
@@ -39390,11 +40468,50 @@ int ldnf1w_z_p_bi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ldnt1b_z_p_ar.xml */
+int ldnt1b_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1000010|msz=00|00|Rm=xxxxx|10|U=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x8400A000) {
+		decode_fields32(ENC_LDNT1B_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 8;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1B_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1100010|msz=00|00|Rm=xxxxx|1|U=1|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC400C000) {
+		decode_fields32(ENC_LDNT1B_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 8;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1B_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* ldnt1b_z_p_bi.xml */
 int ldnt1b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400E000) {
 		decode_fields32(ENC_LDNT1B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -39415,7 +40532,7 @@ int ldnt1b_z_p_bi(context *ctx, Instruction *instr)
 int ldnt1b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA400C000) {
 		decode_fields32(ENC_LDNT1B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -39435,11 +40552,34 @@ int ldnt1b_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ldnt1d_z_p_ar.xml */
+int ldnt1d_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 1100010|msz=11|00|Rm=xxxxx|1|U=1|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC580C000) {
+		decode_fields32(ENC_LDNT1D_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x40;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1D_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* ldnt1d_z_p_bi.xml */
 int ldnt1d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA580E000) {
 		decode_fields32(ENC_LDNT1D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -39460,7 +40600,7 @@ int ldnt1d_z_p_bi(context *ctx, Instruction *instr)
 int ldnt1d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA580C000) {
 		decode_fields32(ENC_LDNT1D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -39480,11 +40620,50 @@ int ldnt1d_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ldnt1h_z_p_ar.xml */
+int ldnt1h_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1000010|msz=01|00|Rm=xxxxx|10|U=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x8480A000) {
+		decode_fields32(ENC_LDNT1H_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 0x10;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1H_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1100010|msz=01|00|Rm=xxxxx|1|U=1|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC480C000) {
+		decode_fields32(ENC_LDNT1H_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x10;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1H_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* ldnt1h_z_p_bi.xml */
 int ldnt1h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480E000) {
 		decode_fields32(ENC_LDNT1H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -39505,7 +40684,7 @@ int ldnt1h_z_p_bi(context *ctx, Instruction *instr)
 int ldnt1h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA480C000) {
 		decode_fields32(ENC_LDNT1H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -39525,11 +40704,151 @@ int ldnt1h_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ldnt1sb_z_p_ar.xml */
+int ldnt1sb_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1000010|msz=00|00|Rm=xxxxx|10|U=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x84008000) {
+		decode_fields32(ENC_LDNT1SB_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 8;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_LDNT1SB_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1100010|msz=00|00|Rm=xxxxx|1|U=0|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC4008000) {
+		decode_fields32(ENC_LDNT1SB_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 8;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_LDNT1SB_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
+/* ldnt1sh_z_p_ar.xml */
+int ldnt1sh_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1000010|msz=01|00|Rm=xxxxx|10|U=0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x84808000) {
+		decode_fields32(ENC_LDNT1SH_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 0x10;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_LDNT1SH_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1100010|msz=01|00|Rm=xxxxx|1|U=0|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC4808000) {
+		decode_fields32(ENC_LDNT1SH_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x10;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_LDNT1SH_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
+/* ldnt1sw_z_p_ar.xml */
+int ldnt1sw_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 1100010|msz=10|00|Rm=xxxxx|1|U=0|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC5008000) {
+		decode_fields32(ENC_LDNT1SW_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x20;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_LDNT1SW_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
+/* ldnt1w_z_p_ar.xml */
+int ldnt1w_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1000010|msz=10|00|Rm=xxxxx|10|U=1|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0x8500A000) {
+		decode_fields32(ENC_LDNT1W_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 0x20;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1W_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1100010|msz=10|00|Rm=xxxxx|1|U=1|0|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xC500C000) {
+		decode_fields32(ENC_LDNT1W_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x20;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_LDNT1W_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* ldnt1w_z_p_bi.xml */
 int ldnt1w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA500E000) {
 		decode_fields32(ENC_LDNT1W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -39550,7 +40869,7 @@ int ldnt1w_z_p_bi(context *ctx, Instruction *instr)
 int ldnt1w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1010010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA500C000) {
 		decode_fields32(ENC_LDNT1W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -39574,7 +40893,7 @@ int ldnt1w_z_p_br(context *ctx, Instruction *instr)
 int ldr_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85800000) {
 		decode_fields32(ENC_LDR_P_BI_, ctx, instr);
@@ -39593,7 +40912,7 @@ int ldr_p_bi(context *ctx, Instruction *instr)
 int ldr_z_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85804000) {
 		decode_fields32(ENC_LDR_Z_BI_, ctx, instr);
@@ -39612,7 +40931,7 @@ int ldr_z_bi(context *ctx, Instruction *instr)
 int lsl_z_p_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|00|opc=00|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4038000) {
 		decode_fields32(ENC_LSL_Z_P_ZI_, ctx, instr);
@@ -39647,7 +40966,7 @@ int lsl_z_p_zi(context *ctx, Instruction *instr)
 int lsl_z_p_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B8000) {
 		decode_fields32(ENC_LSL_Z_P_ZW_, ctx, instr);
@@ -39670,7 +40989,7 @@ int lsl_z_p_zw(context *ctx, Instruction *instr)
 int lsl_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4138000) {
 		decode_fields32(ENC_LSL_Z_P_ZZ_, ctx, instr);
@@ -39690,7 +41009,7 @@ int lsl_z_p_zz(context *ctx, Instruction *instr)
 int lsl_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209C00) {
 		decode_fields32(ENC_LSL_Z_ZI_, ctx, instr);
@@ -39725,7 +41044,7 @@ int lsl_z_zi(context *ctx, Instruction *instr)
 int lsl_z_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208C00) {
 		decode_fields32(ENC_LSL_Z_ZW_, ctx, instr);
@@ -39748,7 +41067,7 @@ int lsl_z_zw(context *ctx, Instruction *instr)
 int lslr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=1|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4178000) {
 		decode_fields32(ENC_LSLR_Z_P_ZZ_, ctx, instr);
@@ -39768,7 +41087,7 @@ int lslr_z_p_zz(context *ctx, Instruction *instr)
 int lsr_z_p_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4018000) {
 		decode_fields32(ENC_LSR_Z_P_ZI_, ctx, instr);
@@ -39803,7 +41122,7 @@ int lsr_z_p_zi(context *ctx, Instruction *instr)
 int lsr_z_p_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4198000) {
 		decode_fields32(ENC_LSR_Z_P_ZW_, ctx, instr);
@@ -39826,7 +41145,7 @@ int lsr_z_p_zw(context *ctx, Instruction *instr)
 int lsr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4118000) {
 		decode_fields32(ENC_LSR_Z_P_ZZ_, ctx, instr);
@@ -39846,7 +41165,7 @@ int lsr_z_p_zz(context *ctx, Instruction *instr)
 int lsr_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209400) {
 		decode_fields32(ENC_LSR_Z_ZI_, ctx, instr);
@@ -39881,7 +41200,7 @@ int lsr_z_zi(context *ctx, Instruction *instr)
 int lsr_z_zw(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208400) {
 		decode_fields32(ENC_LSR_Z_ZW_, ctx, instr);
@@ -39904,7 +41223,7 @@ int lsr_z_zw(context *ctx, Instruction *instr)
 int lsrr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|R=1|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4158000) {
 		decode_fields32(ENC_LSRR_Z_P_ZZ_, ctx, instr);
@@ -39924,7 +41243,7 @@ int lsrr_z_p_zz(context *ctx, Instruction *instr)
 int mad_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=0|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400C000) {
 		decode_fields32(ENC_MAD_Z_P_ZZZ_, ctx, instr);
@@ -39942,11 +41261,35 @@ int mad_z_p_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* match_p_p_zz.xml */
+int match_p_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|100|Pg=xxx|Zn=xxxxx|op=0|Pd=xxxx */
+	if((INSWORD & 0xFF20E010)==0x45208000) {
+		decode_fields32(ENC_MATCH_P_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if((ctx->size&2)==2) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->d = UINT(ctx->Pd);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_MATCH_P_P_ZZ_);
+	}
+	return rc;
+}
+
 /* mla_z_p_zzz.xml */
 int mla_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4004000) {
 		decode_fields32(ENC_MLA_Z_P_ZZZ_, ctx, instr);
@@ -39964,11 +41307,60 @@ int mla_z_p_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* mla_z_zzzi.xml */
+int mla_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x44200800) {
+		decode_fields32(ENC_MLA_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLA_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A00800) {
+		decode_fields32(ENC_MLA_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLA_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E00800) {
+		decode_fields32(ENC_MLA_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLA_Z_ZZZI_D);
+	}
+	return rc;
+}
+
 /* mls_z_p_zzz.xml */
 int mls_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4006000) {
 		decode_fields32(ENC_MLS_Z_P_ZZZ_, ctx, instr);
@@ -39986,11 +41378,60 @@ int mls_z_p_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* mls_z_zzzi.xml */
+int mls_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x44200C00) {
+		decode_fields32(ENC_MLS_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLS_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A00C00) {
+		decode_fields32(ENC_MLS_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLS_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E00C00) {
+		decode_fields32(ENC_MLS_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_MLS_Z_ZZZI_D);
+	}
+	return rc;
+}
+
 /* movprfx_z_p_z.xml */
 int movprfx_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|opc=00|M=x|001|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x4102000) {
 		decode_fields32(ENC_MOVPRFX_Z_P_Z_, ctx, instr);
@@ -40011,7 +41452,7 @@ int movprfx_z_p_z(context *ctx, Instruction *instr)
 int movprfx_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=00|1|opc2<4:1>=0000|opc2<0>=0|101111|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x420BC00) {
 		decode_fields32(ENC_MOVPRFX_Z_Z_, ctx, instr);
@@ -40029,7 +41470,7 @@ int movprfx_z_z(context *ctx, Instruction *instr)
 int msb_z_p_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=1|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400E000) {
 		decode_fields32(ENC_MSB_Z_P_ZZZ_, ctx, instr);
@@ -40051,7 +41492,7 @@ int msb_z_p_zzz(context *ctx, Instruction *instr)
 int mul_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0100|H=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4100000) {
 		decode_fields32(ENC_MUL_Z_P_ZZ_, ctx, instr);
@@ -40071,7 +41512,7 @@ int mul_z_p_zz(context *ctx, Instruction *instr)
 int mul_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|110|opc<2:1>=00|opc<0>=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2530C000) {
 		decode_fields32(ENC_MUL_Z_ZI_, ctx, instr);
@@ -40086,11 +41527,80 @@ int mul_z_zi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* mul_z_zz.xml */
+int mul_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=xx|1|Zm=xxxxx|0110|opc=00|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4206000) {
+		decode_fields32(ENC_MUL_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_MUL_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* mul_z_zzi.xml */
+int mul_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|111110|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4420F800) {
+		decode_fields32(ENC_MUL_Z_ZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_MUL_Z_ZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|111110|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A0F800) {
+		decode_fields32(ENC_MUL_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_MUL_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|111110|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E0F800) {
+		decode_fields32(ENC_MUL_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_MUL_Z_ZZI_D);
+	}
+	return rc;
+}
+
 /* nand_p_p_pp.xml */
 int nand_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804210) {
 		decode_fields32(ENC_NAND_P_P_PP_Z, ctx, instr);
@@ -40105,7 +41615,7 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_NAND_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04210) {
 		decode_fields32(ENC_NANDS_P_P_PP_Z, ctx, instr);
@@ -40123,11 +41633,30 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* nbsl_z_zzz.xml */
+int nbsl_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|opc=11|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4E03C00) {
+		decode_fields32(ENC_NBSL_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->k = UINT(ctx->Zk);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_NBSL_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* neg_z_p_z.xml */
 int neg_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x417A000) {
 		decode_fields32(ENC_NEG_Z_P_Z_, ctx, instr);
@@ -40143,11 +41672,35 @@ int neg_z_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* nmatch_p_p_zz.xml */
+int nmatch_p_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|100|Pg=xxx|Zn=xxxxx|op=1|Pd=xxxx */
+	if((INSWORD & 0xFF20E010)==0x45208010) {
+		decode_fields32(ENC_NMATCH_P_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if((ctx->size&2)==2) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->d = UINT(ctx->Pd);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_NMATCH_P_P_ZZ_);
+	}
+	return rc;
+}
+
 /* nor_p_p_pp.xml */
 int nor_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804200) {
 		decode_fields32(ENC_NOR_P_P_PP_Z, ctx, instr);
@@ -40162,7 +41715,7 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_NOR_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04200) {
 		decode_fields32(ENC_NORS_P_P_PP_Z, ctx, instr);
@@ -40184,7 +41737,7 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 int not_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41EA000) {
 		decode_fields32(ENC_NOT_Z_P_Z_, ctx, instr);
@@ -40204,7 +41757,7 @@ int not_z_p_z(context *ctx, Instruction *instr)
 int orn_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804010) {
 		decode_fields32(ENC_ORN_P_P_PP_Z, ctx, instr);
@@ -40219,7 +41772,7 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_ORN_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04010) {
 		decode_fields32(ENC_ORNS_P_P_PP_Z, ctx, instr);
@@ -40241,7 +41794,7 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 int orr_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804000) {
 		decode_fields32(ENC_ORR_P_P_PP_Z, ctx, instr);
@@ -40259,7 +41812,7 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
 		OK(ENC_ORR_P_P_PP_Z);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04000) {
 		decode_fields32(ENC_ORRS_P_P_PP_Z, ctx, instr);
@@ -40284,7 +41837,7 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 int orr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4180000) {
 		decode_fields32(ENC_ORR_Z_P_ZZ_, ctx, instr);
@@ -40304,7 +41857,7 @@ int orr_z_p_zz(context *ctx, Instruction *instr)
 int orr_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|opc=00|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5000000) {
 		decode_fields32(ENC_ORR_Z_ZI_, ctx, instr);
@@ -40324,7 +41877,7 @@ int orr_z_zi(context *ctx, Instruction *instr)
 int orr_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|opc=01|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603000) {
 		decode_fields32(ENC_ORR_Z_ZZ_, ctx, instr);
@@ -40345,7 +41898,7 @@ int orr_z_zz(context *ctx, Instruction *instr)
 int orv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0110|opc=00|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4182000) {
 		decode_fields32(ENC_ORV_R_P_Z_, ctx, instr);
@@ -40365,7 +41918,7 @@ int orv_r_p_z(context *ctx, Instruction *instr)
 int pfalse_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|op=0|S=0|011000111001|000000|Pd=xxxx */
 	if((INSWORD & 0xFFFFFFF0)==0x2518E400) {
 		decode_fields32(ENC_PFALSE_P_, ctx, instr);
@@ -40382,7 +41935,7 @@ int pfalse_p(context *ctx, Instruction *instr)
 int pfirst_p_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|op=0|S=1|011000110000|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2558C000) {
 		decode_fields32(ENC_PFIRST_P_P_P_, ctx, instr);
@@ -40397,11 +41950,99 @@ int pfirst_p_p_p(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* pmul_z_zz.xml */
+int pmul_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=00|1|Zm=xxxxx|0110|opc=01|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4206400) {
+		decode_fields32(ENC_PMUL_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_PMUL_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* pmullb_z_zz.xml */
+int pmullb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45006800) {
+		decode_fields32(ENC_PMULLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0 && !HaveSVE2PMULL128()) {
+			UNDEFINED;
+		}
+		if(!ctx->size) {
+			ctx->esize = 0x80;
+		}
+		else if(ctx->size==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->size==2) {
+			UNDEFINED;
+		}
+		else if(ctx->size==3) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_PMULLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* pmullt_z_zz.xml */
+int pmullt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45006C00) {
+		decode_fields32(ENC_PMULLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0 && !HaveSVE2PMULL128()) {
+			UNDEFINED;
+		}
+		if(!ctx->size) {
+			ctx->esize = 0x80;
+		}
+		else if(ctx->size==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->size==2) {
+			UNDEFINED;
+		}
+		else if(ctx->size==3) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_PMULLT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* pnext_p_p_p.xml */
 int pnext_p_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|011001110001|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x2519C400) {
 		decode_fields32(ENC_PNEXT_P_P_P_, ctx, instr);
@@ -40420,7 +42061,7 @@ int pnext_p_p_p(context *ctx, Instruction *instr)
 int prfb_i_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=00|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8400E000) {
 		decode_fields32(ENC_PRFB_I_P_AI_S, ctx, instr);
@@ -40439,7 +42080,7 @@ int prfb_i_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_PRFB_I_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=00|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC400E000) {
 		decode_fields32(ENC_PRFB_I_P_AI_D, ctx, instr);
@@ -40465,7 +42106,7 @@ int prfb_i_p_ai(context *ctx, Instruction *instr)
 int prfb_i_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010111|imm6=xxxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C00000) {
 		decode_fields32(ENC_PRFB_I_P_BI_S, ctx, instr);
@@ -40491,7 +42132,7 @@ int prfb_i_p_bi(context *ctx, Instruction *instr)
 int prfb_i_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8400C000) {
 		decode_fields32(ENC_PRFB_I_P_BR_S, ctx, instr);
@@ -40520,7 +42161,7 @@ int prfb_i_p_br(context *ctx, Instruction *instr)
 int prfb_i_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84200000) {
 		decode_fields32(ENC_PRFB_I_P_BZ_S_X32_SCALED, ctx, instr);
@@ -40541,7 +42182,7 @@ int prfb_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_PRFB_I_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 110001000|xs=x|1|Zm=xxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0xC4200000) {
 		decode_fields32(ENC_PRFB_I_P_BZ_D_X32_SCALED, ctx, instr);
@@ -40562,7 +42203,7 @@ int prfb_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_PRFB_I_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 11000100011|Zm=xxxxx|1|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC4608000) {
 		decode_fields32(ENC_PRFB_I_P_BZ_D_64_SCALED, ctx, instr);
@@ -40590,7 +42231,7 @@ int prfb_i_p_bz(context *ctx, Instruction *instr)
 int prfd_i_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=11|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8580E000) {
 		decode_fields32(ENC_PRFD_I_P_AI_S, ctx, instr);
@@ -40609,7 +42250,7 @@ int prfd_i_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_PRFD_I_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=11|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC580E000) {
 		decode_fields32(ENC_PRFD_I_P_AI_D, ctx, instr);
@@ -40635,7 +42276,7 @@ int prfd_i_p_ai(context *ctx, Instruction *instr)
 int prfd_i_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010111|imm6=xxxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C06000) {
 		decode_fields32(ENC_PRFD_I_P_BI_S, ctx, instr);
@@ -40661,7 +42302,7 @@ int prfd_i_p_bi(context *ctx, Instruction *instr)
 int prfd_i_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8580C000) {
 		decode_fields32(ENC_PRFD_I_P_BR_S, ctx, instr);
@@ -40690,7 +42331,7 @@ int prfd_i_p_br(context *ctx, Instruction *instr)
 int prfd_i_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84206000) {
 		decode_fields32(ENC_PRFD_I_P_BZ_S_X32_SCALED, ctx, instr);
@@ -40711,7 +42352,7 @@ int prfd_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_PRFD_I_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 110001000|xs=x|1|Zm=xxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0xC4206000) {
 		decode_fields32(ENC_PRFD_I_P_BZ_D_X32_SCALED, ctx, instr);
@@ -40732,7 +42373,7 @@ int prfd_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_PRFD_I_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 11000100011|Zm=xxxxx|1|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC460E000) {
 		decode_fields32(ENC_PRFD_I_P_BZ_D_64_SCALED, ctx, instr);
@@ -40760,7 +42401,7 @@ int prfd_i_p_bz(context *ctx, Instruction *instr)
 int prfh_i_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=01|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8480E000) {
 		decode_fields32(ENC_PRFH_I_P_AI_S, ctx, instr);
@@ -40779,7 +42420,7 @@ int prfh_i_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_PRFH_I_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=01|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC480E000) {
 		decode_fields32(ENC_PRFH_I_P_AI_D, ctx, instr);
@@ -40805,7 +42446,7 @@ int prfh_i_p_ai(context *ctx, Instruction *instr)
 int prfh_i_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010111|imm6=xxxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C02000) {
 		decode_fields32(ENC_PRFH_I_P_BI_S, ctx, instr);
@@ -40831,7 +42472,7 @@ int prfh_i_p_bi(context *ctx, Instruction *instr)
 int prfh_i_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8480C000) {
 		decode_fields32(ENC_PRFH_I_P_BR_S, ctx, instr);
@@ -40860,7 +42501,7 @@ int prfh_i_p_br(context *ctx, Instruction *instr)
 int prfh_i_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84202000) {
 		decode_fields32(ENC_PRFH_I_P_BZ_S_X32_SCALED, ctx, instr);
@@ -40881,7 +42522,7 @@ int prfh_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_PRFH_I_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 110001000|xs=x|1|Zm=xxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0xC4202000) {
 		decode_fields32(ENC_PRFH_I_P_BZ_D_X32_SCALED, ctx, instr);
@@ -40902,7 +42543,7 @@ int prfh_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_PRFH_I_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 11000100011|Zm=xxxxx|1|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC460A000) {
 		decode_fields32(ENC_PRFH_I_P_BZ_D_64_SCALED, ctx, instr);
@@ -40930,7 +42571,7 @@ int prfh_i_p_bz(context *ctx, Instruction *instr)
 int prfw_i_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1000010|msz=10|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8500E000) {
 		decode_fields32(ENC_PRFW_I_P_AI_S, ctx, instr);
@@ -40949,7 +42590,7 @@ int prfw_i_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_PRFW_I_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1100010|msz=10|00|imm5=xxxxx|111|Pg=xxx|Zn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC500E000) {
 		decode_fields32(ENC_PRFW_I_P_AI_D, ctx, instr);
@@ -40975,7 +42616,7 @@ int prfw_i_p_ai(context *ctx, Instruction *instr)
 int prfw_i_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010111|imm6=xxxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C04000) {
 		decode_fields32(ENC_PRFW_I_P_BI_S, ctx, instr);
@@ -41001,7 +42642,7 @@ int prfw_i_p_bi(context *ctx, Instruction *instr)
 int prfw_i_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1000010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8500C000) {
 		decode_fields32(ENC_PRFW_I_P_BR_S, ctx, instr);
@@ -41030,7 +42671,7 @@ int prfw_i_p_br(context *ctx, Instruction *instr)
 int prfw_i_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 100001000|xs=x|1|Zm=xxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0x84204000) {
 		decode_fields32(ENC_PRFW_I_P_BZ_S_X32_SCALED, ctx, instr);
@@ -41051,7 +42692,7 @@ int prfw_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_PRFW_I_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 110001000|xs=x|1|Zm=xxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFA0E010)==0xC4204000) {
 		decode_fields32(ENC_PRFW_I_P_BZ_D_X32_SCALED, ctx, instr);
@@ -41072,7 +42713,7 @@ int prfw_i_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_PRFW_I_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 11000100011|Zm=xxxxx|1|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0xC460C000) {
 		decode_fields32(ENC_PRFW_I_P_BZ_D_64_SCALED, ctx, instr);
@@ -41100,7 +42741,7 @@ int prfw_i_p_bz(context *ctx, Instruction *instr)
 int ptest_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00|100101|op=0|S=1|01|000011|Pg=xxxx|0|Pn=xxxx|0|opc2=0000 */
 	if((INSWORD & 0xFFFFC21F)==0x2550C000) {
 		decode_fields32(ENC_PTEST_P_P_, ctx, instr);
@@ -41119,7 +42760,7 @@ int ptest_p_p(context *ctx, Instruction *instr)
 int ptrue_p_s(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|size=xx|01100|S=0|111000|pattern=xxxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFC10)==0x2518E000) {
 		decode_fields32(ENC_PTRUE_P_S_, ctx, instr);
@@ -41132,7 +42773,7 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUE_P_S_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|size=xx|01100|S=1|111000|pattern=xxxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFC10)==0x2519E000) {
 		decode_fields32(ENC_PTRUES_P_S_, ctx, instr);
@@ -41152,7 +42793,7 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 int punpkhi_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_high_half */
+	/* class iclass_sve_high_half */
 	/* 000001010011000|H=1|010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x5314000) {
 		decode_fields32(ENC_PUNPKHI_P_P_, ctx, instr);
@@ -41165,7 +42806,7 @@ int punpkhi_p_p(context *ctx, Instruction *instr)
 		ctx->hi = TRUE;
 		OK(ENC_PUNPKHI_P_P_);
 	}
-	/* class sve_low_half */
+	/* class iclass_sve_low_half */
 	/* 000001010011000|H=0|010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x5304000) {
 		decode_fields32(ENC_PUNPKLO_P_P_, ctx, instr);
@@ -41181,11 +42822,76 @@ int punpkhi_p_p(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* raddhnb_z_zz.xml */
+int raddhnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45206800) {
+		decode_fields32(ENC_RADDHNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_RADDHNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* raddhnt_z_zz.xml */
+int raddhnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45206C00) {
+		decode_fields32(ENC_RADDHNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_RADDHNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* rax1_z_zz.xml */
+int rax1_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|1|Zm=xxxxx|11110|op=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4520F400) {
+		decode_fields32(ENC_RAX1_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2SHA3()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_RAX1_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* rbit_z_p_z.xml */
 int rbit_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|1001|opc=11|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5278000) {
 		decode_fields32(ENC_RBIT_Z_P_Z_, ctx, instr);
@@ -41205,7 +42911,7 @@ int rbit_z_p_z(context *ctx, Instruction *instr)
 int rdffr_p_f(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|op=0|S=0|011001111100|000000|Pd=xxxx */
 	if((INSWORD & 0xFFFFFFF0)==0x2519F000) {
 		decode_fields32(ENC_RDFFR_P_F_, ctx, instr);
@@ -41222,7 +42928,7 @@ int rdffr_p_f(context *ctx, Instruction *instr)
 int rdffr_p_p_f(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class no_s */
+	/* class iclass_no_s */
 	/* 00100101|op=0|S=0|011000111100|0|Pg=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2518F000) {
 		decode_fields32(ENC_RDFFR_P_P_F_, ctx, instr);
@@ -41234,7 +42940,7 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 		instr->setflags = ctx->setflags = FALSE;
 		OK(ENC_RDFFR_P_P_F_);
 	}
-	/* class s */
+	/* class iclass_s */
 	/* 00100101|op=0|S=1|011000111100|0|Pg=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2558F000) {
 		decode_fields32(ENC_RDFFRS_P_P_F_, ctx, instr);
@@ -41253,7 +42959,7 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 int rdvl_r_i(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 000001001|op=0|1|opc2<4:1>=1111|opc2<0>=1|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFF800)==0x4BF5000) {
 		decode_fields32(ENC_RDVL_R_I_, ctx, instr);
@@ -41271,7 +42977,7 @@ int rdvl_r_i(context *ctx, Instruction *instr)
 int rev_p_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|110100010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x5344000) {
 		decode_fields32(ENC_REV_P_P_, ctx, instr);
@@ -41290,7 +42996,7 @@ int rev_p_p(context *ctx, Instruction *instr)
 int rev_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|111000001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5383800) {
 		decode_fields32(ENC_REV_Z_Z_, ctx, instr);
@@ -41309,7 +43015,7 @@ int rev_z_z(context *ctx, Instruction *instr)
 int revb_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000101|size=xx|1001|opc=00|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5248000) {
 		decode_fields32(ENC_REVB_Z_Z_, ctx, instr);
@@ -41326,7 +43032,7 @@ int revb_z_z(context *ctx, Instruction *instr)
 		ctx->swsize = 8;
 		OK(ENC_REVB_Z_Z_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000101|size=xx|1001|opc=01|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5258000) {
 		decode_fields32(ENC_REVH_Z_Z_, ctx, instr);
@@ -41343,7 +43049,7 @@ int revb_z_z(context *ctx, Instruction *instr)
 		ctx->swsize = 0x10;
 		OK(ENC_REVH_Z_Z_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000101|size=xx|1001|opc=10|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5268000) {
 		decode_fields32(ENC_REVW_Z_Z_, ctx, instr);
@@ -41363,11 +43069,188 @@ int revb_z_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* rshrnb_z_zi.xml */
+int rshrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45201800) {
+		decode_fields32(ENC_RSHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_RSHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* rshrnt_z_zi.xml */
+int rshrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45201C00) {
+		decode_fields32(ENC_RSHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_RSHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* rsubhnb_z_zz.xml */
+int rsubhnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45207800) {
+		decode_fields32(ENC_RSUBHNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_RSUBHNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* rsubhnt_z_zz.xml */
+int rsubhnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45207C00) {
+		decode_fields32(ENC_RSUBHNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_RSUBHNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* saba_z_zzz.xml */
+int saba_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|11111|U=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500F800) {
+		decode_fields32(ENC_SABA_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SABA_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sabalb_z_zzz.xml */
+int sabalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500C000) {
+		decode_fields32(ENC_SABALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SABALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sabalt_z_zzz.xml */
+int sabalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500C400) {
+		decode_fields32(ENC_SABALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SABALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* sabd_z_p_zz.xml */
 int sabd_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=10|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40C0000) {
 		decode_fields32(ENC_SABD_Z_P_ZZ_, ctx, instr);
@@ -41384,11 +43267,158 @@ int sabd_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sabdlb_z_zz.xml */
+int sabdlb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45003000) {
+		decode_fields32(ENC_SABDLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SABDLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sabdlt_z_zz.xml */
+int sabdlt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45003400) {
+		decode_fields32(ENC_SABDLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SABDLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sadalp_z_p_z.xml */
+int sadalp_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00010|U=0|101|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4404A000) {
+		decode_fields32(ENC_SADALP_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SADALP_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* saddlb_z_zz.xml */
+int saddlb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45000000) {
+		decode_fields32(ENC_SADDLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SADDLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* saddlbt_z_zz.xml */
+int saddlbt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=0|tb=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45008000) {
+		decode_fields32(ENC_SADDLBT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SADDLBT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* saddlt_z_zz.xml */
+int saddlt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45000400) {
+		decode_fields32(ENC_SADDLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SADDLT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* saddv_r_p_z.xml */
 int saddv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0000|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4002000) {
 		decode_fields32(ENC_SADDV_R_P_Z_, ctx, instr);
@@ -41407,11 +43437,97 @@ int saddv_r_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* saddwb_z_zz.xml */
+int saddwb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45004000) {
+		decode_fields32(ENC_SADDWB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SADDWB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* saddwt_z_zz.xml */
+int saddwt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45004400) {
+		decode_fields32(ENC_SADDWT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SADDWT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sbclb_z_zzz.xml */
+int sbclb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|1|sz=x|0|Zm=xxxxx|11010|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4580D000) {
+		decode_fields32(ENC_SBCLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (0x20) << (UINT(ctx->sz));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SBCLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sbclt_z_zzz.xml */
+int sbclt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|1|sz=x|0|Zm=xxxxx|11010|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4580D400) {
+		decode_fields32(ENC_SBCLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (0x20) << (UINT(ctx->sz));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SBCLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* scvtf_z_p_z.xml */
 int scvtf_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_to_half */
+	/* class iclass_16_to_half */
 	/* 01100101|opc=01|010|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6552A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_H2FP16, ctx, instr);
@@ -41428,7 +43544,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_H2FP16);
 	}
-	/* class 32_to_half */
+	/* class iclass_32_to_half */
 	/* 01100101|opc=01|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6554A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2FP16, ctx, instr);
@@ -41445,7 +43561,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_W2FP16);
 	}
-	/* class 32_to_single */
+	/* class iclass_32_to_single */
 	/* 01100101|opc=10|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6594A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2S, ctx, instr);
@@ -41462,7 +43578,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_W2S);
 	}
-	/* class 32_to_double */
+	/* class iclass_32_to_double */
 	/* 01100101|opc=11|010|opc2=00|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D0A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2D, ctx, instr);
@@ -41479,7 +43595,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_W2D);
 	}
-	/* class 64_to_half */
+	/* class iclass_64_to_half */
 	/* 01100101|opc=01|010|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6556A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2FP16, ctx, instr);
@@ -41496,7 +43612,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_X2FP16);
 	}
-	/* class 64_to_single */
+	/* class iclass_64_to_single */
 	/* 01100101|opc=11|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D4A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2S, ctx, instr);
@@ -41513,7 +43629,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_SCVTF_Z_P_Z_X2S);
 	}
-	/* class 64_to_double */
+	/* class iclass_64_to_double */
 	/* 01100101|opc=11|010|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D6A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2D, ctx, instr);
@@ -41537,7 +43653,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 int sdiv_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0101|R=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4140000) {
 		decode_fields32(ENC_SDIV_Z_P_ZZ_, ctx, instr);
@@ -41561,7 +43677,7 @@ int sdiv_z_p_zz(context *ctx, Instruction *instr)
 int sdivr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0101|R=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4160000) {
 		decode_fields32(ENC_SDIVR_Z_P_ZZ_, ctx, instr);
@@ -41585,7 +43701,7 @@ int sdivr_z_p_zz(context *ctx, Instruction *instr)
 int sdot_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000000) {
 		decode_fields32(ENC_SDOT_Z_ZZZ_, ctx, instr);
@@ -41608,7 +43724,7 @@ int sdot_z_zzz(context *ctx, Instruction *instr)
 int sdot_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class of_words */
+	/* class iclass_of_words */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00000) {
 		decode_fields32(ENC_SDOT_Z_ZZZI_S, ctx, instr);
@@ -41622,7 +43738,7 @@ int sdot_z_zzzi(context *ctx, Instruction *instr)
 		ctx->da = UINT(ctx->Zda);
 		OK(ENC_SDOT_Z_ZZZI_S);
 	}
-	/* class of_doublewords */
+	/* class iclass_of_doublewords */
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00000) {
 		decode_fields32(ENC_SDOT_Z_ZZZI_D, ctx, instr);
@@ -41643,7 +43759,7 @@ int sdot_z_zzzi(context *ctx, Instruction *instr)
 int sel_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004210) {
 		decode_fields32(ENC_SEL_P_P_PP_, ctx, instr);
@@ -41666,7 +43782,7 @@ int sel_p_p_pp(context *ctx, Instruction *instr)
 int sel_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|1|Zm=xxxxx|11|Pg=xxxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20C000)==0x520C000) {
 		decode_fields32(ENC_SEL_Z_P_ZZ_, ctx, instr);
@@ -41689,7 +43805,7 @@ int sel_z_p_zz(context *ctx, Instruction *instr)
 int setffr_f(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00|100101|opc=00|10|1100100100|000000|0|0|00 */
 	if((INSWORD & 0xFFFFFFFF)==0x252C9000) {
 		decode_fields32(ENC_SETFFR_F_, ctx, instr);
@@ -41701,6 +43817,26 @@ int setffr_f(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* shadd_z_p_zz.xml */
+int shadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=0|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44108000) {
+		decode_fields32(ENC_SHADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_SHADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* shared_pseudocode.xml */
 int shared_pseudocode(context *ctx, Instruction *instr)
 {
@@ -41708,11 +43844,187 @@ int shared_pseudocode(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* shrnb_z_zi.xml */
+int shrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45201000) {
+		decode_fields32(ENC_SHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* shrnt_z_zi.xml */
+int shrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45201400) {
+		decode_fields32(ENC_SHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* shsub_z_p_zz.xml */
+int shsub_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=0|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44128000) {
+		decode_fields32(ENC_SHSUB_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_SHSUB_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* shsubr_z_p_zz.xml */
+int shsubr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=1|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44168000) {
+		decode_fields32(ENC_SHSUBR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_SHSUBR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sli_z_zzi.xml */
+int sli_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|11110|op=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500F400) {
+		decode_fields32(ENC_SLI_Z_ZZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_SLI_Z_ZZI_);
+	}
+	return rc;
+}
+
+/* sm4e_z_zz.xml */
+int sm4e_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|10001|op=1|11100|o2=0|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFFFFFC00)==0x4523E000) {
+		decode_fields32(ENC_SM4E_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2SM4()) {
+			UNDEFINED;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SM4E_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sm4ekey_z_zz.xml */
+int sm4ekey_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=00|1|Zm=xxxxx|11110|op=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x4520F000) {
+		decode_fields32(ENC_SM4EKEY_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2SM4()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SM4EKEY_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* smax_z_p_zz.xml */
 int smax_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=00|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4080000) {
 		decode_fields32(ENC_SMAX_Z_P_ZZ_, ctx, instr);
@@ -41733,7 +44045,7 @@ int smax_z_p_zz(context *ctx, Instruction *instr)
 int smax_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|101|00|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2528C000) {
 		decode_fields32(ENC_SMAX_Z_ZI_, ctx, instr);
@@ -41749,11 +44061,31 @@ int smax_z_zi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* smaxp_z_p_zz.xml */
+int smaxp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|opc=10|U=0|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4414A000) {
+		decode_fields32(ENC_SMAXP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SMAXP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* smaxv_r_p_z.xml */
 int smaxv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0010|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4082000) {
 		decode_fields32(ENC_SMAXV_R_P_Z_, ctx, instr);
@@ -41774,7 +44106,7 @@ int smaxv_r_p_z(context *ctx, Instruction *instr)
 int smin_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=01|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A0000) {
 		decode_fields32(ENC_SMIN_Z_P_ZZ_, ctx, instr);
@@ -41795,7 +44127,7 @@ int smin_z_p_zz(context *ctx, Instruction *instr)
 int smin_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|101|01|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252AC000) {
 		decode_fields32(ENC_SMIN_Z_ZI_, ctx, instr);
@@ -41811,11 +44143,31 @@ int smin_z_zi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sminp_z_p_zz.xml */
+int sminp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|opc=11|U=0|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4416A000) {
+		decode_fields32(ENC_SMINP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SMINP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* sminv_r_p_z.xml */
 int sminv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0010|op=1|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A2000) {
 		decode_fields32(ENC_SMINV_R_P_Z_, ctx, instr);
@@ -41832,11 +44184,251 @@ int sminv_r_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* smlalb_z_zzz.xml */
+int smlalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44004000) {
+		decode_fields32(ENC_SMLALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SMLALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* smlalb_z_zzzi.xml */
+int smlalb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A08000) {
+		decode_fields32(ENC_SMLALB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SMLALB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E08000) {
+		decode_fields32(ENC_SMLALB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SMLALB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* smlalt_z_zzz.xml */
+int smlalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44004400) {
+		decode_fields32(ENC_SMLALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SMLALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* smlalt_z_zzzi.xml */
+int smlalt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A08400) {
+		decode_fields32(ENC_SMLALT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SMLALT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E08400) {
+		decode_fields32(ENC_SMLALT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SMLALT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* smlslb_z_zzz.xml */
+int smlslb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44005000) {
+		decode_fields32(ENC_SMLSLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SMLSLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* smlslb_z_zzzi.xml */
+int smlslb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0A000) {
+		decode_fields32(ENC_SMLSLB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SMLSLB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0A000) {
+		decode_fields32(ENC_SMLSLB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SMLSLB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* smlslt_z_zzz.xml */
+int smlslt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44005400) {
+		decode_fields32(ENC_SMLSLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SMLSLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* smlslt_z_zzzi.xml */
+int smlslt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0A400) {
+		decode_fields32(ENC_SMLSLT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SMLSLT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0A400) {
+		decode_fields32(ENC_SMLSLT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SMLSLT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
 /* smmla_z_zzz.xml */
 int smmla_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000101|uns=00|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45009800) {
 		decode_fields32(ENC_SMMLA_Z_ZZZ_, ctx, instr);
@@ -41857,7 +44449,7 @@ int smmla_z_zzz(context *ctx, Instruction *instr)
 int smulh_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0100|H=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4120000) {
 		decode_fields32(ENC_SMULH_Z_P_ZZ_, ctx, instr);
@@ -41874,11 +44466,166 @@ int smulh_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* smulh_z_zz.xml */
+int smulh_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=xx|1|Zm=xxxxx|0110|1|U=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4206800) {
+		decode_fields32(ENC_SMULH_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SMULH_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* smullb_z_zz.xml */
+int smullb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45007000) {
+		decode_fields32(ENC_SMULLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SMULLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* smullb_z_zzi.xml */
+int smullb_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=0|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0C000) {
+		decode_fields32(ENC_SMULLB_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_SMULLB_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=0|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0C000) {
+		decode_fields32(ENC_SMULLB_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_SMULLB_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* smullt_z_zz.xml */
+int smullt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45007400) {
+		decode_fields32(ENC_SMULLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SMULLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* smullt_z_zzi.xml */
+int smullt_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=0|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0C400) {
+		decode_fields32(ENC_SMULLT_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_SMULLT_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=0|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0C400) {
+		decode_fields32(ENC_SMULLT_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_SMULLT_Z_ZZI_D);
+	}
+	return rc;
+}
+
 /* splice_z_p_zz.xml */
 int splice_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve_const */
+	/* 00000101|size=xx|101101100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x52D8000) {
+		decode_fields32(ENC_SPLICE_Z_P_ZZ_CON, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dst = UINT(ctx->Zd);
+		ctx->s1 = UINT(ctx->Zn);
+		ctx->s2 = ((ctx->s1+1)) % 32;
+		OK(ENC_SPLICE_Z_P_ZZ_CON);
+	}
+	/* class iclass_sve_dest */
 	/* 00000101|size=xx|101100100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52C8000) {
 		decode_fields32(ENC_SPLICE_Z_P_ZZ_DES, ctx, instr);
@@ -41887,9 +44634,51 @@ int splice_z_p_zz(context *ctx, Instruction *instr)
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
 		ctx->g = UINT(ctx->Pg);
+		ctx->dst = UINT(ctx->Zdn);
+		ctx->s1 = ctx->dst;
+		ctx->s2 = UINT(ctx->Zm);
+		OK(ENC_SPLICE_Z_P_ZZ_DES);
+	}
+	return rc;
+}
+
+/* sqabs_z_p_z.xml */
+int sqabs_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|0|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4408A000) {
+		decode_fields32(ENC_SQABS_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQABS_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* sqadd_z_p_zz.xml */
+int sqadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=0|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44188000) {
+		decode_fields32(ENC_SQADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
 		ctx->dn = UINT(ctx->Zdn);
 		ctx->m = UINT(ctx->Zm);
-		OK(ENC_SPLICE_Z_P_ZZ_DES);
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SQADD_Z_P_ZZ_);
 	}
 	return rc;
 }
@@ -41898,7 +44687,7 @@ int splice_z_p_zz(context *ctx, Instruction *instr)
 int sqadd_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|10|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2524C000) {
 		decode_fields32(ENC_SQADD_Z_ZI_, ctx, instr);
@@ -41924,7 +44713,7 @@ int sqadd_z_zi(context *ctx, Instruction *instr)
 int sqadd_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201000) {
 		decode_fields32(ENC_SQADD_Z_ZZ_, ctx, instr);
@@ -41941,11 +44730,32 @@ int sqadd_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sqcadd_z_zz.xml */
+int sqcadd_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|00000|op=1|11011|rot=x|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FF800)==0x4501D800) {
+		decode_fields32(ENC_SQCADD_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->sub_i = (ctx->rot==0);
+		ctx->sub_r = (ctx->rot==1);
+		OK(ENC_SQCADD_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* sqdecb_r_rs.xml */
 int sqdecb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F800) {
 		decode_fields32(ENC_SQDECB_R_RS_SX, ctx, instr);
@@ -41960,7 +44770,7 @@ int sqdecb_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQDECB_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F800) {
 		decode_fields32(ENC_SQDECB_R_RS_X, ctx, instr);
@@ -41982,7 +44792,7 @@ int sqdecb_r_rs(context *ctx, Instruction *instr)
 int sqdecd_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F800) {
 		decode_fields32(ENC_SQDECD_R_RS_SX, ctx, instr);
@@ -41997,7 +44807,7 @@ int sqdecd_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQDECD_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F800) {
 		decode_fields32(ENC_SQDECD_R_RS_X, ctx, instr);
@@ -42019,7 +44829,7 @@ int sqdecd_r_rs(context *ctx, Instruction *instr)
 int sqdecd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C800) {
 		decode_fields32(ENC_SQDECD_Z_ZS_, ctx, instr);
@@ -42040,7 +44850,7 @@ int sqdecd_z_zs(context *ctx, Instruction *instr)
 int sqdech_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F800) {
 		decode_fields32(ENC_SQDECH_R_RS_SX, ctx, instr);
@@ -42055,7 +44865,7 @@ int sqdech_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQDECH_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F800) {
 		decode_fields32(ENC_SQDECH_R_RS_X, ctx, instr);
@@ -42077,7 +44887,7 @@ int sqdech_r_rs(context *ctx, Instruction *instr)
 int sqdech_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C800) {
 		decode_fields32(ENC_SQDECH_Z_ZS_, ctx, instr);
@@ -42098,7 +44908,7 @@ int sqdech_z_zs(context *ctx, Instruction *instr)
 int sqdecp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00100101|size=xx|1010|D=1|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8800) {
 		decode_fields32(ENC_SQDECP_R_P_R_SX, ctx, instr);
@@ -42112,7 +44922,7 @@ int sqdecp_r_p_r(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQDECP_R_P_R_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00100101|size=xx|1010|D=1|U=0|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8C00) {
 		decode_fields32(ENC_SQDECP_R_P_R_X, ctx, instr);
@@ -42133,7 +44943,7 @@ int sqdecp_r_p_r(context *ctx, Instruction *instr)
 int sqdecp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1010|D=1|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8000) {
 		decode_fields32(ENC_SQDECP_Z_P_Z_, ctx, instr);
@@ -42156,7 +44966,7 @@ int sqdecp_z_p_z(context *ctx, Instruction *instr)
 int sqdecw_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F800) {
 		decode_fields32(ENC_SQDECW_R_RS_SX, ctx, instr);
@@ -42171,7 +44981,7 @@ int sqdecw_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQDECW_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F800) {
 		decode_fields32(ENC_SQDECW_R_RS_X, ctx, instr);
@@ -42193,7 +45003,7 @@ int sqdecw_r_rs(context *ctx, Instruction *instr)
 int sqdecw_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C800) {
 		decode_fields32(ENC_SQDECW_Z_ZS_, ctx, instr);
@@ -42210,11 +45020,498 @@ int sqdecw_z_zs(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sqdmlalb_z_zzz.xml */
+int sqdmlalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=0|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44006000) {
+		decode_fields32(ENC_SQDMLALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		OK(ENC_SQDMLALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlalb_z_zzzi.xml */
+int sqdmlalb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A02000) {
+		decode_fields32(ENC_SQDMLALB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SQDMLALB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E02000) {
+		decode_fields32(ENC_SQDMLALB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SQDMLALB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmlalbt_z_zzz.xml */
+int sqdmlalbt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44000800) {
+		decode_fields32(ENC_SQDMLALBT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 0;
+		ctx->sel2 = 1;
+		OK(ENC_SQDMLALBT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlalt_z_zzz.xml */
+int sqdmlalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=0|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44006400) {
+		decode_fields32(ENC_SQDMLALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		OK(ENC_SQDMLALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlalt_z_zzzi.xml */
+int sqdmlalt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A02400) {
+		decode_fields32(ENC_SQDMLALT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SQDMLALT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E02400) {
+		decode_fields32(ENC_SQDMLALT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SQDMLALT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmlslb_z_zzz.xml */
+int sqdmlslb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=1|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44006800) {
+		decode_fields32(ENC_SQDMLSLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		OK(ENC_SQDMLSLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlslb_z_zzzi.xml */
+int sqdmlslb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A03000) {
+		decode_fields32(ENC_SQDMLSLB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SQDMLSLB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E03000) {
+		decode_fields32(ENC_SQDMLSLB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_SQDMLSLB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmlslbt_z_zzz.xml */
+int sqdmlslbt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44000C00) {
+		decode_fields32(ENC_SQDMLSLBT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 0;
+		ctx->sel2 = 1;
+		OK(ENC_SQDMLSLBT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlslt_z_zzz.xml */
+int sqdmlslt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=1|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44006C00) {
+		decode_fields32(ENC_SQDMLSLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		OK(ENC_SQDMLSLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqdmlslt_z_zzzi.xml */
+int sqdmlslt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A03400) {
+		decode_fields32(ENC_SQDMLSLT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SQDMLSLT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E03400) {
+		decode_fields32(ENC_SQDMLSLT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_SQDMLSLT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmulh_z_zz.xml */
+int sqdmulh_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=xx|1|Zm=xxxxx|01110|R=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4207000) {
+		decode_fields32(ENC_SQDMULH_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULH_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqdmulh_z_zzi.xml */
+int sqdmulh_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4420F000) {
+		decode_fields32(ENC_SQDMULH_Z_ZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULH_Z_ZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A0F000) {
+		decode_fields32(ENC_SQDMULH_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULH_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E0F000) {
+		decode_fields32(ENC_SQDMULH_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULH_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmullb_z_zz.xml */
+int sqdmullb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45006000) {
+		decode_fields32(ENC_SQDMULLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqdmullb_z_zzi.xml */
+int sqdmullb_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|1110|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0E000) {
+		decode_fields32(ENC_SQDMULLB_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_SQDMULLB_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|1110|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0E000) {
+		decode_fields32(ENC_SQDMULLB_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_SQDMULLB_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* sqdmullt_z_zz.xml */
+int sqdmullt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45006400) {
+		decode_fields32(ENC_SQDMULLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQDMULLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqdmullt_z_zzi.xml */
+int sqdmullt_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|1110|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0E400) {
+		decode_fields32(ENC_SQDMULLT_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_SQDMULLT_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|1110|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0E400) {
+		decode_fields32(ENC_SQDMULLT_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_SQDMULLT_Z_ZZI_D);
+	}
+	return rc;
+}
+
 /* sqincb_r_rs.xml */
 int sqincb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F000) {
 		decode_fields32(ENC_SQINCB_R_RS_SX, ctx, instr);
@@ -42229,7 +45526,7 @@ int sqincb_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQINCB_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F000) {
 		decode_fields32(ENC_SQINCB_R_RS_X, ctx, instr);
@@ -42251,7 +45548,7 @@ int sqincb_r_rs(context *ctx, Instruction *instr)
 int sqincd_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F000) {
 		decode_fields32(ENC_SQINCD_R_RS_SX, ctx, instr);
@@ -42266,7 +45563,7 @@ int sqincd_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQINCD_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F000) {
 		decode_fields32(ENC_SQINCD_R_RS_X, ctx, instr);
@@ -42288,7 +45585,7 @@ int sqincd_r_rs(context *ctx, Instruction *instr)
 int sqincd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C000) {
 		decode_fields32(ENC_SQINCD_Z_ZS_, ctx, instr);
@@ -42309,7 +45606,7 @@ int sqincd_z_zs(context *ctx, Instruction *instr)
 int sqinch_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F000) {
 		decode_fields32(ENC_SQINCH_R_RS_SX, ctx, instr);
@@ -42324,7 +45621,7 @@ int sqinch_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQINCH_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F000) {
 		decode_fields32(ENC_SQINCH_R_RS_X, ctx, instr);
@@ -42346,7 +45643,7 @@ int sqinch_r_rs(context *ctx, Instruction *instr)
 int sqinch_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C000) {
 		decode_fields32(ENC_SQINCH_Z_ZS_, ctx, instr);
@@ -42367,7 +45664,7 @@ int sqinch_z_zs(context *ctx, Instruction *instr)
 int sqincp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00100101|size=xx|1010|D=0|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288800) {
 		decode_fields32(ENC_SQINCP_R_P_R_SX, ctx, instr);
@@ -42381,7 +45678,7 @@ int sqincp_r_p_r(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQINCP_R_P_R_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00100101|size=xx|1010|D=0|U=0|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288C00) {
 		decode_fields32(ENC_SQINCP_R_P_R_X, ctx, instr);
@@ -42402,7 +45699,7 @@ int sqincp_r_p_r(context *ctx, Instruction *instr)
 int sqincp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1010|D=0|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288000) {
 		decode_fields32(ENC_SQINCP_Z_P_Z_, ctx, instr);
@@ -42425,7 +45722,7 @@ int sqincp_z_p_z(context *ctx, Instruction *instr)
 int sqincw_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F000) {
 		decode_fields32(ENC_SQINCW_R_RS_SX, ctx, instr);
@@ -42440,7 +45737,7 @@ int sqincw_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_SQINCW_R_RS_SX);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F000) {
 		decode_fields32(ENC_SQINCW_R_RS_X, ctx, instr);
@@ -42462,7 +45759,7 @@ int sqincw_r_rs(context *ctx, Instruction *instr)
 int sqincw_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C000) {
 		decode_fields32(ENC_SQINCW_Z_ZS_, ctx, instr);
@@ -42479,11 +45776,732 @@ int sqincw_z_zs(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sqneg_z_p_z.xml */
+int sqneg_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|0|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4409A000) {
+		decode_fields32(ENC_SQNEG_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQNEG_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* sqrdcmlah_z_zzz.xml */
+int sqrdcmlah_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|001|op=1|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20F000)==0x44003000) {
+		decode_fields32(ENC_SQRDCMLAH_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_SQRDCMLAH_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqrdcmlah_z_zzzi.xml */
+int sqrdcmlah_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|0111|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44A07000) {
+		decode_fields32(ENC_SQRDCMLAH_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_SQRDCMLAH_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|0111|rot=xx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F000)==0x44E07000) {
+		decode_fields32(ENC_SQRDCMLAH_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel_a = UINT(SLICE(ctx->rot,0,0));
+		ctx->sel_b = UINT(NOT(SLICE(ctx->rot,0,0),1));
+		ctx->sub_r = (SLICE(ctx->rot,0,0)!=SLICE(ctx->rot,1,1));
+		ctx->sub_i = (SLICE(ctx->rot,1,1)==1);
+		OK(ENC_SQRDCMLAH_Z_ZZZI_S);
+	}
+	return rc;
+}
+
+/* sqrdmlah_z_zzz.xml */
+int sqrdmlah_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|01110|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44007000) {
+		decode_fields32(ENC_SQRDMLAH_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLAH_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqrdmlah_z_zzzi.xml */
+int sqrdmlah_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x44201000) {
+		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLAH_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A01000) {
+		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLAH_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E01000) {
+		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLAH_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqrdmlsh_z_zzz.xml */
+int sqrdmlsh_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|01110|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44007400) {
+		decode_fields32(ENC_SQRDMLSH_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLSH_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sqrdmlsh_z_zzzi.xml */
+int sqrdmlsh_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x44201400) {
+		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLSH_Z_ZZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A01400) {
+		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLSH_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E01400) {
+		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_SQRDMLSH_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* sqrdmulh_z_zz.xml */
+int sqrdmulh_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=xx|1|Zm=xxxxx|01110|R=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4207400) {
+		decode_fields32(ENC_SQRDMULH_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQRDMULH_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqrdmulh_z_zzi.xml */
+int sqrdmulh_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_halfwords */
+	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4420F400) {
+		decode_fields32(ENC_SQRDMULH_Z_ZZI_H, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<2)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQRDMULH_Z_ZZI_H);
+	}
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i2=xx|Zm=xxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44A0F400) {
+		decode_fields32(ENC_SQRDMULH_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(ctx->i2);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQRDMULH_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i1=x|Zm=xxxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0FC00)==0x44E0F400) {
+		decode_fields32(ENC_SQRDMULH_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->index = UINT(ctx->i1);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQRDMULH_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* sqrshl_z_p_zz.xml */
+int sqrshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=0|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440A8000) {
+		decode_fields32(ENC_SQRSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SQRSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sqrshlr_z_p_zz.xml */
+int sqrshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=1|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440E8000) {
+		decode_fields32(ENC_SQRSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SQRSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sqrshrnb_z_zi.xml */
+int sqrshrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45202800) {
+		decode_fields32(ENC_SQRSHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQRSHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqrshrnt_z_zi.xml */
+int sqrshrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45202C00) {
+		decode_fields32(ENC_SQRSHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQRSHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqrshrunb_z_zi.xml */
+int sqrshrunb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45200800) {
+		decode_fields32(ENC_SQRSHRUNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQRSHRUNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqrshrunt_z_zi.xml */
+int sqrshrunt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45200C00) {
+		decode_fields32(ENC_SQRSHRUNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQRSHRUNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqshl_z_p_zi.xml */
+int sqshl_z_p_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|00|opc=01|L=1|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4068000) {
+		decode_fields32(ENC_SQSHL_Z_P_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_SQSHL_Z_P_ZI_);
+	}
+	return rc;
+}
+
+/* sqshl_z_p_zz.xml */
+int sqshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=0|N=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44088000) {
+		decode_fields32(ENC_SQSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SQSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sqshlr_z_p_zz.xml */
+int sqshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=1|N=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440C8000) {
+		decode_fields32(ENC_SQSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SQSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sqshlu_z_p_zi.xml */
+int sqshlu_z_p_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|00|opc=11|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x40F8000) {
+		decode_fields32(ENC_SQSHLU_Z_P_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_SQSHLU_Z_P_ZI_);
+	}
+	return rc;
+}
+
+/* sqshrnb_z_zi.xml */
+int sqshrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45202000) {
+		decode_fields32(ENC_SQSHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQSHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqshrnt_z_zi.xml */
+int sqshrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45202400) {
+		decode_fields32(ENC_SQSHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQSHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqshrunb_z_zi.xml */
+int sqshrunb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45200000) {
+		decode_fields32(ENC_SQSHRUNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQSHRUNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqshrunt_z_zi.xml */
+int sqshrunt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45200400) {
+		decode_fields32(ENC_SQSHRUNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SQSHRUNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sqsub_z_p_zz.xml */
+int sqsub_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=0|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441A8000) {
+		decode_fields32(ENC_SQSUB_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SQSUB_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* sqsub_z_zi.xml */
 int sqsub_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|11|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2526C000) {
 		decode_fields32(ENC_SQSUB_Z_ZI_, ctx, instr);
@@ -42509,7 +46527,7 @@ int sqsub_z_zi(context *ctx, Instruction *instr)
 int sqsub_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201800) {
 		decode_fields32(ENC_SQSUB_Z_ZZ_, ctx, instr);
@@ -42526,11 +46544,570 @@ int sqsub_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sqsubr_z_p_zz.xml */
+int sqsubr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=1|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441E8000) {
+		decode_fields32(ENC_SQSUBR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SQSUBR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sqxtnb_z_zz.xml */
+int sqxtnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45204000) {
+		decode_fields32(ENC_SQXTNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQXTNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqxtnt_z_zz.xml */
+int sqxtnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45204400) {
+		decode_fields32(ENC_SQXTNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQXTNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqxtunb_z_zz.xml */
+int sqxtunb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|opc=10|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45205000) {
+		decode_fields32(ENC_SQXTUNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQXTUNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* sqxtunt_z_zz.xml */
+int sqxtunt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|opc=10|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45205400) {
+		decode_fields32(ENC_SQXTUNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SQXTUNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* srhadd_z_p_zz.xml */
+int srhadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=1|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44148000) {
+		decode_fields32(ENC_SRHADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_SRHADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* sri_z_zzi.xml */
+int sri_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|11110|op=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500F000) {
+		decode_fields32(ENC_SRI_Z_ZZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SRI_Z_ZZI_);
+	}
+	return rc;
+}
+
+/* srshl_z_p_zz.xml */
+int srshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|R=0|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44028000) {
+		decode_fields32(ENC_SRSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SRSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* srshlr_z_p_zz.xml */
+int srshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|R=1|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44068000) {
+		decode_fields32(ENC_SRSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_SRSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* srshr_z_p_zi.xml */
+int srshr_z_p_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|00|opc=11|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x40C8000) {
+		decode_fields32(ENC_SRSHR_Z_P_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SRSHR_Z_P_ZI_);
+	}
+	return rc;
+}
+
+/* srsra_z_zi.xml */
+int srsra_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=1|U=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500E800) {
+		decode_fields32(ENC_SRSRA_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SRSRA_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sshllb_z_zi.xml */
+int sshllb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500A000) {
+		decode_fields32(ENC_SSHLLB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_SSHLLB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* sshllt_z_zi.xml */
+int sshllt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500A400) {
+		decode_fields32(ENC_SSHLLT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_SSHLLT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* ssra_z_zi.xml */
+int ssra_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=0|U=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500E000) {
+		decode_fields32(ENC_SSRA_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_SSRA_Z_ZI_);
+	}
+	return rc;
+}
+
+/* ssublb_z_zz.xml */
+int ssublb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45001000) {
+		decode_fields32(ENC_SSUBLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SSUBLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ssublbt_z_zz.xml */
+int ssublbt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=1|tb=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45008800) {
+		decode_fields32(ENC_SSUBLBT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SSUBLBT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ssublt_z_zz.xml */
+int ssublt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45001400) {
+		decode_fields32(ENC_SSUBLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SSUBLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ssubltb_z_zz.xml */
+int ssubltb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=1|tb=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45008C00) {
+		decode_fields32(ENC_SSUBLTB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 0;
+		ctx->unsigned_ = FALSE;
+		OK(ENC_SSUBLTB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ssubwb_z_zz.xml */
+int ssubwb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45005000) {
+		decode_fields32(ENC_SSUBWB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SSUBWB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ssubwt_z_zz.xml */
+int ssubwt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45005400) {
+		decode_fields32(ENC_SSUBWT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SSUBWT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* st1b_z_p_ai.xml */
 int st1b_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1110010|msz=00|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE460A000) {
 		decode_fields32(ENC_ST1B_Z_P_AI_S, ctx, instr);
@@ -42545,7 +47122,7 @@ int st1b_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_ST1B_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1110010|msz=00|10|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE440A000) {
 		decode_fields32(ENC_ST1B_Z_P_AI_D, ctx, instr);
@@ -42567,7 +47144,7 @@ int st1b_z_p_ai(context *ctx, Instruction *instr)
 int st1b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE400E000) {
 		decode_fields32(ENC_ST1B_Z_P_BI_, ctx, instr);
@@ -42589,7 +47166,7 @@ int st1b_z_p_bi(context *ctx, Instruction *instr)
 int st1b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|00|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4004000) {
 		decode_fields32(ENC_ST1B_Z_P_BR_, ctx, instr);
@@ -42614,7 +47191,7 @@ int st1b_z_p_br(context *ctx, Instruction *instr)
 int st1b_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1110010|msz=00|00|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4008000) {
 		decode_fields32(ENC_ST1B_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -42632,7 +47209,7 @@ int st1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1B_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1110010|msz=00|10|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4408000) {
 		decode_fields32(ENC_ST1B_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -42650,7 +47227,7 @@ int st1b_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1B_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1110010|msz=00|00|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE400A000) {
 		decode_fields32(ENC_ST1B_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -42675,7 +47252,7 @@ int st1b_z_p_bz(context *ctx, Instruction *instr)
 int st1d_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|10|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5C0A000) {
 		decode_fields32(ENC_ST1D_Z_P_AI_D, ctx, instr);
@@ -42697,7 +47274,7 @@ int st1d_z_p_ai(context *ctx, Instruction *instr)
 int st1d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE580E000) {
 		decode_fields32(ENC_ST1D_Z_P_BI_, ctx, instr);
@@ -42722,7 +47299,7 @@ int st1d_z_p_bi(context *ctx, Instruction *instr)
 int st1d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|opc<2:1>=11|opc<0>=1|o2=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E04000) {
 		decode_fields32(ENC_ST1D_Z_P_BR_, ctx, instr);
@@ -42747,7 +47324,7 @@ int st1d_z_p_br(context *ctx, Instruction *instr)
 int st1d_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1110010|msz=11|01|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5A08000) {
 		decode_fields32(ENC_ST1D_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -42765,7 +47342,7 @@ int st1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_ST1D_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1110010|msz=11|00|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5808000) {
 		decode_fields32(ENC_ST1D_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -42783,7 +47360,7 @@ int st1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1D_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1110010|msz=11|01|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5A0A000) {
 		decode_fields32(ENC_ST1D_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -42801,7 +47378,7 @@ int st1d_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 3;
 		OK(ENC_ST1D_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1110010|msz=11|00|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE580A000) {
 		decode_fields32(ENC_ST1D_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -42826,7 +47403,7 @@ int st1d_z_p_bz(context *ctx, Instruction *instr)
 int st1h_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1110010|msz=01|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4E0A000) {
 		decode_fields32(ENC_ST1H_Z_P_AI_S, ctx, instr);
@@ -42841,7 +47418,7 @@ int st1h_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_ST1H_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1110010|msz=01|10|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4C0A000) {
 		decode_fields32(ENC_ST1H_Z_P_AI_D, ctx, instr);
@@ -42863,7 +47440,7 @@ int st1h_z_p_ai(context *ctx, Instruction *instr)
 int st1h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE480E000) {
 		decode_fields32(ENC_ST1H_Z_P_BI_, ctx, instr);
@@ -42888,7 +47465,7 @@ int st1h_z_p_bi(context *ctx, Instruction *instr)
 int st1h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|01|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4804000) {
 		decode_fields32(ENC_ST1H_Z_P_BR_, ctx, instr);
@@ -42916,7 +47493,7 @@ int st1h_z_p_br(context *ctx, Instruction *instr)
 int st1h_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 1110010|msz=01|11|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4E08000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -42934,7 +47511,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_ST1H_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1110010|msz=01|01|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4A08000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -42952,7 +47529,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_ST1H_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1110010|msz=01|00|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4808000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -42970,7 +47547,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1H_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1110010|msz=01|10|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE4C08000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -42988,7 +47565,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1H_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1110010|msz=01|01|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4A0A000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -43006,7 +47583,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 1;
 		OK(ENC_ST1H_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1110010|msz=01|00|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE480A000) {
 		decode_fields32(ENC_ST1H_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -43031,7 +47608,7 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 int st1w_z_p_ai(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_elem */
+	/* class iclass_32_elem */
 	/* 1110010|msz=10|11|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE560A000) {
 		decode_fields32(ENC_ST1W_Z_P_AI_S, ctx, instr);
@@ -43046,7 +47623,7 @@ int st1w_z_p_ai(context *ctx, Instruction *instr)
 		ctx->offset = UINT(ctx->imm5);
 		OK(ENC_ST1W_Z_P_AI_S);
 	}
-	/* class 64_elem */
+	/* class iclass_64_elem */
 	/* 1110010|msz=10|10|imm5=xxxxx|101|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE540A000) {
 		decode_fields32(ENC_ST1W_Z_P_AI_D, ctx, instr);
@@ -43068,7 +47645,7 @@ int st1w_z_p_ai(context *ctx, Instruction *instr)
 int st1w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE500E000) {
 		decode_fields32(ENC_ST1W_Z_P_BI_, ctx, instr);
@@ -43093,7 +47670,7 @@ int st1w_z_p_bi(context *ctx, Instruction *instr)
 int st1w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|10|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE5004000) {
 		decode_fields32(ENC_ST1W_Z_P_BR_, ctx, instr);
@@ -43121,7 +47698,7 @@ int st1w_z_p_br(context *ctx, Instruction *instr)
 int st1w_z_p_bz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class off_s_x32_scaled */
+	/* class iclass_off_s_x32_scaled */
 	/* 1110010|msz=10|11|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5608000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_S_X32_SCALED, ctx, instr);
@@ -43139,7 +47716,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_ST1W_Z_P_BZ_S_X32_SCALED);
 	}
-	/* class off_d_x32_scaled */
+	/* class iclass_off_d_x32_scaled */
 	/* 1110010|msz=10|01|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5208000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_D_X32_SCALED, ctx, instr);
@@ -43157,7 +47734,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_ST1W_Z_P_BZ_D_X32_SCALED);
 	}
-	/* class off_d_x32_unscaled */
+	/* class iclass_off_d_x32_unscaled */
 	/* 1110010|msz=10|00|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5008000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_D_X32_UNSCALED, ctx, instr);
@@ -43175,7 +47752,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1W_Z_P_BZ_D_X32_UNSCALED);
 	}
-	/* class off_s_x32_unscaled */
+	/* class iclass_off_s_x32_unscaled */
 	/* 1110010|msz=10|10|Zm=xxxxx|1|xs=x|0|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0A000)==0xE5408000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_S_X32_UNSCALED, ctx, instr);
@@ -43193,7 +47770,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 0;
 		OK(ENC_ST1W_Z_P_BZ_S_X32_UNSCALED);
 	}
-	/* class off_d_64_scaled */
+	/* class iclass_off_d_64_scaled */
 	/* 1110010|msz=10|01|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE520A000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_D_64_SCALED, ctx, instr);
@@ -43211,7 +47788,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 		ctx->scale = 2;
 		OK(ENC_ST1W_Z_P_BZ_D_64_SCALED);
 	}
-	/* class off_d_64_unscaled */
+	/* class iclass_off_d_64_unscaled */
 	/* 1110010|msz=10|00|Zm=xxxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE500A000) {
 		decode_fields32(ENC_ST1W_Z_P_BZ_D_64_UNSCALED, ctx, instr);
@@ -43236,7 +47813,7 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 int st2b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE430E000) {
 		decode_fields32(ENC_ST2B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43258,7 +47835,7 @@ int st2b_z_p_bi(context *ctx, Instruction *instr)
 int st2b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4206000) {
 		decode_fields32(ENC_ST2B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43283,7 +47860,7 @@ int st2b_z_p_br(context *ctx, Instruction *instr)
 int st2d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5B0E000) {
 		decode_fields32(ENC_ST2D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43305,7 +47882,7 @@ int st2d_z_p_bi(context *ctx, Instruction *instr)
 int st2d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5A06000) {
 		decode_fields32(ENC_ST2D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43330,7 +47907,7 @@ int st2d_z_p_br(context *ctx, Instruction *instr)
 int st2h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4B0E000) {
 		decode_fields32(ENC_ST2H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43352,7 +47929,7 @@ int st2h_z_p_bi(context *ctx, Instruction *instr)
 int st2h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4A06000) {
 		decode_fields32(ENC_ST2H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43377,7 +47954,7 @@ int st2h_z_p_br(context *ctx, Instruction *instr)
 int st2w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE530E000) {
 		decode_fields32(ENC_ST2W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43399,7 +47976,7 @@ int st2w_z_p_bi(context *ctx, Instruction *instr)
 int st2w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5206000) {
 		decode_fields32(ENC_ST2W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43424,7 +48001,7 @@ int st2w_z_p_br(context *ctx, Instruction *instr)
 int st3b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE450E000) {
 		decode_fields32(ENC_ST3B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43446,7 +48023,7 @@ int st3b_z_p_bi(context *ctx, Instruction *instr)
 int st3b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4406000) {
 		decode_fields32(ENC_ST3B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43471,7 +48048,7 @@ int st3b_z_p_br(context *ctx, Instruction *instr)
 int st3d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5D0E000) {
 		decode_fields32(ENC_ST3D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43493,7 +48070,7 @@ int st3d_z_p_bi(context *ctx, Instruction *instr)
 int st3d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5C06000) {
 		decode_fields32(ENC_ST3D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43518,7 +48095,7 @@ int st3d_z_p_br(context *ctx, Instruction *instr)
 int st3h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4D0E000) {
 		decode_fields32(ENC_ST3H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43540,7 +48117,7 @@ int st3h_z_p_bi(context *ctx, Instruction *instr)
 int st3h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4C06000) {
 		decode_fields32(ENC_ST3H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43565,7 +48142,7 @@ int st3h_z_p_br(context *ctx, Instruction *instr)
 int st3w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE550E000) {
 		decode_fields32(ENC_ST3W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43587,7 +48164,7 @@ int st3w_z_p_bi(context *ctx, Instruction *instr)
 int st3w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5406000) {
 		decode_fields32(ENC_ST3W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43612,7 +48189,7 @@ int st3w_z_p_br(context *ctx, Instruction *instr)
 int st4b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE470E000) {
 		decode_fields32(ENC_ST4B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43634,7 +48211,7 @@ int st4b_z_p_bi(context *ctx, Instruction *instr)
 int st4b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4606000) {
 		decode_fields32(ENC_ST4B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43659,7 +48236,7 @@ int st4b_z_p_br(context *ctx, Instruction *instr)
 int st4d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5F0E000) {
 		decode_fields32(ENC_ST4D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43681,7 +48258,7 @@ int st4d_z_p_bi(context *ctx, Instruction *instr)
 int st4d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E06000) {
 		decode_fields32(ENC_ST4D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43706,7 +48283,7 @@ int st4d_z_p_br(context *ctx, Instruction *instr)
 int st4h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4F0E000) {
 		decode_fields32(ENC_ST4H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43728,7 +48305,7 @@ int st4h_z_p_bi(context *ctx, Instruction *instr)
 int st4h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4E06000) {
 		decode_fields32(ENC_ST4H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43753,7 +48330,7 @@ int st4h_z_p_br(context *ctx, Instruction *instr)
 int st4w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE570E000) {
 		decode_fields32(ENC_ST4W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43775,7 +48352,7 @@ int st4w_z_p_bi(context *ctx, Instruction *instr)
 int st4w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5606000) {
 		decode_fields32(ENC_ST4W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43796,11 +48373,48 @@ int st4w_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* stnt1b_z_p_ar.xml */
+int stnt1b_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1110010|msz=00|10|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE4402000) {
+		decode_fields32(ENC_STNT1B_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 8;
+		OK(ENC_STNT1B_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1110010|msz=00|00|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE4002000) {
+		decode_fields32(ENC_STNT1B_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 8;
+		OK(ENC_STNT1B_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* stnt1b_z_p_bi.xml */
 int stnt1b_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE410E000) {
 		decode_fields32(ENC_STNT1B_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43821,7 +48435,7 @@ int stnt1b_z_p_bi(context *ctx, Instruction *instr)
 int stnt1b_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=00|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4006000) {
 		decode_fields32(ENC_STNT1B_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43841,11 +48455,33 @@ int stnt1b_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* stnt1d_z_p_ar.xml */
+int stnt1d_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 1110010|msz=11|00|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE5802000) {
+		decode_fields32(ENC_STNT1D_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x40;
+		OK(ENC_STNT1D_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* stnt1d_z_p_bi.xml */
 int stnt1d_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE590E000) {
 		decode_fields32(ENC_STNT1D_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43866,7 +48502,7 @@ int stnt1d_z_p_bi(context *ctx, Instruction *instr)
 int stnt1d_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=11|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5806000) {
 		decode_fields32(ENC_STNT1D_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43886,11 +48522,48 @@ int stnt1d_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* stnt1h_z_p_ar.xml */
+int stnt1h_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1110010|msz=01|10|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE4C02000) {
+		decode_fields32(ENC_STNT1H_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 0x10;
+		OK(ENC_STNT1H_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1110010|msz=01|00|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE4802000) {
+		decode_fields32(ENC_STNT1H_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x10;
+		OK(ENC_STNT1H_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* stnt1h_z_p_bi.xml */
 int stnt1h_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE490E000) {
 		decode_fields32(ENC_STNT1H_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43911,7 +48584,7 @@ int stnt1h_z_p_bi(context *ctx, Instruction *instr)
 int stnt1h_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=01|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4806000) {
 		decode_fields32(ENC_STNT1H_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43931,11 +48604,48 @@ int stnt1h_z_p_br(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* stnt1w_z_p_ar.xml */
+int stnt1w_z_p_ar(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_off_s_x32_unscaled */
+	/* 1110010|msz=10|10|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE5402000) {
+		decode_fields32(ENC_STNT1W_Z_P_AR_S_X32_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x20;
+		ctx->msize = 0x20;
+		OK(ENC_STNT1W_Z_P_AR_S_X32_UNSCALED);
+	}
+	/* class iclass_off_d_64_unscaled */
+	/* 1110010|msz=10|00|Rm=xxxxx|001|Pg=xxx|Zn=xxxxx|Zt=xxxxx */
+	if((INSWORD & 0xFFE0E000)==0xE5002000) {
+		decode_fields32(ENC_STNT1W_Z_P_AR_D_64_UNSCALED, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->t = UINT(ctx->Zt);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->esize = 0x40;
+		ctx->msize = 0x20;
+		OK(ENC_STNT1W_Z_P_AR_D_64_UNSCALED);
+	}
+	return rc;
+}
+
 /* stnt1w_z_p_bi.xml */
 int stnt1w_z_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE510E000) {
 		decode_fields32(ENC_STNT1W_Z_P_BI_CONTIGUOUS, ctx, instr);
@@ -43956,7 +48666,7 @@ int stnt1w_z_p_bi(context *ctx, Instruction *instr)
 int stnt1w_z_p_br(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010|msz=10|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5006000) {
 		decode_fields32(ENC_STNT1W_Z_P_BR_CONTIGUOUS, ctx, instr);
@@ -43980,7 +48690,7 @@ int stnt1w_z_p_br(context *ctx, Instruction *instr)
 int str_p_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0xE5800000) {
 		decode_fields32(ENC_STR_P_BI_, ctx, instr);
@@ -43999,7 +48709,7 @@ int str_p_bi(context *ctx, Instruction *instr)
 int str_z_bi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 1110010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0xE5804000) {
 		decode_fields32(ENC_STR_Z_BI_, ctx, instr);
@@ -44018,7 +48728,7 @@ int str_z_bi(context *ctx, Instruction *instr)
 int sub_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4010000) {
 		decode_fields32(ENC_SUB_Z_P_ZZ_, ctx, instr);
@@ -44038,7 +48748,7 @@ int sub_z_p_zz(context *ctx, Instruction *instr)
 int sub_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2521C000) {
 		decode_fields32(ENC_SUB_Z_ZI_, ctx, instr);
@@ -44063,7 +48773,7 @@ int sub_z_zi(context *ctx, Instruction *instr)
 int sub_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200400) {
 		decode_fields32(ENC_SUB_Z_ZZ_, ctx, instr);
@@ -44079,11 +48789,57 @@ int sub_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* subhnb_z_zz.xml */
+int subhnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45207000) {
+		decode_fields32(ENC_SUBHNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SUBHNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* subhnt_z_zz.xml */
+int subhnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45207400) {
+		decode_fields32(ENC_SUBHNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SUBHNT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* subr_z_p_zz.xml */
 int subr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|000|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4030000) {
 		decode_fields32(ENC_SUBR_Z_P_ZZ_, ctx, instr);
@@ -44103,7 +48859,7 @@ int subr_z_p_zz(context *ctx, Instruction *instr)
 int subr_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|opc<2:1>=01|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2523C000) {
 		decode_fields32(ENC_SUBR_Z_ZI_, ctx, instr);
@@ -44128,7 +48884,7 @@ int subr_z_zi(context *ctx, Instruction *instr)
 int sudot_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01C00) {
 		decode_fields32(ENC_SUDOT_Z_ZZZI_S, ctx, instr);
@@ -44149,7 +48905,7 @@ int sudot_z_zzzi(context *ctx, Instruction *instr)
 int sunpkhi_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_high_half */
+	/* class iclass_sve_high_half */
 	/* 00000101|size=xx|1100|U=0|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5313800) {
 		decode_fields32(ENC_SUNPKHI_Z_Z_, ctx, instr);
@@ -44166,7 +48922,7 @@ int sunpkhi_z_z(context *ctx, Instruction *instr)
 		ctx->hi = TRUE;
 		OK(ENC_SUNPKHI_Z_Z_);
 	}
-	/* class sve_low_half */
+	/* class iclass_sve_low_half */
 	/* 00000101|size=xx|1100|U=0|H=0|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5303800) {
 		decode_fields32(ENC_SUNPKLO_Z_Z_, ctx, instr);
@@ -44186,11 +48942,31 @@ int sunpkhi_z_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* suqadd_z_p_zz.xml */
+int suqadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=1|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441C8000) {
+		decode_fields32(ENC_SUQADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_SUQADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* sxtb_z_p_z.xml */
 int sxtb_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000100|size=xx|010|00|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x410A000) {
 		decode_fields32(ENC_SXTB_Z_P_Z_, ctx, instr);
@@ -44208,7 +48984,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_SXTB_Z_P_Z_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=xx|010|01|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x412A000) {
 		decode_fields32(ENC_SXTH_Z_P_Z_, ctx, instr);
@@ -44226,7 +49002,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 		ctx->unsigned_ = FALSE;
 		OK(ENC_SXTH_Z_P_Z_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=xx|010|10|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x414A000) {
 		decode_fields32(ENC_SXTW_Z_P_Z_, ctx, instr);
@@ -44251,7 +49027,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 int tbl_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000101|size=xx|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5203000) {
 		decode_fields32(ENC_TBL_Z_ZZ_1, ctx, instr);
@@ -44262,7 +49038,42 @@ int tbl_z_zz(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Zn);
 		ctx->m = UINT(ctx->Zm);
 		ctx->d = UINT(ctx->Zd);
+		ctx->double_table = FALSE;
 		OK(ENC_TBL_Z_ZZ_1);
+	}
+	/* class iclass_sve2 */
+	/* 00000101|size=xx|1|Zm=xxxxx|00101|op=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x5202800) {
+		decode_fields32(ENC_TBL_Z_ZZ_2, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->double_table = TRUE;
+		OK(ENC_TBL_Z_ZZ_2);
+	}
+	return rc;
+}
+
+/* tbx_z_zz.xml */
+int tbx_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000101|size=xx|1|Zm=xxxxx|00101|op=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x5202C00) {
+		decode_fields32(ENC_TBX_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_TBX_Z_ZZ_);
 	}
 	return rc;
 }
@@ -44271,7 +49082,7 @@ int tbl_z_zz(context *ctx, Instruction *instr)
 int trn1_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_even */
+	/* class iclass_sve_even */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=10|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5205000) {
 		decode_fields32(ENC_TRN1_P_PP_, ctx, instr);
@@ -44285,7 +49096,7 @@ int trn1_p_pp(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_TRN1_P_PP_);
 	}
-	/* class sve_odd */
+	/* class iclass_sve_odd */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=10|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5205400) {
 		decode_fields32(ENC_TRN2_P_PP_, ctx, instr);
@@ -44306,7 +49117,7 @@ int trn1_p_pp(context *ctx, Instruction *instr)
 int trn1_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_even */
+	/* class iclass_sve_even */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|10|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5207000) {
 		decode_fields32(ENC_TRN1_Z_ZZ_, ctx, instr);
@@ -44320,7 +49131,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_TRN1_Z_ZZ_);
 	}
-	/* class sve_even_quad */
+	/* class iclass_sve_even_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|11|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A01800) {
 		decode_fields32(ENC_TRN1_Z_ZZ_Q, ctx, instr);
@@ -44334,7 +49145,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_TRN1_Z_ZZ_Q);
 	}
-	/* class sve_odd */
+	/* class iclass_sve_odd */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|10|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5207400) {
 		decode_fields32(ENC_TRN2_Z_ZZ_, ctx, instr);
@@ -44348,7 +49159,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 1;
 		OK(ENC_TRN2_Z_ZZ_);
 	}
-	/* class sve_odd_quad */
+	/* class iclass_sve_odd_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|11|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A01C00) {
 		decode_fields32(ENC_TRN2_Z_ZZ_Q, ctx, instr);
@@ -44365,11 +49176,78 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uaba_z_zzz.xml */
+int uaba_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|11111|U=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500FC00) {
+		decode_fields32(ENC_UABA_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UABA_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* uabalb_z_zzz.xml */
+int uabalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500C800) {
+		decode_fields32(ENC_UABALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UABALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* uabalt_z_zzz.xml */
+int uabalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500CC00) {
+		decode_fields32(ENC_UABALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UABALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
 /* uabd_z_p_zz.xml */
 int uabd_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=10|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40D0000) {
 		decode_fields32(ENC_UABD_Z_P_ZZ_, ctx, instr);
@@ -44386,11 +49264,132 @@ int uabd_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uabdlb_z_zz.xml */
+int uabdlb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45003800) {
+		decode_fields32(ENC_UABDLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UABDLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* uabdlt_z_zz.xml */
+int uabdlt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45003C00) {
+		decode_fields32(ENC_UABDLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UABDLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* uadalp_z_p_z.xml */
+int uadalp_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00010|U=1|101|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4405A000) {
+		decode_fields32(ENC_UADALP_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UADALP_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* uaddlb_z_zz.xml */
+int uaddlb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45000800) {
+		decode_fields32(ENC_UADDLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UADDLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* uaddlt_z_zz.xml */
+int uaddlt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45000C00) {
+		decode_fields32(ENC_UADDLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UADDLT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* uaddv_r_p_z.xml */
 int uaddv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0000|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4012000) {
 		decode_fields32(ENC_UADDV_R_P_Z_, ctx, instr);
@@ -44406,11 +49405,57 @@ int uaddv_r_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uaddwb_z_zz.xml */
+int uaddwb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45004800) {
+		decode_fields32(ENC_UADDWB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UADDWB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* uaddwt_z_zz.xml */
+int uaddwt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45004C00) {
+		decode_fields32(ENC_UADDWT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UADDWT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* ucvtf_z_p_z.xml */
 int ucvtf_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 16_to_half */
+	/* class iclass_16_to_half */
 	/* 01100101|opc=01|010|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6553A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_H2FP16, ctx, instr);
@@ -44427,7 +49472,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_H2FP16);
 	}
-	/* class 32_to_half */
+	/* class iclass_32_to_half */
 	/* 01100101|opc=01|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6555A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2FP16, ctx, instr);
@@ -44444,7 +49489,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_W2FP16);
 	}
-	/* class 32_to_single */
+	/* class iclass_32_to_single */
 	/* 01100101|opc=10|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6595A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2S, ctx, instr);
@@ -44461,7 +49506,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_W2S);
 	}
-	/* class 32_to_double */
+	/* class iclass_32_to_double */
 	/* 01100101|opc=11|010|opc2=00|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D1A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2D, ctx, instr);
@@ -44478,7 +49523,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_W2D);
 	}
-	/* class 64_to_half */
+	/* class iclass_64_to_half */
 	/* 01100101|opc=01|010|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6557A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2FP16, ctx, instr);
@@ -44495,7 +49540,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_X2FP16);
 	}
-	/* class 64_to_single */
+	/* class iclass_64_to_single */
 	/* 01100101|opc=11|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D5A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2S, ctx, instr);
@@ -44512,7 +49557,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 		ctx->rounding = FPRoundingMode(ctx->FPCR);
 		OK(ENC_UCVTF_Z_P_Z_X2S);
 	}
-	/* class 64_to_double */
+	/* class iclass_64_to_double */
 	/* 01100101|opc=11|010|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D7A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2D, ctx, instr);
@@ -44536,7 +49581,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 int udiv_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0101|R=0|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4150000) {
 		decode_fields32(ENC_UDIV_Z_P_ZZ_, ctx, instr);
@@ -44560,7 +49605,7 @@ int udiv_z_p_zz(context *ctx, Instruction *instr)
 int udivr_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0101|R=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4170000) {
 		decode_fields32(ENC_UDIVR_Z_P_ZZ_, ctx, instr);
@@ -44584,7 +49629,7 @@ int udivr_z_p_zz(context *ctx, Instruction *instr)
 int udot_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000400) {
 		decode_fields32(ENC_UDOT_Z_ZZZ_, ctx, instr);
@@ -44607,7 +49652,7 @@ int udot_z_zzz(context *ctx, Instruction *instr)
 int udot_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class of_words */
+	/* class iclass_of_words */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00400) {
 		decode_fields32(ENC_UDOT_Z_ZZZI_S, ctx, instr);
@@ -44621,7 +49666,7 @@ int udot_z_zzzi(context *ctx, Instruction *instr)
 		ctx->da = UINT(ctx->Zda);
 		OK(ENC_UDOT_Z_ZZZI_S);
 	}
-	/* class of_doublewords */
+	/* class iclass_of_doublewords */
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00400) {
 		decode_fields32(ENC_UDOT_Z_ZZZI_D, ctx, instr);
@@ -44638,11 +49683,71 @@ int udot_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uhadd_z_p_zz.xml */
+int uhadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=0|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44118000) {
+		decode_fields32(ENC_UHADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_UHADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uhsub_z_p_zz.xml */
+int uhsub_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=0|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44138000) {
+		decode_fields32(ENC_UHSUB_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_UHSUB_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uhsubr_z_p_zz.xml */
+int uhsubr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=1|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44178000) {
+		decode_fields32(ENC_UHSUBR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_UHSUBR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* umax_z_p_zz.xml */
 int umax_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=00|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4090000) {
 		decode_fields32(ENC_UMAX_Z_P_ZZ_, ctx, instr);
@@ -44663,7 +49768,7 @@ int umax_z_p_zz(context *ctx, Instruction *instr)
 int umax_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|101|00|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2529C000) {
 		decode_fields32(ENC_UMAX_Z_ZI_, ctx, instr);
@@ -44679,11 +49784,31 @@ int umax_z_zi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* umaxp_z_p_zz.xml */
+int umaxp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|opc=10|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4415A000) {
+		decode_fields32(ENC_UMAXP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UMAXP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* umaxv_r_p_z.xml */
 int umaxv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0010|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4092000) {
 		decode_fields32(ENC_UMAXV_R_P_Z_, ctx, instr);
@@ -44704,7 +49829,7 @@ int umaxv_r_p_z(context *ctx, Instruction *instr)
 int umin_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|001|opc=01|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B0000) {
 		decode_fields32(ENC_UMIN_Z_P_ZZ_, ctx, instr);
@@ -44725,7 +49850,7 @@ int umin_z_p_zz(context *ctx, Instruction *instr)
 int umin_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|101|01|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252BC000) {
 		decode_fields32(ENC_UMIN_Z_ZI_, ctx, instr);
@@ -44741,11 +49866,31 @@ int umin_z_zi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uminp_z_p_zz.xml */
+int uminp_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|opc=11|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4417A000) {
+		decode_fields32(ENC_UMINP_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UMINP_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* uminv_r_p_z.xml */
 int uminv_r_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0010|op=1|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B2000) {
 		decode_fields32(ENC_UMINV_R_P_Z_, ctx, instr);
@@ -44762,11 +49907,251 @@ int uminv_r_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* umlalb_z_zzz.xml */
+int umlalb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44004800) {
+		decode_fields32(ENC_UMLALB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UMLALB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* umlalb_z_zzzi.xml */
+int umlalb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A09000) {
+		decode_fields32(ENC_UMLALB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_UMLALB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E09000) {
+		decode_fields32(ENC_UMLALB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_UMLALB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* umlalt_z_zzz.xml */
+int umlalt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44004C00) {
+		decode_fields32(ENC_UMLALT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UMLALT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* umlalt_z_zzzi.xml */
+int umlalt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A09400) {
+		decode_fields32(ENC_UMLALT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_UMLALT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E09400) {
+		decode_fields32(ENC_UMLALT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_UMLALT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* umlslb_z_zzz.xml */
+int umlslb_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44005800) {
+		decode_fields32(ENC_UMLSLB_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UMLSLB_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* umlslb_z_zzzi.xml */
+int umlslb_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0B000) {
+		decode_fields32(ENC_UMLSLB_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_UMLSLB_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0B000) {
+		decode_fields32(ENC_UMLSLB_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 0;
+		OK(ENC_UMLSLB_Z_ZZZI_D);
+	}
+	return rc;
+}
+
+/* umlslt_z_zzz.xml */
+int umlslt_z_zzz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x44005C00) {
+		decode_fields32(ENC_UMLSLT_Z_ZZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		OK(ENC_UMLSLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* umlslt_z_zzzi.xml */
+int umlslt_z_zzzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0B400) {
+		decode_fields32(ENC_UMLSLT_Z_ZZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_UMLSLT_Z_ZZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0B400) {
+		decode_fields32(ENC_UMLSLT_Z_ZZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->Zda);
+		ctx->sel = 1;
+		OK(ENC_UMLSLT_Z_ZZZI_D);
+	}
+	return rc;
+}
+
 /* ummla_z_zzz.xml */
 int ummla_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000101|uns=11|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45C09800) {
 		decode_fields32(ENC_UMMLA_Z_ZZZ_, ctx, instr);
@@ -44787,7 +50172,7 @@ int ummla_z_zzz(context *ctx, Instruction *instr)
 int umulh_z_p_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|0100|H=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4130000) {
 		decode_fields32(ENC_UMULH_Z_P_ZZ_, ctx, instr);
@@ -44804,11 +50189,173 @@ int umulh_z_p_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* umulh_z_zz.xml */
+int umulh_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|size=xx|1|Zm=xxxxx|0110|1|U=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4206C00) {
+		decode_fields32(ENC_UMULH_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UMULH_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* umullb_z_zz.xml */
+int umullb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45007800) {
+		decode_fields32(ENC_UMULLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UMULLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* umullb_z_zzi.xml */
+int umullb_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=1|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0D000) {
+		decode_fields32(ENC_UMULLB_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_UMULLB_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=1|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0D000) {
+		decode_fields32(ENC_UMULLB_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 0;
+		OK(ENC_UMULLB_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* umullt_z_zz.xml */
+int umullt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45007C00) {
+		decode_fields32(ENC_UMULLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UMULLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* umullt_z_zzi.xml */
+int umullt_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_of_words */
+	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=1|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44A0D400) {
+		decode_fields32(ENC_UMULLT_Z_ZZI_S, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x10;
+		ctx->index = UINT(((ctx->i3h<<1)|ctx->i3l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_UMULLT_Z_ZZI_S);
+	}
+	/* class iclass_of_doublewords */
+	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=1|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFE0F400)==0x44E0D400) {
+		decode_fields32(ENC_UMULLT_Z_ZZI_D, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->index = UINT(((ctx->i2h<<1)|ctx->i2l));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel = 1;
+		OK(ENC_UMULLT_Z_ZZI_D);
+	}
+	return rc;
+}
+
+/* uqadd_z_p_zz.xml */
+int uqadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=0|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44198000) {
+		decode_fields32(ENC_UQADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UQADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* uqadd_z_zi.xml */
 int uqadd_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|10|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2525C000) {
 		decode_fields32(ENC_UQADD_Z_ZI_, ctx, instr);
@@ -44834,7 +50381,7 @@ int uqadd_z_zi(context *ctx, Instruction *instr)
 int uqadd_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201400) {
 		decode_fields32(ENC_UQADD_Z_ZZ_, ctx, instr);
@@ -44855,7 +50402,7 @@ int uqadd_z_zz(context *ctx, Instruction *instr)
 int uqdecb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420FC00) {
 		decode_fields32(ENC_UQDECB_R_RS_UW, ctx, instr);
@@ -44870,7 +50417,7 @@ int uqdecb_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQDECB_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430FC00) {
 		decode_fields32(ENC_UQDECB_R_RS_X, ctx, instr);
@@ -44892,7 +50439,7 @@ int uqdecb_r_rs(context *ctx, Instruction *instr)
 int uqdecd_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0FC00) {
 		decode_fields32(ENC_UQDECD_R_RS_UW, ctx, instr);
@@ -44907,7 +50454,7 @@ int uqdecd_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQDECD_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0FC00) {
 		decode_fields32(ENC_UQDECD_R_RS_X, ctx, instr);
@@ -44929,7 +50476,7 @@ int uqdecd_r_rs(context *ctx, Instruction *instr)
 int uqdecd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0CC00) {
 		decode_fields32(ENC_UQDECD_Z_ZS_, ctx, instr);
@@ -44950,7 +50497,7 @@ int uqdecd_z_zs(context *ctx, Instruction *instr)
 int uqdech_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460FC00) {
 		decode_fields32(ENC_UQDECH_R_RS_UW, ctx, instr);
@@ -44965,7 +50512,7 @@ int uqdech_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQDECH_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470FC00) {
 		decode_fields32(ENC_UQDECH_R_RS_X, ctx, instr);
@@ -44987,7 +50534,7 @@ int uqdech_r_rs(context *ctx, Instruction *instr)
 int uqdech_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460CC00) {
 		decode_fields32(ENC_UQDECH_Z_ZS_, ctx, instr);
@@ -45008,7 +50555,7 @@ int uqdech_z_zs(context *ctx, Instruction *instr)
 int uqdecp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00100101|size=xx|1010|D=1|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8800) {
 		decode_fields32(ENC_UQDECP_R_P_R_UW, ctx, instr);
@@ -45022,7 +50569,7 @@ int uqdecp_r_p_r(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQDECP_R_P_R_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00100101|size=xx|1010|D=1|U=1|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8C00) {
 		decode_fields32(ENC_UQDECP_R_P_R_X, ctx, instr);
@@ -45043,7 +50590,7 @@ int uqdecp_r_p_r(context *ctx, Instruction *instr)
 int uqdecp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1010|D=1|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8000) {
 		decode_fields32(ENC_UQDECP_Z_P_Z_, ctx, instr);
@@ -45066,7 +50613,7 @@ int uqdecp_z_p_z(context *ctx, Instruction *instr)
 int uqdecw_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0FC00) {
 		decode_fields32(ENC_UQDECW_R_RS_UW, ctx, instr);
@@ -45081,7 +50628,7 @@ int uqdecw_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQDECW_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0FC00) {
 		decode_fields32(ENC_UQDECW_R_RS_X, ctx, instr);
@@ -45103,7 +50650,7 @@ int uqdecw_r_rs(context *ctx, Instruction *instr)
 int uqdecw_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0CC00) {
 		decode_fields32(ENC_UQDECW_Z_ZS_, ctx, instr);
@@ -45124,7 +50671,7 @@ int uqdecw_z_zs(context *ctx, Instruction *instr)
 int uqincb_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F400) {
 		decode_fields32(ENC_UQINCB_R_RS_UW, ctx, instr);
@@ -45139,7 +50686,7 @@ int uqincb_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQINCB_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F400) {
 		decode_fields32(ENC_UQINCB_R_RS_X, ctx, instr);
@@ -45161,7 +50708,7 @@ int uqincb_r_rs(context *ctx, Instruction *instr)
 int uqincd_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F400) {
 		decode_fields32(ENC_UQINCD_R_RS_UW, ctx, instr);
@@ -45176,7 +50723,7 @@ int uqincd_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQINCD_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F400) {
 		decode_fields32(ENC_UQINCD_R_RS_X, ctx, instr);
@@ -45198,7 +50745,7 @@ int uqincd_r_rs(context *ctx, Instruction *instr)
 int uqincd_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C400) {
 		decode_fields32(ENC_UQINCD_Z_ZS_, ctx, instr);
@@ -45219,7 +50766,7 @@ int uqincd_z_zs(context *ctx, Instruction *instr)
 int uqinch_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F400) {
 		decode_fields32(ENC_UQINCH_R_RS_UW, ctx, instr);
@@ -45234,7 +50781,7 @@ int uqinch_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQINCH_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F400) {
 		decode_fields32(ENC_UQINCH_R_RS_X, ctx, instr);
@@ -45256,7 +50803,7 @@ int uqinch_r_rs(context *ctx, Instruction *instr)
 int uqinch_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C400) {
 		decode_fields32(ENC_UQINCH_Z_ZS_, ctx, instr);
@@ -45277,7 +50824,7 @@ int uqinch_z_zs(context *ctx, Instruction *instr)
 int uqincp_r_p_r(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00100101|size=xx|1010|D=0|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298800) {
 		decode_fields32(ENC_UQINCP_R_P_R_UW, ctx, instr);
@@ -45291,7 +50838,7 @@ int uqincp_r_p_r(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQINCP_R_P_R_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00100101|size=xx|1010|D=0|U=1|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298C00) {
 		decode_fields32(ENC_UQINCP_R_P_R_X, ctx, instr);
@@ -45312,7 +50859,7 @@ int uqincp_r_p_r(context *ctx, Instruction *instr)
 int uqincp_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1010|D=0|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298000) {
 		decode_fields32(ENC_UQINCP_Z_P_Z_, ctx, instr);
@@ -45335,7 +50882,7 @@ int uqincp_z_p_z(context *ctx, Instruction *instr)
 int uqincw_r_rs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class 32_fsreg */
+	/* class iclass_32_fsreg */
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F400) {
 		decode_fields32(ENC_UQINCW_R_RS_UW, ctx, instr);
@@ -45350,7 +50897,7 @@ int uqincw_r_rs(context *ctx, Instruction *instr)
 		ctx->ssize = 0x20;
 		OK(ENC_UQINCW_R_RS_UW);
 	}
-	/* class 64_fsreg */
+	/* class iclass_64_fsreg */
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F400) {
 		decode_fields32(ENC_UQINCW_R_RS_X, ctx, instr);
@@ -45372,7 +50919,7 @@ int uqincw_r_rs(context *ctx, Instruction *instr)
 int uqincw_z_zs(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C400) {
 		decode_fields32(ENC_UQINCW_Z_ZS_, ctx, instr);
@@ -45389,11 +50936,275 @@ int uqincw_z_zs(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uqrshl_z_p_zz.xml */
+int uqrshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=0|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440B8000) {
+		decode_fields32(ENC_UQRSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UQRSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uqrshlr_z_p_zz.xml */
+int uqrshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=1|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440F8000) {
+		decode_fields32(ENC_UQRSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UQRSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uqrshrnb_z_zi.xml */
+int uqrshrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45203800) {
+		decode_fields32(ENC_UQRSHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_UQRSHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* uqrshrnt_z_zi.xml */
+int uqrshrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45203C00) {
+		decode_fields32(ENC_UQRSHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_UQRSHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* uqshl_z_p_zi.xml */
+int uqshl_z_p_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|00|opc=01|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4078000) {
+		decode_fields32(ENC_UQSHL_Z_P_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_UQSHL_Z_P_ZI_);
+	}
+	return rc;
+}
+
+/* uqshl_z_p_zz.xml */
+int uqshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=0|N=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44098000) {
+		decode_fields32(ENC_UQSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UQSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uqshlr_z_p_zz.xml */
+int uqshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=1|R=1|N=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x440D8000) {
+		decode_fields32(ENC_UQSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_UQSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uqshrnb_z_zi.xml */
+int uqshrnb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45203000) {
+		decode_fields32(ENC_UQSHRNB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_UQSHRNB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* uqshrnt_z_zi.xml */
+int uqshrnt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x45203400) {
+		decode_fields32(ENC_UQSHRNT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_UQSHRNT_Z_ZI_);
+	}
+	return rc;
+}
+
+/* uqsub_z_p_zz.xml */
+int uqsub_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=0|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441B8000) {
+		decode_fields32(ENC_UQSUB_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UQSUB_Z_P_ZZ_);
+	}
+	return rc;
+}
+
 /* uqsub_z_zi.xml */
 int uqsub_z_zi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|100|11|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2527C000) {
 		decode_fields32(ENC_UQSUB_Z_ZI_, ctx, instr);
@@ -45419,7 +51230,7 @@ int uqsub_z_zi(context *ctx, Instruction *instr)
 int uqsub_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201C00) {
 		decode_fields32(ENC_UQSUB_Z_ZZ_, ctx, instr);
@@ -45436,11 +51247,270 @@ int uqsub_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uqsubr_z_p_zz.xml */
+int uqsubr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=1|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441F8000) {
+		decode_fields32(ENC_UQSUBR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->unsigned_ = TRUE;
+		OK(ENC_UQSUBR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* uqxtnb_z_zz.xml */
+int uqxtnb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45204800) {
+		decode_fields32(ENC_UQXTNB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UQXTNB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* uqxtnt_z_zz.xml */
+int uqxtnt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA7FC00)==0x45204C00) {
+		decode_fields32(ENC_UQXTNT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(ctx->tsize==1) {
+			ctx->esize = 0x10;
+		}
+		else if(ctx->tsize==2) {
+			ctx->esize = 0x20;
+		}
+		else if(ctx->tsize==4) {
+			ctx->esize = 0x40;
+		}
+		else {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UQXTNT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* urecpe_z_p_z.xml */
+int urecpe_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|0|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4400A000) {
+		decode_fields32(ENC_URECPE_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size!=2) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_URECPE_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* urhadd_z_p_zz.xml */
+int urhadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|010|R=1|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44158000) {
+		decode_fields32(ENC_URHADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_URHADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* urshl_z_p_zz.xml */
+int urshl_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|R=0|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44038000) {
+		decode_fields32(ENC_URSHL_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_URSHL_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* urshlr_z_p_zz.xml */
+int urshlr_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|R=1|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x44078000) {
+		decode_fields32(ENC_URSHLR_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		OK(ENC_URSHLR_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* urshr_z_p_zi.xml */
+int urshr_z_p_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|00|opc=11|L=0|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x40D8000) {
+		decode_fields32(ENC_URSHR_Z_P_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_URSHR_Z_P_ZI_);
+	}
+	return rc;
+}
+
+/* ursqrte_z_p_z.xml */
+int ursqrte_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|00|Q=0|0|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x4401A000) {
+		decode_fields32(ENC_URSQRTE_Z_P_Z_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size!=2) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_URSQRTE_Z_P_Z_);
+	}
+	return rc;
+}
+
+/* ursra_z_zi.xml */
+int ursra_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=1|U=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500EC00) {
+		decode_fields32(ENC_URSRA_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_URSRA_Z_ZI_);
+	}
+	return rc;
+}
+
 /* usdot_z_zzz.xml */
 int usdot_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000100|size=10|0|Zm=xxxxx|011110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44807800) {
 		decode_fields32(ENC_USDOT_Z_ZZZ_S, ctx, instr);
@@ -45460,7 +51530,7 @@ int usdot_z_zzz(context *ctx, Instruction *instr)
 int usdot_z_zzzi(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01800) {
 		decode_fields32(ENC_USDOT_Z_ZZZI_S, ctx, instr);
@@ -45477,11 +51547,75 @@ int usdot_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ushllb_z_zi.xml */
+int ushllb_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500A800) {
+		decode_fields32(ENC_USHLLB_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_USHLLB_Z_ZI_);
+	}
+	return rc;
+}
+
+/* ushllt_z_zi.xml */
+int ushllt_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFA0FC00)==0x4500AC00) {
+		decode_fields32(ENC_USHLLT_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&6)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&4)==4) {
+			ctx->esize = 0x20;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->shift = UINT(((ctx->tsize<<3)|ctx->imm3))-ctx->esize;
+		OK(ENC_USHLLT_Z_ZI_);
+	}
+	return rc;
+}
+
 /* usmmla_z_zzz.xml */
 int usmmla_z_zzz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 01000101|uns=10|0|Zm=xxxxx|100110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x45809800) {
 		decode_fields32(ENC_USMMLA_Z_ZZZ_, ctx, instr);
@@ -45498,11 +51632,164 @@ int usmmla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* usqadd_z_p_zz.xml */
+int usqadd_z_p_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|011|op=1|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF3FE000)==0x441D8000) {
+		decode_fields32(ENC_USQADD_Z_P_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->g = UINT(ctx->Pg);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->m = UINT(ctx->Zm);
+		OK(ENC_USQADD_Z_P_ZZ_);
+	}
+	return rc;
+}
+
+/* usra_z_zi.xml */
+int usra_z_zi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=0|U=1|Zn=xxxxx|Zda=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4500E400) {
+		decode_fields32(ENC_USRA_Z_ZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->Zda);
+		ctx->shift = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_USRA_Z_ZI_);
+	}
+	return rc;
+}
+
+/* usublb_z_zz.xml */
+int usublb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45001800) {
+		decode_fields32(ENC_USUBLB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 0;
+		ctx->sel2 = 0;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_USUBLB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* usublt_z_zz.xml */
+int usublt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45001C00) {
+		decode_fields32(ENC_USUBLT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		ctx->sel1 = 1;
+		ctx->sel2 = 1;
+		ctx->unsigned_ = TRUE;
+		OK(ENC_USUBLT_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* usubwb_z_zz.xml */
+int usubwb_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45005800) {
+		decode_fields32(ENC_USUBWB_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_USUBWB_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* usubwt_z_zz.xml */
+int usubwt_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x45005C00) {
+		decode_fields32(ENC_USUBWT_Z_ZZ_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		if(ctx->size==0) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_USUBWT_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* uunpkhi_z_z.xml */
 int uunpkhi_z_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_high_half */
+	/* class iclass_sve_high_half */
 	/* 00000101|size=xx|1100|U=1|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5333800) {
 		decode_fields32(ENC_UUNPKHI_Z_Z_, ctx, instr);
@@ -45519,7 +51806,7 @@ int uunpkhi_z_z(context *ctx, Instruction *instr)
 		ctx->hi = TRUE;
 		OK(ENC_UUNPKHI_Z_Z_);
 	}
-	/* class sve_low_half */
+	/* class iclass_sve_low_half */
 	/* 00000101|size=xx|1100|U=1|H=0|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5323800) {
 		decode_fields32(ENC_UUNPKLO_Z_Z_, ctx, instr);
@@ -45543,7 +51830,7 @@ int uunpkhi_z_z(context *ctx, Instruction *instr)
 int uxtb_z_p_z(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class esize_byte */
+	/* class iclass_esize_byte */
 	/* 00000100|size=xx|010|00|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x411A000) {
 		decode_fields32(ENC_UXTB_Z_P_Z_, ctx, instr);
@@ -45561,7 +51848,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_UXTB_Z_P_Z_);
 	}
-	/* class esize_halfword */
+	/* class iclass_esize_halfword */
 	/* 00000100|size=xx|010|01|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x413A000) {
 		decode_fields32(ENC_UXTH_Z_P_Z_, ctx, instr);
@@ -45579,7 +51866,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 		ctx->unsigned_ = TRUE;
 		OK(ENC_UXTH_Z_P_Z_);
 	}
-	/* class esize_word */
+	/* class iclass_esize_word */
 	/* 00000100|size=xx|010|10|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x415A000) {
 		decode_fields32(ENC_UXTW_Z_P_Z_, ctx, instr);
@@ -45604,7 +51891,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 int uzp1_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_even */
+	/* class iclass_sve_even */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=01|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204800) {
 		decode_fields32(ENC_UZP1_P_PP_, ctx, instr);
@@ -45618,7 +51905,7 @@ int uzp1_p_pp(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_UZP1_P_PP_);
 	}
-	/* class sve_odd */
+	/* class iclass_sve_odd */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=01|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204C00) {
 		decode_fields32(ENC_UZP2_P_PP_, ctx, instr);
@@ -45639,7 +51926,7 @@ int uzp1_p_pp(context *ctx, Instruction *instr)
 int uzp1_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_even */
+	/* class iclass_sve_even */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|01|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206800) {
 		decode_fields32(ENC_UZP1_Z_ZZ_, ctx, instr);
@@ -45653,7 +51940,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_UZP1_Z_ZZ_);
 	}
-	/* class sve_even_quad */
+	/* class iclass_sve_even_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|01|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00800) {
 		decode_fields32(ENC_UZP1_Z_ZZ_Q, ctx, instr);
@@ -45667,7 +51954,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_UZP1_Z_ZZ_Q);
 	}
-	/* class sve_odd */
+	/* class iclass_sve_odd */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|01|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206C00) {
 		decode_fields32(ENC_UZP2_Z_ZZ_, ctx, instr);
@@ -45681,7 +51968,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 1;
 		OK(ENC_UZP2_Z_ZZ_);
 	}
-	/* class sve_odd_quad */
+	/* class iclass_sve_odd_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|01|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00C00) {
 		decode_fields32(ENC_UZP2_Z_ZZ_Q, ctx, instr);
@@ -45698,11 +51985,103 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* whilege_p_p_rr.xml */
+int whilege_p_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=0|Rn=xxxxx|eq=0|Pd=xxxx */
+	if((INSWORD & 0xFF20EC10)==0x25200000) {
+		decode_fields32(ENC_WHILEGE_P_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->rsize = (0x20) << (UINT(ctx->sf));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		ctx->unsigned_ = FALSE;
+		ctx->op = Cmp_GE;
+		OK(ENC_WHILEGE_P_P_RR_);
+	}
+	return rc;
+}
+
+/* whilegt_p_p_rr.xml */
+int whilegt_p_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=0|Rn=xxxxx|eq=1|Pd=xxxx */
+	if((INSWORD & 0xFF20EC10)==0x25200010) {
+		decode_fields32(ENC_WHILEGT_P_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->rsize = (0x20) << (UINT(ctx->sf));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		ctx->unsigned_ = FALSE;
+		ctx->op = Cmp_GT;
+		OK(ENC_WHILEGT_P_P_RR_);
+	}
+	return rc;
+}
+
+/* whilehi_p_p_rr.xml */
+int whilehi_p_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=0|Rn=xxxxx|eq=1|Pd=xxxx */
+	if((INSWORD & 0xFF20EC10)==0x25200810) {
+		decode_fields32(ENC_WHILEHI_P_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->rsize = (0x20) << (UINT(ctx->sf));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		ctx->unsigned_ = TRUE;
+		ctx->op = Cmp_GT;
+		OK(ENC_WHILEHI_P_P_RR_);
+	}
+	return rc;
+}
+
+/* whilehs_p_p_rr.xml */
+int whilehs_p_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=0|Rn=xxxxx|eq=0|Pd=xxxx */
+	if((INSWORD & 0xFF20EC10)==0x25200800) {
+		decode_fields32(ENC_WHILEHS_P_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->rsize = (0x20) << (UINT(ctx->sf));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		ctx->unsigned_ = TRUE;
+		ctx->op = Cmp_GE;
+		OK(ENC_WHILEHS_P_P_RR_);
+	}
+	return rc;
+}
+
 /* whilele_p_p_rr.xml */
 int whilele_p_p_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200410) {
 		decode_fields32(ENC_WHILELE_P_P_RR_, ctx, instr);
@@ -45725,7 +52104,7 @@ int whilele_p_p_rr(context *ctx, Instruction *instr)
 int whilelo_p_p_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C00) {
 		decode_fields32(ENC_WHILELO_P_P_RR_, ctx, instr);
@@ -45748,7 +52127,7 @@ int whilelo_p_p_rr(context *ctx, Instruction *instr)
 int whilels_p_p_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C10) {
 		decode_fields32(ENC_WHILELS_P_P_RR_, ctx, instr);
@@ -45771,7 +52150,7 @@ int whilels_p_p_rr(context *ctx, Instruction *instr)
 int whilelt_p_p_rr(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200400) {
 		decode_fields32(ENC_WHILELT_P_P_RR_, ctx, instr);
@@ -45790,11 +52169,51 @@ int whilelt_p_p_rr(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* whilerw_p_rr.xml */
+int whilerw_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|001100|Rn=xxxxx|rw=1|Pd=xxxx */
+	if((INSWORD & 0xFF20FC10)==0x25203010) {
+		decode_fields32(ENC_WHILERW_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		OK(ENC_WHILERW_P_RR_);
+	}
+	return rc;
+}
+
+/* whilewr_p_rr.xml */
+int whilewr_p_rr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|size=xx|1|Rm=xxxxx|001100|Rn=xxxxx|rw=0|Pd=xxxx */
+	if((INSWORD & 0xFF20FC10)==0x25203000) {
+		decode_fields32(ENC_WHILEWR_P_RR_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->d = UINT(ctx->Pd);
+		OK(ENC_WHILEWR_P_RR_);
+	}
+	return rc;
+}
+
 /* wrffr_f_p.xml */
 int wrffr_f_p(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve */
+	/* class iclass_sve */
 	/* 00|100101|opc=00|10|1000100100|0|Pn=xxxx|0|0|0|00 */
 	if((INSWORD & 0xFFFFFE1F)==0x25289000) {
 		decode_fields32(ENC_WRFFR_F_P_, ctx, instr);
@@ -45807,11 +52226,46 @@ int wrffr_f_p(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* xar_z_zzi.xml */
+int xar_z_zzi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|001101|Zm=xxxxx|Zdn=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4203400) {
+		decode_fields32(ENC_XAR_Z_ZZI_, ctx, instr);
+		if(!HaveSVE2()) {
+			UNDEFINED;
+		}
+		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
+		if(!ctx->tsize) {
+			UNDEFINED;
+		}
+		else if(ctx->tsize==1) {
+			ctx->esize = 8;
+		}
+		else if((ctx->tsize&14)==2) {
+			ctx->esize = 0x10;
+		}
+		else if((ctx->tsize&12)==4) {
+			ctx->esize = 0x20;
+		}
+		else if((ctx->tsize&8)==8) {
+			ctx->esize = 0x40;
+		}
+		ctx->m = UINT(ctx->Zm);
+		ctx->dn = UINT(ctx->Zdn);
+		ctx->rot = ((2) * (ctx->esize))-UINT(((ctx->tsize<<3)|ctx->imm3));
+		OK(ENC_XAR_Z_ZZI_);
+	}
+	return rc;
+}
+
 /* zip1_p_pp.xml */
 int zip1_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_high_halves */
+	/* class iclass_sve_high_halves */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=00|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204400) {
 		decode_fields32(ENC_ZIP2_P_PP_, ctx, instr);
@@ -45825,7 +52279,7 @@ int zip1_p_pp(context *ctx, Instruction *instr)
 		ctx->part = 1;
 		OK(ENC_ZIP2_P_PP_);
 	}
-	/* class sve_low_halves */
+	/* class iclass_sve_low_halves */
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=00|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204000) {
 		decode_fields32(ENC_ZIP1_P_PP_, ctx, instr);
@@ -45846,7 +52300,7 @@ int zip1_p_pp(context *ctx, Instruction *instr)
 int zip1_z_zz(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
-	/* class sve_high_halves */
+	/* class iclass_sve_high_halves */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|00|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206400) {
 		decode_fields32(ENC_ZIP2_Z_ZZ_, ctx, instr);
@@ -45860,7 +52314,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 1;
 		OK(ENC_ZIP2_Z_ZZ_);
 	}
-	/* class sve_high_halves_quad */
+	/* class iclass_sve_high_halves_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|00|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00400) {
 		decode_fields32(ENC_ZIP2_Z_ZZ_Q, ctx, instr);
@@ -45874,7 +52328,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 1;
 		OK(ENC_ZIP2_Z_ZZ_Q);
 	}
-	/* class sve_low_halves */
+	/* class iclass_sve_low_halves */
 	/* 00000101|size=xx|1|Zm=xxxxx|011|00|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206000) {
 		decode_fields32(ENC_ZIP1_Z_ZZ_, ctx, instr);
@@ -45888,7 +52342,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 		ctx->part = 0;
 		OK(ENC_ZIP1_Z_ZZ_);
 	}
-	/* class sve_low_halves_quad */
+	/* class iclass_sve_low_halves_quad */
 	/* 000001011|op=0|1|Zm=xxxxx|000|00|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00000) {
 		decode_fields32(ENC_ZIP1_Z_ZZ_Q, ctx, instr);
