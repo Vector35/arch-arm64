@@ -1,5 +1,5 @@
 #include "decode.h"
-#include "features.h"
+#include "feature_flags.h"
 
 int decode_spec(context *ctx, Instruction *dec); // from decode0.cpp
 int decode_scratchpad(context *ctx, Instruction *dec); // from decode_scratchpad.c

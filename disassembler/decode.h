@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "features.h"
+#include "feature_flags.h"
 #include "operations.h"
 #include "encodings_dec.h"
 #include "regs.h"

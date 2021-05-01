@@ -1,4 +1,4 @@
-#include "features.h"
+#include "feature_flags.h"
 
 #define INSWORD (ctx->insword)
 #define UNDEFINED { return DECODE_STATUS_UNDEFINED; }
