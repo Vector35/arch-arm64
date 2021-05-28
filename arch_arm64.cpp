@@ -2295,6 +2295,11 @@ public:
 	}
 
 
+	Arm64CallingConvention(Architecture* arch, const string& name): CallingConvention(arch, name)
+	{
+	}
+
+
 	virtual vector<uint32_t> GetIntegerArgumentRegisters() override
 	{
 		return vector<uint32_t>{ REG_X0, REG_X1, REG_X2, REG_X3, REG_X4, REG_X5, REG_X6, REG_X7 };
@@ -2333,6 +2338,21 @@ public:
 	virtual uint32_t GetFloatReturnValueRegister() override
 	{
 		return REG_Q0;
+	}
+};
+
+
+class AppleArm64CallingConvention: public Arm64CallingConvention
+{
+public:
+	AppleArm64CallingConvention(Architecture* arch): Arm64CallingConvention(arch, "apple-arm64")
+	{
+	}
+
+
+	virtual bool AreArgumentRegistersUsedForVarArgs() override
+	{
+		return false;
 	}
 };
 
@@ -2902,6 +2922,9 @@ extern "C"
 		arm64->RegisterCallingConvention(conv);
 
 		conv = new WindowsArm64SystemCallConvention(arm64);
+		arm64->RegisterCallingConvention(conv);
+
+		conv = new AppleArm64CallingConvention(arm64);
 		arm64->RegisterCallingConvention(conv);
 
 		// Register ARM64 specific PLT trampoline recognizer
