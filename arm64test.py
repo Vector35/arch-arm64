@@ -1470,7 +1470,17 @@ tests_st1 = [
 						 ' LLIL_SET_REG.q(x29,LLIL_ADD.q(LLIL_REG.q(x29),LLIL_REG.q(x21)))'),
 ]
 
+tests_ldxr = [
+        # ldxr x1, [x0]
+        (b'\x01\x7c\x5f\xc8', 'LLIL_SET_REG.q(x1,LLIL_LOAD.q(LLIL_REG.q(x0)))'),
+        # ldxr w1, [x0]
+        (b'\x01\x7c\x5f\x88', 'LLIL_SET_REG.d(w1,LLIL_LOAD.d(LLIL_REG.q(x0)))'),
+        # ldxr w1, [sp]
+        (b'\xe1\x7f\x5f\x88', 'LLIL_SET_REG.d(w1,LLIL_LOAD.d(LLIL_REG.q(sp)))')
+]
+
 test_cases = \
+        tests_ldxr + \
 	tests_ucvtf + \
 	tests_ret + \
 	tests_svc_hvc_smc + \

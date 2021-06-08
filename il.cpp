@@ -1551,6 +1551,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint64_t addr, LowLevelILFu
 	case ARM64_LDUR:
 	case ARM64_LDRAA:
 	case ARM64_LDRAB:
+	case ARM64_LDXR:
 		LoadStoreOperand(il, true, instr.operands[0], instr.operands[1], 0);
 		break;
 	case ARM64_LDRB:
