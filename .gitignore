@@ -7,3 +7,4 @@ api
 build
 libarch_*
 arch_*.dll
+__pycache__

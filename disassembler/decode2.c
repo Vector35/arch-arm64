@@ -58,7 +58,8 @@ int ADC(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(ctx->sf==0) OK(ENC_ADC_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADC_64_ADDSUB_CARRY);
 	}
@@ -78,7 +79,8 @@ int ADCS(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(ctx->sf==0) OK(ENC_ADCS_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADCS_64_ADDSUB_CARRY);
 	}
@@ -188,7 +190,8 @@ int ADDS_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -214,7 +217,8 @@ int ADDS_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -242,7 +246,8 @@ int ADDS_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -297,7 +302,8 @@ int ADD_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -321,7 +327,8 @@ int ADD_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -349,7 +356,8 @@ int ADD_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = ctx->setflags = (ctx->S==1);
+		ctx->setflags = (ctx->S==1);
+		instr->setflags = ctx->setflags;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
