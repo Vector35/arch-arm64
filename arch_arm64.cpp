@@ -2895,6 +2895,92 @@ public:
 };
 
 
+class Arm64COFFRelocationHandler: public RelocationHandler
+{
+public:
+	virtual bool ApplyRelocation(Ref<BinaryView> view, Ref<Architecture> arch, Ref<Relocation> reloc, uint8_t* dest, size_t len) override
+	{
+		// Note: info.base contains preferred base address and the base where the image is actually loaded
+		(void)view;
+		(void)arch;
+		(void)len;
+		BNRelocationInfo info = reloc->GetInfo();
+		uint64_t target = reloc->GetTarget();
+		uint64_t pc = info.pcRelative ? reloc->GetAddress() : 0;
+		uint64_t base = (info.baseRelative && !target) ? view->GetStart() : 0;
+		uint64_t address = info.address;
+		uint32_t* dest32 = (uint32_t*)dest;
+		uint16_t* dest16 = (uint16_t*)dest;
+		(void)pc;
+		(void)base;
+		(void)dest16;
+		Instruction inst;
+
+		Ref<Architecture> associatedArch = arch->GetAssociatedArchitectureByAddress(address);
+
+		if (len < info.size)
+		{
+			return false;
+		}
+
+		//auto swap = [&arch](uint32_t x) { return (arch->GetEndianness() == LittleEndian)? x : bswap32(x); };
+		switch (info.nativeType)
+		{
+		case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
+		{
+			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
+			uint32_t imm = PAGE(info.addend + target) - PAGE(reloc->GetAddress());
+			decode->immhi = imm >> 2;
+			decode->immlo = imm & 3;
+			break;
+		}
+		case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
+		{
+			ADD_SUB_IMM* decode = (ADD_SUB_IMM*)dest;
+			aarch64_decompose(dest32[0], &inst, reloc->GetAddress());
+			decode->imm = inst.operands[2].immediate + target;
+			break;
+		}
+		case PE_IMAGE_REL_ARM64_BRANCH26:
+		{
+			UNCONDITIONAL_BRANCH* decode = (UNCONDITIONAL_BRANCH*)dest;
+			aarch64_decompose(dest32[0], &inst, 0);
+			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
+			break;
+		}
+		default:
+			return RelocationHandler::ApplyRelocation(view, arch, reloc, dest, len);
+		}
+		return true;
+	}
+
+	virtual bool GetRelocationInfo(Ref<BinaryView> view, Ref<Architecture> arch, vector<BNRelocationInfo>& result) override
+	{
+		(void)view;
+		(void)arch;
+		set<uint64_t> relocTypes;
+		for (auto& reloc : result)
+		{
+			LogWarn("%s COFF relocation %s at 0x%" PRIx64, __func__, GetRelocationString((PeArm64RelocationType)reloc.nativeType), reloc.address);
+			switch (reloc.nativeType)
+			{
+			case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
+			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
+			case PE_IMAGE_REL_ARM64_BRANCH26:
+				break;
+			default:
+				reloc.type = UnhandledRelocation;
+				relocTypes.insert(reloc.nativeType);
+				break;
+			}
+		}
+		for (auto& reloc : relocTypes)
+			LogWarn("Unsupported PE relocation type: %s", GetRelocationString((PeArm64RelocationType)reloc));
+		return false;
+	}
+};
+
+
 extern "C"
 {
 	BN_DECLARE_CORE_ABI_VERSION
@@ -2934,6 +3020,7 @@ extern "C"
 		arm64->RegisterRelocationHandler("Mach-O", new Arm64MachoRelocationHandler());
 		arm64->RegisterRelocationHandler("ELF", new Arm64ElfRelocationHandler());
 		arm64->RegisterRelocationHandler("PE", new Arm64PeRelocationHandler());
+		arm64->RegisterRelocationHandler("COFF", new Arm64COFFRelocationHandler());
 
 		// Register the architectures with the binary format parsers so that they know when to use
 		// these architectures for disassembling an executable file
