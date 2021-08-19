@@ -16,8 +16,16 @@ int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t ad
 
 	/* have the spec-generated code populate all the pcode variables */
 	int rc = decode_spec(&ctx, instr);
-	if(rc != DECODE_STATUS_OK)
-		return rc;
+
+	if(rc != DECODE_STATUS_OK) {
+		/* exceptional cases where we accept a non-OK decode status */
+		if(rc == DECODE_STATUS_END_OF_INSTRUCTION && instr->encoding == ENC_HINT_HM_HINTS) {
+			while(0);
+		}
+		/* no exception! fail! */
+		else
+			return rc;
+	}
 
 	/* if UDF encoding, return undefined */
 	//if(instr->encoding == ENC_UDF_ONLY_PERM_UNDEF)

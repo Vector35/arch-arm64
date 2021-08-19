@@ -6936,7 +6936,6 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 			break;
 		}
 		case ENC_BRK_EX_EXCEPTION:
-		case ENC_HINT_HM_HINTS:
 		case ENC_HLT_EX_EXCEPTION:
 		case ENC_HVC_EX_EXCEPTION:
 		case ENC_SMC_EX_EXCEPTION:
@@ -6944,6 +6943,13 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_UDF_ONLY_PERM_UNDEF:
 		{
 			uint64_t imm = ctx->imm16;
+			// #<imm>
+			ADD_OPERAND_IMM32(imm, 0);
+			break;
+		}
+		case ENC_HINT_HM_HINTS:
+		{
+			uint64_t imm = (ctx->CRm << 3) | ctx->op2;
 			// #<imm>
 			ADD_OPERAND_IMM32(imm, 0);
 			break;
@@ -8696,7 +8702,7 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		}
 		case ENC_STNT1B_Z_P_AR_S_X32_UNSCALED:
 		case ENC_STNT1H_Z_P_AR_S_X32_UNSCALED:
-		case ENC_STNT1W_Z_P_AR_S_X32_UNSCALED:		
+		case ENC_STNT1W_Z_P_AR_S_X32_UNSCALED:
 		{
 			// {<Zt>.S},<Pg>, [<Zn>.S{,<Xm>}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1S, ctx->t);
@@ -8707,14 +8713,14 @@ int decode_scratchpad(context *ctx, Instruction *instr)
 		case ENC_STNT1B_Z_P_AR_D_64_UNSCALED:
 		case ENC_STNT1D_Z_P_AR_D_64_UNSCALED:
 		case ENC_STNT1H_Z_P_AR_D_64_UNSCALED:
-		case ENC_STNT1W_Z_P_AR_D_64_UNSCALED:		
+		case ENC_STNT1W_Z_P_AR_D_64_UNSCALED:
 		{
 			// {<Zt>.D},<Pg>, [<Zn>.D{,<Xm>}]
 			ADD_OPERAND_MULTIREG_1(REG_Z_BASE, _1D, ctx->t);
 			ADD_OPERAND_PRED_REG(ctx->g);
 			ADD_OPERAND_MEM_EXTENDED_T(REG_Z_BASE, ctx->n, REG_X_BASE, ctx->m, _1D);
 			break;
-		}			
+		}
 		case ENC_ST1D_Z_P_BR_:
 		case ENC_STNT1D_Z_P_BR_CONTIGUOUS:
 		{
@@ -9444,7 +9450,7 @@ break;
 		case ENC_SRSRA_Z_ZI_:
 		case ENC_SSRA_Z_ZI_:
 		case ENC_URSRA_Z_ZI_:
-		case ENC_USRA_Z_ZI_:		
+		case ENC_USRA_Z_ZI_:
 		{
 			ArrangementSpec T = table16_r_b_h_s_d[ctx->tsize];
 			// <Zda>.<T>,<Zn>.<T>, #<const>
@@ -9452,7 +9458,7 @@ break;
 			ADD_OPERAND_ZREG_T(ctx->n, T)
 			ADD_OPERAND_IMM32(ctx->shift, 0);
 			break;
-		}		
+		}
 		case ENC_BDEP_Z_ZZ_:
 		case ENC_BEXT_Z_ZZ_:
 		case ENC_BGRP_Z_ZZ_:

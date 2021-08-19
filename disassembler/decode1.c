@@ -242,6 +242,7 @@ int decode_iclass_hints(context *ctx, Instruction *dec)
 	if(CRm==3 && op2==6 && HasPAuth()) return AUTIB(ctx, dec); // -> AUTIBZ_HI_hints
 	if(CRm==3 && op2==7 && HasPAuth()) return AUTIB(ctx, dec); // -> AUTIBSP_HI_hints
 	if(CRm==4 && !(op2&1) && HasBTI()) return BTI(ctx, dec); // -> BTI_HB_hints
+	if(1) return HINT(ctx, dec); // -> HINT_HM_hints
 	UNMATCHED;
 }
 
