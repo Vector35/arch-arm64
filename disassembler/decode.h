@@ -5,9 +5,10 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "encodings_dec.h"
 #include "feature_flags.h"
 #include "operations.h"
+
+#include "encodings_dec.h"
 #include "regs.h"
 #include "sysregs.h"
 
@@ -64,7 +65,7 @@ enum ArrangementSpec
 	-3  // spec says this space is unallocated, eg: UNALLOCATED_10_branch_reg
 #define DECODE_STATUS_UNDEFINED \
 	-4  // spec says this encoding is undefined, often due to a disallowed field
-      // or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
+	    // or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
 #define DECODE_STATUS_END_OF_INSTRUCTION \
 	-5  // spec decode EndOfInstruction(), instruction executes as NOP
 #define DECODE_STATUS_LOST           -6  // descended past checks, ie: "SEE encoding_up_higher"
