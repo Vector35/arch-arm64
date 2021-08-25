@@ -41,6 +41,10 @@ enum MachoArm64RelocationType : uint32_t
 enum ElfArm64RelocationType : uint32_t
 {
 	R_ARM_NONE                    = 0,
+	R_AARCH64_P32_COPY            = 180,
+	R_AARCH64_P32_GLOB_DAT        = 181,
+	R_AARCH64_P32_JUMP_SLOT       = 182,
+	R_AARCH64_P32_RELATIVE        = 183,
 	R_AARCH64_NONE                = 256,
 	// Data
 	R_AARCH64_ABS64               = 257,
@@ -186,6 +190,10 @@ static const char* GetRelocationString(ElfArm64RelocationType rel)
 {
 	static map<ElfArm64RelocationType, const char*> relocMap = {
 		{R_ARM_NONE,                    "R_ARM_NONE"},
+		{R_AARCH64_P32_COPY,            "R_AARCH64_P32_COPY"},
+		{R_AARCH64_P32_GLOB_DAT,        "R_AARCH64_P32_GLOB_DAT"},
+		{R_AARCH64_P32_JUMP_SLOT,       "R_AARCH64_P32_JUMP_SLOT"},
+		{R_AARCH64_P32_RELATIVE,        "R_AARCH64_P32_RELATIVE"},
 		{R_AARCH64_NONE,                "R_AARCH64_NONE"},
 		{R_AARCH64_ABS64,               "R_AARCH64_ABS64"},
 		{R_AARCH64_ABS32,               "R_AARCH64_ABS32"},
@@ -2643,6 +2651,11 @@ public:
 		case R_ARM_NONE:
 		case R_AARCH64_NONE:
 			return true;
+		case R_AARCH64_P32_COPY:
+		case R_AARCH64_P32_GLOB_DAT:
+		case R_AARCH64_P32_JUMP_SLOT:
+			dest32[0] = target;
+			break;
 		case R_AARCH64_COPY:
 		case R_AARCH64_GLOB_DAT:
 		case R_AARCH64_JUMP_SLOT:
@@ -2692,6 +2705,9 @@ public:
 			break;
 		case R_AARCH64_PREL64:
 			dest64[0] = info.addend + target - reloc->GetAddress();
+			break;
+		case R_AARCH64_P32_RELATIVE:
+			dest32[0] = target + info.addend;
 			break;
 		case R_AARCH64_RELATIVE:
 			dest64[0] = target + info.addend;
@@ -2778,6 +2794,18 @@ public:
 			reloc.size = 4;
 			switch (reloc.nativeType)
 			{
+			case R_AARCH64_P32_COPY:
+				reloc.type = ELFCopyRelocationType;
+				reloc.size = 4;
+				break;
+			case R_AARCH64_P32_GLOB_DAT:
+				reloc.type = ELFGlobalRelocationType;
+				reloc.size = 4;
+				break;
+			case R_AARCH64_P32_JUMP_SLOT:
+				reloc.type = ELFJumpSlotRelocationType;
+				reloc.size = 4;
+				break;
 			case R_AARCH64_COPY:
 				reloc.type = ELFCopyRelocationType;
 				reloc.size = 8;
@@ -2820,6 +2848,10 @@ public:
 			case R_AARCH64_ABS64:
 				reloc.pcRelative = false;
 				reloc.size = 8;
+				break;
+			case R_AARCH64_P32_RELATIVE:
+				reloc.pcRelative = true;
+				reloc.size = 4;
 				break;
 			case R_AARCH64_RELATIVE:
 				reloc.pcRelative = true;
