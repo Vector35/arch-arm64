@@ -2631,6 +2631,30 @@ struct UNCONDITIONAL_BRANCH{
 	uint32_t op:1;
 };
 
+struct CONDITIONAL_BRANCH{
+	uint32_t cond:4;
+	uint32_t o0:1;
+	int32_t imm:19;
+	uint32_t o1:1;
+	uint32_t opcode:7;
+};
+struct COMPARE_AND_BRANCH{
+	uint32_t Rt:5;
+	int32_t imm:19;
+	uint32_t op:1;
+	uint32_t opcode:6;
+	uint32_t sf:1;
+};
+
+struct TEST_AND_BRANCH{
+	uint32_t Rt:5;
+	int32_t imm:14;
+	uint32_t b40:5;
+	uint32_t op:1;
+	uint32_t opcode:6;
+	uint32_t b5:1;
+};
+
 struct LDST_REG_UNSIGNED_IMM{
 	uint32_t Rt:5;
 	uint32_t Rn:5;
@@ -2909,6 +2933,7 @@ public:
 		uint64_t pc = info.pcRelative ? reloc->GetAddress() : 0;
 		uint64_t base = (info.baseRelative && !target) ? view->GetStart() : 0;
 		uint64_t address = info.address;
+		uint64_t* dest64 = (uint64_t*)dest;
 		uint32_t* dest32 = (uint32_t*)dest;
 		uint16_t* dest16 = (uint16_t*)dest;
 		(void)pc;
@@ -2926,6 +2951,15 @@ public:
 		//auto swap = [&arch](uint32_t x) { return (arch->GetEndianness() == LittleEndian)? x : bswap32(x); };
 		switch (info.nativeType)
 		{
+		case PE_IMAGE_REL_ARM64_REL21:
+		{
+			// TODO: check
+			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
+			uint32_t imm = info.addend + target - reloc->GetAddress();
+			decode->immhi = imm >> 2;
+			decode->immlo = imm & 3;
+			break;
+		}
 		case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
 		{
 			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
@@ -2941,11 +2975,40 @@ public:
 			decode->imm = inst.operands[2].immediate + target;
 			break;
 		}
+		case PE_IMAGE_REL_ARM64_PAGEOFFSET_12L:
+		{
+			LDST_REG_UNSIGNED_IMM* decode = (LDST_REG_UNSIGNED_IMM*)dest;
+			decode->imm = ((target + info.addend) & (0xfff & ~decode->size)) >> decode->size;
+			// decode->imm = ((target + info.addend) & 0xfff) >> decode->size;
+			break;
+		}
 		case PE_IMAGE_REL_ARM64_BRANCH26:
 		{
 			UNCONDITIONAL_BRANCH* decode = (UNCONDITIONAL_BRANCH*)dest;
 			aarch64_decompose(dest32[0], &inst, 0);
 			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
+			break;
+		}
+		case PE_IMAGE_REL_ARM64_BRANCH19:
+		{
+			// B.cond (CONDITIONAL_BRANCH) & CBZ / CBNZ (COMPARE_AND_BRANCH)
+			CONDITIONAL_BRANCH* decode = (CONDITIONAL_BRANCH*)dest;
+			aarch64_decompose(dest32[0], &inst, 0);
+			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
+			break;
+		}
+		case PE_IMAGE_REL_ARM64_BRANCH14:
+		{
+			// TBZ / TBNZ
+			TEST_AND_BRANCH* decode = (TEST_AND_BRANCH*)dest;
+			aarch64_decompose(dest32[0], &inst, 0);
+			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
+			break;
+		}
+		case PE_IMAGE_REL_ARM64_ADDR32NB:
+		case PE_IMAGE_REL_ARM64_ADDR64:
+		{
+			dest64[0] = target + info.addend;
 			break;
 		}
 		default:
@@ -2964,9 +3027,15 @@ public:
 			LogWarn("%s COFF relocation %s at 0x%" PRIx64, __func__, GetRelocationString((PeArm64RelocationType)reloc.nativeType), reloc.address);
 			switch (reloc.nativeType)
 			{
+			case PE_IMAGE_REL_ARM64_ADDR64:
+			case PE_IMAGE_REL_ARM64_ADDR32NB:
+			case PE_IMAGE_REL_ARM64_REL21:
 			case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
 			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
+			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12L:
 			case PE_IMAGE_REL_ARM64_BRANCH26:
+			case PE_IMAGE_REL_ARM64_BRANCH19:
+			case PE_IMAGE_REL_ARM64_BRANCH14:
 				break;
 			default:
 				reloc.type = UnhandledRelocation;
