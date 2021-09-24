@@ -1378,10 +1378,20 @@ public:
 			REG_X8,   REG_X9,  REG_X10, REG_X11,  REG_X12, REG_X13, REG_X14, REG_X15,
 			REG_X16,  REG_X17, REG_X18, REG_X19,  REG_X20, REG_X21, REG_X22, REG_X23,
 			REG_X24,  REG_X25, REG_X26, REG_X27,  REG_X28, REG_X29, REG_X30, REG_SP,  REG_XZR,
+			// Vector
 			REG_Q0,   REG_Q1,  REG_Q2,  REG_Q3,   REG_Q4,  REG_Q5,  REG_Q6,  REG_Q7,
 			REG_Q8,   REG_Q9,  REG_Q10, REG_Q11,  REG_Q12, REG_Q13, REG_Q14, REG_Q15,
 			REG_Q16,  REG_Q17, REG_Q18, REG_Q19,  REG_Q20, REG_Q21, REG_Q22, REG_Q23,
-			REG_Q24,  REG_Q25, REG_Q26, REG_Q27,  REG_Q28, REG_Q29, REG_Q30, REG_Q31
+			REG_Q24,  REG_Q25, REG_Q26, REG_Q27,  REG_Q28, REG_Q29, REG_Q30, REG_Q31,
+			// SVE
+			REG_P0,   REG_P1,  REG_P2,  REG_P3,   REG_P4,  REG_P5,  REG_P6,  REG_P7,
+			REG_P8,   REG_P9,  REG_P10,  REG_P11,   REG_P12,  REG_P13,  REG_P14,  REG_P15,
+			REG_P16,   REG_P17,  REG_P18,  REG_P19,   REG_P20,  REG_P21,  REG_P22,  REG_P23,
+			REG_P24,   REG_P25,  REG_P26,  REG_P27,   REG_P29,  REG_P29,  REG_P30,  REG_P31,
+			REG_PF0,   REG_PF1,  REG_PF2,  REG_PF3,   REG_PF4,  REG_PF5,  REG_P6,  REG_P7,
+			REG_PF8,   REG_PF9,  REG_PF10,  REG_PF11,   REG_PF12,  REG_PF13,  REG_PF14,  REG_PF15,
+			REG_PF16,   REG_PF17,  REG_PF18,  REG_PF19,   REG_PF20,  REG_PF21,  REG_PF22,  REG_PF23,
+			REG_PF24,   REG_PF25,  REG_PF26,  REG_PF27,   REG_PF29,  REG_PF29,  REG_PF30,  REG_PF31,
 		};
 	}
 
@@ -1546,6 +1556,19 @@ public:
 			REG_V20_D0, REG_V20_D1, REG_V21_D0, REG_V21_D1, REG_V22_D0, REG_V22_D1, REG_V23_D0, REG_V23_D1,
 			REG_V24_D0, REG_V24_D1, REG_V25_D0, REG_V25_D1, REG_V26_D0, REG_V26_D1, REG_V27_D0, REG_V27_D1,
 			REG_V28_D0, REG_V28_D1, REG_V29_D0, REG_V29_D1, REG_V30_D0, REG_V30_D1, REG_V31_D0, REG_V31_D1,
+			// SVE
+			REG_Z0,  REG_Z1,  REG_Z2,  REG_Z3,  REG_Z4,  REG_Z5,  REG_Z6,  REG_Z7,
+			REG_Z8,  REG_Z9,  REG_Z10, REG_Z11, REG_Z12, REG_Z13, REG_Z14, REG_Z15,
+			REG_Z16, REG_Z17, REG_Z18, REG_Z19, REG_Z20, REG_Z21, REG_Z22, REG_Z23,
+			REG_Z24, REG_Z25, REG_Z26, REG_Z27, REG_Z28, REG_Z29, REG_Z30, REG_ZZR, REG_Z31,
+			REG_P0,  REG_P1,  REG_P2,  REG_P3,  REG_P4,  REG_P5,  REG_P6,  REG_P7,
+			REG_P8,  REG_P9,  REG_P10, REG_P11, REG_P12, REG_P13, REG_P14, REG_P15,
+			REG_P16, REG_P17, REG_P18, REG_P19, REG_P20, REG_P21, REG_P22, REG_P23,
+			REG_P24, REG_P25, REG_P26, REG_P27, REG_P28, REG_P29, REG_P30, REG_P31,
+			REG_PF0,  REG_PF1,  REG_PF2,  REG_PF3,  REG_PF4,  REG_PF5,  REG_PF6,  REG_PF7,
+			REG_PF8,  REG_PF9,  REG_PF10, REG_PF11, REG_PF12, REG_PF13, REG_PF14, REG_PF15,
+			REG_PF16, REG_PF17, REG_PF18, REG_PF19, REG_PF20, REG_PF21, REG_PF22, REG_PF23,
+			REG_PF24, REG_PF25, REG_PF26, REG_PF27, REG_PF28, REG_PF29, REG_PF30, REG_PF31,
 			/* system registers */
 			REG_OSDTRRX_EL1, REG_DBGBVR0_EL1, REG_DBGBCR0_EL1, REG_DBGWVR0_EL1,
 			REG_DBGWCR0_EL1, REG_DBGBVR1_EL1, REG_DBGBCR1_EL1, REG_DBGWVR1_EL1,
@@ -1982,6 +2005,105 @@ public:
 			case REG_Q30:
 			case REG_Q31:
 				return RegisterInfo(REG_V0+(reg-REG_Q0), 0, 16);
+			case REG_Z0:
+			case REG_Z1:
+			case REG_Z2:
+			case REG_Z3:
+			case REG_Z4:
+			case REG_Z5:
+			case REG_Z6:
+			case REG_Z7:
+			case REG_Z8:
+			case REG_Z9:
+			case REG_Z10:
+			case REG_Z11:
+			case REG_Z12:
+			case REG_Z13:
+			case REG_Z14:
+			case REG_Z15:
+			case REG_Z16:
+			case REG_Z17:
+			case REG_Z18:
+			case REG_Z19:
+			case REG_Z20:
+			case REG_Z21:
+			case REG_Z22:
+			case REG_Z23:
+			case REG_Z24:
+			case REG_Z25:
+			case REG_Z26:
+			case REG_Z27:
+			case REG_Z28:
+			case REG_Z29:
+			case REG_Z30:
+			case REG_Z31:
+				return RegisterInfo(REG_V0+(reg-REG_Z0), 0, 16);
+			case REG_P0:
+			case REG_P1:
+			case REG_P2:
+			case REG_P3:
+			case REG_P4:
+			case REG_P5:
+			case REG_P6:
+			case REG_P7:
+			case REG_P8:
+			case REG_P9:
+			case REG_P10:
+			case REG_P11:
+			case REG_P12:
+			case REG_P13:
+			case REG_P14:
+			case REG_P15:
+			case REG_P16:
+			case REG_P17:
+			case REG_P18:
+			case REG_P19:
+			case REG_P20:
+			case REG_P21:
+			case REG_P22:
+			case REG_P23:
+			case REG_P24:
+			case REG_P25:
+			case REG_P26:
+			case REG_P27:
+			case REG_P28:
+			case REG_P29:
+			case REG_P30:
+			case REG_P31:
+				return RegisterInfo(reg, 0, 32);
+			case REG_PF0:
+			case REG_PF1:
+			case REG_PF2:
+			case REG_PF3:
+			case REG_PF4:
+			case REG_PF5:
+			case REG_PF6:
+			case REG_PF7:
+			case REG_PF8:
+			case REG_PF9:
+			case REG_PF10:
+			case REG_PF11:
+			case REG_PF12:
+			case REG_PF13:
+			case REG_PF14:
+			case REG_PF15:
+			case REG_PF16:
+			case REG_PF17:
+			case REG_PF18:
+			case REG_PF19:
+			case REG_PF20:
+			case REG_PF21:
+			case REG_PF22:
+			case REG_PF23:
+			case REG_PF24:
+			case REG_PF25:
+			case REG_PF26:
+			case REG_PF27:
+			case REG_PF28:
+			case REG_PF29:
+			case REG_PF30:
+			case REG_PF31:
+				return RegisterInfo(reg, 0, 0);
 		}
 
 		if (reg >= REG_V0_B0 && reg <= REG_V31_B15) {
