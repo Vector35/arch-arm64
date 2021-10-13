@@ -551,6 +551,10 @@ tests_mov = [
 	(b'\x01\x1C\x04\x4E', 'LLIL_SET_REG.d(v1.s[0],LLIL_REG.d(w0))'),
 	# mov w10, #0
 	(b'\x0A\x00\x80\x52', 'LLIL_SET_REG.d(w10,LLIL_CONST.d(0x0))'),
+	# mov v8.16b, v1.16b
+	(b'\x28\x1c\xa1\x4e', 'LLIL_SET_REG.o(v8,LLIL_REG.o(v1))'),
+	# mov v0.2s, v1.2s
+	(b'\x20\x1c\xa1\x0e', 'LLIL_SET_REG.q(v0.d[0],LLIL_REG.q(v1.d[0]))'),
 ]
 
 tests_movi = [
