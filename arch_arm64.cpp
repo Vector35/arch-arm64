@@ -2979,7 +2979,9 @@ public:
 		{
 			LDST_REG_UNSIGNED_IMM* decode = (LDST_REG_UNSIGNED_IMM*)dest;
 			decode->imm = ((target + info.addend) & (0xfff & ~decode->size)) >> decode->size;
+			// decode->imm = (((target) & 0xfff) >> decode->size) + info.addend;
 			// decode->imm = ((target + info.addend) & 0xfff) >> decode->size;
+			// decode->imm = ((target + info.addend) & 0xfff); // >> decode->size;
 			break;
 		}
 		case PE_IMAGE_REL_ARM64_BRANCH26:
@@ -3027,16 +3029,28 @@ public:
 			LogWarn("%s COFF relocation %s at 0x%" PRIx64, __func__, GetRelocationString((PeArm64RelocationType)reloc.nativeType), reloc.address);
 			switch (reloc.nativeType)
 			{
-			case PE_IMAGE_REL_ARM64_ADDR64:
+			case PE_IMAGE_REL_ARM64_ABSOLUTE:
 			case PE_IMAGE_REL_ARM64_ADDR32NB:
-			case PE_IMAGE_REL_ARM64_REL21:
-			case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
-			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
-			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12L:
 			case PE_IMAGE_REL_ARM64_BRANCH26:
+			case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
+			case PE_IMAGE_REL_ARM64_REL21:
+			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
+			case PE_IMAGE_REL_ARM64_ADDR64:
 			case PE_IMAGE_REL_ARM64_BRANCH19:
 			case PE_IMAGE_REL_ARM64_BRANCH14:
 				break;
+			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12L:
+				if (! reloc.external)
+					reloc.addend = 6;
+				break;
+
+			case PE_IMAGE_REL_ARM64_ADDR32:
+			case PE_IMAGE_REL_ARM64_SECREL:
+			case PE_IMAGE_REL_ARM64_SECREL_LOW12A:
+			case PE_IMAGE_REL_ARM64_SECREL_HIGH12A:
+			case PE_IMAGE_REL_ARM64_SECREL_LOW12L:
+			case PE_IMAGE_REL_ARM64_TOKEN:
+			case PE_IMAGE_REL_ARM64_SECTION:
 			default:
 				reloc.type = UnhandledRelocation;
 				relocTypes.insert(reloc.nativeType);
