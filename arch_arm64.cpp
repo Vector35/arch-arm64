@@ -127,7 +127,8 @@ enum PeArm64RelocationType : uint32_t
 	PE_IMAGE_REL_ARM64_ADDR64         = 0x000E, //	The 64-bit VA of the relocation target.
 	PE_IMAGE_REL_ARM64_BRANCH19       = 0x000F, //	The 19-bit offset to the relocation target, for conditional B instruction.
 	PE_IMAGE_REL_ARM64_BRANCH14       = 0x0010, //	The 14-bit offset to the relocation target, for instructions TBZ and TBNZ.
-	MAX_PE_ARM64_RELOCATION           = 0x0011
+	IMAGE_REL_ARM64_REL32             = 0x0011, //	The 32-bit relative address from the byte following the relocation.
+	MAX_PE_ARM64_RELOCATION           = 0x0012
 };
 
 static const char* GetRelocationString(MachoArm64RelocationType rel)
@@ -172,7 +173,8 @@ static const char* GetRelocationString(PeArm64RelocationType rel)
 		"IMAGE_REL_ARM64_SECTION",
 		"IMAGE_REL_ARM64_ADDR64",
 		"IMAGE_REL_ARM64_BRANCH19",
-		"IMAGE_REL_ARM64_BRANCH14"
+		"IMAGE_REL_ARM64_BRANCH14",
+		"IMAGE_REL_ARM64_REL32"
 	};
 	if (rel < MAX_PE_ARM64_RELOCATION)
 	{
@@ -2939,6 +2941,7 @@ public:
 		(void)pc;
 		(void)base;
 		(void)dest16;
+		(void)dest64;
 		Instruction inst;
 
 		Ref<Architecture> associatedArch = arch->GetAssociatedArchitectureByAddress(address);
@@ -2948,12 +2951,10 @@ public:
 			return false;
 		}
 
-		//auto swap = [&arch](uint32_t x) { return (arch->GetEndianness() == LittleEndian)? x : bswap32(x); };
 		switch (info.nativeType)
 		{
 		case PE_IMAGE_REL_ARM64_REL21:
 		{
-			// TODO: check
 			PC_REL_ADDRESSING* decode = (PC_REL_ADDRESSING*)dest;
 			uint32_t imm = info.addend + target - reloc->GetAddress();
 			decode->immhi = imm >> 2;
@@ -2979,9 +2980,6 @@ public:
 		{
 			LDST_REG_UNSIGNED_IMM* decode = (LDST_REG_UNSIGNED_IMM*)dest;
 			decode->imm = ((target + info.addend) & (0xfff & ~decode->size)) >> decode->size;
-			// decode->imm = (((target) & 0xfff) >> decode->size) + info.addend;
-			// decode->imm = ((target + info.addend) & 0xfff) >> decode->size;
-			// decode->imm = ((target + info.addend) & 0xfff); // >> decode->size;
 			break;
 		}
 		case PE_IMAGE_REL_ARM64_BRANCH26:
@@ -3009,10 +3007,7 @@ public:
 		}
 		case PE_IMAGE_REL_ARM64_ADDR32NB:
 		case PE_IMAGE_REL_ARM64_ADDR64:
-		{
-			dest64[0] = target + info.addend;
-			break;
-		}
+		case IMAGE_REL_ARM64_REL32:
 		default:
 			return RelocationHandler::ApplyRelocation(view, arch, reloc, dest, len);
 		}
@@ -3026,29 +3021,52 @@ public:
 		set<uint64_t> relocTypes;
 		for (auto& reloc : result)
 		{
-			LogWarn("%s COFF relocation %s at 0x%" PRIx64, __func__, GetRelocationString((PeArm64RelocationType)reloc.nativeType), reloc.address);
+			// LogDebug("%s COFF relocation %s at 0x%" PRIx64, __func__, GetRelocationString((PeArm64RelocationType)reloc.nativeType), reloc.address);
 			switch (reloc.nativeType)
 			{
 			case PE_IMAGE_REL_ARM64_ABSOLUTE:
+				reloc.type = IgnoredRelocation;
+				break;
 			case PE_IMAGE_REL_ARM64_ADDR32NB:
+				reloc.pcRelative = false;
+				reloc.baseRelative = false;
+				break;
 			case PE_IMAGE_REL_ARM64_BRANCH26:
 			case PE_IMAGE_REL_ARM64_PAGEBASE_REL21:
 			case PE_IMAGE_REL_ARM64_REL21:
 			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12A:
-			case PE_IMAGE_REL_ARM64_ADDR64:
 			case PE_IMAGE_REL_ARM64_BRANCH19:
 			case PE_IMAGE_REL_ARM64_BRANCH14:
+				reloc.pcRelative = true;
+				reloc.baseRelative = false;
+				reloc.size = 4;
 				break;
 			case PE_IMAGE_REL_ARM64_PAGEOFFSET_12L:
 				if (! reloc.external)
 					reloc.addend = 6;
 				break;
-
+			case PE_IMAGE_REL_ARM64_ADDR64:
+				reloc.pcRelative = false;
+				reloc.baseRelative = true;
+				reloc.size = 8;
+				break;
 			case PE_IMAGE_REL_ARM64_ADDR32:
-			case PE_IMAGE_REL_ARM64_SECREL:
+				reloc.pcRelative = false;
+				reloc.baseRelative = true;
+				reloc.size = 4;
+				break;
+			case IMAGE_REL_ARM64_REL32:
+				reloc.pcRelative = true;
+				reloc.baseRelative = false;
+				reloc.size = 4;
+				break;
 			case PE_IMAGE_REL_ARM64_SECREL_LOW12A:
+				// TODO
 			case PE_IMAGE_REL_ARM64_SECREL_HIGH12A:
+				// TODO
 			case PE_IMAGE_REL_ARM64_SECREL_LOW12L:
+				// TODO
+			case PE_IMAGE_REL_ARM64_SECREL:
 			case PE_IMAGE_REL_ARM64_TOKEN:
 			case PE_IMAGE_REL_ARM64_SECTION:
 			default:
