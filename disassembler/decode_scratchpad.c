@@ -10,7 +10,7 @@
 
 // regMap[0][?][?] uses SP for R31
 // regMap[1][?][?] uses ZR for R31
-static const Register regMap[2][11][32] = {
+static const Register regMap[2][10][32] = {
     {
         {
             REG_W0,
@@ -82,10 +82,6 @@ static const Register regMap[2][11][32] = {
             REG_P11, REG_P12, REG_P13, REG_P14, REG_P15, REG_P16, REG_P17, REG_P18, REG_P19,
             REG_P20, REG_P21, REG_P22, REG_P23, REG_P24, REG_P25, REG_P26, REG_P27, REG_P28,
             REG_P29, REG_P30, REG_P31},
-        {REG_PF0, REG_PF1, REG_PF2, REG_PF3, REG_PF4, REG_PF5, REG_PF6, REG_PF7, REG_PF8, REG_PF9,
-            REG_PF10, REG_PF11, REG_PF12, REG_PF13, REG_PF14, REG_PF15, REG_PF16, REG_PF17,
-            REG_PF18, REG_PF19, REG_PF20, REG_PF21, REG_PF22, REG_PF23, REG_PF24, REG_PF25,
-            REG_PF26, REG_PF27, REG_PF28, REG_PF29, REG_PF30, REG_PF31},
     },
     {{
          REG_W0,
@@ -337,10 +333,7 @@ static const Register regMap[2][11][32] = {
             REG_P11, REG_P12, REG_P13, REG_P14, REG_P15, REG_P16, REG_P17, REG_P18, REG_P19,
             REG_P20, REG_P21, REG_P22, REG_P23, REG_P24, REG_P25, REG_P26, REG_P27, REG_P28,
             REG_P29, REG_P30, REG_P31},
-        {REG_PF0, REG_PF1, REG_PF2, REG_PF3, REG_PF4, REG_PF5, REG_PF6, REG_PF7, REG_PF8, REG_PF9,
-            REG_PF10, REG_PF11, REG_PF12, REG_PF13, REG_PF14, REG_PF15, REG_PF16, REG_PF17,
-            REG_PF18, REG_PF19, REG_PF20, REG_PF21, REG_PF22, REG_PF23, REG_PF24, REG_PF25,
-            REG_PF26, REG_PF27, REG_PF28, REG_PF29, REG_PF30, REG_PF31}}};
+        }};
 
 /* first coordinate into regMap */
 #define REGSET_SP 0
@@ -357,7 +350,6 @@ static const Register regMap[2][11][32] = {
 #define REG_Q_BASE  7
 #define REG_Z_BASE  8
 #define REG_P_BASE  9
-#define REG_PF_BASE 10
 
 /* third coordinate into regMap is [0,31] */
 

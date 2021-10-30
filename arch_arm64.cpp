@@ -1375,10 +1375,6 @@ class Arm64Architecture : public Architecture
 			REG_P8,   REG_P9,  REG_P10,  REG_P11,   REG_P12,  REG_P13,  REG_P14,  REG_P15,
 			REG_P16,   REG_P17,  REG_P18,  REG_P19,   REG_P20,  REG_P21,  REG_P22,  REG_P23,
 			REG_P24,   REG_P25,  REG_P26,  REG_P27,   REG_P29,  REG_P29,  REG_P30,  REG_P31,
-			REG_PF0,   REG_PF1,  REG_PF2,  REG_PF3,   REG_PF4,  REG_PF5,  REG_P6,  REG_P7,
-			REG_PF8,   REG_PF9,  REG_PF10,  REG_PF11,   REG_PF12,  REG_PF13,  REG_PF14,  REG_PF15,
-			REG_PF16,   REG_PF17,  REG_PF18,  REG_PF19,   REG_PF20,  REG_PF21,  REG_PF22,  REG_PF23,
-			REG_PF24,   REG_PF25,  REG_PF26,  REG_PF27,   REG_PF29,  REG_PF29,  REG_PF30,  REG_PF31,
 		};
 	}
 
@@ -1552,10 +1548,6 @@ class Arm64Architecture : public Architecture
 			REG_P8,  REG_P9,  REG_P10, REG_P11, REG_P12, REG_P13, REG_P14, REG_P15,
 			REG_P16, REG_P17, REG_P18, REG_P19, REG_P20, REG_P21, REG_P22, REG_P23,
 			REG_P24, REG_P25, REG_P26, REG_P27, REG_P28, REG_P29, REG_P30, REG_P31,
-			REG_PF0,  REG_PF1,  REG_PF2,  REG_PF3,  REG_PF4,  REG_PF5,  REG_PF6,  REG_PF7,
-			REG_PF8,  REG_PF9,  REG_PF10, REG_PF11, REG_PF12, REG_PF13, REG_PF14, REG_PF15,
-			REG_PF16, REG_PF17, REG_PF18, REG_PF19, REG_PF20, REG_PF21, REG_PF22, REG_PF23,
-			REG_PF24, REG_PF25, REG_PF26, REG_PF27, REG_PF28, REG_PF29, REG_PF30, REG_PF31,
 			/* system registers */
 			REG_OSDTRRX_EL1, REG_DBGBVR0_EL1, REG_DBGBCR0_EL1, REG_DBGWVR0_EL1,
 			REG_DBGWCR0_EL1, REG_DBGBVR1_EL1, REG_DBGBCR1_EL1, REG_DBGWVR1_EL1,
@@ -2058,39 +2050,6 @@ class Arm64Architecture : public Architecture
 			case REG_P30:
 			case REG_P31:
 				return RegisterInfo(reg, 0, 32);
-			case REG_PF0:
-			case REG_PF1:
-			case REG_PF2:
-			case REG_PF3:
-			case REG_PF4:
-			case REG_PF5:
-			case REG_PF6:
-			case REG_PF7:
-			case REG_PF8:
-			case REG_PF9:
-			case REG_PF10:
-			case REG_PF11:
-			case REG_PF12:
-			case REG_PF13:
-			case REG_PF14:
-			case REG_PF15:
-			case REG_PF16:
-			case REG_PF17:
-			case REG_PF18:
-			case REG_PF19:
-			case REG_PF20:
-			case REG_PF21:
-			case REG_PF22:
-			case REG_PF23:
-			case REG_PF24:
-			case REG_PF25:
-			case REG_PF26:
-			case REG_PF27:
-			case REG_PF28:
-			case REG_PF29:
-			case REG_PF30:
-			case REG_PF31:
-				return RegisterInfo(reg, 0, 0);
 		}
 
 		if (reg >= REG_V0_B0 && reg <= REG_V31_B15) {
