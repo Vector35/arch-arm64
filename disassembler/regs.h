@@ -1274,7 +1274,6 @@ enum Register
 	REG_Z28,
 	REG_Z29,
 	REG_Z30,
-	REG_ZZR,
 	REG_Z31,
 	REG_P0,
 	REG_P1,
