@@ -7,115 +7,124 @@
 
 #include "feature_flags.h"
 #include "operations.h"
+
 #include "encodings_dec.h"
 #include "regs.h"
 #include "sysregs.h"
 
 #ifdef _MSC_VER
-#undef REG_NONE // collides with winnt's define
+	#undef REG_NONE  // collides with winnt's define
 #endif
 
 #ifdef __cplusplus
-#define restrict __restrict
+	#define restrict __restrict
 #endif
 
 /* these are used in lookup tables elsewhere, modify with caution */
-enum ArrangementSpec {
-	ARRSPEC_NONE=0,
+enum ArrangementSpec
+{
+	ARRSPEC_NONE = 0,
 
-	ARRSPEC_FULL=1, /* 128-bit v-reg unsplit, eg: REG_V0_Q0 */
+	ARRSPEC_FULL = 1, /* 128-bit v-reg unsplit, eg: REG_V0_Q0 */
 
 	/* 128 bit v-reg considered as... */
-	ARRSPEC_2DOUBLES=2, /* (.2d) two 64-bit double-precision: REG_V0_D1, REG_V0_D0 */
-	ARRSPEC_4SINGLES=3, /* (.4s) four 32-bit single-precision: REG_V0_S3, REG_V0_S2, REG_V0_S1, REG_V0_S0 */
-	ARRSPEC_8HALVES=4, /* (.8h) eight 16-bit half-precision: REG_V0_H7, REG_V0_H6, (..., REG_V0_H0 */
-	ARRSPEC_16BYTES=5, /* (.16b) sixteen 8-bit values: REG_V0_B15, REG_V0_B14, (..., REG_V0_B01 */
+	ARRSPEC_2DOUBLES = 2, /* (.2d) two 64-bit double-precision: REG_V0_D1, REG_V0_D0 */
+	ARRSPEC_4SINGLES =
+	    3, /* (.4s) four 32-bit single-precision: REG_V0_S3, REG_V0_S2, REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_8HALVES =
+	    4, /* (.8h) eight 16-bit half-precision: REG_V0_H7, REG_V0_H6, (..., REG_V0_H0 */
+	ARRSPEC_16BYTES = 5, /* (.16b) sixteen 8-bit values: REG_V0_B15, REG_V0_B14, (..., REG_V0_B01 */
 
 	/* low 64-bit of v-reg considered as... */
-	ARRSPEC_1DOUBLE=6, /* (.d) one 64-bit double-precision: REG_V0_D0 */
-	ARRSPEC_2SINGLES=7, /* (.2s) two 32-bit single-precision: REG_V0_S1, REG_V0_S0 */
-	ARRSPEC_4HALVES=8, /* (.4h) four 16-bit half-precision: REG_V0_H3, REG_V0_H2, REG_V0_H1, REG_V0_H0 */
-	ARRSPEC_8BYTES=9, /* (.8b) eight 8-bit values: REG_V0_B7, REG_V0_B6, (..., REG_V0_B0 */
+	ARRSPEC_1DOUBLE = 6,  /* (.d) one 64-bit double-precision: REG_V0_D0 */
+	ARRSPEC_2SINGLES = 7, /* (.2s) two 32-bit single-precision: REG_V0_S1, REG_V0_S0 */
+	ARRSPEC_4HALVES =
+	    8, /* (.4h) four 16-bit half-precision: REG_V0_H3, REG_V0_H2, REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_8BYTES = 9, /* (.8b) eight 8-bit values: REG_V0_B7, REG_V0_B6, (..., REG_V0_B0 */
 
 	/* low 32-bit of v-reg considered as... */
-	ARRSPEC_1SINGLE=10, /* (.s) one 32-bit single-precision: REG_V0_S0 */
-	ARRSPEC_2HALVES=11, /* (.2h) two 16-bit half-precision: REG_V0_H1, REG_V0_H0 */
-	ARRSPEC_4BYTES=12, /* (.4b) four 8-bit values: REG_V0_B3, REG_V0_B2, REG_V0_B1, REG_V0_B0 */
+	ARRSPEC_1SINGLE = 10, /* (.s) one 32-bit single-precision: REG_V0_S0 */
+	ARRSPEC_2HALVES = 11, /* (.2h) two 16-bit half-precision: REG_V0_H1, REG_V0_H0 */
+	ARRSPEC_4BYTES = 12,  /* (.4b) four 8-bit values: REG_V0_B3, REG_V0_B2, REG_V0_B1, REG_V0_B0 */
 
 	/* low 16-bit of v-reg considered as... */
-	ARRSPEC_1HALF=13, /* (.h) one 16-bit half-precision: REG_V0_H0 */
+	ARRSPEC_1HALF = 13, /* (.h) one 16-bit half-precision: REG_V0_H0 */
 
 	/* low 8-bit of v-reg considered as... */
-	ARRSPEC_1BYTE=14, /* (.b) one 8-bit byte: REG_V0_B0 */
+	ARRSPEC_1BYTE = 14, /* (.b) one 8-bit byte: REG_V0_B0 */
 };
 
 //-----------------------------------------------------------------------------
 // decode return values
 //-----------------------------------------------------------------------------
 
-#define DECODE_STATUS_OK 0 // success! the resulting named encoding is accurate
-#define DECODE_STATUS_RESERVED -1 // spec says this space is reserved, eg: RESERVED_36_asisdsame
-#define DECODE_STATUS_UNMATCHED -2 // decoding logic fell through the spec's checks
-#define DECODE_STATUS_UNALLOCATED -3 // spec says this space is unallocated, eg: UNALLOCATED_10_branch_reg
-#define DECODE_STATUS_UNDEFINED -4 // spec says this encoding is undefined, often due to a disallowed field
-									// or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
-#define DECODE_STATUS_END_OF_INSTRUCTION -5 // spec decode EndOfInstruction(), instruction executes as NOP
-#define DECODE_STATUS_LOST -6 // descended past checks, ie: "SEE encoding_up_higher"
-#define DECODE_STATUS_UNREACHABLE -7 // ran into pcode Unreachable()
-#define DECODE_STATUS_ASSERT_FAILED -8 // failed an assert
+#define DECODE_STATUS_OK        0   // success! the resulting named encoding is accurate
+#define DECODE_STATUS_RESERVED  -1  // spec says this space is reserved, eg: RESERVED_36_asisdsame
+#define DECODE_STATUS_UNMATCHED -2  // decoding logic fell through the spec's checks
+#define DECODE_STATUS_UNALLOCATED \
+	-3  // spec says this space is unallocated, eg: UNALLOCATED_10_branch_reg
+#define DECODE_STATUS_UNDEFINED \
+	-4  // spec says this encoding is undefined, often due to a disallowed field
+	    // or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
+#define DECODE_STATUS_END_OF_INSTRUCTION \
+	-5  // spec decode EndOfInstruction(), instruction executes as NOP
+#define DECODE_STATUS_LOST           -6  // descended past checks, ie: "SEE encoding_up_higher"
+#define DECODE_STATUS_UNREACHABLE    -7  // ran into pcode Unreachable()
+#define DECODE_STATUS_ASSERT_FAILED  -8  // failed an assert
 #define DECODE_STATUS_ERROR_OPERANDS -9
 
 //-----------------------------------------------------------------------------
 // floating point condition register values
 //-----------------------------------------------------------------------------
 
-#define FPCR_AHP ((uint64_t)1 << 26)
-#define FPCR_DN ((uint64_t)1 << 25)
-#define FPCR_FZ ((uint64_t)1 << 24)
-#define FPCR_RMode (uint64_t)0xC00000 // [23,22]
-#define FPCR_Stride (uint64_t)0x300000 // [21,20]
-#define FPCR_FZ16 ((uint64_t)1 << 19)
-#define FPCR_Len (uint64_t)0x30000 // [18:16]
-#define FPCR_IDE ((uint64_t)1 << 15)
-#define FPCR_IXE ((uint64_t)1 << 12)
-#define FPCR_UFE ((uint64_t)1 << 11)
-#define FPCR_OFE ((uint64_t)1 << 10)
-#define FPCR_DZE ((uint64_t)1 << 9)
-#define FPCR_IOE ((uint64_t)1 << 8)
+#define FPCR_AHP    ((uint64_t)1 << 26)
+#define FPCR_DN     ((uint64_t)1 << 25)
+#define FPCR_FZ     ((uint64_t)1 << 24)
+#define FPCR_RMode  (uint64_t)0xC00000  // [23,22]
+#define FPCR_Stride (uint64_t)0x300000  // [21,20]
+#define FPCR_FZ16   ((uint64_t)1 << 19)
+#define FPCR_Len    (uint64_t)0x30000  // [18:16]
+#define FPCR_IDE    ((uint64_t)1 << 15)
+#define FPCR_IXE    ((uint64_t)1 << 12)
+#define FPCR_UFE    ((uint64_t)1 << 11)
+#define FPCR_OFE    ((uint64_t)1 << 10)
+#define FPCR_DZE    ((uint64_t)1 << 9)
+#define FPCR_IOE    ((uint64_t)1 << 8)
 
-#define FPCR_GET_AHP(X) SLICE(X,26,26)
-#define FPCR_GET_DN(X) SLICE(X,25,25)
-#define FPCR_GET_FZ(X) SLICE(X,24,24)
-#define FPCR_GET_RMode(X) SLICE(X,23,22)
-#define FPCR_GET_Stride(X) SLICE(X,21,20)
-#define FPCR_GET_FZ16(X) SLICE(X,19,19)
-#define FPCR_GET_Len(X) SLICE(X,18,16)
-#define FPCR_GET_IDE(X) SLICE(X,15,15)
-#define FPCR_GET_IXE(X) SLICE(X,12,12)
-#define FPCR_GET_UFE(X) SLICE(X,11,11)
-#define FPCR_GET_OFE(X) SLICE(X,10,10)
-#define FPCR_GET_DZE(X) SLICE(X,9,9)
-#define FPCR_GET_IOE(X) SLICE(X,8,8)
+#define FPCR_GET_AHP(X)    SLICE(X, 26, 26)
+#define FPCR_GET_DN(X)     SLICE(X, 25, 25)
+#define FPCR_GET_FZ(X)     SLICE(X, 24, 24)
+#define FPCR_GET_RMode(X)  SLICE(X, 23, 22)
+#define FPCR_GET_Stride(X) SLICE(X, 21, 20)
+#define FPCR_GET_FZ16(X)   SLICE(X, 19, 19)
+#define FPCR_GET_Len(X)    SLICE(X, 18, 16)
+#define FPCR_GET_IDE(X)    SLICE(X, 15, 15)
+#define FPCR_GET_IXE(X)    SLICE(X, 12, 12)
+#define FPCR_GET_UFE(X)    SLICE(X, 11, 11)
+#define FPCR_GET_OFE(X)    SLICE(X, 10, 10)
+#define FPCR_GET_DZE(X)    SLICE(X, 9, 9)
+#define FPCR_GET_IOE(X)    SLICE(X, 8, 8)
 
 //-----------------------------------------------------------------------------
 // disassembly context (INPUT into disassembler)
 //-----------------------------------------------------------------------------
 
-typedef struct context_ {
+typedef struct context_
+{
 	uint32_t insword;
 	uint64_t address;
-	uint64_t features0; // bitmask of ARCH_FEATURE_XXX
-	uint64_t features1; // bitmask of ARCH_FEATURE_XXX
-	//uint32_t exception_level; // used by AArch64.CheckSystemAccess()
-	//uint32_t security_state;
-	uint8_t pstate_btype; // used by BTypeCompatible_BTI()
+	uint64_t features0;  // bitmask of ARCH_FEATURE_XXX
+	uint64_t features1;  // bitmask of ARCH_FEATURE_XXX
+	// uint32_t exception_level; // used by AArch64.CheckSystemAccess()
+	// uint32_t security_state;
+	uint8_t pstate_btype;  // used by BTypeCompatible_BTI()
 	uint8_t pstate_el;
 	uint8_t pstate_uao;
 	bool BTypeCompatible;
 	uint8_t BTypeNext;
-	bool halted; // is CPU halted? used by Halted()
-	uint64_t FPCR; // floating point control register
-	bool EDSCR_HDE; // External Debug Status and Control Register, Halting debug enable
+	bool halted;     // is CPU halted? used by Halted()
+	uint64_t FPCR;   // floating point control register
+	bool EDSCR_HDE;  // External Debug Status and Control Register, Halting debug enable
 
 	/* specification scratchpad: ~300 possible named fields */
 	uint64_t A;
@@ -175,7 +184,8 @@ typedef struct context_ {
 	uint64_t cmp, cmph, cmpl, cmp_eq, cmp_with_zero;
 	uint64_t comment;
 	uint64_t comparison;
-	uint64_t cond; /* careful! this is the pcode scratchpad .cond, NOT the .cond field of a struct InstructionOperand */
+	uint64_t cond; /* careful! this is the pcode scratchpad .cond, NOT the .cond field of a struct
+	                  InstructionOperand */
 	uint64_t condition;
 	uint64_t container_size;
 	uint64_t containers;
@@ -216,7 +226,7 @@ typedef struct context_ {
 	uint64_t has_result;
 	uint64_t hi;
 	uint64_t hw;
-	uint64_t i, i1, i2, i2h, i2l,i3h, i3l;
+	uint64_t i, i1, i2, i2h, i2l, i3h, i3l;
 	uint64_t idxdsize;
 	uint64_t imm;
 	uint64_t imm1;
@@ -393,7 +403,8 @@ typedef struct context_ {
 // Instruction definition (OUTPUT from disassembler)
 //-----------------------------------------------------------------------------
 
-enum OperandClass {
+enum OperandClass
+{
 	NONE = 0,
 	IMM32,
 	IMM64,
@@ -413,22 +424,48 @@ enum OperandClass {
 	IMPLEMENTATION_SPECIFIC
 };
 
-enum Condition {
-	COND_EQ, COND_NE, COND_CS, COND_CC,
-	COND_MI, COND_PL, COND_VS, COND_VC,
-	COND_HI, COND_LS, COND_GE, COND_LT,
-	COND_GT, COND_LE, COND_AL, COND_NV,
+enum Condition
+{
+	COND_EQ,
+	COND_NE,
+	COND_CS,
+	COND_CC,
+	COND_MI,
+	COND_PL,
+	COND_VS,
+	COND_VC,
+	COND_HI,
+	COND_LS,
+	COND_GE,
+	COND_LT,
+	COND_GT,
+	COND_LE,
+	COND_AL,
+	COND_NV,
 	END_CONDITION
 };
 
-enum ShiftType {
-	ShiftType_NONE, ShiftType_LSL, ShiftType_LSR, ShiftType_ASR,
-	ShiftType_ROR, ShiftType_UXTW, ShiftType_SXTW, ShiftType_SXTX,
-	ShiftType_UXTX, ShiftType_SXTB, ShiftType_SXTH, ShiftType_UXTH,
-	ShiftType_UXTB, ShiftType_MSL, ShiftType_END,
+enum ShiftType
+{
+	ShiftType_NONE,
+	ShiftType_LSL,
+	ShiftType_LSR,
+	ShiftType_ASR,
+	ShiftType_ROR,
+	ShiftType_UXTW,
+	ShiftType_SXTW,
+	ShiftType_SXTX,
+	ShiftType_UXTX,
+	ShiftType_SXTB,
+	ShiftType_SXTH,
+	ShiftType_UXTH,
+	ShiftType_UXTB,
+	ShiftType_MSL,
+	ShiftType_END,
 };
 
-enum Group {
+enum Group
+{
 	GROUP_UNALLOCATED,
 	GROUP_DATA_PROCESSING_IMM,
 	GROUP_BRANCH_EXCEPTION_SYSTEM,
@@ -440,20 +477,21 @@ enum Group {
 };
 
 #ifndef __cplusplus
-	typedef enum SystemReg SystemReg;
-	typedef enum OperandClass OperandClass;
-	typedef enum Register Register;
-	typedef enum Condition Condition;
-	typedef enum ShiftType ShiftType;
-	typedef enum Operation Operation;
-	typedef enum Group Group;
-	typedef enum ArrangementSpec ArrangementSpec;
+typedef enum SystemReg SystemReg;
+typedef enum OperandClass OperandClass;
+typedef enum Register Register;
+typedef enum Condition Condition;
+typedef enum ShiftType ShiftType;
+typedef enum Operation Operation;
+typedef enum Group Group;
+typedef enum ArrangementSpec ArrangementSpec;
 #endif
 
 #define MAX_REGISTERS 5
-#define MAX_NAME 16
+#define MAX_NAME      16
 
-struct InstructionOperand {
+struct InstructionOperand
+{
 	OperandClass operandClass;
 	ArrangementSpec arrSpec;
 	Register reg[MAX_REGISTERS];
@@ -475,20 +513,21 @@ struct InstructionOperand {
 	uint32_t shiftValue;
 	ShiftType extend;
 	bool signedImm;
-	char pred_qual; // predicate register qualifier ('z' or 'm')
-	bool mul_vl; // whether MEM_OFFSET has the offset "mul vl"
+	char pred_qual;  // predicate register qualifier ('z' or 'm')
+	bool mul_vl;     // whether MEM_OFFSET has the offset "mul vl"
 
 	/* for class NAME */
 	char name[MAX_NAME];
 };
 
 #ifndef __cplusplus
-	typedef struct InstructionOperand InstructionOperand;
+typedef struct InstructionOperand InstructionOperand;
 #endif
 
 #define MAX_OPERANDS 5
 
-struct Instruction {
+struct Instruction
+{
 	uint32_t insword;
 	enum ENCODING encoding;
 
@@ -503,13 +542,13 @@ typedef struct Instruction Instruction;
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-int aarch64_decompose(uint32_t instructionValue, Instruction *instr, uint64_t address);
-size_t get_register_size(enum Register);
+	int aarch64_decompose(uint32_t instructionValue, Instruction* instr, uint64_t address);
+	size_t get_register_size(enum Register);
 
 #ifdef __cplusplus
 }
 #endif
-
