@@ -84,6 +84,12 @@ DecodeBitMasks_ReturnType DecodeBitMasks(uint8_t /*bit*/ immN, uint8_t /*bit(6)*
 	is from NetBSD sys/arch/aarch64/aarch64/disasm.c */
 bool MoveWidePreferred(uint32_t sf, uint32_t immN, uint32_t immS, uint32_t immR)
 {
+	uint32_t splat = (immN << 6)|immS;
+	if(sf==1 && !((splat & 0x40) == 0x40))
+		return false;
+	if(sf==0 && !((splat & 0x60) == 0x00))
+		return false;
+
 	DecodeBitMasks_ReturnType dbmrt = DecodeBitMasks(sf, immS, immR);
 	uint64_t imm = dbmrt.wmask;
 

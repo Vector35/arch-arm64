@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "feature_flags.h"
 #include "operations.h"
 #include "encodings_dec.h"
 #include "regs.h"
@@ -49,87 +50,6 @@ enum ArrangementSpec {
 };
 
 //-----------------------------------------------------------------------------
-// disassembly target features
-//-----------------------------------------------------------------------------
-
-#define ARCH_FEATURE_BF16 ((uint64_t)1<<0)
-#define ARCH_FEATURE_BTI ((uint64_t)1<<1)
-#define ARCH_FEATURE_DGH ((uint64_t)1<<2)
-#define ARCH_FEATURE_DotProd ((uint64_t)1<<3)
-#define ARCH_FEATURE_FCMA ((uint64_t)1<<4)
-#define ARCH_FEATURE_FHM ((uint64_t)1<<5)
-#define ARCH_FEATURE_FP16 ((uint64_t)1<<6)
-#define ARCH_FEATURE_FRINTTS ((uint64_t)1<<7)
-#define ARCH_FEATURE_FlagM ((uint64_t)1<<8)
-#define ARCH_FEATURE_FlagM2 ((uint64_t)1<<9)
-#define ARCH_FEATURE_I8MM ((uint64_t)1<<10)
-#define ARCH_FEATURE_JSCVT ((uint64_t)1<<11)
-#define ARCH_FEATURE_LOR ((uint64_t)1<<12)
-#define ARCH_FEATURE_LRCPC ((uint64_t)1<<13)
-#define ARCH_FEATURE_LRCPC2 ((uint64_t)1<<14)
-#define ARCH_FEATURE_LS64 ((uint64_t)1<<15)
-#define ARCH_FEATURE_LS64_V ((uint64_t)1<<16)
-#define ARCH_FEATURE_LSE ((uint64_t)1<<17)
-#define ARCH_FEATURE_MTE ((uint64_t)1<<18)
-#define ARCH_FEATURE_PAuth ((uint64_t)1<<19)
-#define ARCH_FEATURE_RAS ((uint64_t)1<<20)
-#define ARCH_FEATURE_RDM ((uint64_t)1<<21)
-#define ARCH_FEATURE_SHA3 ((uint64_t)1<<22)
-#define ARCH_FEATURE_SHA512 ((uint64_t)1<<23)
-#define ARCH_FEATURE_SM3 ((uint64_t)1<<24)
-#define ARCH_FEATURE_SM4 ((uint64_t)1<<25)
-#define ARCH_FEATURE_SPE ((uint64_t)1<<26)
-#define ARCH_FEATURE_TRF ((uint64_t)1<<27)
-#define ARCH_FEATURE_WFxT ((uint64_t)1<<28)
-#define ARCH_FEATURE_XS ((uint64_t)1<<29)
-#define ARCH_FEATURE_MTE2 ((uint64_t)1<<30)
-
-#define ARCH_FEATURE_AESExt ((uint64_t)1<<0)
-#define ARCH_FEATURE_AtomicExt ((uint64_t)1<<1)
-#define ARCH_FEATURE_BF16Ext ((uint64_t)1<<2)
-#define ARCH_FEATURE_BTIExt ((uint64_t)1<<3)
-#define ARCH_FEATURE_Bit128PMULLExt ((uint64_t)1<<4)
-#define ARCH_FEATURE_CRCExt ((uint64_t)1<<5)
-#define ARCH_FEATURE_DGHExt ((uint64_t)1<<6)
-#define ARCH_FEATURE_DITExt ((uint64_t)1<<7)
-#define ARCH_FEATURE_DOTPExt ((uint64_t)1<<8)
-#define ARCH_FEATURE_FCADDExt ((uint64_t)1<<9)
-#define ARCH_FEATURE_FJCVTZSExt ((uint64_t)1<<10)
-#define ARCH_FEATURE_FP16Ext ((uint64_t)1<<11)
-#define ARCH_FEATURE_FP16MulNoRoundingToFP32Ext ((uint64_t)1<<12)
-#define ARCH_FEATURE_FeatLS64 ((uint64_t)1<<13)
-#define ARCH_FEATURE_FeatWFxT ((uint64_t)1<<14)
-#define ARCH_FEATURE_FlagFormatExt ((uint64_t)1<<15)
-#define ARCH_FEATURE_FlagManipulateExt ((uint64_t)1<<16)
-#define ARCH_FEATURE_FrintExt ((uint64_t)1<<17)
-#define ARCH_FEATURE_Int8MatMulExt ((uint64_t)1<<18)
-#define ARCH_FEATURE_MTE2Ext ((uint64_t)1<<19)
-#define ARCH_FEATURE_MTEExt ((uint64_t)1<<20)
-#define ARCH_FEATURE_NVExt ((uint64_t)1<<21)
-#define ARCH_FEATURE_PACExt ((uint64_t)1<<22)
-#define ARCH_FEATURE_PANExt ((uint64_t)1<<23)
-#define ARCH_FEATURE_QRDMLAHExt ((uint64_t)1<<24)
-#define ARCH_FEATURE_RASExt ((uint64_t)1<<25)
-#define ARCH_FEATURE_SBExt ((uint64_t)1<<26)
-#define ARCH_FEATURE_SHA1Ext ((uint64_t)1<<27)
-#define ARCH_FEATURE_SHA256Ext ((uint64_t)1<<28)
-#define ARCH_FEATURE_SHA3Ext ((uint64_t)1<<29)
-#define ARCH_FEATURE_SHA512Ext ((uint64_t)1<<30)
-#define ARCH_FEATURE_SM3Ext ((uint64_t)1<<31)
-#define ARCH_FEATURE_SM4Ext ((uint64_t)1<<32)
-#define ARCH_FEATURE_SSBSExt ((uint64_t)1<<33)
-#define ARCH_FEATURE_SVE ((uint64_t)1<<34)
-#define ARCH_FEATURE_SelfHostedTrace ((uint64_t)1<<35)
-#define ARCH_FEATURE_StatisticalProfiling ((uint64_t)1<<36)
-#define ARCH_FEATURE_UAOExt ((uint64_t)1<<37)
-#define ARCH_FEATURE_VirtHostExt ((uint64_t)1<<38)
-#define ARCH_FEATURE_SVEFP32MatMulExt ((uint64_t)1<<39)
-#define ARCH_FEATURE_SVEFP64MatMulExt ((uint64_t)1<<40)
-#define ARCH_FEATURE_FeatXS ((uint64_t)1<<41)
-
-#define ARCH_FEATURES_ALL 0xFFFFFFFFFFFFFFFF
-
-//-----------------------------------------------------------------------------
 // decode return values
 //-----------------------------------------------------------------------------
 
@@ -140,9 +60,10 @@ enum ArrangementSpec {
 #define DECODE_STATUS_UNDEFINED -4 // spec says this encoding is undefined, often due to a disallowed field
 									// or a missing feature, eg: "if !HaveBF16Ext() then UNDEFINED;"
 #define DECODE_STATUS_END_OF_INSTRUCTION -5 // spec decode EndOfInstruction(), instruction executes as NOP
-#define DECODE_STATUS_LOST -6 // descended past a checks, ie: "SEE encoding_up_higher"
+#define DECODE_STATUS_LOST -6 // descended past checks, ie: "SEE encoding_up_higher"
 #define DECODE_STATUS_UNREACHABLE -7 // ran into pcode Unreachable()
 #define DECODE_STATUS_ASSERT_FAILED -8 // failed an assert
+#define DECODE_STATUS_ERROR_OPERANDS -9
 
 //-----------------------------------------------------------------------------
 // floating point condition register values
@@ -208,10 +129,11 @@ typedef struct context_ {
 	uint64_t C;
 	uint64_t CRm;
 	uint64_t CRn;
-	uint64_t D;
+	uint64_t dst, D;
 	uint64_t E;
 	uint64_t H;
 	uint64_t HCR_EL2_E2H, HCR_EL2_NV, HCR_EL2_NV1, HCR_EL2_TGE;
+	uint64_t k;
 	uint64_t L;
 	uint64_t LL;
 	uint64_t M;
@@ -221,8 +143,9 @@ typedef struct context_ {
 	uint64_t P;
 	uint64_t Pd, Pdm, Pdn, Pg, Pm, Pn, Pt;
 	uint64_t Q, Qa, Qd, Qm, Qn, Qt, Qt2;
+	uint64_t reason, retry;
 	uint64_t R, Ra, Rd, Rdn, Rm, Rmhi, Rn, Rs, Rt, Rt2;
-	uint64_t S, Sa, Sd, Sm, Sn, St, St2;
+	uint64_t s1, s2, sel1, sel2, S, Sa, Sd, Sm, Sn, St, St2;
 	uint64_t S10;
 	uint64_t SCTLR_EL1_UMA;
 	uint64_t T;
@@ -259,12 +182,9 @@ typedef struct context_ {
 	uint64_t countop;
 	uint64_t crc32c;
 	uint64_t csize;
-	uint64_t d;
+	uint64_t d, da, data, datasize, double_table;
 	uint64_t dtype, dtypeh, dtypel;
 	uint64_t d_esize;
-	uint64_t da;
-	uint64_t data;
-	uint64_t datasize;
 	uint64_t decrypt;
 	uint64_t destsize;
 	uint64_t dm;
@@ -296,7 +216,7 @@ typedef struct context_ {
 	uint64_t has_result;
 	uint64_t hi;
 	uint64_t hw;
-	uint64_t i, i1, i2, i3h, i3l;
+	uint64_t i, i1, i2, i2h, i2l,i3h, i3l;
 	uint64_t idxdsize;
 	uint64_t imm;
 	uint64_t imm1;
@@ -405,8 +325,8 @@ typedef struct context_ {
 	uint64_t rounding;
 	uint64_t rpt;
 	uint64_t rsize;
-	uint64_t rn_unknown;
-	uint64_t rt_unknown;
+	uint64_t rn_unknown, rt_unknown;
+	uint64_t rw;
 	uint64_t s;
 	uint64_t s_esize;
 	uint64_t saturating;
@@ -442,8 +362,7 @@ typedef struct context_ {
 	uint64_t sys_op1;
 	uint64_t sys_op2;
 	uint64_t sz;
-	uint64_t t;
-	uint64_t t2;
+	uint64_t t, t2, tb;
 	uint64_t tag_checked;
 	uint64_t tag_offset;
 	uint64_t target_level;
@@ -466,7 +385,7 @@ typedef struct context_ {
 	uint64_t wmask;
 	uint64_t writeback;
 	uint64_t xs;
-	uint64_t zero_data;
+	uint64_t Zk, zero_data;
 
 } context;
 
