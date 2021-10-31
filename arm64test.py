@@ -2099,7 +2099,7 @@ test_cases = \
 	(b'\x21\xF0\x9F\xF8', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xFFFFFFFFFFFFFFFF)))]))'), # prfum pldl1strm, [x1, #-0x1]
 	(b'\x21\x00\x80\xF9', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_REG.q(x1))]))'), # prfm pldl1strm, [x1]
 	(b'\x24\x98\x41\xBA', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_ULE,None),1,3);' + \
-						 ' LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0x1));' + \
+						 ' LLIL_ADD.q{*}(LLIL_REG.q(x1),LLIL_CONST.q(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -2147,16 +2147,15 @@ test_cases = \
 #	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_CONST.d(0x4)]))'), # msr daifclr, #0x4
 	(b'\x00\x10\x3E\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(sctlr_el3)]))'), # mrs x0, sctlr_el3
 	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NEG,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w6),LLIL_CONST.d(0x12));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w6),LLIL_CONST.d(0x12));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w6, #18, #1, mi
-#	# this is funky: LLIL_SUB() is optmized away, and we needed it for the IL_FLAGWRITE_ALL, did it have effect?
 	(b'\x62\x08\x40\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w3),LLIL_CONST.d(0x0));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w3),LLIL_CONST.d(0x0));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -2164,7 +2163,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w3, #0, #2, eq
 	(b'\x43\xBA\x59\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SLT,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w18),LLIL_CONST.d(0x19));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w18),LLIL_CONST.d(0x19));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -2172,7 +2171,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w18, #25, #3, lt
 	(b'\xC4\x29\x5B\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_UGE,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w14),LLIL_CONST.d(0x1B));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w14),LLIL_CONST.d(0x1B));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -2180,7 +2179,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w14, #27, #4, hs
 	(b'\x24\x08\x5B\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w1),LLIL_CONST.d(0x1B));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w1),LLIL_CONST.d(0x1B));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -2188,7 +2187,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w1, #27, #4, eq
 	(b'\x22\x6A\x41\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_O,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w17),LLIL_CONST.d(0x1));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w17),LLIL_CONST.d(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -2196,7 +2195,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w17, #1, #2, vs
 	(b'\xA8\xA8\x41\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SGE,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w5),LLIL_CONST.d(0x1));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w5),LLIL_CONST.d(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -2204,7 +2203,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w5, #1, #8, ge
 	(b'\x08\x49\x5E\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NEG,None),1,3);' + \
-						 ' LLIL_SUB.d(LLIL_REG.d(w8),LLIL_CONST.d(0x1E));' + \
+						 ' LLIL_SUB.d{*}(LLIL_REG.d(w8),LLIL_CONST.d(0x1E));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -2304,6 +2303,5 @@ if __name__ == '__main__':
 		sys.exit(-1)
 
 if __name__ == 'arm64test':
-	#if test_all():
-	#	print('success!')
-	pass
+	if test_all():
+		print('success!')
