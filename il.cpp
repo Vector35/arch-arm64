@@ -646,6 +646,29 @@ static int unpack_vector(InstructionOperand& oper, Register* result)
 	return 0;
 }
 
+/* if we have two operands that have the same arrangement spec, instead of treating them as
+    distinct sets of registers, see if we can consolidate the set of registers into a single
+    larger register. This allows us to easily lift things like 'mov v0.16b, v1.16b' as
+    'mov v0, v1' */
+static int consolidate_vector(
+		InstructionOperand& operand1,
+		InstructionOperand& operand2,
+		Register *result)
+{
+	/* make sure both our operand classes are single regs */
+	if (operand1.operandClass != REG || operand2.operandClass != REG)
+		return 0;
+
+	/* make sure our arrSpec's match. We need this to deal with cases where the arrSpec might
+        have different sizes, e.g. 'uxtl v2.2d, v8.2s'.*/
+	if (operand1.arrSpec != operand2.arrSpec)
+		return 0;
+
+	result[0] = v_consolidate_lookup[operand1.reg[0]-REG_V0][operand1.arrSpec];
+	result[1] = v_consolidate_lookup[operand2.reg[0]-REG_V0][operand2.arrSpec];
+
+	return 1;
+}
 
 static void LoadStoreOperandPair(LowLevelILFunction& il, bool load, InstructionOperand& operand1,
     InstructionOperand& operand2, InstructionOperand& operand3)
@@ -1700,10 +1723,15 @@ bool GetLowLevelILForInstruction(
 		Register regs[16];
 		int n = unpack_vector(operand1, regs);
 
-		if (n == 1)
+		if (n == 1) {
 			il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, operand2, get_register_size(regs[0]))));
-		else
-			ABORT_LIFT;
+		} else {
+			Register cregs[2];
+			if (consolidate_vector(operand1, operand2, cregs))
+				il.AddInstruction(ILSETREG(cregs[0], ILREG(cregs[1])));
+			else
+				ABORT_LIFT;
+		}
 
 		break;
 	}
