@@ -658,7 +658,6 @@ const char *get_system_register_name(enum SystemReg sr)
 		case 65297: return "cntps_ctl_el1";
 		case 65298: return "cntps_cval_el1";
 		case 65299: return "spsel";
-		case 65300: return "unknown_catchall";
 		default: return "";
 	}
 }
