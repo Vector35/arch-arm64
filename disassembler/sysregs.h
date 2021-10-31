@@ -654,7 +654,6 @@ enum SystemReg {
 	REG_CNTPS_CVAL_EL1=65298,
 	/* exceptional system registers */
 	REG_PSTATE_SPSEL=65299, // (op0,op1,crn,crm,op2)=(0,0,4,9,5) doesn't map to [SYSREG_NONE+1, SYSREG_END)
-	/* end marker, needed for other reg defines */
 	SYSREG_END=65300,
 };
 

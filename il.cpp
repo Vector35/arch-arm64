@@ -1775,7 +1775,7 @@ bool GetLowLevelILForInstruction(
 			        ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
 			    operand2.sysreg, addr, operand2.implspec[0], operand2.implspec[1], operand2.implspec[2],
 			    operand2.implspec[3], operand2.implspec[4]);
-			reg = il.Register(8, SYSREG_UNKNOWN);
+			reg = il.Register(8, REG_NONE);
 		}
 
 		il.AddInstruction(
@@ -1803,7 +1803,7 @@ bool GetLowLevelILForInstruction(
 			        ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
 			    dst, addr, operand1.implspec[0], operand1.implspec[1], operand1.implspec[2],
 			    operand1.implspec[3], operand1.implspec[4]);
-			dst = SYSREG_UNKNOWN;
+			dst = REG_NONE;
 		}
 
 		switch (operand2.operandClass)
