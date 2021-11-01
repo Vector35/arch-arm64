@@ -1351,6 +1351,9 @@ class Arm64Architecture : public Architecture
 		if (reg_ > SYSREG_NONE && reg_ < SYSREG_END)
 			return get_system_register_name((enum SystemReg)reg_);
 
+		if (reg_ == FAKEREG_SYSREG_UNKNOWN)
+			return "sysreg_unknown";
+
 		if (reg_ == FAKEREG_SYSCALL_INFO)
 			return "syscall_info";
 
@@ -1706,6 +1709,9 @@ class Arm64Architecture : public Architecture
 			REG_ICC_SRE_EL3, REG_ICC_IGRPEN1_EL3, REG_TPIDR_EL3, REG_SCXTNUM_EL3,
 			REG_CNTPS_TVAL_EL1, REG_CNTPS_CTL_EL1, REG_CNTPS_CVAL_EL1, REG_PSTATE_SPSEL,
 			/* fake registers */
+			FAKEREG_SYSREG_UNKNOWN, /* acts as an input/output to ARM64_INTRIN_MSR,
+										ARM64_INTRIN_MRS intrinsics when the sysreg
+										has no name (is implementation specific) */
 			FAKEREG_SYSCALL_INFO
 		};
 
@@ -2081,6 +2087,9 @@ class Arm64Architecture : public Architecture
 			uint32_t idx = r % 2;
 			return RegisterInfo(REG_V0 + v, idx * 8, 8);
 		}
+
+		if (reg == FAKEREG_SYSREG_UNKNOWN)
+			return RegisterInfo(reg, 0, 8);
 
 		if (reg == FAKEREG_SYSCALL_INFO)
 			return RegisterInfo(reg, 0, 4);

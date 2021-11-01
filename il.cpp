@@ -1772,10 +1772,10 @@ bool GetLowLevelILForInstruction(
 		if (strlen(name) == 0)
 		{
 			LogWarn("Unknown system register %d @ 0x%" PRIx64
-			        ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+			        ": S%d_%d_c%d_c%d_%d, using generic system register instead\n",
 			    operand2.sysreg, addr, operand2.implspec[0], operand2.implspec[1], operand2.implspec[2],
 			    operand2.implspec[3], operand2.implspec[4]);
-			reg = il.Register(8, REG_NONE);
+			reg = il.Register(8, FAKEREG_SYSREG_UNKNOWN);
 		}
 
 		il.AddInstruction(
@@ -1800,10 +1800,10 @@ bool GetLowLevelILForInstruction(
 		if (strlen(name) == 0)
 		{
 			LogWarn("Unknown system register %d @ 0x%" PRIx64
-			        ": S%d_%d_c%d_c%d_%d, using catch-all system register instead\n",
+			        ": S%d_%d_c%d_c%d_%d, using generic system register instead\n",
 			    dst, addr, operand1.implspec[0], operand1.implspec[1], operand1.implspec[2],
 			    operand1.implspec[3], operand1.implspec[4]);
-			dst = REG_NONE;
+			dst = FAKEREG_SYSREG_UNKNOWN;
 		}
 
 		switch (operand2.operandClass)

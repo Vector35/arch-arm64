@@ -3,6 +3,24 @@
 RET = b'\xc0\x03\x5f\xd6'
 
 tests_ucvtf = [
+    # msr, mrs with unnamed (implementation specific) sysregs
+	(b'\x2B\x19\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x11)]))'), # msr s3_3_c1_c9_1, x11
+	(b'\xEE\x47\x1E\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'), # msr s3_6_c4_c7_7, x14
+	(b'\x39\xB5\x15\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x25)]))'), # msr s2_5_c11_c5_1, x25
+	(b'\x87\xBF\x11\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'), # msr s2_1_c11_c15_4, x7
+	(b'\x3E\x53\x39\xD5', 'LLIL_INTRINSIC([x30],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x30, s3_1_c5_c3_1
+	(b'\x5D\x93\x3C\xD5', 'LLIL_INTRINSIC([x29],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x29, s3_4_c9_c3_2
+	(b'\x30\x0E\x34\xD5', 'LLIL_INTRINSIC([x16],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x16, s2_4_c0_c14_1
+	(b'\x3A\x8E\x33\xD5', 'LLIL_INTRINSIC([x26],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x26, s2_3_c8_c14_1
+    # msr, mrs with named sysregs
+	(b'\x36\xE2\x1C\xD5', 'LLIL_INTRINSIC([cnthp_ctl_el2],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x22)]))'), # msr cnthp_ctl_el2, x22
+	(b'\xF4\xEA\x1B\xD5', 'LLIL_INTRINSIC([pmevcntr23_el0],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x20)]))'), # msr pmevcntr23_el0, x20
+	(b'\x05\xE1\x18\xD5', 'LLIL_INTRINSIC([cntkctl_el1],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'), # msr cntkctl_el1, x5
+	(b'\x00\xE2\x1D\xD5', 'LLIL_INTRINSIC([cntp_tval_el02],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr cntp_tval_el02, x
+	(b'\xF9\x20\x31\xD5', 'LLIL_INTRINSIC([x25],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(trcdvcmr4)]))'), # mrs x25, trcdvcmr4
+	(b'\x4D\xC9\x3C\xD5', 'LLIL_INTRINSIC([x13],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(ich_ap1r2_el2)]))'), # mrs x13, ich_ap1r2_el2
+	(b'\xC4\xC8\x38\xD5', 'LLIL_INTRINSIC([x4],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(icc_ap0r2_el1)]))'), # mrs x4, icc_ap0r2_el1
+	(b'\x80\x10\x30\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(oslar_el1)]))'), # mrs x0, oslar_el1
 	# when same input/output register, encoding is UCVTF_asisdmisc_R
 	# ucvtf s16, s7                                                    UCVTF_asisdmisc_R
 	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s7)]))'),
@@ -1691,8 +1709,8 @@ test_cases = \
 	(b'\xCB\x10\xC0\xDA', 'LLIL_INTRINSIC([x11],_CountLeadingZeros,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # clz     x11, x6
 	(b'\x63\x00\xC0\xDA', 'LLIL_INTRINSIC([x3],__rbit,LLIL_CALL_PARAM([LLIL_REG.q(x3)]))'), # rbit    x3, x3
 	# Unknown system register
-	(b'\x21\x00\x1B\xD5', 'LLIL_INTRINSIC([unknown_catchall],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
-	(b'\x23\x00\x3B\xD5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(unknown_catchall)]))'), # mrs x3, s3_3_c0_c0_1
+	(b'\x21\x00\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
+	(b'\x23\x00\x3B\xD5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x3, s3_3_c0_c0_1
 	(b'\xE0\x03\x9F\xD6', 'LLIL_INTRINSIC([],_eret,LLIL_CALL_PARAM([]));' + \
 						 ' LLIL_TRAP(0)'), # eret
 	(b'\x00\x08\x21\x1E', 'LLIL_SET_REG.d(s0,LLIL_FMUL.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fmul s0, s0, s1
