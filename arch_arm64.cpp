@@ -2113,6 +2113,8 @@ class Arm64Architecture : public Architecture
 			system_regs.push_back(ii);
 		}
 
+		system_regs.push_back(FAKEREG_SYSREG_UNKNOWN);
+
 		return system_regs;
 	}
 };
