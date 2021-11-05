@@ -3213,6 +3213,7 @@ extern "C"
 		// Register the architectures with the binary format parsers so that they know when to use
 		// these architectures for disassembling an executable file
 		BinaryViewType::RegisterArchitecture("Mach-O", 0x0100000c, LittleEndian, arm64);
+		BinaryViewType::RegisterArchitecture("Mach-O", 0x0200000c, LittleEndian, arm64);
 		BinaryViewType::RegisterArchitecture("ELF", 0xb7, LittleEndian, arm64);
 		BinaryViewType::RegisterArchitecture("ELF", 0xb7, BigEndian, arm64);
 		BinaryViewType::RegisterArchitecture("COFF", 0xaa64, LittleEndian, arm64);
