@@ -3147,15 +3147,17 @@ public:
 				reloc.baseRelative = false;
 				reloc.size = 4;
 				break;
+			case PE_IMAGE_REL_ARM64_SECREL:
+			case PE_IMAGE_REL_ARM64_SECTION:
+				// TODO: implement these, but for now, just don't warn about them
+				break;
 			case PE_IMAGE_REL_ARM64_SECREL_LOW12A:
 				// TODO
 			case PE_IMAGE_REL_ARM64_SECREL_HIGH12A:
 				// TODO
 			case PE_IMAGE_REL_ARM64_SECREL_LOW12L:
 				// TODO
-			case PE_IMAGE_REL_ARM64_SECREL:
 			case PE_IMAGE_REL_ARM64_TOKEN:
-			case PE_IMAGE_REL_ARM64_SECTION:
 			default:
 				reloc.type = UnhandledRelocation;
 				relocTypes.insert(reloc.nativeType);
