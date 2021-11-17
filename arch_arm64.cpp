@@ -3092,6 +3092,20 @@ public:
 			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
 			break;
 		}
+		case PE_IMAGE_REL_ARM64_SECTION:
+			// TODO: test this implementation, but for now, just don't warn about it
+			dest16[0] = info.sectionIndex + 1;
+			break;
+		case PE_IMAGE_REL_ARM64_SECREL:
+		{
+			// TODO: test this implementation, but for now, just don't warn about it
+			auto sections = view->GetSectionsAt(info.target);
+			if (sections.size() > 0)
+			{
+				dest32[0] = info.target - sections[0]->GetStart();
+			}
+			break;
+		}
 		case PE_IMAGE_REL_ARM64_ADDR32NB:
 		case PE_IMAGE_REL_ARM64_ADDR64:
 		case IMAGE_REL_ARM64_REL32:
@@ -3147,9 +3161,17 @@ public:
 				reloc.baseRelative = false;
 				reloc.size = 4;
 				break;
-			case PE_IMAGE_REL_ARM64_SECREL:
 			case PE_IMAGE_REL_ARM64_SECTION:
-				// TODO: implement these, but for now, just don't warn about them
+				// The 16-bit section index of the section that contains the target. This is used to support debugging information.
+				reloc.baseRelative = false;
+				reloc.size = 2;
+				reloc.addend = 0;
+				break;
+			case PE_IMAGE_REL_ARM64_SECREL:
+				// The 32-bit offset of the target from the beginning of its section. This is used to support debugging information and static thread local storage.				reloc.baseRelative = false;
+				reloc.baseRelative = false;
+				reloc.size = 4;
+				reloc.addend = 0;
 				break;
 			case PE_IMAGE_REL_ARM64_SECREL_LOW12A:
 				// TODO
