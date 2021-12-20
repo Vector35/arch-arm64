@@ -10,6 +10,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_ADCS: return "adcs";
 		case ARM64_ADD: return "add";
 		case ARM64_ADDG: return "addg";
+		case ARM64_ADDHA: return "addha";
 		case ARM64_ADDHN: return "addhn";
 		case ARM64_ADDHN2: return "addhn2";
 		case ARM64_ADDHNB: return "addhnb";
@@ -18,6 +19,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_ADDPL: return "addpl";
 		case ARM64_ADDS: return "adds";
 		case ARM64_ADDV: return "addv";
+		case ARM64_ADDVA: return "addva";
 		case ARM64_ADDVL: return "addvl";
 		case ARM64_ADR: return "adr";
 		case ARM64_ADRP: return "adrp";
@@ -64,6 +66,8 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_BFMLALB: return "bfmlalb";
 		case ARM64_BFMLALT: return "bfmlalt";
 		case ARM64_BFMMLA: return "bfmmla";
+		case ARM64_BFMOPA: return "bfmopa";
+		case ARM64_BFMOPS: return "bfmops";
 		case ARM64_BFXIL: return "bfxil";
 		case ARM64_BGRP: return "bgrp";
 		case ARM64_BIC: return "bic";
@@ -299,6 +303,8 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_FMLSLB: return "fmlslb";
 		case ARM64_FMLSLT: return "fmlslt";
 		case ARM64_FMMLA: return "fmmla";
+		case ARM64_FMOPA: return "fmopa";
+		case ARM64_FMOPS: return "fmops";
 		case ARM64_FMOV: return "fmov";
 		case ARM64_FMSB: return "fmsb";
 		case ARM64_FMSUB: return "fmsub";
@@ -358,6 +364,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_LD1B: return "ld1b";
 		case ARM64_LD1D: return "ld1d";
 		case ARM64_LD1H: return "ld1h";
+		case ARM64_LD1Q: return "ld1q";
 		case ARM64_LD1R: return "ld1r";
 		case ARM64_LD1RB: return "ld1rb";
 		case ARM64_LD1RD: return "ld1rd";
@@ -575,6 +582,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_MLS: return "mls";
 		case ARM64_MNEG: return "mneg";
 		case ARM64_MOV: return "mov";
+		case ARM64_MOVA: return "mova";
 		case ARM64_MOVI: return "movi";
 		case ARM64_MOVK: return "movk";
 		case ARM64_MOVN: return "movn";
@@ -659,6 +667,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_REV32: return "rev32";
 		case ARM64_REV64: return "rev64";
 		case ARM64_REVB: return "revb";
+		case ARM64_REVD: return "revd";
 		case ARM64_REVH: return "revh";
 		case ARM64_REVW: return "revw";
 		case ARM64_RMIF: return "rmif";
@@ -703,6 +712,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_SBFIZ: return "sbfiz";
 		case ARM64_SBFM: return "sbfm";
 		case ARM64_SBFX: return "sbfx";
+		case ARM64_SCLAMP: return "sclamp";
 		case ARM64_SCVTF: return "scvtf";
 		case ARM64_SDIV: return "sdiv";
 		case ARM64_SDIVR: return "sdivr";
@@ -765,7 +775,11 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_SMLSLT: return "smlslt";
 		case ARM64_SMMLA: return "smmla";
 		case ARM64_SMNEGL: return "smnegl";
+		case ARM64_SMOPA: return "smopa";
+		case ARM64_SMOPS: return "smops";
 		case ARM64_SMOV: return "smov";
+		case ARM64_SMSTART: return "smstart";
+		case ARM64_SMSTOP: return "smstop";
 		case ARM64_SMSUBL: return "smsubl";
 		case ARM64_SMULH: return "smulh";
 		case ARM64_SMULL: return "smull";
@@ -865,6 +879,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_ST1B: return "st1b";
 		case ARM64_ST1D: return "st1d";
 		case ARM64_ST1H: return "st1h";
+		case ARM64_ST1Q: return "st1q";
 		case ARM64_ST1W: return "st1w";
 		case ARM64_ST2: return "st2";
 		case ARM64_ST2B: return "st2b";
@@ -982,6 +997,8 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_SUBR: return "subr";
 		case ARM64_SUBS: return "subs";
 		case ARM64_SUDOT: return "sudot";
+		case ARM64_SUMOPA: return "sumopa";
+		case ARM64_SUMOPS: return "sumops";
 		case ARM64_SUNPKHI: return "sunpkhi";
 		case ARM64_SUNPKLO: return "sunpklo";
 		case ARM64_SUQADD: return "suqadd";
@@ -1043,6 +1060,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_UBFIZ: return "ubfiz";
 		case ARM64_UBFM: return "ubfm";
 		case ARM64_UBFX: return "ubfx";
+		case ARM64_UCLAMP: return "uclamp";
 		case ARM64_UCVTF: return "ucvtf";
 		case ARM64_UDF: return "udf";
 		case ARM64_UDIV: return "udiv";
@@ -1068,6 +1086,8 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_UMLSLT: return "umlslt";
 		case ARM64_UMMLA: return "ummla";
 		case ARM64_UMNEGL: return "umnegl";
+		case ARM64_UMOPA: return "umopa";
+		case ARM64_UMOPS: return "umops";
 		case ARM64_UMOV: return "umov";
 		case ARM64_UMSUBL: return "umsubl";
 		case ARM64_UMULH: return "umulh";
@@ -1119,6 +1139,8 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_USHLLT: return "ushllt";
 		case ARM64_USHR: return "ushr";
 		case ARM64_USMMLA: return "usmmla";
+		case ARM64_USMOPA: return "usmopa";
+		case ARM64_USMOPS: return "usmops";
 		case ARM64_USQADD: return "usqadd";
 		case ARM64_USRA: return "usra";
 		case ARM64_USUBL: return "usubl";
@@ -1161,6 +1183,7 @@ const char *operation_to_str(enum Operation oper)
 		case ARM64_XTN: return "xtn";
 		case ARM64_XTN2: return "xtn2";
 		case ARM64_YIELD: return "yield";
+		case ARM64_ZERO: return "zero";
 		case ARM64_ZIP1: return "zip1";
 		case ARM64_ZIP2: return "zip2";
 		case ARM64_ERROR:

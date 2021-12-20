@@ -91,6 +91,8 @@ char* oper_class_to_str(enum OperandClass c)
 		return "NAME";
 	case IMPLEMENTATION_SPECIFIC:
 		return "IMPLEMENTATION_SPECIFIC";
+	case SME_TILE:
+		return "SME_TILE";
 	default:
 		return "ERROR";
 	}

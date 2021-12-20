@@ -208,6 +208,13 @@ enum CountOp
 	CountOp_CLZ
 };
 
+enum DSBAlias
+{
+	DSBAlias_DSB = 0,
+	DSBAlias_SSBB,
+	DSBAlias_PSSBB
+};
+
 enum MBReqDomain
 {
 	MBReqDomain_ERROR = 0,
@@ -304,7 +311,10 @@ enum PSTATEField
 	PSTATEField_DIT,  // Armv8.4
 	PSTATEField_SSBS,
 	PSTATEField_TCO,  // Armv8.5
-	PSTATEField_SP
+	PSTATEField_SP,
+	PSTATEField_SVCRZA,
+	PSTATEField_SVCRSM,
+	PSTATEField_SVCRSMZA
 };
 
 enum SVECmp

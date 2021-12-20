@@ -8,142 +8,6 @@
 #include "decode2.h"
 #include "pcode.h"
 
-int decode_iclass_sve_int_bin_pred_log(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>16)&7;
-	if(!opc) return orr_z_p_zz(ctx, dec); // -> orr_z_p_zz_
-	if(opc==1) return eor_z_p_zz(ctx, dec); // -> eor_z_p_zz_
-	if(opc==2) return and_z_p_zz(ctx, dec); // -> and_z_p_zz_
-	if(opc==3) return bic_z_p_zz(ctx, dec); // -> bic_z_p_zz_
-	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_134);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_arit_0(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>16)&7;
-	if(!opc) return add_z_p_zz(ctx, dec); // -> add_z_p_zz_
-	if(opc==1) return sub_z_p_zz(ctx, dec); // -> sub_z_p_zz_
-	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_120);
-	if(opc==3) return subr_z_p_zz(ctx, dec); // -> subr_z_p_zz_
-	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_123);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_div(context *ctx, Instruction *dec)
-{
-	uint32_t R=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!R && !U) return sdiv_z_p_zz(ctx, dec); // -> sdiv_z_p_zz_
-	if(!R && U) return udiv_z_p_zz(ctx, dec); // -> udiv_z_p_zz_
-	if(R && !U) return sdivr_z_p_zz(ctx, dec); // -> sdivr_z_p_zz_
-	if(R && U) return udivr_z_p_zz(ctx, dec); // -> udivr_z_p_zz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_arit_1(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>17)&3, U=(INSWORD>>16)&1;
-	if(!opc && !U) return smax_z_p_zz(ctx, dec); // -> smax_z_p_zz_
-	if(!opc && U) return umax_z_p_zz(ctx, dec); // -> umax_z_p_zz_
-	if(opc==1 && !U) return smin_z_p_zz(ctx, dec); // -> smin_z_p_zz_
-	if(opc==1 && U) return umin_z_p_zz(ctx, dec); // -> umin_z_p_zz_
-	if(opc==2 && !U) return sabd_z_p_zz(ctx, dec); // -> sabd_z_p_zz_
-	if(opc==2 && U) return uabd_z_p_zz(ctx, dec); // -> uabd_z_p_zz_
-	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_126);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_arit_2(context *ctx, Instruction *dec)
-{
-	uint32_t H=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!H && !U) return mul_z_p_zz(ctx, dec); // -> mul_z_p_zz_
-	if(!H && U) UNALLOCATED(ENC_UNALLOCATED_128);
-	if(H && !U) return smulh_z_p_zz(ctx, dec); // -> smulh_z_p_zz_
-	if(H && U) return umulh_z_p_zz(ctx, dec); // -> umulh_z_p_zz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_reduce_2(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>16)&3;
-	if(!opc) return orv_r_p_z(ctx, dec); // -> orv_r_p_z_
-	if(opc==1) return eorv_r_p_z(ctx, dec); // -> eorv_r_p_z_
-	if(opc==2) return andv_r_p_z(ctx, dec); // -> andv_r_p_z_
-	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_133);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_movprfx_pred(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>17)&3;
-	if(!opc) return movprfx_z_p_z(ctx, dec); // -> movprfx_z_p_z_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_129);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_131);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_reduce_0(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!op && !U) return saddv_r_p_z(ctx, dec); // -> saddv_r_p_z_
-	if(!op && U) return uaddv_r_p_z(ctx, dec); // -> uaddv_r_p_z_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_121);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_reduce_1(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!op && !U) return smaxv_r_p_z(ctx, dec); // -> smaxv_r_p_z_
-	if(!op && U) return umaxv_r_p_z(ctx, dec); // -> umaxv_r_p_z_
-	if(op && !U) return sminv_r_p_z(ctx, dec); // -> sminv_r_p_z_
-	if(op && U) return uminv_r_p_z(ctx, dec); // -> uminv_r_p_z_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_shift_0(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>18)&3, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!opc && !L && !U) return asr_z_p_zi(ctx, dec); // -> asr_z_p_zi_
-	if(!opc && !L && U) return lsr_z_p_zi(ctx, dec); // -> lsr_z_p_zi_
-	if(!opc && L && !U) UNALLOCATED(ENC_UNALLOCATED_122);
-	if(!opc && L && U) return lsl_z_p_zi(ctx, dec); // -> lsl_z_p_zi_
-	if(opc==1 && !L && !U) return asrd_z_p_zi(ctx, dec); // -> asrd_z_p_zi_
-	if(opc==1 && !L && U) UNALLOCATED(ENC_UNALLOCATED_124);
-	if(opc==1 && L && !U) return sqshl_z_p_zi(ctx, dec); // -> sqshl_z_p_zi_
-	if(opc==1 && L && U) return uqshl_z_p_zi(ctx, dec); // -> uqshl_z_p_zi_
-	if(opc==3 && !L && !U) return srshr_z_p_zi(ctx, dec); // -> srshr_z_p_zi_
-	if(opc==3 && !L && U) return urshr_z_p_zi(ctx, dec); // -> urshr_z_p_zi_
-	if(opc==3 && L && !U) UNALLOCATED(ENC_UNALLOCATED_127);
-	if(opc==3 && L && U) return sqshlu_z_p_zi(ctx, dec); // -> sqshlu_z_p_zi_
-	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_125);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_shift_1(context *ctx, Instruction *dec)
-{
-	uint32_t R=(INSWORD>>18)&1, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!R && !L && !U) return asr_z_p_zz(ctx, dec); // -> asr_z_p_zz_
-	if(!R && !L && U) return lsr_z_p_zz(ctx, dec); // -> lsr_z_p_zz_
-	if(!R && L && U) return lsl_z_p_zz(ctx, dec); // -> lsl_z_p_zz_
-	if(R && !L && !U) return asrr_z_p_zz(ctx, dec); // -> asrr_z_p_zz_
-	if(R && !L && U) return lsrr_z_p_zz(ctx, dec); // -> lsrr_z_p_zz_
-	if(R && L && U) return lslr_z_p_zz(ctx, dec); // -> lslr_z_p_zz_
-	if(L && !U) UNALLOCATED(ENC_UNALLOCATED_130);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_pred_shift_2(context *ctx, Instruction *dec)
-{
-	uint32_t R=(INSWORD>>18)&1, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
-	if(!R && !L && !U) return asr_z_p_zw(ctx, dec); // -> asr_z_p_zw_
-	if(!R && !L && U) return lsr_z_p_zw(ctx, dec); // -> lsr_z_p_zw_
-	if(!R && L && !U) UNALLOCATED(ENC_UNALLOCATED_132);
-	if(!R && L && U) return lsl_z_p_zw(ctx, dec); // -> lsl_z_p_zw_
-	if(R) UNALLOCATED(ENC_UNALLOCATED_135);
-	UNMATCHED;
-}
-
 int decode_iclass_barriers(context *ctx, Instruction *dec)
 {
 	uint32_t CRm=(INSWORD>>8)&15, op2=(INSWORD>>5)&7, Rt=INSWORD&0x1f;
@@ -389,34 +253,6 @@ int decode_iclass_branch_reg(context *ctx, Instruction *dec)
 	if((opc&14)==10 && op2==0x1f) UNALLOCATED(ENC_UNALLOCATED_82_BRANCH_REG);
 	if((opc&12)==12 && op2==0x1f) UNALLOCATED(ENC_UNALLOCATED_83_BRANCH_REG);
 	if(op2!=0x1f) UNALLOCATED(ENC_UNALLOCATED_10_BRANCH_REG);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_un_pred_arit_1(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>16)&7;
-	if(!opc) return cls_z_p_z(ctx, dec); // -> cls_z_p_z_
-	if(opc==1) return clz_z_p_z(ctx, dec); // -> clz_z_p_z_
-	if(opc==2) return cnt_z_p_z(ctx, dec); // -> cnt_z_p_z_
-	if(opc==3) return cnot_z_p_z(ctx, dec); // -> cnot_z_p_z_
-	if(opc==4) return fabs_z_p_z(ctx, dec); // -> fabs_z_p_z_
-	if(opc==5) return fneg_z_p_z(ctx, dec); // -> fneg_z_p_z_
-	if(opc==6) return not_z_p_z(ctx, dec); // -> not_z_p_z_
-	if(opc==7) UNALLOCATED(ENC_UNALLOCATED_136);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_un_pred_arit_0(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>16)&7;
-	if(!opc) return sxtb_z_p_z(ctx, dec); // -> sxtb_z_p_z_
-	if(opc==1) return uxtb_z_p_z(ctx, dec); // -> uxtb_z_p_z_
-	if(opc==2) return sxtb_z_p_z(ctx, dec); // -> sxth_z_p_z_
-	if(opc==3) return uxtb_z_p_z(ctx, dec); // -> uxth_z_p_z_
-	if(opc==4) return sxtb_z_p_z(ctx, dec); // -> sxtw_z_p_z_
-	if(opc==5) return uxtb_z_p_z(ctx, dec); // -> uxtw_z_p_z_
-	if(opc==6) return abs_z_p_z(ctx, dec); // -> abs_z_p_z_
-	if(opc==7) return neg_z_p_z(ctx, dec); // -> neg_z_p_z_
 	UNMATCHED;
 }
 
@@ -1310,35 +1146,6 @@ int decode_iclass_ldstpair_pre(context *ctx, Instruction *dec)
 	UNMATCHED;
 }
 
-int decode_iclass_sve_int_mlas_vvv_pred(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>13)&1;
-	if(!op) return mla_z_p_zzz(ctx, dec); // -> mla_z_p_zzz_
-	if(op) return mls_z_p_zzz(ctx, dec); // -> mls_z_p_zzz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_mladdsub_vvv_pred(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>13)&1;
-	if(!op) return mad_z_p_zzz(ctx, dec); // -> mad_z_p_zzz_
-	if(op) return msb_z_p_zzz(ctx, dec); // -> msb_z_p_zzz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_cons_arit_0(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>10)&7;
-	if(!opc) return add_z_zz(ctx, dec); // -> add_z_zz_
-	if(opc==1) return sub_z_zz(ctx, dec); // -> sub_z_zz_
-	if(opc==4) return sqadd_z_zz(ctx, dec); // -> sqadd_z_zz_
-	if(opc==5) return uqadd_z_zz(ctx, dec); // -> uqadd_z_zz_
-	if(opc==6) return sqsub_z_zz(ctx, dec); // -> sqsub_z_zz_
-	if(opc==7) return uqsub_z_zz(ctx, dec); // -> uqsub_z_zz_
-	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_137);
-	UNMATCHED;
-}
-
 int decode_iclass_addsub_imm(context *ctx, Instruction *dec)
 {
 	uint32_t sf=INSWORD>>31, op=(INSWORD>>30)&1, S=(INSWORD>>29)&1;
@@ -1427,75 +1234,6 @@ int decode_iclass_pcreladdr(context *ctx, Instruction *dec)
 	uint32_t op=INSWORD>>31;
 	if(!op) return ADR(ctx, dec); // -> ADR_only_pcreladdr
 	if(op) return ADRP(ctx, dec); // -> ADRP_only_pcreladdr
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_cons_log(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>22)&3;
-	if(!opc) return and_z_zz(ctx, dec); // -> and_z_zz_
-	if(opc==1) return orr_z_zz(ctx, dec); // -> orr_z_zz_
-	if(opc==2) return eor_z_zz(ctx, dec); // -> eor_z_zz_
-	if(opc==3) return bic_z_zz(ctx, dec); // -> bic_z_zz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_tern_log(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>22)&3, o2=(INSWORD>>10)&1;
-	if(!opc && !o2) return eor3_z_zzz(ctx, dec); // -> eor3_z_zzz_
-	if(!opc && o2) return bsl_z_zzz(ctx, dec); // -> bsl_z_zzz_
-	if(opc==1 && !o2) return bcax_z_zzz(ctx, dec); // -> bcax_z_zzz_
-	if(opc==1 && o2) return bsl1n_z_zzz(ctx, dec); // -> bsl1n_z_zzz_
-	if(opc==2 && o2) return bsl2n_z_zzz(ctx, dec); // -> bsl2n_z_zzz_
-	if(opc==3 && o2) return nbsl_z_zzz(ctx, dec); // -> nbsl_z_zzz_
-	if((opc&2)==2 && !o2) UNALLOCATED(ENC_UNALLOCATED_156);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_rotate_imm(context *ctx, Instruction *dec)
-{
-	return xar_z_zzi(ctx, dec);
-}
-
-int decode_iclass_sve_int_index_ii(context *ctx, Instruction *dec)
-{
-	return index_z_ii(ctx, dec);
-}
-
-int decode_iclass_sve_int_index_ir(context *ctx, Instruction *dec)
-{
-	return index_z_ir(ctx, dec);
-}
-
-int decode_iclass_sve_int_index_ri(context *ctx, Instruction *dec)
-{
-	return index_z_ri(ctx, dec);
-}
-
-int decode_iclass_sve_int_index_rr(context *ctx, Instruction *dec)
-{
-	return index_z_rr(ctx, dec);
-}
-
-int decode_iclass_sve_int_arith_vl(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>22)&1;
-	if(!op) return addvl_r_ri(ctx, dec); // -> addvl_r_ri_
-	if(op) return addpl_r_ri(ctx, dec); // -> addpl_r_ri_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_read_vl_a(context *ctx, Instruction *dec)
-{
-	uint32_t op=(INSWORD>>22)&1, opc2=(INSWORD>>16)&0x1f;
-	if(!op && opc2==0x1e) UNALLOCATED(ENC_UNALLOCATED_163);
-	if(!op && opc2==0x1f) return rdvl_r_i(ctx, dec); // -> rdvl_r_i_
-	if(!op && (opc2&0x1e)==0x1c) UNALLOCATED(ENC_UNALLOCATED_162);
-	if(!op && (opc2&0x1c)==0x18) UNALLOCATED(ENC_UNALLOCATED_161);
-	if(!op && (opc2&0x18)==0x10) UNALLOCATED(ENC_UNALLOCATED_160);
-	if(!op && !(opc2&0x10)) UNALLOCATED(ENC_UNALLOCATED_157);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_164);
 	UNMATCHED;
 }
 
@@ -1759,46 +1497,6 @@ int decode_iclass_rmif(context *ctx, Instruction *dec)
 	if(sf && !op && !S) UNALLOCATED(ENC_UNALLOCATED_11_RMIF);
 	if(sf && op) UNALLOCATED(ENC_UNALLOCATED_14_RMIF);
 	if(!sf) UNALLOCATED(ENC_UNALLOCATED_10_RMIF);
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_mul_b(context *ctx, Instruction *dec)
-{
-	uint32_t size=(INSWORD>>22)&3, opc=(INSWORD>>10)&3;
-	if(!size && opc==1) return pmul_z_zz(ctx, dec); // -> pmul_z_zz_
-	if(size==1 && opc==1) UNALLOCATED(ENC_UNALLOCATED_154);
-	if((size&2)==2 && opc==1) UNALLOCATED(ENC_UNALLOCATED_158);
-	if(!opc) return mul_z_zz(ctx, dec); // -> mul_z_zz_
-	if(opc==2) return smulh_z_zz(ctx, dec); // -> smulh_z_zz_
-	if(opc==3) return umulh_z_zz(ctx, dec); // -> umulh_z_zz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_sqdmulh(context *ctx, Instruction *dec)
-{
-	uint32_t R=(INSWORD>>10)&1;
-	if(!R) return sqdmulh_z_zz(ctx, dec); // -> sqdmulh_z_zz_
-	if(R) return sqrdmulh_z_zz(ctx, dec); // -> sqrdmulh_z_zz_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_cons_shift_b(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>10)&3;
-	if(!opc) return asr_z_zi(ctx, dec); // -> asr_z_zi_
-	if(opc==1) return lsr_z_zi(ctx, dec); // -> lsr_z_zi_
-	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_139);
-	if(opc==3) return lsl_z_zi(ctx, dec); // -> lsl_z_zi_
-	UNMATCHED;
-}
-
-int decode_iclass_sve_int_bin_cons_shift_a(context *ctx, Instruction *dec)
-{
-	uint32_t opc=(INSWORD>>10)&3;
-	if(!opc) return asr_z_zw(ctx, dec); // -> asr_z_zw_
-	if(opc==1) return lsr_z_zw(ctx, dec); // -> lsr_z_zw_
-	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_138);
-	if(opc==3) return lsl_z_zw(ctx, dec); // -> lsl_z_zw_
 	UNMATCHED;
 }
 
@@ -3161,6 +2859,313 @@ int decode_iclass_floatimm(context *ctx, Instruction *dec)
 	UNMATCHED;
 }
 
+int decode_iclass_perm_undef(context *ctx, Instruction *dec)
+{
+	return UDF_perm_undef(ctx, dec);
+}
+
+int decode_iclass_sve_int_bin_pred_log(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>16)&7;
+	if(!opc) return orr_z_p_zz(ctx, dec); // -> orr_z_p_zz_
+	if(opc==1) return eor_z_p_zz(ctx, dec); // -> eor_z_p_zz_
+	if(opc==2) return and_z_p_zz(ctx, dec); // -> and_z_p_zz_
+	if(opc==3) return bic_z_p_zz(ctx, dec); // -> bic_z_p_zz_
+	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_153);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_arit_0(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>16)&7;
+	if(!opc) return add_z_p_zz(ctx, dec); // -> add_z_p_zz_
+	if(opc==1) return sub_z_p_zz(ctx, dec); // -> sub_z_p_zz_
+	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_139);
+	if(opc==3) return subr_z_p_zz(ctx, dec); // -> subr_z_p_zz_
+	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_142);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_div(context *ctx, Instruction *dec)
+{
+	uint32_t R=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!R && !U) return sdiv_z_p_zz(ctx, dec); // -> sdiv_z_p_zz_
+	if(!R && U) return udiv_z_p_zz(ctx, dec); // -> udiv_z_p_zz_
+	if(R && !U) return sdivr_z_p_zz(ctx, dec); // -> sdivr_z_p_zz_
+	if(R && U) return udivr_z_p_zz(ctx, dec); // -> udivr_z_p_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_arit_1(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>17)&3, U=(INSWORD>>16)&1;
+	if(!opc && !U) return smax_z_p_zz(ctx, dec); // -> smax_z_p_zz_
+	if(!opc && U) return umax_z_p_zz(ctx, dec); // -> umax_z_p_zz_
+	if(opc==1 && !U) return smin_z_p_zz(ctx, dec); // -> smin_z_p_zz_
+	if(opc==1 && U) return umin_z_p_zz(ctx, dec); // -> umin_z_p_zz_
+	if(opc==2 && !U) return sabd_z_p_zz(ctx, dec); // -> sabd_z_p_zz_
+	if(opc==2 && U) return uabd_z_p_zz(ctx, dec); // -> uabd_z_p_zz_
+	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_145);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_arit_2(context *ctx, Instruction *dec)
+{
+	uint32_t H=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!H && !U) return mul_z_p_zz(ctx, dec); // -> mul_z_p_zz_
+	if(!H && U) UNALLOCATED(ENC_UNALLOCATED_147);
+	if(H && !U) return smulh_z_p_zz(ctx, dec); // -> smulh_z_p_zz_
+	if(H && U) return umulh_z_p_zz(ctx, dec); // -> umulh_z_p_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_reduce_2(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>16)&3;
+	if(!opc) return orv_r_p_z(ctx, dec); // -> orv_r_p_z_
+	if(opc==1) return eorv_r_p_z(ctx, dec); // -> eorv_r_p_z_
+	if(opc==2) return andv_r_p_z(ctx, dec); // -> andv_r_p_z_
+	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_152);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_movprfx_pred(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>17)&3;
+	if(!opc) return movprfx_z_p_z(ctx, dec); // -> movprfx_z_p_z_
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_148);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_150);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_reduce_0(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!op && !U) return saddv_r_p_z(ctx, dec); // -> saddv_r_p_z_
+	if(!op && U) return uaddv_r_p_z(ctx, dec); // -> uaddv_r_p_z_
+	if(op) UNALLOCATED(ENC_UNALLOCATED_140);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_reduce_1(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!op && !U) return smaxv_r_p_z(ctx, dec); // -> smaxv_r_p_z_
+	if(!op && U) return umaxv_r_p_z(ctx, dec); // -> umaxv_r_p_z_
+	if(op && !U) return sminv_r_p_z(ctx, dec); // -> sminv_r_p_z_
+	if(op && U) return uminv_r_p_z(ctx, dec); // -> uminv_r_p_z_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_shift_0(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>18)&3, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!opc && !L && !U) return asr_z_p_zi(ctx, dec); // -> asr_z_p_zi_
+	if(!opc && !L && U) return lsr_z_p_zi(ctx, dec); // -> lsr_z_p_zi_
+	if(!opc && L && !U) UNALLOCATED(ENC_UNALLOCATED_141);
+	if(!opc && L && U) return lsl_z_p_zi(ctx, dec); // -> lsl_z_p_zi_
+	if(opc==1 && !L && !U) return asrd_z_p_zi(ctx, dec); // -> asrd_z_p_zi_
+	if(opc==1 && !L && U) UNALLOCATED(ENC_UNALLOCATED_143);
+	if(opc==1 && L && !U) return sqshl_z_p_zi(ctx, dec); // -> sqshl_z_p_zi_
+	if(opc==1 && L && U) return uqshl_z_p_zi(ctx, dec); // -> uqshl_z_p_zi_
+	if(opc==3 && !L && !U) return srshr_z_p_zi(ctx, dec); // -> srshr_z_p_zi_
+	if(opc==3 && !L && U) return urshr_z_p_zi(ctx, dec); // -> urshr_z_p_zi_
+	if(opc==3 && L && !U) UNALLOCATED(ENC_UNALLOCATED_146);
+	if(opc==3 && L && U) return sqshlu_z_p_zi(ctx, dec); // -> sqshlu_z_p_zi_
+	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_144);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_shift_1(context *ctx, Instruction *dec)
+{
+	uint32_t R=(INSWORD>>18)&1, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!R && !L && !U) return asr_z_p_zz(ctx, dec); // -> asr_z_p_zz_
+	if(!R && !L && U) return lsr_z_p_zz(ctx, dec); // -> lsr_z_p_zz_
+	if(!R && L && U) return lsl_z_p_zz(ctx, dec); // -> lsl_z_p_zz_
+	if(R && !L && !U) return asrr_z_p_zz(ctx, dec); // -> asrr_z_p_zz_
+	if(R && !L && U) return lsrr_z_p_zz(ctx, dec); // -> lsrr_z_p_zz_
+	if(R && L && U) return lslr_z_p_zz(ctx, dec); // -> lslr_z_p_zz_
+	if(L && !U) UNALLOCATED(ENC_UNALLOCATED_149);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_pred_shift_2(context *ctx, Instruction *dec)
+{
+	uint32_t R=(INSWORD>>18)&1, L=(INSWORD>>17)&1, U=(INSWORD>>16)&1;
+	if(!R && !L && !U) return asr_z_p_zw(ctx, dec); // -> asr_z_p_zw_
+	if(!R && !L && U) return lsr_z_p_zw(ctx, dec); // -> lsr_z_p_zw_
+	if(!R && L && !U) UNALLOCATED(ENC_UNALLOCATED_151);
+	if(!R && L && U) return lsl_z_p_zw(ctx, dec); // -> lsl_z_p_zw_
+	if(R) UNALLOCATED(ENC_UNALLOCATED_154);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_un_pred_arit_1(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>16)&7;
+	if(!opc) return cls_z_p_z(ctx, dec); // -> cls_z_p_z_
+	if(opc==1) return clz_z_p_z(ctx, dec); // -> clz_z_p_z_
+	if(opc==2) return cnt_z_p_z(ctx, dec); // -> cnt_z_p_z_
+	if(opc==3) return cnot_z_p_z(ctx, dec); // -> cnot_z_p_z_
+	if(opc==4) return fabs_z_p_z(ctx, dec); // -> fabs_z_p_z_
+	if(opc==5) return fneg_z_p_z(ctx, dec); // -> fneg_z_p_z_
+	if(opc==6) return not_z_p_z(ctx, dec); // -> not_z_p_z_
+	if(opc==7) UNALLOCATED(ENC_UNALLOCATED_155);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_un_pred_arit_0(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>16)&7;
+	if(!opc) return sxtb_z_p_z(ctx, dec); // -> sxtb_z_p_z_
+	if(opc==1) return uxtb_z_p_z(ctx, dec); // -> uxtb_z_p_z_
+	if(opc==2) return sxtb_z_p_z(ctx, dec); // -> sxth_z_p_z_
+	if(opc==3) return uxtb_z_p_z(ctx, dec); // -> uxth_z_p_z_
+	if(opc==4) return sxtb_z_p_z(ctx, dec); // -> sxtw_z_p_z_
+	if(opc==5) return uxtb_z_p_z(ctx, dec); // -> uxtw_z_p_z_
+	if(opc==6) return abs_z_p_z(ctx, dec); // -> abs_z_p_z_
+	if(opc==7) return neg_z_p_z(ctx, dec); // -> neg_z_p_z_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_mlas_vvv_pred(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>13)&1;
+	if(!op) return mla_z_p_zzz(ctx, dec); // -> mla_z_p_zzz_
+	if(op) return mls_z_p_zzz(ctx, dec); // -> mls_z_p_zzz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_mladdsub_vvv_pred(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>13)&1;
+	if(!op) return mad_z_p_zzz(ctx, dec); // -> mad_z_p_zzz_
+	if(op) return msb_z_p_zzz(ctx, dec); // -> msb_z_p_zzz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_cons_arit_0(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>10)&7;
+	if(!opc) return add_z_zz(ctx, dec); // -> add_z_zz_
+	if(opc==1) return sub_z_zz(ctx, dec); // -> sub_z_zz_
+	if(opc==4) return sqadd_z_zz(ctx, dec); // -> sqadd_z_zz_
+	if(opc==5) return uqadd_z_zz(ctx, dec); // -> uqadd_z_zz_
+	if(opc==6) return sqsub_z_zz(ctx, dec); // -> sqsub_z_zz_
+	if(opc==7) return uqsub_z_zz(ctx, dec); // -> uqsub_z_zz_
+	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_156);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_cons_log(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>22)&3;
+	if(!opc) return and_z_zz(ctx, dec); // -> and_z_zz_
+	if(opc==1) return orr_z_zz(ctx, dec); // -> orr_z_zz_
+	if(opc==2) return eor_z_zz(ctx, dec); // -> eor_z_zz_
+	if(opc==3) return bic_z_zz(ctx, dec); // -> bic_z_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_tern_log(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>22)&3, o2=(INSWORD>>10)&1;
+	if(!opc && !o2) return eor3_z_zzz(ctx, dec); // -> eor3_z_zzz_
+	if(!opc && o2) return bsl_z_zzz(ctx, dec); // -> bsl_z_zzz_
+	if(opc==1 && !o2) return bcax_z_zzz(ctx, dec); // -> bcax_z_zzz_
+	if(opc==1 && o2) return bsl1n_z_zzz(ctx, dec); // -> bsl1n_z_zzz_
+	if(opc==2 && o2) return bsl2n_z_zzz(ctx, dec); // -> bsl2n_z_zzz_
+	if(opc==3 && o2) return nbsl_z_zzz(ctx, dec); // -> nbsl_z_zzz_
+	if((opc&2)==2 && !o2) UNALLOCATED(ENC_UNALLOCATED_175);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_rotate_imm(context *ctx, Instruction *dec)
+{
+	return xar_z_zzi(ctx, dec);
+}
+
+int decode_iclass_sve_int_index_ii(context *ctx, Instruction *dec)
+{
+	return index_z_ii(ctx, dec);
+}
+
+int decode_iclass_sve_int_index_ir(context *ctx, Instruction *dec)
+{
+	return index_z_ir(ctx, dec);
+}
+
+int decode_iclass_sve_int_index_ri(context *ctx, Instruction *dec)
+{
+	return index_z_ri(ctx, dec);
+}
+
+int decode_iclass_sve_int_index_rr(context *ctx, Instruction *dec)
+{
+	return index_z_rr(ctx, dec);
+}
+
+int decode_iclass_sve_int_arith_vl(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>22)&1;
+	if(!op) return addvl_r_ri(ctx, dec); // -> addvl_r_ri_
+	if(op) return addpl_r_ri(ctx, dec); // -> addpl_r_ri_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_read_vl_a(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>22)&1, opc2=(INSWORD>>16)&0x1f;
+	if(!op && opc2==0x1e) UNALLOCATED(ENC_UNALLOCATED_182);
+	if(!op && opc2==0x1f) return rdvl_r_i(ctx, dec); // -> rdvl_r_i_
+	if(!op && (opc2&0x1e)==0x1c) UNALLOCATED(ENC_UNALLOCATED_181);
+	if(!op && (opc2&0x1c)==0x18) UNALLOCATED(ENC_UNALLOCATED_180);
+	if(!op && (opc2&0x18)==0x10) UNALLOCATED(ENC_UNALLOCATED_179);
+	if(!op && !(opc2&0x10)) UNALLOCATED(ENC_UNALLOCATED_176);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_183);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_mul_b(context *ctx, Instruction *dec)
+{
+	uint32_t size=(INSWORD>>22)&3, opc=(INSWORD>>10)&3;
+	if(!size && opc==1) return pmul_z_zz(ctx, dec); // -> pmul_z_zz_
+	if(size==1 && opc==1) UNALLOCATED(ENC_UNALLOCATED_173);
+	if((size&2)==2 && opc==1) UNALLOCATED(ENC_UNALLOCATED_177);
+	if(!opc) return mul_z_zz(ctx, dec); // -> mul_z_zz_
+	if(opc==2) return smulh_z_zz(ctx, dec); // -> smulh_z_zz_
+	if(opc==3) return umulh_z_zz(ctx, dec); // -> umulh_z_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_sqdmulh(context *ctx, Instruction *dec)
+{
+	uint32_t R=(INSWORD>>10)&1;
+	if(!R) return sqdmulh_z_zz(ctx, dec); // -> sqdmulh_z_zz_
+	if(R) return sqrdmulh_z_zz(ctx, dec); // -> sqrdmulh_z_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_cons_shift_b(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>10)&3;
+	if(!opc) return asr_z_zi(ctx, dec); // -> asr_z_zi_
+	if(opc==1) return lsr_z_zi(ctx, dec); // -> lsr_z_zi_
+	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_158);
+	if(opc==3) return lsl_z_zi(ctx, dec); // -> lsl_z_zi_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_bin_cons_shift_a(context *ctx, Instruction *dec)
+{
+	uint32_t opc=(INSWORD>>10)&3;
+	if(!opc) return asr_z_zw(ctx, dec); // -> asr_z_zw_
+	if(opc==1) return lsr_z_zw(ctx, dec); // -> lsr_z_zw_
+	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_157);
+	if(opc==3) return lsl_z_zw(ctx, dec); // -> lsl_z_zw_
+	UNMATCHED;
+}
+
 int decode_iclass_sve_int_bin_cons_misc_0_a(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&3;
@@ -3170,22 +3175,17 @@ int decode_iclass_sve_int_bin_cons_misc_0_a(context *ctx, Instruction *dec)
 	UNMATCHED;
 }
 
-int decode_iclass_perm_undef(context *ctx, Instruction *dec)
-{
-	return UDF_perm_undef(ctx, dec);
-}
-
 int decode_iclass_sve_int_bin_cons_misc_0_d(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&3, opc2=(INSWORD>>16)&0x1f;
 	if(!opc && !opc2) return movprfx_z_z(ctx, dec); // -> movprfx_z_z_
-	if(!opc && opc2==1) UNALLOCATED(ENC_UNALLOCATED_144);
-	if(!opc && (opc2&0x1e)==2) UNALLOCATED(ENC_UNALLOCATED_146);
-	if(!opc && (opc2&0x1c)==4) UNALLOCATED(ENC_UNALLOCATED_148);
-	if(!opc && (opc2&0x18)==8) UNALLOCATED(ENC_UNALLOCATED_150);
-	if(!opc && (opc2&0x10)==0x10) UNALLOCATED(ENC_UNALLOCATED_152);
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_155);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_159);
+	if(!opc && opc2==1) UNALLOCATED(ENC_UNALLOCATED_163);
+	if(!opc && (opc2&0x1e)==2) UNALLOCATED(ENC_UNALLOCATED_165);
+	if(!opc && (opc2&0x1c)==4) UNALLOCATED(ENC_UNALLOCATED_167);
+	if(!opc && (opc2&0x18)==8) UNALLOCATED(ENC_UNALLOCATED_169);
+	if(!opc && (opc2&0x10)==0x10) UNALLOCATED(ENC_UNALLOCATED_171);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_174);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_178);
 	UNMATCHED;
 }
 
@@ -3193,11 +3193,11 @@ int decode_iclass_sve_int_bin_cons_misc_0_c(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&0x1f;
 	if(!opc) return fexpa_z_z(ctx, dec); // -> fexpa_z_z_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_143);
-	if((opc&0x1e)==2) UNALLOCATED(ENC_UNALLOCATED_145);
-	if((opc&0x1c)==4) UNALLOCATED(ENC_UNALLOCATED_147);
-	if((opc&0x18)==8) UNALLOCATED(ENC_UNALLOCATED_149);
-	if((opc&0x10)==0x10) UNALLOCATED(ENC_UNALLOCATED_151);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_162);
+	if((opc&0x1e)==2) UNALLOCATED(ENC_UNALLOCATED_164);
+	if((opc&0x1c)==4) UNALLOCATED(ENC_UNALLOCATED_166);
+	if((opc&0x18)==8) UNALLOCATED(ENC_UNALLOCATED_168);
+	if((opc&0x10)==0x10) UNALLOCATED(ENC_UNALLOCATED_170);
 	UNMATCHED;
 }
 
@@ -3205,7 +3205,7 @@ int decode_iclass_sve_int_bin_cons_misc_0_b(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>10)&1;
 	if(!op) return ftssel_z_zz(ctx, dec); // -> ftssel_z_zz_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_140);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_159);
 	UNMATCHED;
 }
 
@@ -3216,7 +3216,7 @@ int decode_iclass_sve_int_count(context *ctx, Instruction *dec)
 	if(size==1 && !op) return cntb_r_s(ctx, dec); // -> cnth_r_s_
 	if(size==2 && !op) return cntb_r_s(ctx, dec); // -> cntw_r_s_
 	if(size==3 && !op) return cntb_r_s(ctx, dec); // -> cntd_r_s_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_142);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_161);
 	UNMATCHED;
 }
 
@@ -3243,7 +3243,7 @@ int decode_iclass_sve_int_countvlv1(context *ctx, Instruction *dec)
 	if(size==2 && D) return decd_z_zs(ctx, dec); // -> decw_z_zs_
 	if(size==3 && !D) return incd_z_zs(ctx, dec); // -> incd_z_zs_
 	if(size==3 && D) return decd_z_zs(ctx, dec); // -> decd_z_zs_
-	if(!size) UNALLOCATED(ENC_UNALLOCATED_153);
+	if(!size) UNALLOCATED(ENC_UNALLOCATED_172);
 	UNMATCHED;
 }
 
@@ -3300,7 +3300,7 @@ int decode_iclass_sve_int_countvlv0(context *ctx, Instruction *dec)
 	if(size==3 && !D && U) return uqincd_z_zs(ctx, dec); // -> uqincd_z_zs_
 	if(size==3 && D && !U) return sqdecd_z_zs(ctx, dec); // -> sqdecd_z_zs_
 	if(size==3 && D && U) return uqdecd_z_zs(ctx, dec); // -> uqdecd_z_zs_
-	if(!size) UNALLOCATED(ENC_UNALLOCATED_141);
+	if(!size) UNALLOCATED(ENC_UNALLOCATED_160);
 	UNMATCHED;
 }
 
@@ -3317,14 +3317,14 @@ int decode_iclass_sve_intx_perm_extract_i(context *ctx, Instruction *dec)
 int decode_iclass_sve_int_perm_bin_long_perm_zz(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>22)&1, opc2=(INSWORD>>10)&7;
-	if(!op && !opc2) return zip1_z_zz(ctx, dec); // -> zip1_z_zz_q
-	if(!op && opc2==1) return zip1_z_zz(ctx, dec); // -> zip2_z_zz_q
-	if(!op && opc2==2) return uzp1_z_zz(ctx, dec); // -> uzp1_z_zz_q
-	if(!op && opc2==3) return uzp1_z_zz(ctx, dec); // -> uzp2_z_zz_q
-	if(!op && opc2==6) return trn1_z_zz(ctx, dec); // -> trn1_z_zz_q
-	if(!op && opc2==7) return trn1_z_zz(ctx, dec); // -> trn2_z_zz_q
-	if(!op && (opc2&6)==4) UNALLOCATED(ENC_UNALLOCATED_167);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_168);
+	if(!op && !opc2 && HasF64MM()) return zip1_z_zz(ctx, dec); // -> zip1_z_zz_q
+	if(!op && opc2==1 && HasF64MM()) return zip1_z_zz(ctx, dec); // -> zip2_z_zz_q
+	if(!op && opc2==2 && HasF64MM()) return uzp1_z_zz(ctx, dec); // -> uzp1_z_zz_q
+	if(!op && opc2==3 && HasF64MM()) return uzp1_z_zz(ctx, dec); // -> uzp2_z_zz_q
+	if(!op && opc2==6 && HasF64MM()) return trn1_z_zz(ctx, dec); // -> trn1_z_zz_q
+	if(!op && opc2==7 && HasF64MM()) return trn1_z_zz(ctx, dec); // -> trn2_z_zz_q
+	if(!op && (opc2&6)==4) UNALLOCATED(ENC_UNALLOCATED_187);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_189);
 	UNMATCHED;
 }
 
@@ -3412,7 +3412,7 @@ int decode_iclass_sve_int_perm_bin_perm_pp(context *ctx, Instruction *dec)
 	if(opc==1 && H) return uzp1_p_pp(ctx, dec); // -> uzp2_p_pp_
 	if(opc==2 && !H) return trn1_p_pp(ctx, dec); // -> trn1_p_pp_
 	if(opc==2 && H) return trn1_p_pp(ctx, dec); // -> trn2_p_pp_
-	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_165);
+	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_184);
 	UNMATCHED;
 }
 
@@ -3438,7 +3438,7 @@ int decode_iclass_sve_int_perm_bin_perm_zz(context *ctx, Instruction *dec)
 	if(opc==3) return uzp1_z_zz(ctx, dec); // -> uzp2_z_zz_
 	if(opc==4) return trn1_z_zz(ctx, dec); // -> trn1_z_zz_
 	if(opc==5) return trn1_z_zz(ctx, dec); // -> trn2_z_zz_
-	if((opc&6)==6) UNALLOCATED(ENC_UNALLOCATED_166);
+	if((opc&6)==6) UNALLOCATED(ENC_UNALLOCATED_185);
 	UNMATCHED;
 }
 
@@ -3494,6 +3494,15 @@ int decode_iclass_sve_int_perm_last_r(context *ctx, Instruction *dec)
 	uint32_t B=(INSWORD>>16)&1;
 	if(!B) return lasta_r_p_z(ctx, dec); // -> lasta_r_p_z_
 	if(B) return lastb_r_p_z(ctx, dec); // -> lastb_r_p_z_
+	UNMATCHED;
+}
+
+int decode_iclass_sve_int_perm_revd(context *ctx, Instruction *dec)
+{
+	uint32_t size=(INSWORD>>22)&3;
+	if(!size) return revd_z_p_z(ctx, dec); // -> revd_z_p_z_
+	if(size==1) UNALLOCATED(ENC_UNALLOCATED_186);
+	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_188);
 	UNMATCHED;
 }
 
@@ -3567,18 +3576,18 @@ int decode_iclass_sve_int_pred_log(context *ctx, Instruction *dec)
 	if(!op && !S && !o2 && o3) return bic_p_p_pp(ctx, dec); // -> bic_p_p_pp_z
 	if(!op && !S && o2 && !o3) return eor_p_p_pp(ctx, dec); // -> eor_p_p_pp_z
 	if(!op && !S && o2 && o3) return sel_p_p_pp(ctx, dec); // -> sel_p_p_pp_
-	if(!op && S && !o2 && !o3) return and_p_p_pp(ctx, dec); // -> ands_p_p_pp_z
-	if(!op && S && !o2 && o3) return bic_p_p_pp(ctx, dec); // -> bics_p_p_pp_z
-	if(!op && S && o2 && !o3) return eor_p_p_pp(ctx, dec); // -> eors_p_p_pp_z
-	if(!op && S && o2 && o3) UNALLOCATED(ENC_UNALLOCATED_197);
+	if(!op && S && !o2 && !o3) return ands_p_p_pp(ctx, dec); // -> ands_p_p_pp_z
+	if(!op && S && !o2 && o3) return bics_p_p_pp(ctx, dec); // -> bics_p_p_pp_z
+	if(!op && S && o2 && !o3) return eors_p_p_pp(ctx, dec); // -> eors_p_p_pp_z
+	if(!op && S && o2 && o3) UNALLOCATED(ENC_UNALLOCATED_219);
 	if(op && !S && !o2 && !o3) return orr_p_p_pp(ctx, dec); // -> orr_p_p_pp_z
 	if(op && !S && !o2 && o3) return orn_p_p_pp(ctx, dec); // -> orn_p_p_pp_z
 	if(op && !S && o2 && !o3) return nor_p_p_pp(ctx, dec); // -> nor_p_p_pp_z
 	if(op && !S && o2 && o3) return nand_p_p_pp(ctx, dec); // -> nand_p_p_pp_z
-	if(op && S && !o2 && !o3) return orr_p_p_pp(ctx, dec); // -> orrs_p_p_pp_z
-	if(op && S && !o2 && o3) return orn_p_p_pp(ctx, dec); // -> orns_p_p_pp_z
-	if(op && S && o2 && !o3) return nor_p_p_pp(ctx, dec); // -> nors_p_p_pp_z
-	if(op && S && o2 && o3) return nand_p_p_pp(ctx, dec); // -> nands_p_p_pp_z
+	if(op && S && !o2 && !o3) return orrs_p_p_pp(ctx, dec); // -> orrs_p_p_pp_z
+	if(op && S && !o2 && o3) return orns_p_p_pp(ctx, dec); // -> orns_p_p_pp_z
+	if(op && S && o2 && !o3) return nors_p_p_pp(ctx, dec); // -> nors_p_p_pp_z
+	if(op && S && o2 && o3) return nands_p_p_pp(ctx, dec); // -> nands_p_p_pp_z
 	UNMATCHED;
 }
 
@@ -3587,18 +3596,18 @@ int decode_iclass_sve_int_brkp(context *ctx, Instruction *dec)
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1, B=(INSWORD>>4)&1;
 	if(!op && !S && !B) return brkpa_p_p_pp(ctx, dec); // -> brkpa_p_p_pp_
 	if(!op && !S && B) return brkpb_p_p_pp(ctx, dec); // -> brkpb_p_p_pp_
-	if(!op && S && !B) return brkpa_p_p_pp(ctx, dec); // -> brkpas_p_p_pp_
-	if(!op && S && B) return brkpb_p_p_pp(ctx, dec); // -> brkpbs_p_p_pp_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_207);
+	if(!op && S && !B) return brkpas_p_p_pp(ctx, dec); // -> brkpas_p_p_pp_
+	if(!op && S && B) return brkpbs_p_p_pp(ctx, dec); // -> brkpbs_p_p_pp_
+	if(op) UNALLOCATED(ENC_UNALLOCATED_229);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_int_break(context *ctx, Instruction *dec)
 {
 	uint32_t B=(INSWORD>>23)&1, S=(INSWORD>>22)&1, M=(INSWORD>>4)&1;
-	if(!B && S && !M) return brka_p_p_p(ctx, dec); // -> brkas_p_p_p_z
-	if(B && S && !M) return brkb_p_p_p(ctx, dec); // -> brkbs_p_p_p_z
-	if(S && M) UNALLOCATED(ENC_UNALLOCATED_198);
+	if(!B && S && !M) return brkas_p_p_p(ctx, dec); // -> brkas_p_p_p_z
+	if(B && S && !M) return brkbs_p_p_p(ctx, dec); // -> brkbs_p_p_p_z
+	if(S && M) UNALLOCATED(ENC_UNALLOCATED_220);
 	if(!B && !S) return brka_p_p_p(ctx, dec); // -> brka_p_p_p_
 	if(B && !S) return brkb_p_p_p(ctx, dec); // -> brkb_p_p_p_
 	UNMATCHED;
@@ -3608,16 +3617,16 @@ int decode_iclass_sve_int_brkn(context *ctx, Instruction *dec)
 {
 	uint32_t S=(INSWORD>>22)&1;
 	if(!S) return brkn_p_p_pp(ctx, dec); // -> brkn_p_p_pp_
-	if(S) return brkn_p_p_pp(ctx, dec); // -> brkns_p_p_pp_
+	if(S) return brkns_p_p_pp(ctx, dec); // -> brkns_p_p_pp_
 	UNMATCHED;
 }
 
 int decode_iclass_sve_int_pfirst(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1;
-	if(!op && !S) UNALLOCATED(ENC_UNALLOCATED_171);
+	if(!op && !S) UNALLOCATED(ENC_UNALLOCATED_192);
 	if(!op && S) return pfirst_p_p_p(ctx, dec); // -> pfirst_p_p_p_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_209);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_231);
 	UNMATCHED;
 }
 
@@ -3625,7 +3634,7 @@ int decode_iclass_sve_int_ptrue(context *ctx, Instruction *dec)
 {
 	uint32_t S=(INSWORD>>16)&1;
 	if(!S) return ptrue_p_s(ctx, dec); // -> ptrue_p_s_
-	if(S) return ptrue_p_s(ctx, dec); // -> ptrues_p_s_
+	if(S) return ptrues_p_s(ctx, dec); // -> ptrues_p_s_
 	UNMATCHED;
 }
 
@@ -3638,8 +3647,8 @@ int decode_iclass_sve_int_rdffr(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1;
 	if(!op && !S) return rdffr_p_p_f(ctx, dec); // -> rdffr_p_p_f_
-	if(!op && S) return rdffr_p_p_f(ctx, dec); // -> rdffrs_p_p_f_
-	if(op) UNALLOCATED(ENC_UNALLOCATED_211);
+	if(!op && S) return rdffrs_p_p_f(ctx, dec); // -> rdffrs_p_p_f_
+	if(op) UNALLOCATED(ENC_UNALLOCATED_233);
 	UNMATCHED;
 }
 
@@ -3647,8 +3656,8 @@ int decode_iclass_sve_int_rdffr_2(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1;
 	if(!op && !S) return rdffr_p_f(ctx, dec); // -> rdffr_p_f_
-	if(!op && S) UNALLOCATED(ENC_UNALLOCATED_204);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_212);
+	if(!op && S) UNALLOCATED(ENC_UNALLOCATED_226);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_234);
 	UNMATCHED;
 }
 
@@ -3656,12 +3665,12 @@ int decode_iclass_sve_int_ptest(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1, opc2=INSWORD&15;
 	if(!op && S && !opc2) return ptest_p_p(ctx, dec); // -> ptest_p_p_
-	if(!op && S && opc2==1) UNALLOCATED(ENC_UNALLOCATED_199);
-	if(!op && S && (opc2&14)==2) UNALLOCATED(ENC_UNALLOCATED_200);
-	if(!op && S && (opc2&12)==4) UNALLOCATED(ENC_UNALLOCATED_201);
-	if(!op && S && (opc2&8)==8) UNALLOCATED(ENC_UNALLOCATED_202);
-	if(!op && !S) UNALLOCATED(ENC_UNALLOCATED_170);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_208);
+	if(!op && S && opc2==1) UNALLOCATED(ENC_UNALLOCATED_221);
+	if(!op && S && (opc2&14)==2) UNALLOCATED(ENC_UNALLOCATED_222);
+	if(!op && S && (opc2&12)==4) UNALLOCATED(ENC_UNALLOCATED_223);
+	if(!op && S && (opc2&8)==8) UNALLOCATED(ENC_UNALLOCATED_224);
+	if(!op && !S) UNALLOCATED(ENC_UNALLOCATED_191);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_230);
 	UNMATCHED;
 }
 
@@ -3669,8 +3678,8 @@ int decode_iclass_sve_int_pfalse(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>23)&1, S=(INSWORD>>22)&1;
 	if(!op && !S) return pfalse_p(ctx, dec); // -> pfalse_p_
-	if(!op && S) UNALLOCATED(ENC_UNALLOCATED_203);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_210);
+	if(!op && S) UNALLOCATED(ENC_UNALLOCATED_225);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_232);
 	UNMATCHED;
 }
 
@@ -3683,7 +3692,7 @@ int decode_iclass_sve_int_scmp_vi(context *ctx, Instruction *dec)
 	if(!op && o2 && ne) return cmpeq_p_p_zi(ctx, dec); // -> cmple_p_p_zi_
 	if(op && !o2 && !ne) return cmpeq_p_p_zi(ctx, dec); // -> cmpeq_p_p_zi_
 	if(op && !o2 && ne) return cmpeq_p_p_zi(ctx, dec); // -> cmpne_p_p_zi_
-	if(op && o2) UNALLOCATED(ENC_UNALLOCATED_169);
+	if(op && o2) UNALLOCATED(ENC_UNALLOCATED_190);
 	UNMATCHED;
 }
 
@@ -3691,9 +3700,9 @@ int decode_iclass_sve_int_pcount_pred(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&7;
 	if(!opc) return cntp_r_p_p(ctx, dec); // -> cntp_r_p_p_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_173);
-	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_174);
-	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_176);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_195);
+	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_196);
+	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_198);
 	UNMATCHED;
 }
 
@@ -3702,9 +3711,9 @@ int decode_iclass_sve_int_count_r(context *ctx, Instruction *dec)
 	uint32_t op=(INSWORD>>17)&1, D=(INSWORD>>16)&1, opc2=(INSWORD>>9)&3;
 	if(!op && !D && !opc2) return incp_r_p_r(ctx, dec); // -> incp_r_p_r_
 	if(!op && D && !opc2) return decp_r_p_r(ctx, dec); // -> decp_r_p_r_
-	if(!op && opc2==1) UNALLOCATED(ENC_UNALLOCATED_183);
-	if(!op && (opc2&2)==2) UNALLOCATED(ENC_UNALLOCATED_184);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_187);
+	if(!op && opc2==1) UNALLOCATED(ENC_UNALLOCATED_205);
+	if(!op && (opc2&2)==2) UNALLOCATED(ENC_UNALLOCATED_206);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_209);
 	UNMATCHED;
 }
 
@@ -3713,9 +3722,9 @@ int decode_iclass_sve_int_count_v(context *ctx, Instruction *dec)
 	uint32_t op=(INSWORD>>17)&1, D=(INSWORD>>16)&1, opc2=(INSWORD>>9)&3;
 	if(!op && !D && !opc2) return incp_z_p_z(ctx, dec); // -> incp_z_p_z_
 	if(!op && D && !opc2) return decp_z_p_z(ctx, dec); // -> decp_z_p_z_
-	if(!op && opc2==1) UNALLOCATED(ENC_UNALLOCATED_181);
-	if(!op && (opc2&2)==2) UNALLOCATED(ENC_UNALLOCATED_182);
-	if(op) UNALLOCATED(ENC_UNALLOCATED_186);
+	if(!op && opc2==1) UNALLOCATED(ENC_UNALLOCATED_203);
+	if(!op && (opc2&2)==2) UNALLOCATED(ENC_UNALLOCATED_204);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_208);
 	UNMATCHED;
 }
 
@@ -3730,7 +3739,7 @@ int decode_iclass_sve_int_count_r_sat(context *ctx, Instruction *dec)
 	if(D && !U && sf && !op) return sqdecp_r_p_r(ctx, dec); // -> sqdecp_r_p_r_x
 	if(D && U && !sf && !op) return uqdecp_r_p_r(ctx, dec); // -> uqdecp_r_p_r_uw
 	if(D && U && sf && !op) return uqdecp_r_p_r(ctx, dec); // -> uqdecp_r_p_r_x
-	if(op) UNALLOCATED(ENC_UNALLOCATED_179);
+	if(op) UNALLOCATED(ENC_UNALLOCATED_201);
 	UNMATCHED;
 }
 
@@ -3741,8 +3750,8 @@ int decode_iclass_sve_int_count_v_sat(context *ctx, Instruction *dec)
 	if(!D && U && !opc) return uqincp_z_p_z(ctx, dec); // -> uqincp_z_p_z_
 	if(D && !U && !opc) return sqdecp_z_p_z(ctx, dec); // -> sqdecp_z_p_z_
 	if(D && U && !opc) return uqdecp_z_p_z(ctx, dec); // -> uqdecp_z_p_z_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_177);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_178);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_199);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_200);
 	UNMATCHED;
 }
 
@@ -3750,8 +3759,8 @@ int decode_iclass_sve_int_setffr(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&3;
 	if(!opc) return setffr_f(ctx, dec); // -> setffr_f_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_206);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_214);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_228);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_236);
 	UNMATCHED;
 }
 
@@ -3759,8 +3768,8 @@ int decode_iclass_sve_int_wrffr(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&3;
 	if(!opc) return wrffr_f_p(ctx, dec); // -> wrffr_f_p_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_205);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_213);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_227);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_235);
 	UNMATCHED;
 }
 
@@ -3769,7 +3778,7 @@ int decode_iclass_sve_int_cterm(context *ctx, Instruction *dec)
 	uint32_t op=(INSWORD>>23)&1, ne=(INSWORD>>4)&1;
 	if(op && !ne) return ctermeq_rr(ctx, dec); // -> ctermeq_rr_
 	if(op && ne) return ctermeq_rr(ctx, dec); // -> ctermne_rr_
-	if(!op) UNALLOCATED(ENC_UNALLOCATED_172);
+	if(!op) UNALLOCATED(ENC_UNALLOCATED_193);
 	UNMATCHED;
 }
 
@@ -3795,13 +3804,21 @@ int decode_iclass_sve_int_whilenc(context *ctx, Instruction *dec)
 	UNMATCHED;
 }
 
+int decode_iclass_sve_int_pred_dup(context *ctx, Instruction *dec)
+{
+	uint32_t S=(INSWORD>>9)&1;
+	if(!S) return dup_p_p_pi(ctx, dec); // -> dup_p_p_pi_
+	if(S) UNALLOCATED(ENC_UNALLOCATED_194);
+	UNMATCHED;
+}
+
 int decode_iclass_sve_int_dup_fpimm(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>17)&3, o2=(INSWORD>>13)&1;
 	if(!opc && !o2) return fdup_z_i(ctx, dec); // -> fdup_z_i_
-	if(!opc && o2) UNALLOCATED(ENC_UNALLOCATED_192);
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_194);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_196);
+	if(!opc && o2) UNALLOCATED(ENC_UNALLOCATED_214);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_216);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_218);
 	UNMATCHED;
 }
 
@@ -3809,8 +3826,8 @@ int decode_iclass_sve_int_dup_imm(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>17)&3;
 	if(!opc) return dup_z_i(ctx, dec); // -> dup_z_i_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_193);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_195);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_215);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_217);
 	UNMATCHED;
 }
 
@@ -3819,7 +3836,7 @@ int decode_iclass_sve_int_arith_imm0(context *ctx, Instruction *dec)
 	uint32_t opc=(INSWORD>>16)&7;
 	if(!opc) return add_z_zi(ctx, dec); // -> add_z_zi_
 	if(opc==1) return sub_z_zi(ctx, dec); // -> sub_z_zi_
-	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_175);
+	if(opc==2) UNALLOCATED(ENC_UNALLOCATED_197);
 	if(opc==3) return subr_z_zi(ctx, dec); // -> subr_z_zi_
 	if(opc==4) return sqadd_z_zi(ctx, dec); // -> sqadd_z_zi_
 	if(opc==5) return uqadd_z_zi(ctx, dec); // -> uqadd_z_zi_
@@ -3835,8 +3852,8 @@ int decode_iclass_sve_int_arith_imm1(context *ctx, Instruction *dec)
 	if(opc==1 && !o2) return umax_z_zi(ctx, dec); // -> umax_z_zi_
 	if(opc==2 && !o2) return smin_z_zi(ctx, dec); // -> smin_z_zi_
 	if(opc==3 && !o2) return umin_z_zi(ctx, dec); // -> umin_z_zi_
-	if(!(opc&4) && o2) UNALLOCATED(ENC_UNALLOCATED_180);
-	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_185);
+	if(!(opc&4) && o2) UNALLOCATED(ENC_UNALLOCATED_202);
+	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_207);
 	UNMATCHED;
 }
 
@@ -3844,10 +3861,10 @@ int decode_iclass_sve_int_arith_imm2(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&7, o2=(INSWORD>>13)&1;
 	if(!opc && !o2) return mul_z_zi(ctx, dec); // -> mul_z_zi_
-	if(!opc && o2) UNALLOCATED(ENC_UNALLOCATED_188);
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_189);
-	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_190);
-	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_191);
+	if(!opc && o2) UNALLOCATED(ENC_UNALLOCATED_210);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_211);
+	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_212);
+	if((opc&4)==4) UNALLOCATED(ENC_UNALLOCATED_213);
 	UNMATCHED;
 }
 
@@ -3862,9 +3879,9 @@ int decode_iclass_sve_intx_dot(context *ctx, Instruction *dec)
 int decode_iclass_sve_intx_mixed_dot(context *ctx, Instruction *dec)
 {
 	uint32_t size=(INSWORD>>22)&3;
-	if(size==2) return usdot_z_zzz(ctx, dec); // -> usdot_z_zzz_s
-	if(size==3) UNALLOCATED(ENC_UNALLOCATED_229);
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_215);
+	if(size==2 && HasI8MM()) return usdot_z_zzz(ctx, dec); // -> usdot_z_zzz_s
+	if(size==3) UNALLOCATED(ENC_UNALLOCATED_251);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_237);
 	UNMATCHED;
 }
 
@@ -3946,13 +3963,13 @@ int decode_iclass_sve_intx_accumulate_long_pairs(context *ctx, Instruction *dec)
 int decode_iclass_sve_intx_arith_binary_pairs(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>17)&3, U=(INSWORD>>16)&1;
-	if(!opc && !U) UNALLOCATED(ENC_UNALLOCATED_218);
+	if(!opc && !U) UNALLOCATED(ENC_UNALLOCATED_240);
 	if(!opc && U) return addp_z_p_zz(ctx, dec); // -> addp_z_p_zz_
 	if(opc==2 && !U) return smaxp_z_p_zz(ctx, dec); // -> smaxp_z_p_zz_
 	if(opc==2 && U) return umaxp_z_p_zz(ctx, dec); // -> umaxp_z_p_zz_
 	if(opc==3 && !U) return sminp_z_p_zz(ctx, dec); // -> sminp_z_p_zz_
 	if(opc==3 && U) return uminp_z_p_zz(ctx, dec); // -> uminp_z_p_zz_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_219);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_241);
 	UNMATCHED;
 }
 
@@ -3963,7 +3980,7 @@ int decode_iclass_sve_intx_pred_arith_unary(context *ctx, Instruction *dec)
 	if(!Q && opc==1) return ursqrte_z_p_z(ctx, dec); // -> ursqrte_z_p_z_
 	if(Q && !opc) return sqabs_z_p_z(ctx, dec); // -> sqabs_z_p_z_
 	if(Q && opc==1) return sqneg_z_p_z(ctx, dec); // -> sqneg_z_p_z_
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_217);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_239);
 	UNMATCHED;
 }
 
@@ -3996,7 +4013,15 @@ int decode_iclass_sve_intx_bin_pred_shift_sat_round(context *ctx, Instruction *d
 	if(Q && R && !N && U) return uqshlr_z_p_zz(ctx, dec); // -> uqshlr_z_p_zz_
 	if(Q && R && N && !U) return sqrshlr_z_p_zz(ctx, dec); // -> sqrshlr_z_p_zz_
 	if(Q && R && N && U) return uqrshlr_z_p_zz(ctx, dec); // -> uqrshlr_z_p_zz_
-	if(!Q && !N) UNALLOCATED(ENC_UNALLOCATED_216);
+	if(!Q && !N) UNALLOCATED(ENC_UNALLOCATED_238);
+	UNMATCHED;
+}
+
+int decode_iclass_sve_intx_clamp(context *ctx, Instruction *dec)
+{
+	uint32_t U=(INSWORD>>10)&1;
+	if(!U) return sclamp_z_zz(ctx, dec); // -> sclamp_z_zz_
+	if(U) return uclamp_z_zz(ctx, dec); // -> uclamp_z_zz_
 	UNMATCHED;
 }
 
@@ -4007,17 +4032,17 @@ int decode_iclass_sve_intx_dot_by_indexed_elem(context *ctx, Instruction *dec)
 	if(size==2 && U) return udot_z_zzzi(ctx, dec); // -> udot_z_zzzi_s
 	if(size==3 && !U) return sdot_z_zzzi(ctx, dec); // -> sdot_z_zzzi_d
 	if(size==3 && U) return udot_z_zzzi(ctx, dec); // -> udot_z_zzzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_220);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_242);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_intx_mixed_dot_by_indexed_elem(context *ctx, Instruction *dec)
 {
 	uint32_t size=(INSWORD>>22)&3, U=(INSWORD>>10)&1;
-	if(size==2 && !U) return usdot_z_zzzi(ctx, dec); // -> usdot_z_zzzi_s
-	if(size==2 && U) return sudot_z_zzzi(ctx, dec); // -> sudot_z_zzzi_s
-	if(size==3) UNALLOCATED(ENC_UNALLOCATED_230);
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_221);
+	if(size==2 && !U && HasI8MM()) return usdot_z_zzzi(ctx, dec); // -> usdot_z_zzzi_s
+	if(size==2 && U && HasI8MM()) return sudot_z_zzzi(ctx, dec); // -> sudot_z_zzzi_s
+	if(size==3) UNALLOCATED(ENC_UNALLOCATED_252);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_243);
 	UNMATCHED;
 }
 
@@ -4026,7 +4051,7 @@ int decode_iclass_sve_intx_cdot_by_indexed_elem(context *ctx, Instruction *dec)
 	uint32_t size=(INSWORD>>22)&3;
 	if(size==2) return cdot_z_zzzi(ctx, dec); // -> cdot_z_zzzi_s
 	if(size==3) return cdot_z_zzzi(ctx, dec); // -> cdot_z_zzzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_223);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_245);
 	UNMATCHED;
 }
 
@@ -4035,7 +4060,7 @@ int decode_iclass_sve_intx_cmla_by_indexed_elem(context *ctx, Instruction *dec)
 	uint32_t size=(INSWORD>>22)&3;
 	if(size==2) return cmla_z_zzzi(ctx, dec); // -> cmla_z_zzzi_h
 	if(size==3) return cmla_z_zzzi(ctx, dec); // -> cmla_z_zzzi_s
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_224);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_246);
 	UNMATCHED;
 }
 
@@ -4044,7 +4069,7 @@ int decode_iclass_sve_intx_qrdcmla_by_indexed_elem(context *ctx, Instruction *de
 	uint32_t size=(INSWORD>>22)&3;
 	if(size==2) return sqrdcmlah_z_zzzi(ctx, dec); // -> sqrdcmlah_z_zzzi_h
 	if(size==3) return sqrdcmlah_z_zzzi(ctx, dec); // -> sqrdcmlah_z_zzzi_s
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_225);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_247);
 	UNMATCHED;
 }
 
@@ -4068,7 +4093,7 @@ int decode_iclass_sve_intx_mul_long_by_indexed_elem(context *ctx, Instruction *d
 	if(size==3 && !U && T) return smullt_z_zzi(ctx, dec); // -> smullt_z_zzi_d
 	if(size==3 && U && !T) return umullb_z_zzi(ctx, dec); // -> umullb_z_zzi_d
 	if(size==3 && U && T) return umullt_z_zzi(ctx, dec); // -> umullt_z_zzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_227);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_249);
 	UNMATCHED;
 }
 
@@ -4103,7 +4128,7 @@ int decode_iclass_sve_intx_mla_long_by_indexed_elem(context *ctx, Instruction *d
 	if(size==3 && S && !U && T) return smlslt_z_zzzi(ctx, dec); // -> smlslt_z_zzzi_d
 	if(size==3 && S && U && !T) return umlslb_z_zzzi(ctx, dec); // -> umlslb_z_zzzi_d
 	if(size==3 && S && U && T) return umlslt_z_zzzi(ctx, dec); // -> umlslt_z_zzzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_226);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_248);
 	UNMATCHED;
 }
 
@@ -4126,7 +4151,7 @@ int decode_iclass_sve_intx_qdmul_long_by_indexed_elem(context *ctx, Instruction 
 	if(size==2 && T) return sqdmullt_z_zzi(ctx, dec); // -> sqdmullt_z_zzi_s
 	if(size==3 && !T) return sqdmullb_z_zzi(ctx, dec); // -> sqdmullb_z_zzi_d
 	if(size==3 && T) return sqdmullt_z_zzi(ctx, dec); // -> sqdmullt_z_zzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_228);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_250);
 	UNMATCHED;
 }
 
@@ -4141,7 +4166,7 @@ int decode_iclass_sve_intx_qdmla_long_by_indexed_elem(context *ctx, Instruction 
 	if(size==3 && !S && T) return sqdmlalt_z_zzzi(ctx, dec); // -> sqdmlalt_z_zzzi_d
 	if(size==3 && S && !T) return sqdmlslb_z_zzzi(ctx, dec); // -> sqdmlslb_z_zzzi_d
 	if(size==3 && S && T) return sqdmlslt_z_zzzi(ctx, dec); // -> sqdmlslt_z_zzzi_d
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_222);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_244);
 	UNMATCHED;
 }
 
@@ -4172,7 +4197,7 @@ int decode_iclass_sve_intx_cons_arith_long(context *ctx, Instruction *dec)
 	if(op && S && !U && T) return sabdlt_z_zz(ctx, dec); // -> sabdlt_z_zz_
 	if(op && S && U && !T) return uabdlb_z_zz(ctx, dec); // -> uabdlb_z_zz_
 	if(op && S && U && T) return uabdlt_z_zz(ctx, dec); // -> uabdlt_z_zz_
-	if(op && !S) UNALLOCATED(ENC_UNALLOCATED_231);
+	if(op && !S) UNALLOCATED(ENC_UNALLOCATED_253);
 	UNMATCHED;
 }
 
@@ -4207,10 +4232,10 @@ int decode_iclass_sve_intx_cons_mul_long(context *ctx, Instruction *dec)
 int decode_iclass_sve_intx_mmla(context *ctx, Instruction *dec)
 {
 	uint32_t uns=(INSWORD>>22)&3;
-	if(!uns) return smmla_z_zzz(ctx, dec); // -> smmla_z_zzz_
-	if(uns==1) UNALLOCATED(ENC_UNALLOCATED_236);
-	if(uns==2) return usmmla_z_zzz(ctx, dec); // -> usmmla_z_zzz_
-	if(uns==3) return ummla_z_zzz(ctx, dec); // -> ummla_z_zzz_
+	if(!uns && HasI8MM()) return smmla_z_zzz(ctx, dec); // -> smmla_z_zzz_
+	if(uns==1) UNALLOCATED(ENC_UNALLOCATED_258);
+	if(uns==2 && HasI8MM()) return usmmla_z_zzz(ctx, dec); // -> usmmla_z_zzz_
+	if(uns==3 && HasI8MM()) return ummla_z_zzz(ctx, dec); // -> ummla_z_zzz_
 	UNMATCHED;
 }
 
@@ -4225,10 +4250,10 @@ int decode_iclass_sve_intx_eorx(context *ctx, Instruction *dec)
 int decode_iclass_sve_intx_perm_bit(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>10)&3;
-	if(!opc) return bext_z_zz(ctx, dec); // -> bext_z_zz_
-	if(opc==1) return bdep_z_zz(ctx, dec); // -> bdep_z_zz_
-	if(opc==2) return bgrp_z_zz(ctx, dec); // -> bgrp_z_zz_
-	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_233);
+	if(!opc && HasSVE_BitPerm()) return bext_z_zz(ctx, dec); // -> bext_z_zz_
+	if(opc==1 && HasSVE_BitPerm()) return bdep_z_zz(ctx, dec); // -> bdep_z_zz_
+	if(opc==2 && HasSVE_BitPerm()) return bgrp_z_zz(ctx, dec); // -> bgrp_z_zz_
+	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_255);
 	UNMATCHED;
 }
 
@@ -4246,7 +4271,7 @@ int decode_iclass_sve_intx_clong(context *ctx, Instruction *dec)
 {
 	uint32_t S=(INSWORD>>11)&1, tb=(INSWORD>>10)&1;
 	if(!S && !tb) return saddlbt_z_zz(ctx, dec); // -> saddlbt_z_zz_
-	if(!S && tb) UNALLOCATED(ENC_UNALLOCATED_232);
+	if(!S && tb) UNALLOCATED(ENC_UNALLOCATED_254);
 	if(S && !tb) return ssublbt_z_zz(ctx, dec); // -> ssublbt_z_zz_
 	if(S && tb) return ssubltb_z_zz(ctx, dec); // -> ssubltb_z_zz_
 	UNMATCHED;
@@ -4351,7 +4376,7 @@ int decode_iclass_sve_intx_extract_narrow(context *ctx, Instruction *dec)
 	if(opc==1 && T) return uqxtnt_z_zz(ctx, dec); // -> uqxtnt_z_zz_
 	if(opc==2 && !T) return sqxtunb_z_zz(ctx, dec); // -> sqxtunb_z_zz_
 	if(opc==2 && T) return sqxtunt_z_zz(ctx, dec); // -> sqxtunt_z_zz_
-	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_234);
+	if(opc==3) UNALLOCATED(ENC_UNALLOCATED_256);
 	UNMATCHED;
 }
 
@@ -4376,32 +4401,32 @@ int decode_iclass_sve_intx_histcnt(context *ctx, Instruction *dec)
 int decode_iclass_sve_crypto_binary_const(context *ctx, Instruction *dec)
 {
 	uint32_t size=(INSWORD>>22)&3, op=(INSWORD>>10)&1;
-	if(!size && !op) return sm4ekey_z_zz(ctx, dec); // -> sm4ekey_z_zz_
-	if(!size && op) return rax1_z_zz(ctx, dec); // -> rax1_z_zz_
-	if(size==1) UNALLOCATED(ENC_UNALLOCATED_238);
-	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_241);
+	if(!size && !op && HasSVE_SM4()) return sm4ekey_z_zz(ctx, dec); // -> sm4ekey_z_zz_
+	if(!size && op && HasSVE_SHA3()) return rax1_z_zz(ctx, dec); // -> rax1_z_zz_
+	if(size==1) UNALLOCATED(ENC_UNALLOCATED_260);
+	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_263);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_crypto_binary_dest(context *ctx, Instruction *dec)
 {
 	uint32_t size=(INSWORD>>22)&3, op=(INSWORD>>16)&1, o2=(INSWORD>>10)&1;
-	if(!size && !op && !o2) return aese_z_zz(ctx, dec); // -> aese_z_zz_
-	if(!size && !op && o2) return aesd_z_zz(ctx, dec); // -> aesd_z_zz_
-	if(!size && op && !o2) return sm4e_z_zz(ctx, dec); // -> sm4e_z_zz_
-	if(!size && op && o2) UNALLOCATED(ENC_UNALLOCATED_235);
-	if(size==1) UNALLOCATED(ENC_UNALLOCATED_239);
-	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_242);
+	if(!size && !op && !o2 && HasSVE_AES()) return aese_z_zz(ctx, dec); // -> aese_z_zz_
+	if(!size && !op && o2 && HasSVE_AES()) return aesd_z_zz(ctx, dec); // -> aesd_z_zz_
+	if(!size && op && !o2 && HasSVE_SM4()) return sm4e_z_zz(ctx, dec); // -> sm4e_z_zz_
+	if(!size && op && o2) UNALLOCATED(ENC_UNALLOCATED_257);
+	if(size==1) UNALLOCATED(ENC_UNALLOCATED_261);
+	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_264);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_crypto_unary(context *ctx, Instruction *dec)
 {
 	uint32_t size=(INSWORD>>22)&3, op=(INSWORD>>10)&1;
-	if(!size && !op) return aesmc_z_z(ctx, dec); // -> aesmc_z_z_
-	if(!size && op) return aesimc_z_z(ctx, dec); // -> aesimc_z_z_
-	if(size==1) UNALLOCATED(ENC_UNALLOCATED_237);
-	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_240);
+	if(!size && !op && HasSVE_AES()) return aesmc_z_z(ctx, dec); // -> aesmc_z_z_
+	if(!size && op && HasSVE_AES()) return aesimc_z_z(ctx, dec); // -> aesimc_z_z_
+	if(size==1) UNALLOCATED(ENC_UNALLOCATED_259);
+	if((size&2)==2) UNALLOCATED(ENC_UNALLOCATED_262);
 	UNMATCHED;
 }
 
@@ -4416,13 +4441,13 @@ int decode_iclass_sve_fp_fcvt2(context *ctx, Instruction *dec)
 	if(!opc && opc2==2) return fcvtxnt_z_p_z(ctx, dec); // -> fcvtxnt_z_p_z_d2s
 	if(opc==2 && !opc2) return fcvtnt_z_p_z(ctx, dec); // -> fcvtnt_z_p_z_s2h
 	if(opc==2 && opc2==1) return fcvtlt_z_p_z(ctx, dec); // -> fcvtlt_z_p_z_h2s
-	if(opc==2 && opc2==2) return bfcvtnt_z_p_z(ctx, dec); // -> bfcvtnt_z_p_z_s2bf
+	if(opc==2 && opc2==2 && HasBF16()) return bfcvtnt_z_p_z(ctx, dec); // -> bfcvtnt_z_p_z_s2bf
 	if(opc==3 && opc2==2) return fcvtnt_z_p_z(ctx, dec); // -> fcvtnt_z_p_z_d2s
 	if(opc==3 && opc2==3) return fcvtlt_z_p_z(ctx, dec); // -> fcvtlt_z_p_z_s2d
-	if(!(opc&1) && opc2==3) UNALLOCATED(ENC_UNALLOCATED_244);
-	if(!opc && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_243);
-	if(opc==3 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_252);
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_251);
+	if(!(opc&1) && opc2==3) UNALLOCATED(ENC_UNALLOCATED_266);
+	if(!opc && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_265);
+	if(opc==3 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_274);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_273);
 	UNMATCHED;
 }
 
@@ -4430,12 +4455,12 @@ int decode_iclass_sve_fp_pairwise(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&7;
 	if(!opc) return faddp_z_p_zz(ctx, dec); // -> faddp_z_p_zz_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_245);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_267);
 	if(opc==4) return fmaxnmp_z_p_zz(ctx, dec); // -> fmaxnmp_z_p_zz_
 	if(opc==5) return fminnmp_z_p_zz(ctx, dec); // -> fminnmp_z_p_zz_
 	if(opc==6) return fmaxp_z_p_zz(ctx, dec); // -> fmaxp_z_p_zz_
 	if(opc==7) return fminp_z_p_zz(ctx, dec); // -> fminp_z_p_zz_
-	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_246);
+	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_268);
 	UNMATCHED;
 }
 
@@ -4461,7 +4486,7 @@ int decode_iclass_sve_fp_fcmla_by_indexed_elem(context *ctx, Instruction *dec)
 	uint32_t size=(INSWORD>>22)&3;
 	if(size==2) return fcmla_z_zzzi(ctx, dec); // -> fcmla_z_zzzi_h
 	if(size==3) return fcmla_z_zzzi(ctx, dec); // -> fcmla_z_zzzi_s
-	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_247);
+	if(!(size&2)) UNALLOCATED(ENC_UNALLOCATED_269);
 	UNMATCHED;
 }
 
@@ -4477,8 +4502,8 @@ int decode_iclass_sve_fp_fmul_by_indexed_elem(context *ctx, Instruction *dec)
 int decode_iclass_sve_fp_fdot_by_indexed_elem(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>22)&1;
-	if(!op) UNALLOCATED(ENC_UNALLOCATED_248);
-	if(op) return bfdot_z_zzzi(ctx, dec); // -> bfdot_z_zzzi_
+	if(!op) UNALLOCATED(ENC_UNALLOCATED_270);
+	if(op && HasBF16()) return bfdot_z_zzzi(ctx, dec); // -> bfdot_z_zzzi_
 	UNMATCHED;
 }
 
@@ -4489,17 +4514,17 @@ int decode_iclass_sve_fp_fma_long_by_indexed_elem(context *ctx, Instruction *dec
 	if(!o2 && !op && T) return fmlalt_z_zzzi(ctx, dec); // -> fmlalt_z_zzzi_s
 	if(!o2 && op && !T) return fmlslb_z_zzzi(ctx, dec); // -> fmlslb_z_zzzi_s
 	if(!o2 && op && T) return fmlslt_z_zzzi(ctx, dec); // -> fmlslt_z_zzzi_s
-	if(o2 && !op && !T) return bfmlalb_z_zzzi(ctx, dec); // -> bfmlalb_z_zzzi_
-	if(o2 && !op && T) return bfmlalt_z_zzzi(ctx, dec); // -> bfmlalt_z_zzzi_
-	if(o2 && op) UNALLOCATED(ENC_UNALLOCATED_253);
+	if(o2 && !op && !T && HasBF16()) return bfmlalb_z_zzzi(ctx, dec); // -> bfmlalb_z_zzzi_
+	if(o2 && !op && T && HasBF16()) return bfmlalt_z_zzzi(ctx, dec); // -> bfmlalt_z_zzzi_
+	if(o2 && op) UNALLOCATED(ENC_UNALLOCATED_275);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_fp_fdot(context *ctx, Instruction *dec)
 {
 	uint32_t op=(INSWORD>>22)&1;
-	if(!op) UNALLOCATED(ENC_UNALLOCATED_249);
-	if(op) return bfdot_z_zzz(ctx, dec); // -> bfdot_z_zzz_
+	if(!op) UNALLOCATED(ENC_UNALLOCATED_271);
+	if(op && HasBF16()) return bfdot_z_zzz(ctx, dec); // -> bfdot_z_zzz_
 	UNMATCHED;
 }
 
@@ -4510,19 +4535,19 @@ int decode_iclass_sve_fp_fma_long(context *ctx, Instruction *dec)
 	if(!o2 && !op && T) return fmlalt_z_zzz(ctx, dec); // -> fmlalt_z_zzz_
 	if(!o2 && op && !T) return fmlslb_z_zzz(ctx, dec); // -> fmlslb_z_zzz_
 	if(!o2 && op && T) return fmlslt_z_zzz(ctx, dec); // -> fmlslt_z_zzz_
-	if(o2 && !op && !T) return bfmlalb_z_zzz(ctx, dec); // -> bfmlalb_z_zzz_
-	if(o2 && !op && T) return bfmlalt_z_zzz(ctx, dec); // -> bfmlalt_z_zzz_
-	if(o2 && op) UNALLOCATED(ENC_UNALLOCATED_254);
+	if(o2 && !op && !T && HasBF16()) return bfmlalb_z_zzz(ctx, dec); // -> bfmlalb_z_zzz_
+	if(o2 && !op && T && HasBF16()) return bfmlalt_z_zzz(ctx, dec); // -> bfmlalt_z_zzz_
+	if(o2 && op) UNALLOCATED(ENC_UNALLOCATED_276);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_fp_fmmla(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&3;
-	if(!opc) UNALLOCATED(ENC_UNALLOCATED_250);
-	if(opc==1) return bfmmla_z_zzz(ctx, dec); // -> bfmmla_z_zzz_
-	if(opc==2) return fmmla_z_zzz(ctx, dec); // -> fmmla_z_zzz_s
-	if(opc==3) return fmmla_z_zzz(ctx, dec); // -> fmmla_z_zzz_d
+	if(!opc) UNALLOCATED(ENC_UNALLOCATED_272);
+	if(opc==1 && HasBF16()) return bfmmla_z_zzz(ctx, dec); // -> bfmmla_z_zzz_
+	if(opc==2 && HasF32MM()) return fmmla_z_zzz(ctx, dec); // -> fmmla_z_zzz_s
+	if(opc==3 && HasF64MM()) return fmmla_z_zzz(ctx, dec); // -> fmmla_z_zzz_d
 	UNMATCHED;
 }
 
@@ -4530,12 +4555,12 @@ int decode_iclass_sve_fp_fast_red(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&7;
 	if(!opc) return faddv_v_p_z(ctx, dec); // -> faddv_v_p_z_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_257);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_279);
 	if(opc==4) return fmaxnmv_v_p_z(ctx, dec); // -> fmaxnmv_v_p_z_
 	if(opc==5) return fminnmv_v_p_z(ctx, dec); // -> fminnmv_v_p_z_
 	if(opc==6) return fmaxv_v_p_z(ctx, dec); // -> fmaxv_v_p_z_
 	if(opc==7) return fminv_v_p_z(ctx, dec); // -> fminv_v_p_z_
-	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_258);
+	if((opc&6)==2) UNALLOCATED(ENC_UNALLOCATED_280);
 	UNMATCHED;
 }
 
@@ -4544,8 +4569,8 @@ int decode_iclass_sve_fp_2op_u_zd(context *ctx, Instruction *dec)
 	uint32_t opc=(INSWORD>>16)&7;
 	if(opc==6) return frecpe_z_z(ctx, dec); // -> frecpe_z_z_
 	if(opc==7) return frsqrte_z_z(ctx, dec); // -> frsqrte_z_z_
-	if((opc&6)==4) UNALLOCATED(ENC_UNALLOCATED_264);
-	if(!(opc&4)) UNALLOCATED(ENC_UNALLOCATED_260);
+	if((opc&6)==4) UNALLOCATED(ENC_UNALLOCATED_286);
+	if(!(opc&4)) UNALLOCATED(ENC_UNALLOCATED_282);
 	UNMATCHED;
 }
 
@@ -4558,7 +4583,7 @@ int decode_iclass_sve_fp_2op_p_pd(context *ctx, Instruction *dec)
 	if(!eq && lt && ne) return fcmeq_p_p_z0(ctx, dec); // -> fcmle_p_p_z0_
 	if(eq && !lt && !ne) return fcmeq_p_p_z0(ctx, dec); // -> fcmeq_p_p_z0_
 	if(eq && lt && !ne) return fcmeq_p_p_z0(ctx, dec); // -> fcmne_p_p_z0_
-	if(eq && ne) UNALLOCATED(ENC_UNALLOCATED_268);
+	if(eq && ne) UNALLOCATED(ENC_UNALLOCATED_290);
 	UNMATCHED;
 }
 
@@ -4566,8 +4591,8 @@ int decode_iclass_sve_fp_2op_p_vd(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>16)&3;
 	if(!opc) return fadda_v_p_z(ctx, dec); // -> fadda_v_p_z_
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_269);
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_271);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_291);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_293);
 	UNMATCHED;
 }
 
@@ -4580,7 +4605,7 @@ int decode_iclass_sve_fp_3op_u_zd(context *ctx, Instruction *dec)
 	if(opc==3) return ftsmul_z_zz(ctx, dec); // -> ftsmul_z_zz_
 	if(opc==6) return frecps_z_zz(ctx, dec); // -> frecps_z_zz_
 	if(opc==7) return frsqrts_z_zz(ctx, dec); // -> frsqrts_z_zz_
-	if((opc&6)==4) UNALLOCATED(ENC_UNALLOCATED_255);
+	if((opc&6)==4) UNALLOCATED(ENC_UNALLOCATED_277);
 	UNMATCHED;
 }
 
@@ -4598,10 +4623,10 @@ int decode_iclass_sve_fp_2op_p_zds(context *ctx, Instruction *dec)
 	if(opc==8) return fabd_z_p_zz(ctx, dec); // -> fabd_z_p_zz_
 	if(opc==9) return fscale_z_p_zz(ctx, dec); // -> fscale_z_p_zz_
 	if(opc==10) return fmulx_z_p_zz(ctx, dec); // -> fmulx_z_p_zz_
-	if(opc==11) UNALLOCATED(ENC_UNALLOCATED_262);
+	if(opc==11) UNALLOCATED(ENC_UNALLOCATED_284);
 	if(opc==12) return fdivr_z_p_zz(ctx, dec); // -> fdivr_z_p_zz_
 	if(opc==13) return fdiv_z_p_zz(ctx, dec); // -> fdiv_z_p_zz_
-	if((opc&14)==14) UNALLOCATED(ENC_UNALLOCATED_265);
+	if((opc&14)==14) UNALLOCATED(ENC_UNALLOCATED_287);
 	UNMATCHED;
 }
 
@@ -4630,14 +4655,14 @@ int decode_iclass_sve_fp_2op_p_zd_b_0(context *ctx, Instruction *dec)
 	if(!opc && opc2==2) return fcvtx_z_p_z(ctx, dec); // -> fcvtx_z_p_z_d2s
 	if(opc==2 && !opc2) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_s2h
 	if(opc==2 && opc2==1) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_h2s
-	if(opc==2 && opc2==2) return bfcvt_z_p_z(ctx, dec); // -> bfcvt_z_p_z_s2bf
+	if(opc==2 && opc2==2 && HasBF16()) return bfcvt_z_p_z(ctx, dec); // -> bfcvt_z_p_z_s2bf
 	if(opc==3 && !opc2) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_d2h
 	if(opc==3 && opc2==1) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_h2d
 	if(opc==3 && opc2==2) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_d2s
 	if(opc==3 && opc2==3) return fcvt_z_p_z(ctx, dec); // -> fcvt_z_p_z_s2d
-	if(!(opc&1) && opc2==3) UNALLOCATED(ENC_UNALLOCATED_263);
-	if(!opc && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_261);
-	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_272);
+	if(!(opc&1) && opc2==3) UNALLOCATED(ENC_UNALLOCATED_285);
+	if(!opc && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_283);
+	if(opc==1) UNALLOCATED(ENC_UNALLOCATED_294);
 	UNMATCHED;
 }
 
@@ -4658,12 +4683,12 @@ int decode_iclass_sve_fp_2op_p_zd_d(context *ctx, Instruction *dec)
 	if(opc==3 && opc2==2 && U) return fcvtzu_z_p_z(ctx, dec); // -> fcvtzu_z_p_z_s2x
 	if(opc==3 && opc2==3 && !U) return fcvtzs_z_p_z(ctx, dec); // -> fcvtzs_z_p_z_d2x
 	if(opc==3 && opc2==3 && U) return fcvtzu_z_p_z(ctx, dec); // -> fcvtzu_z_p_z_d2x
-	if(opc==1 && !opc2) UNALLOCATED(ENC_UNALLOCATED_274);
-	if(opc==2 && opc2==3) UNALLOCATED(ENC_UNALLOCATED_278);
-	if(opc==3 && opc2==1) UNALLOCATED(ENC_UNALLOCATED_280);
+	if(opc==1 && !opc2) UNALLOCATED(ENC_UNALLOCATED_296);
+	if(opc==2 && opc2==3) UNALLOCATED(ENC_UNALLOCATED_300);
+	if(opc==3 && opc2==1) UNALLOCATED(ENC_UNALLOCATED_302);
 	if(!opc && !U) return flogb_z_p_z(ctx, dec); // -> flogb_z_p_z_
-	if(!opc && U) UNALLOCATED(ENC_UNALLOCATED_270);
-	if(opc==2 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_277);
+	if(!opc && U) UNALLOCATED(ENC_UNALLOCATED_292);
+	if(opc==2 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_299);
 	UNMATCHED;
 }
 
@@ -4675,7 +4700,7 @@ int decode_iclass_sve_fp_2op_p_zd_a(context *ctx, Instruction *dec)
 	if(opc==2) return frinta_z_p_z(ctx, dec); // -> frintm_z_p_z_
 	if(opc==3) return frinta_z_p_z(ctx, dec); // -> frintz_z_p_z_
 	if(opc==4) return frinta_z_p_z(ctx, dec); // -> frinta_z_p_z_
-	if(opc==5) UNALLOCATED(ENC_UNALLOCATED_259);
+	if(opc==5) UNALLOCATED(ENC_UNALLOCATED_281);
 	if(opc==6) return frinta_z_p_z(ctx, dec); // -> frintx_z_p_z_
 	if(opc==7) return frinta_z_p_z(ctx, dec); // -> frinti_z_p_z_
 	UNMATCHED;
@@ -4686,7 +4711,7 @@ int decode_iclass_sve_fp_2op_p_zd_b_1(context *ctx, Instruction *dec)
 	uint32_t opc=(INSWORD>>16)&3;
 	if(!opc) return frecpx_z_p_z(ctx, dec); // -> frecpx_z_p_z_
 	if(opc==1) return fsqrt_z_p_z(ctx, dec); // -> fsqrt_z_p_z_
-	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_266);
+	if((opc&2)==2) UNALLOCATED(ENC_UNALLOCATED_288);
 	UNMATCHED;
 }
 
@@ -4707,11 +4732,11 @@ int decode_iclass_sve_fp_2op_p_zd_c(context *ctx, Instruction *dec)
 	if(opc==3 && opc2==2 && U) return ucvtf_z_p_z(ctx, dec); // -> ucvtf_z_p_z_x2s
 	if(opc==3 && opc2==3 && !U) return scvtf_z_p_z(ctx, dec); // -> scvtf_z_p_z_x2d
 	if(opc==3 && opc2==3 && U) return ucvtf_z_p_z(ctx, dec); // -> ucvtf_z_p_z_x2d
-	if(opc==1 && !opc2) UNALLOCATED(ENC_UNALLOCATED_273);
-	if(opc==2 && opc2==3) UNALLOCATED(ENC_UNALLOCATED_276);
-	if(opc==3 && opc2==1) UNALLOCATED(ENC_UNALLOCATED_279);
-	if(opc==2 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_275);
-	if(!opc) UNALLOCATED(ENC_UNALLOCATED_267);
+	if(opc==1 && !opc2) UNALLOCATED(ENC_UNALLOCATED_295);
+	if(opc==2 && opc2==3) UNALLOCATED(ENC_UNALLOCATED_298);
+	if(opc==3 && opc2==1) UNALLOCATED(ENC_UNALLOCATED_301);
+	if(opc==2 && !(opc2&2)) UNALLOCATED(ENC_UNALLOCATED_297);
+	if(!opc) UNALLOCATED(ENC_UNALLOCATED_289);
 	UNMATCHED;
 }
 
@@ -4724,7 +4749,7 @@ int decode_iclass_sve_fp_3op_p_pd(context *ctx, Instruction *dec)
 	if(!op && o2 && o3) return fcmeq_p_p_zz(ctx, dec); // -> fcmne_p_p_zz_
 	if(op && !o2 && !o3) return fcmeq_p_p_zz(ctx, dec); // -> fcmuo_p_p_zz_
 	if(op && !o2 && o3) return facge_p_p_zz(ctx, dec); // -> facge_p_p_zz_
-	if(op && o2 && !o3) UNALLOCATED(ENC_UNALLOCATED_256);
+	if(op && o2 && !o3) UNALLOCATED(ENC_UNALLOCATED_278);
 	if(op && o2 && o3) return facge_p_p_zz(ctx, dec); // -> facgt_p_p_zz_
 	UNMATCHED;
 }
@@ -4762,7 +4787,7 @@ int decode_iclass_sve_mem_32b_gld_vs(context *ctx, Instruction *dec)
 	if(opc==1 && U && ff) return ldff1h_z_p_bz(ctx, dec); // -> ldff1h_z_p_bz_s_x32_unscaled
 	if(opc==2 && U && !ff) return ld1w_z_p_bz(ctx, dec); // -> ld1w_z_p_bz_s_x32_unscaled
 	if(opc==2 && U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_s_x32_unscaled
-	if(opc==2 && !U) UNALLOCATED(ENC_UNALLOCATED_281);
+	if(opc==2 && !U) UNALLOCATED(ENC_UNALLOCATED_303);
 	UNMATCHED;
 }
 
@@ -4779,8 +4804,8 @@ int decode_iclass_sve_mem_32b_gld_vi(context *ctx, Instruction *dec)
 	if(msz==1 && U && ff) return ldff1h_z_p_ai(ctx, dec); // -> ldff1h_z_p_ai_s
 	if(msz==2 && U && !ff) return ld1w_z_p_ai(ctx, dec); // -> ld1w_z_p_ai_s
 	if(msz==2 && U && ff) return ldff1w_z_p_ai(ctx, dec); // -> ldff1w_z_p_ai_s
-	if(msz==2 && !U) UNALLOCATED(ENC_UNALLOCATED_284);
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_286);
+	if(msz==2 && !U) UNALLOCATED(ENC_UNALLOCATED_306);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_308);
 	UNMATCHED;
 }
 
@@ -4799,7 +4824,7 @@ int decode_iclass_sve_mem_32b_gld_sv_b(context *ctx, Instruction *dec)
 	uint32_t U=(INSWORD>>14)&1, ff=(INSWORD>>13)&1;
 	if(U && !ff) return ld1w_z_p_bz(ctx, dec); // -> ld1w_z_p_bz_s_x32_scaled
 	if(U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_s_x32_scaled
-	if(!U) UNALLOCATED(ENC_UNALLOCATED_283);
+	if(!U) UNALLOCATED(ENC_UNALLOCATED_305);
 	UNMATCHED;
 }
 
@@ -4882,9 +4907,9 @@ int decode_iclass_sve_mem_32b_gldnt_vs(context *ctx, Instruction *dec)
 	if(!msz && U) return ldnt1b_z_p_ar(ctx, dec); // -> ldnt1b_z_p_ar_s_x32_unscaled
 	if(msz==1 && !U) return ldnt1sh_z_p_ar(ctx, dec); // -> ldnt1sh_z_p_ar_s_x32_unscaled
 	if(msz==1 && U) return ldnt1h_z_p_ar(ctx, dec); // -> ldnt1h_z_p_ar_s_x32_unscaled
-	if(msz==2 && !U) UNALLOCATED(ENC_UNALLOCATED_282);
+	if(msz==2 && !U) UNALLOCATED(ENC_UNALLOCATED_304);
 	if(msz==2 && U) return ldnt1w_z_p_ar(ctx, dec); // -> ldnt1w_z_p_ar_s_x32_unscaled
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_285);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_307);
 	UNMATCHED;
 }
 
@@ -5000,14 +5025,14 @@ int decode_iclass_sve_mem_ldqr_si(context *ctx, Instruction *dec)
 {
 	uint32_t msz=(INSWORD>>23)&3, ssz=(INSWORD>>21)&3;
 	if(!msz && !ssz) return ld1rqb_z_p_bi(ctx, dec); // -> ld1rqb_z_p_bi_u8
-	if(!msz && ssz==1) return ld1rob_z_p_bi(ctx, dec); // -> ld1rob_z_p_bi_u8
+	if(!msz && ssz==1 && HasF64MM()) return ld1rob_z_p_bi(ctx, dec); // -> ld1rob_z_p_bi_u8
 	if(msz==1 && !ssz) return ld1rqh_z_p_bi(ctx, dec); // -> ld1rqh_z_p_bi_u16
-	if(msz==1 && ssz==1) return ld1roh_z_p_bi(ctx, dec); // -> ld1roh_z_p_bi_u16
+	if(msz==1 && ssz==1 && HasF64MM()) return ld1roh_z_p_bi(ctx, dec); // -> ld1roh_z_p_bi_u16
 	if(msz==2 && !ssz) return ld1rqw_z_p_bi(ctx, dec); // -> ld1rqw_z_p_bi_u32
-	if(msz==2 && ssz==1) return ld1row_z_p_bi(ctx, dec); // -> ld1row_z_p_bi_u32
+	if(msz==2 && ssz==1 && HasF64MM()) return ld1row_z_p_bi(ctx, dec); // -> ld1row_z_p_bi_u32
 	if(msz==3 && !ssz) return ld1rqd_z_p_bi(ctx, dec); // -> ld1rqd_z_p_bi_u64
-	if(msz==3 && ssz==1) return ld1rod_z_p_bi(ctx, dec); // -> ld1rod_z_p_bi_u64
-	if((ssz&2)==2) UNALLOCATED(ENC_UNALLOCATED_288);
+	if(msz==3 && ssz==1 && HasF64MM()) return ld1rod_z_p_bi(ctx, dec); // -> ld1rod_z_p_bi_u64
+	if((ssz&2)==2) UNALLOCATED(ENC_UNALLOCATED_310);
 	UNMATCHED;
 }
 
@@ -5015,14 +5040,14 @@ int decode_iclass_sve_mem_ldqr_ss(context *ctx, Instruction *dec)
 {
 	uint32_t msz=(INSWORD>>23)&3, ssz=(INSWORD>>21)&3;
 	if(!msz && !ssz) return ld1rqb_z_p_br(ctx, dec); // -> ld1rqb_z_p_br_contiguous
-	if(!msz && ssz==1) return ld1rob_z_p_br(ctx, dec); // -> ld1rob_z_p_br_contiguous
+	if(!msz && ssz==1 && HasF64MM()) return ld1rob_z_p_br(ctx, dec); // -> ld1rob_z_p_br_contiguous
 	if(msz==1 && !ssz) return ld1rqh_z_p_br(ctx, dec); // -> ld1rqh_z_p_br_contiguous
-	if(msz==1 && ssz==1) return ld1roh_z_p_br(ctx, dec); // -> ld1roh_z_p_br_contiguous
+	if(msz==1 && ssz==1 && HasF64MM()) return ld1roh_z_p_br(ctx, dec); // -> ld1roh_z_p_br_contiguous
 	if(msz==2 && !ssz) return ld1rqw_z_p_br(ctx, dec); // -> ld1rqw_z_p_br_contiguous
-	if(msz==2 && ssz==1) return ld1row_z_p_br(ctx, dec); // -> ld1row_z_p_br_contiguous
+	if(msz==2 && ssz==1 && HasF64MM()) return ld1row_z_p_br(ctx, dec); // -> ld1row_z_p_br_contiguous
 	if(msz==3 && !ssz) return ld1rqd_z_p_br(ctx, dec); // -> ld1rqd_z_p_br_contiguous
-	if(msz==3 && ssz==1) return ld1rod_z_p_br(ctx, dec); // -> ld1rod_z_p_br_contiguous
-	if((ssz&2)==2) UNALLOCATED(ENC_UNALLOCATED_287);
+	if(msz==3 && ssz==1 && HasF64MM()) return ld1rod_z_p_br(ctx, dec); // -> ld1rod_z_p_br_contiguous
+	if((ssz&2)==2) UNALLOCATED(ENC_UNALLOCATED_309);
 	UNMATCHED;
 }
 
@@ -5075,7 +5100,7 @@ int decode_iclass_sve_mem_64b_gld_sv(context *ctx, Instruction *dec)
 	if(opc==2 && U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_d_x32_scaled
 	if(opc==3 && U && !ff) return ld1d_z_p_bz(ctx, dec); // -> ld1d_z_p_bz_d_x32_scaled
 	if(opc==3 && U && ff) return ldff1d_z_p_bz(ctx, dec); // -> ldff1d_z_p_bz_d_x32_scaled
-	if(opc==3 && !U) UNALLOCATED(ENC_UNALLOCATED_291);
+	if(opc==3 && !U) UNALLOCATED(ENC_UNALLOCATED_318);
 	UNMATCHED;
 }
 
@@ -5092,7 +5117,7 @@ int decode_iclass_sve_mem_64b_gld_sv2(context *ctx, Instruction *dec)
 	if(opc==2 && U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_d_64_scaled
 	if(opc==3 && U && !ff) return ld1d_z_p_bz(ctx, dec); // -> ld1d_z_p_bz_d_64_scaled
 	if(opc==3 && U && ff) return ldff1d_z_p_bz(ctx, dec); // -> ldff1d_z_p_bz_d_64_scaled
-	if(opc==3 && !U) UNALLOCATED(ENC_UNALLOCATED_294);
+	if(opc==3 && !U) UNALLOCATED(ENC_UNALLOCATED_321);
 	UNMATCHED;
 }
 
@@ -5113,7 +5138,7 @@ int decode_iclass_sve_mem_64b_gld_vs2(context *ctx, Instruction *dec)
 	if(msz==2 && U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_d_64_unscaled
 	if(msz==3 && U && !ff) return ld1d_z_p_bz(ctx, dec); // -> ld1d_z_p_bz_d_64_unscaled
 	if(msz==3 && U && ff) return ldff1d_z_p_bz(ctx, dec); // -> ldff1d_z_p_bz_d_64_unscaled
-	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_293);
+	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_320);
 	UNMATCHED;
 }
 
@@ -5134,7 +5159,7 @@ int decode_iclass_sve_mem_64b_gld_vs(context *ctx, Instruction *dec)
 	if(msz==2 && U && ff) return ldff1w_z_p_bz(ctx, dec); // -> ldff1w_z_p_bz_d_x32_unscaled
 	if(msz==3 && U && !ff) return ld1d_z_p_bz(ctx, dec); // -> ld1d_z_p_bz_d_x32_unscaled
 	if(msz==3 && U && ff) return ldff1d_z_p_bz(ctx, dec); // -> ldff1d_z_p_bz_d_x32_unscaled
-	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_289);
+	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_316);
 	UNMATCHED;
 }
 
@@ -5155,7 +5180,7 @@ int decode_iclass_sve_mem_64b_gld_vi(context *ctx, Instruction *dec)
 	if(msz==2 && U && ff) return ldff1w_z_p_ai(ctx, dec); // -> ldff1w_z_p_ai_d
 	if(msz==3 && U && !ff) return ld1d_z_p_ai(ctx, dec); // -> ld1d_z_p_ai_d
 	if(msz==3 && U && ff) return ldff1d_z_p_ai(ctx, dec); // -> ldff1d_z_p_ai_d
-	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_292);
+	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_319);
 	UNMATCHED;
 }
 
@@ -5198,7 +5223,7 @@ int decode_iclass_sve_mem_64b_gldnt_vs(context *ctx, Instruction *dec)
 	if(msz==1 && U) return ldnt1h_z_p_ar(ctx, dec); // -> ldnt1h_z_p_ar_d_64_unscaled
 	if(msz==2 && !U) return ldnt1sw_z_p_ar(ctx, dec); // -> ldnt1sw_z_p_ar_d_64_unscaled
 	if(msz==2 && U) return ldnt1w_z_p_ar(ctx, dec); // -> ldnt1w_z_p_ar_d_64_unscaled
-	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_290);
+	if(msz==3 && !U) UNALLOCATED(ENC_UNALLOCATED_317);
 	if(msz==3 && U) return ldnt1d_z_p_ar(ctx, dec); // -> ldnt1d_z_p_ar_d_64_unscaled
 	UNMATCHED;
 }
@@ -5206,7 +5231,7 @@ int decode_iclass_sve_mem_64b_gldnt_vs(context *ctx, Instruction *dec)
 int decode_iclass_sve_mem_cst_ss(context *ctx, Instruction *dec)
 {
 	uint32_t opc=(INSWORD>>22)&7, o2=(INSWORD>>21)&1;
-	if(opc==7 && !o2) UNALLOCATED(ENC_UNALLOCATED_299);
+	if(opc==7 && !o2) UNALLOCATED(ENC_UNALLOCATED_326);
 	if(opc==7 && o2) return st1d_z_p_br(ctx, dec); // -> st1d_z_p_br_
 	if(!(opc&6)) return st1b_z_p_br(ctx, dec); // -> st1b_z_p_br_
 	if((opc&6)==2) return st1h_z_p_br(ctx, dec); // -> st1h_z_p_br_
@@ -5258,7 +5283,7 @@ int decode_iclass_sve_mem_sstnt_32b_vs(context *ctx, Instruction *dec)
 	if(!msz) return stnt1b_z_p_ar(ctx, dec); // -> stnt1b_z_p_ar_s_x32_unscaled
 	if(msz==1) return stnt1h_z_p_ar(ctx, dec); // -> stnt1h_z_p_ar_s_x32_unscaled
 	if(msz==2) return stnt1w_z_p_ar(ctx, dec); // -> stnt1w_z_p_ar_s_x32_unscaled
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_298);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_325);
 	UNMATCHED;
 }
 
@@ -5278,14 +5303,14 @@ int decode_iclass_sve_mem_sst_vi_b(context *ctx, Instruction *dec)
 	if(!msz) return st1b_z_p_ai(ctx, dec); // -> st1b_z_p_ai_s
 	if(msz==1) return st1h_z_p_ai(ctx, dec); // -> st1h_z_p_ai_s
 	if(msz==2) return st1w_z_p_ai(ctx, dec); // -> st1w_z_p_ai_s
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_302);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_329);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_mem_sst_sv2(context *ctx, Instruction *dec)
 {
 	uint32_t msz=(INSWORD>>23)&3;
-	if(!msz) UNALLOCATED(ENC_UNALLOCATED_296);
+	if(!msz) UNALLOCATED(ENC_UNALLOCATED_323);
 	if(msz==1) return st1h_z_p_bz(ctx, dec); // -> st1h_z_p_bz_d_64_scaled
 	if(msz==2) return st1w_z_p_bz(ctx, dec); // -> st1w_z_p_bz_d_64_scaled
 	if(msz==3) return st1d_z_p_bz(ctx, dec); // -> st1d_z_p_bz_d_64_scaled
@@ -5353,10 +5378,10 @@ int decode_iclass_sve_mem_est_si(context *ctx, Instruction *dec)
 int decode_iclass_sve_mem_sst_sv_b(context *ctx, Instruction *dec)
 {
 	uint32_t msz=(INSWORD>>23)&3;
-	if(!msz) UNALLOCATED(ENC_UNALLOCATED_297);
+	if(!msz) UNALLOCATED(ENC_UNALLOCATED_324);
 	if(msz==1) return st1h_z_p_bz(ctx, dec); // -> st1h_z_p_bz_s_x32_scaled
 	if(msz==2) return st1w_z_p_bz(ctx, dec); // -> st1w_z_p_bz_s_x32_scaled
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_301);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_328);
 	UNMATCHED;
 }
 
@@ -5366,14 +5391,14 @@ int decode_iclass_sve_mem_sst_vs_b(context *ctx, Instruction *dec)
 	if(!msz) return st1b_z_p_bz(ctx, dec); // -> st1b_z_p_bz_s_x32_unscaled
 	if(msz==1) return st1h_z_p_bz(ctx, dec); // -> st1h_z_p_bz_s_x32_unscaled
 	if(msz==2) return st1w_z_p_bz(ctx, dec); // -> st1w_z_p_bz_s_x32_unscaled
-	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_300);
+	if(msz==3) UNALLOCATED(ENC_UNALLOCATED_327);
 	UNMATCHED;
 }
 
 int decode_iclass_sve_mem_sst_sv_a(context *ctx, Instruction *dec)
 {
 	uint32_t msz=(INSWORD>>23)&3;
-	if(!msz) UNALLOCATED(ENC_UNALLOCATED_295);
+	if(!msz) UNALLOCATED(ENC_UNALLOCATED_322);
 	if(msz==1) return st1h_z_p_bz(ctx, dec); // -> st1h_z_p_bz_d_x32_scaled
 	if(msz==2) return st1w_z_p_bz(ctx, dec); // -> st1w_z_p_bz_d_x32_scaled
 	if(msz==3) return st1d_z_p_bz(ctx, dec); // -> st1d_z_p_bz_d_x32_scaled
@@ -5388,5 +5413,145 @@ int decode_iclass_sve_mem_sst_vs_a(context *ctx, Instruction *dec)
 	if(msz==2) return st1w_z_p_bz(ctx, dec); // -> st1w_z_p_bz_d_x32_unscaled
 	if(msz==3) return st1d_z_p_bz(ctx, dec); // -> st1d_z_p_bz_d_x32_unscaled
 	UNMATCHED;
+}
+
+int decode_iclass_mortlach_b16f32_prod(context *ctx, Instruction *dec)
+{
+	uint32_t S=(INSWORD>>4)&1;
+	if(!S && HasSME()) return bfmopa_za32_pp_zz(ctx, dec); // -> bfmopa_za32_pp_zz_
+	if(S && HasSME()) return bfmops_za32_pp_zz(ctx, dec); // -> bfmops_za32_pp_zz_
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_f16f32_prod(context *ctx, Instruction *dec)
+{
+	uint32_t S=(INSWORD>>4)&1;
+	if(!S && HasSME()) return fmopa_za32_pp_zz(ctx, dec); // -> fmopa_za32_pp_zz_16
+	if(S && HasSME()) return fmops_za32_pp_zz(ctx, dec); // -> fmops_za32_pp_zz_16
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_f32f32_prod(context *ctx, Instruction *dec)
+{
+	uint32_t S=(INSWORD>>4)&1;
+	if(!S && HasSME()) return fmopa_za_pp_zz(ctx, dec); // -> fmopa_za_pp_zz_32
+	if(S && HasSME()) return fmops_za_pp_zz(ctx, dec); // -> fmops_za_pp_zz_32
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_i8i32_prod(context *ctx, Instruction *dec)
+{
+	uint32_t u0=(INSWORD>>24)&1, u1=(INSWORD>>21)&1, S=(INSWORD>>4)&1;
+	if(!u0 && !u1 && !S && HasSME()) return smopa_za_pp_zz(ctx, dec); // -> smopa_za_pp_zz_32
+	if(!u0 && !u1 && S && HasSME()) return smops_za_pp_zz(ctx, dec); // -> smops_za_pp_zz_32
+	if(!u0 && u1 && !S && HasSME()) return sumopa_za_pp_zz(ctx, dec); // -> sumopa_za_pp_zz_32
+	if(!u0 && u1 && S && HasSME()) return sumops_za_pp_zz(ctx, dec); // -> sumops_za_pp_zz_32
+	if(u0 && !u1 && !S && HasSME()) return usmopa_za_pp_zz(ctx, dec); // -> usmopa_za_pp_zz_32
+	if(u0 && !u1 && S && HasSME()) return usmops_za_pp_zz(ctx, dec); // -> usmops_za_pp_zz_32
+	if(u0 && u1 && !S && HasSME()) return umopa_za_pp_zz(ctx, dec); // -> umopa_za_pp_zz_32
+	if(u0 && u1 && S && HasSME()) return umops_za_pp_zz(ctx, dec); // -> umops_za_pp_zz_32
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_f64f64_prod(context *ctx, Instruction *dec)
+{
+	uint32_t S=(INSWORD>>4)&1;
+	if(!S && HasSME_F64F64()) return fmopa_za_pp_zz(ctx, dec); // -> fmopa_za_pp_zz_64
+	if(S && HasSME_F64F64()) return fmops_za_pp_zz(ctx, dec); // -> fmops_za_pp_zz_64
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_i16i64_prod(context *ctx, Instruction *dec)
+{
+	uint32_t u0=(INSWORD>>24)&1, u1=(INSWORD>>21)&1, S=(INSWORD>>4)&1;
+	if(!u0 && !u1 && !S && HasSME_I16I64()) return smopa_za_pp_zz(ctx, dec); // -> smopa_za_pp_zz_64
+	if(!u0 && !u1 && S && HasSME_I16I64()) return smops_za_pp_zz(ctx, dec); // -> smops_za_pp_zz_64
+	if(!u0 && u1 && !S && HasSME_I16I64()) return sumopa_za_pp_zz(ctx, dec); // -> sumopa_za_pp_zz_64
+	if(!u0 && u1 && S && HasSME_I16I64()) return sumops_za_pp_zz(ctx, dec); // -> sumops_za_pp_zz_64
+	if(u0 && !u1 && !S && HasSME_I16I64()) return usmopa_za_pp_zz(ctx, dec); // -> usmopa_za_pp_zz_64
+	if(u0 && !u1 && S && HasSME_I16I64()) return usmops_za_pp_zz(ctx, dec); // -> usmops_za_pp_zz_64
+	if(u0 && u1 && !S && HasSME_I16I64()) return umopa_za_pp_zz(ctx, dec); // -> umopa_za_pp_zz_64
+	if(u0 && u1 && S && HasSME_I16I64()) return umops_za_pp_zz(ctx, dec); // -> umops_za_pp_zz_64
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_insert_pred(context *ctx, Instruction *dec)
+{
+	uint32_t size=(INSWORD>>22)&3, Q=(INSWORD>>16)&1;
+	if(!size && !Q && HasSME()) return mova_za_p_rz(ctx, dec); // -> mova_za_p_rz_b
+	if(size==1 && !Q && HasSME()) return mova_za_p_rz(ctx, dec); // -> mova_za_p_rz_h
+	if(size==2 && !Q && HasSME()) return mova_za_p_rz(ctx, dec); // -> mova_za_p_rz_w
+	if(size==2 && Q) UNALLOCATED(ENC_UNALLOCATED_313);
+	if(size==3 && !Q && HasSME()) return mova_za_p_rz(ctx, dec); // -> mova_za_p_rz_d
+	if(size==3 && Q && HasSME()) return mova_za_p_rz(ctx, dec); // -> mova_za_p_rz_q
+	if(!(size&2) && Q) UNALLOCATED(ENC_UNALLOCATED_311);
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_extract_pred(context *ctx, Instruction *dec)
+{
+	uint32_t size=(INSWORD>>22)&3, Q=(INSWORD>>16)&1;
+	if(!size && !Q && HasSME()) return mova_z_p_rza(ctx, dec); // -> mova_z_p_rza_b
+	if(size==1 && !Q && HasSME()) return mova_z_p_rza(ctx, dec); // -> mova_z_p_rza_h
+	if(size==2 && !Q && HasSME()) return mova_z_p_rza(ctx, dec); // -> mova_z_p_rza_w
+	if(size==2 && Q) UNALLOCATED(ENC_UNALLOCATED_314);
+	if(size==3 && !Q && HasSME()) return mova_z_p_rza(ctx, dec); // -> mova_z_p_rza_d
+	if(size==3 && Q && HasSME()) return mova_z_p_rza(ctx, dec); // -> mova_z_p_rza_q
+	if(!(size&2) && Q) UNALLOCATED(ENC_UNALLOCATED_312);
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_zero(context *ctx, Instruction *dec)
+{
+	return zero_za_i(ctx, dec);
+}
+
+int decode_iclass_mortlach_addhv(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>22)&1, V=(INSWORD>>16)&1, opc2=INSWORD&7;
+	if(!op && !V && !(opc2&4) && HasSME()) return addha_za_pp_z(ctx, dec); // -> addha_za_pp_z_32
+	if(!op && V && !(opc2&4) && HasSME()) return addva_za_pp_z(ctx, dec); // -> addva_za_pp_z_32
+	if(!op && (opc2&4)==4) UNALLOCATED(ENC_UNALLOCATED_315);
+	if(op && !V && HasSME_I16I64()) return addha_za_pp_z(ctx, dec); // -> addha_za_pp_z_64
+	if(op && V && HasSME_I16I64()) return addva_za_pp_z(ctx, dec); // -> addva_za_pp_z_64
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_contig_load(context *ctx, Instruction *dec)
+{
+	uint32_t msz=(INSWORD>>22)&3;
+	if(!msz && HasSME()) return ld1b_za_p_rrr(ctx, dec); // -> ld1b_za_p_rrr_
+	if(msz==1 && HasSME()) return ld1h_za_p_rrr(ctx, dec); // -> ld1h_za_p_rrr_
+	if(msz==2 && HasSME()) return ld1w_za_p_rrr(ctx, dec); // -> ld1w_za_p_rrr_
+	if(msz==3 && HasSME()) return ld1d_za_p_rrr(ctx, dec); // -> ld1d_za_p_rrr_
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_contig_qload(context *ctx, Instruction *dec)
+{
+	return ld1q_za_p_rrr(ctx, dec);
+}
+
+int decode_iclass_mortlach_ctxt_ldst(context *ctx, Instruction *dec)
+{
+	uint32_t op=(INSWORD>>21)&1;
+	if(!op && HasSME()) return ldr_za_ri(ctx, dec); // -> ldr_za_ri_
+	if(op && HasSME()) return str_za_ri(ctx, dec); // -> str_za_ri_
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_contig_store(context *ctx, Instruction *dec)
+{
+	uint32_t msz=(INSWORD>>22)&3;
+	if(!msz && HasSME()) return st1b_za_p_rrr(ctx, dec); // -> st1b_za_p_rrr_
+	if(msz==1 && HasSME()) return st1h_za_p_rrr(ctx, dec); // -> st1h_za_p_rrr_
+	if(msz==2 && HasSME()) return st1w_za_p_rrr(ctx, dec); // -> st1w_za_p_rrr_
+	if(msz==3 && HasSME()) return st1d_za_p_rrr(ctx, dec); // -> st1d_za_p_rrr_
+	UNMATCHED;
+}
+
+int decode_iclass_mortlach_contig_qstore(context *ctx, Instruction *dec)
+{
+	return st1q_za_p_rrr(ctx, dec);
 }
 

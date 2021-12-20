@@ -113,7 +113,7 @@ int ADDHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204000) {
 		decode_fields32(ENC_ADDHN_ASIMDDIFF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -458,7 +458,7 @@ int AESD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01001110|size=00|10100|0010|D=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01001110|size=00|10100|opcode[4:1]=0010|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E285800) {
 		decode_fields32(ENC_AESD_B_CRYPTOAES, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -477,7 +477,7 @@ int AESE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01001110|size=00|10100|0010|D=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01001110|size=00|10100|opcode[4:1]=0010|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E284800) {
 		decode_fields32(ENC_AESE_B_CRYPTOAES, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -496,7 +496,7 @@ int AESIMC_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01001110|size=00|10100|0011|D=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01001110|size=00|10100|opcode[4:1]=0011|D=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E287800) {
 		decode_fields32(ENC_AESIMC_B_CRYPTOAES, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -515,7 +515,7 @@ int AESMC_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01001110|size=00|10100|0011|D=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01001110|size=00|10100|opcode[4:1]=0011|D=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x4E286800) {
 		decode_fields32(ENC_AESMC_B_CRYPTOAES, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -543,18 +543,22 @@ int ANDS_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -585,18 +589,22 @@ int ANDS_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -647,18 +655,22 @@ int AND_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -687,18 +699,22 @@ int AND_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -717,7 +733,7 @@ int ASRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
 		decode_fields32(ENC_ASRV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -738,7 +754,7 @@ int ASR_ASRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02800) {
 		decode_fields32(ENC_ASR_ASRV_32_DP_2SRC, ctx, instr);
 		if(ctx->sf==0) OK(ENC_ASR_ASRV_32_DP_2SRC);
@@ -915,7 +931,7 @@ int AXFLAG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=010|Rt =11111 */
+	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=010|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500405F) {
 		decode_fields32(ENC_AXFLAG_M_PSTATE, ctx, instr);
 		if(!HaveFlagFormatExt()) {
@@ -1107,7 +1123,7 @@ int BFMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=11|L=x|M=x|Rm=xxxx|opcode<3>=1|opcode<2>=1|opcode<1:0>=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=11|L=x|M=x|Rm=xxxx|opcode[3]=1|opcode[2]=1|opcode[1:0]=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xFC0F000) {
 		decode_fields32(ENC_BFMLAL_ASIMDELEM_F, ctx, instr);
 		if(!HaveBF16Ext()) {
@@ -1193,18 +1209,22 @@ int BICS(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -1327,18 +1347,22 @@ int BIC_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -2059,7 +2083,7 @@ int CFINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=000|Rt =11111 */
+	/* 1101010100|L=0|op0[1]=0|op0[0]=0|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=000|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500401F) {
 		decode_fields32(ENC_CFINV_M_PSTATE, ctx, instr);
 		if(!HaveFlagManipulateExt()) {
@@ -2088,7 +2112,7 @@ int CINC_CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010100|Rm!=11111|cond!=111x|0|o2=1|Rn!=11111|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010100|Rm!=11111|cond!=111x|op2[1]=0|o2=1|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
 		decode_fields32(ENC_CINC_CSINC_32_CONDSEL, ctx, instr);
 		if(ctx->sf==0) OK(ENC_CINC_CSINC_32_CONDSEL);
@@ -2102,7 +2126,7 @@ int CINV_CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=1|S=0|11010100|Rm!=11111|cond!=111x|0|o2=0|Rn!=11111|Rd=xxxxx */
+	/* sf=x|op=1|S=0|11010100|Rm!=11111|cond!=111x|op2[1]=0|o2=0|Rn!=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000 && (INSWORD & 0x1FE3E0)!=0x1FE3E0) {
 		decode_fields32(ENC_CINV_CSINV_32_CONDSEL, ctx, instr);
 		if(ctx->sf==0) OK(ENC_CINV_CSINV_32_CONDSEL);
@@ -2248,7 +2272,7 @@ int CMEQ_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|10000|opcode[4:1]=0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E209800) {
 		decode_fields32(ENC_CMEQ_ASISDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2274,7 +2298,7 @@ int CMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_CMEQ_ASISDMISC_Z);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:1]=0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE209800) {
 		decode_fields32(ENC_CMEQ_ASIMDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2307,7 +2331,7 @@ int CMGE_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203C00) {
 		decode_fields32(ENC_CMGE_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2324,7 +2348,7 @@ int CMGE_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_CMGE_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203C00) {
 		decode_fields32(ENC_CMGE_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2348,7 +2372,7 @@ int CMGE_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|10000|opcode[4:1]=0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E208800) {
 		decode_fields32(ENC_CMGE_ASISDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2374,7 +2398,7 @@ int CMGE_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_CMGE_ASISDMISC_Z);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|10000|opcode[4:1]=0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E208800) {
 		decode_fields32(ENC_CMGE_ASIMDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2407,7 +2431,7 @@ int CMGT_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E203400) {
 		decode_fields32(ENC_CMGT_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2424,7 +2448,7 @@ int CMGT_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_CMGT_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203400) {
 		decode_fields32(ENC_CMGT_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2448,7 +2472,7 @@ int CMGT_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|10000|opcode[4:1]=0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5E208800) {
 		decode_fields32(ENC_CMGT_ASISDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2474,7 +2498,7 @@ int CMGT_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_CMGT_ASISDMISC_Z);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:1]=0100|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE208800) {
 		decode_fields32(ENC_CMGT_ASIMDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2507,7 +2531,7 @@ int CMHI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203400) {
 		decode_fields32(ENC_CMHI_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2524,7 +2548,7 @@ int CMHI_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_CMHI_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203400) {
 		decode_fields32(ENC_CMHI_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2548,7 +2572,7 @@ int CMHS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E203C00) {
 		decode_fields32(ENC_CMHS_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2565,7 +2589,7 @@ int CMHS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_CMHS_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0011|eq=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203C00) {
 		decode_fields32(ENC_CMHS_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2589,7 +2613,7 @@ int CMLE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|10000|opcode[4:1]=0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x7E209800) {
 		decode_fields32(ENC_CMLE_ASISDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2615,7 +2639,7 @@ int CMLE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_CMLE_ASISDMISC_Z);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|10000|0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|10000|opcode[4:1]=0100|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E209800) {
 		decode_fields32(ENC_CMLE_ASIMDMISC_Z, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -2873,7 +2897,7 @@ int CNEG_CSNEG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond!=111x|0|o2=1|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond!=111x|op2[1]=0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CNEG_CSNEG_32_CONDSEL, ctx, instr);
 		if(ctx->sf==0) OK(ENC_CNEG_CSNEG_32_CONDSEL);
@@ -2921,7 +2945,7 @@ int CRC32(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_crc */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=0|sz=xx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:3]=010|C=0|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC04000) {
 		decode_fields32(ENC_CRC32B_32C_DP_2SRC, ctx, instr);
 		if(!HaveCRCExt()) {
@@ -2951,7 +2975,7 @@ int CRC32C(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_crc */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:3>=010|C=1|sz=xx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:3]=010|C=1|sz=xx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0F000)==0x1AC05000) {
 		decode_fields32(ENC_CRC32CB_32C_DP_2SRC, ctx, instr);
 		if(!HaveCRCExt()) {
@@ -3092,7 +3116,7 @@ int CSEL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|op2[1]=0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800000) {
 		decode_fields32(ENC_CSEL_32_CONDSEL, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -3113,7 +3137,7 @@ int CSETM_CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=1|S=0|11010100|Rm=11111|cond!=111x|0|o2=0|Rn=11111|Rd=xxxxx */
+	/* sf=x|op=1|S=0|11010100|Rm=11111|cond!=111x|op2[1]=0|o2=0|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x5A9F03E0 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CSETM_CSINV_32_CONDSEL, ctx, instr);
 		if(ctx->sf==0) OK(ENC_CSETM_CSINV_32_CONDSEL);
@@ -3127,7 +3151,7 @@ int CSET_CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010100|Rm=11111|cond!=111x|0|o2=1|Rn=11111|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010100|Rm=11111|cond!=111x|op2[1]=0|o2=1|Rn=11111|Rd=xxxxx */
 	if((INSWORD & 0x7FFF0FE0)==0x1A9F07E0 && (INSWORD & 0xE000)!=0xE000) {
 		decode_fields32(ENC_CSET_CSINC_32_CONDSEL, ctx, instr);
 		if(ctx->sf==0) OK(ENC_CSET_CSINC_32_CONDSEL);
@@ -3141,7 +3165,7 @@ int CSINC(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010100|Rm=xxxxx|cond=xxxx|op2[1]=0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x1A800400) {
 		decode_fields32(ENC_CSINC_32_CONDSEL, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -3165,7 +3189,7 @@ int CSINV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=0|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|op2[1]=0|o2=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800000) {
 		decode_fields32(ENC_CSINV_32_CONDSEL, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -3189,7 +3213,7 @@ int CSNEG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|0|o2=1|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=1|S=0|11010100|Rm=xxxxx|cond=xxxx|op2[1]=0|o2=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE00C00)==0x5A800400) {
 		decode_fields32(ENC_CSNEG_32_CONDSEL, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -3390,7 +3414,7 @@ int DMB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=01|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|op2[2]=1|opc=01|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330BF) {
 		decode_fields32(ENC_DMB_BO_BARRIERS, ctx, instr);
 		if(!SLICE(ctx->CRm,3,2)) {
@@ -3442,10 +3466,19 @@ int DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_dsb_memory */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=00|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|op2[2]=1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD503309F) {
 		decode_fields32(ENC_DSB_BO_BARRIERS, ctx, instr);
 		ctx->nXS = FALSE;
+		if(!ctx->CRm) {
+			ctx->alias = DSBAlias_SSBB;
+		}
+		else if(ctx->CRm==4) {
+			ctx->alias = DSBAlias_PSSBB;
+		}
+		else {
+			ctx->alias = DSBAlias_DSB;
+		}
 		if(!SLICE(ctx->CRm,3,2)) {
 			ctx->domain = MBReqDomain_OuterShareable;
 		}
@@ -3485,6 +3518,7 @@ int DSB(context *ctx, Instruction *instr)
 		}
 		ctx->types = MBReqTypes_All;
 		ctx->nXS = TRUE;
+		ctx->alias = DSBAlias_DSB;
 		if(!ctx->imm2) {
 			ctx->domain = MBReqDomain_OuterShareable;
 		}
@@ -3606,18 +3640,22 @@ int EON(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -3709,18 +3747,22 @@ int EOR_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -3749,18 +3791,22 @@ int EOR_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -4005,7 +4051,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FABD_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0D400) {
 		decode_fields32(ENC_FABD_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4034,7 +4080,7 @@ int FABD_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FABD_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0D400) {
 		decode_fields32(ENC_FABD_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4072,7 +4118,7 @@ int FABS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FABS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0F800) {
 		decode_fields32(ENC_FABS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4094,7 +4140,7 @@ int FABS_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=01|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:2]=0000|opc=01|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E20C000) {
 		decode_fields32(ENC_FABS_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4140,7 +4186,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402C00) {
 		decode_fields32(ENC_FACGE_ASISDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4178,7 +4224,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGE_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7E20EC00) {
 		decode_fields32(ENC_FACGE_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4213,7 +4259,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGE_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E402C00) {
 		decode_fields32(ENC_FACGE_ASIMDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4251,7 +4297,7 @@ int FACGE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGE_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20EC00) {
 		decode_fields32(ENC_FACGE_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4296,7 +4342,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|opcode[2:1]=10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02C00) {
 		decode_fields32(ENC_FACGT_ASISDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4334,7 +4380,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGT_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0EC00) {
 		decode_fields32(ENC_FACGT_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4369,7 +4415,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGT_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|opcode[2:1]=10|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC02C00) {
 		decode_fields32(ENC_FACGT_ASIMDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4407,7 +4453,7 @@ int FACGT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FACGT_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0EC00) {
 		decode_fields32(ENC_FACGT_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4478,7 +4524,7 @@ int FADDP_advsimd_pair(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 01|U=0|11110|0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E30D800) {
 		decode_fields32(ENC_FADDP_ASISDPAIR_ONLY_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4496,7 +4542,7 @@ int FADDP_advsimd_pair(context *ctx, Instruction *instr)
 		OK(ENC_FADDP_ASISDPAIR_ONLY_H);
 	}
 	/* class iclass_single_and_double */
-	/* 01|U=1|11110|0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=0|sz=x|11000|opcode=01101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E30D800) {
 		decode_fields32(ENC_FADDP_ASISDPAIR_ONLY_SD, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4531,7 +4577,7 @@ int FADDP_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_FADDP_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20D400) {
 		decode_fields32(ENC_FADDP_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4570,7 +4616,7 @@ int FADD_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FADD_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20D400) {
 		decode_fields32(ENC_FADD_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4593,7 +4639,7 @@ int FADD_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:1]=001|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E202800) {
 		decode_fields32(ENC_FADD_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4734,7 +4780,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E402400) {
 		decode_fields32(ENC_FCMEQ_ASISDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4772,7 +4818,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20E400) {
 		decode_fields32(ENC_FCMEQ_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4807,7 +4853,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE402400) {
 		decode_fields32(ENC_FCMEQ_ASIMDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4845,7 +4891,7 @@ int FCMEQ_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20E400) {
 		decode_fields32(ENC_FCMEQ_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4890,7 +4936,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|a=1|111100|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8D800) {
 		decode_fields32(ENC_FCMEQ_ASISDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4916,7 +4962,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASISDMISCFP16_FZ);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0D800) {
 		decode_fields32(ENC_FCMEQ_ASISDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4939,7 +4985,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASISDMISC_FZ);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|a=1|111100|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8D800) {
 		decode_fields32(ENC_FCMEQ_ASIMDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -4965,7 +5011,7 @@ int FCMEQ_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMEQ_ASIMDMISCFP16_FZ);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0D800) {
 		decode_fields32(ENC_FCMEQ_ASIMDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -4998,7 +5044,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7E402400) {
 		decode_fields32(ENC_FCMGE_ASISDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5036,7 +5082,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7E20E400) {
 		decode_fields32(ENC_FCMGE_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5071,7 +5117,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=0|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2E402400) {
 		decode_fields32(ENC_FCMGE_ASIMDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5109,7 +5155,7 @@ int FCMGE_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=0|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20E400) {
 		decode_fields32(ENC_FCMGE_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5154,7 +5200,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|a=1|111100|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8C800) {
 		decode_fields32(ENC_FCMGE_ASISDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5180,7 +5226,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASISDMISCFP16_FZ);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA0C800) {
 		decode_fields32(ENC_FCMGE_ASISDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5203,7 +5249,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASISDMISC_FZ);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|a=1|111100|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8C800) {
 		decode_fields32(ENC_FCMGE_ASIMDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5229,7 +5275,7 @@ int FCMGE_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGE_ASIMDMISCFP16_FZ);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0C800) {
 		decode_fields32(ENC_FCMGE_ASIMDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5262,7 +5308,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=1|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x7EC02400) {
 		decode_fields32(ENC_FCMGT_ASISDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5300,7 +5346,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|E=1|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x7EA0E400) {
 		decode_fields32(ENC_FCMGT_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5335,7 +5381,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=1|10|Rm=xxxxx|00|opcode[2:1]=10|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0x2EC02400) {
 		decode_fields32(ENC_FCMGT_ASIMDSAMEFP16_ONLY, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5373,7 +5419,7 @@ int FCMGT_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|E=1|sz=x|1|Rm=xxxxx|opcode[4:1]=1110|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2EA0E400) {
 		decode_fields32(ENC_FCMGT_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5418,7 +5464,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|a=1|111100|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF8C800) {
 		decode_fields32(ENC_FCMGT_ASISDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5444,7 +5490,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASISDMISCFP16_FZ);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0C800) {
 		decode_fields32(ENC_FCMGT_ASISDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5467,7 +5513,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASISDMISC_FZ);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|a=1|111100|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|a=1|111100|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF8C800) {
 		decode_fields32(ENC_FCMGT_ASIMDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5493,7 +5539,7 @@ int FCMGT_advsimd_zero(context *ctx, Instruction *instr)
 		OK(ENC_FCMGT_ASIMDMISCFP16_FZ);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0C800) {
 		decode_fields32(ENC_FCMGT_ASIMDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5526,7 +5572,7 @@ int FCMLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|rot=xx|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|rot=xx|opcode[0]=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF009400)==0x2F001000) {
 		decode_fields32(ENC_FCMLA_ASIMDELEM_C_H, ctx, instr);
 		if(!HaveFCADDExt()) {
@@ -5598,7 +5644,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|a=1|111100|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF8D800) {
 		decode_fields32(ENC_FCMLE_ASISDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5624,7 +5670,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCMLE_ASISDMISCFP16_FZ);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA0D800) {
 		decode_fields32(ENC_FCMLE_ASISDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5647,7 +5693,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCMLE_ASISDMISC_FZ);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|a=1|111100|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|a=1|111100|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF8D800) {
 		decode_fields32(ENC_FCMLE_ASIMDMISCFP16_FZ, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5673,7 +5719,7 @@ int FCMLE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCMLE_ASIMDMISCFP16_FZ);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode[4:1]=0110|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0D800) {
 		decode_fields32(ENC_FCMLE_ASIMDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5734,7 +5780,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCMLT_ASISDMISCFP16_FZ);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA0E800) {
 		decode_fields32(ENC_FCMLT_ASISDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5761,7 +5807,7 @@ int FCMLT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCMLT_ASIMDMISCFP16_FZ);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode=01110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA0E800) {
 		decode_fields32(ENC_FCMLT_ASIMDMISC_FZ, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5796,7 +5842,7 @@ int FCMPE_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=1x|000 */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=1x|opcode2[2:0]=000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202010) {
 		decode_fields32(ENC_FCMPE_H_FLOATCMP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
@@ -5835,7 +5881,7 @@ int FCMP_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=0x|000 */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=00|1000|Rn=xxxxx|opc=0x|opcode2[2:0]=000 */
 	if((INSWORD & 0xFF20FC17)==0x1E202000) {
 		decode_fields32(ENC_FCMP_H_FLOATCMP, ctx, instr);
 		ctx->n = UINT(ctx->Rn);
@@ -5910,7 +5956,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79C800) {
 		decode_fields32(ENC_FCVTAS_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -5926,7 +5972,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTAS_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21C800) {
 		decode_fields32(ENC_FCVTAS_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -5955,7 +6001,7 @@ int FCVTAS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTAS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21C800) {
 		decode_fields32(ENC_FCVTAS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6064,7 +6110,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|size<1>=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=0|111100|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79C800) {
 		decode_fields32(ENC_FCVTAU_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6080,7 +6126,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTAU_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21C800) {
 		decode_fields32(ENC_FCVTAU_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6109,7 +6155,7 @@ int FCVTAU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTAU_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21C800) {
 		decode_fields32(ENC_FCVTAU_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6218,7 +6264,7 @@ int FCVTL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10111|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|10000|opcode=10111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE217800) {
 		decode_fields32(ENC_FCVTL_ASIMDMISC_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6237,7 +6283,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=0|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79B800) {
 		decode_fields32(ENC_FCVTMS_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6253,7 +6299,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMS_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21B800) {
 		decode_fields32(ENC_FCVTMS_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6266,7 +6312,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMS_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79B800) {
 		decode_fields32(ENC_FCVTMS_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6282,7 +6328,7 @@ int FCVTMS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21B800) {
 		decode_fields32(ENC_FCVTMS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6391,7 +6437,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=0|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79B800) {
 		decode_fields32(ENC_FCVTMU_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6407,7 +6453,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMU_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21B800) {
 		decode_fields32(ENC_FCVTMU_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6420,7 +6466,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMU_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|o2=0|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79B800) {
 		decode_fields32(ENC_FCVTMU_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6436,7 +6482,7 @@ int FCVTMU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTMU_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21B800) {
 		decode_fields32(ENC_FCVTMU_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6545,7 +6591,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=0|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5E79A800) {
 		decode_fields32(ENC_FCVTNS_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6561,7 +6607,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNS_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21A800) {
 		decode_fields32(ENC_FCVTNS_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6574,7 +6620,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNS_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE79A800) {
 		decode_fields32(ENC_FCVTNS_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6590,7 +6636,7 @@ int FCVTNS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21A800) {
 		decode_fields32(ENC_FCVTNS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6699,7 +6745,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=0|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7E79A800) {
 		decode_fields32(ENC_FCVTNU_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6715,7 +6761,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNU_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21A800) {
 		decode_fields32(ENC_FCVTNU_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6728,7 +6774,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNU_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|o2=0|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E79A800) {
 		decode_fields32(ENC_FCVTNU_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6744,7 +6790,7 @@ int FCVTNU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTNU_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21A800) {
 		decode_fields32(ENC_FCVTNU_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6853,7 +6899,7 @@ int FCVTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE216800) {
 		decode_fields32(ENC_FCVTN_ASIMDMISC_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6872,7 +6918,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=1|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9A800) {
 		decode_fields32(ENC_FCVTPS_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6888,7 +6934,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPS_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1A800) {
 		decode_fields32(ENC_FCVTPS_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -6901,7 +6947,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPS_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF9A800) {
 		decode_fields32(ENC_FCVTPS_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -6917,7 +6963,7 @@ int FCVTPS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1A800) {
 		decode_fields32(ENC_FCVTPS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7026,7 +7072,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=1|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9A800) {
 		decode_fields32(ENC_FCVTPU_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7042,7 +7088,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPU_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1A800) {
 		decode_fields32(ENC_FCVTPU_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7055,7 +7101,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPU_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|o2=1|111100|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|111100|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9A800) {
 		decode_fields32(ENC_FCVTPU_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7071,7 +7117,7 @@ int FCVTPU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTPU_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1A800) {
 		decode_fields32(ENC_FCVTPU_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7180,7 +7226,7 @@ int FCVTXN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E216800) {
 		decode_fields32(ENC_FCVTXN_ASISDMISC_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7195,7 +7241,7 @@ int FCVTXN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FCVTXN_ASISDMISC_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|10000|opcode=10110|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E216800) {
 		decode_fields32(ENC_FCVTXN_ASIMDMISC_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7264,7 +7310,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=1|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9B800) {
 		decode_fields32(ENC_FCVTZS_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7280,7 +7326,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZS_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1B800) {
 		decode_fields32(ENC_FCVTZS_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7293,7 +7339,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZS_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=0|01110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF9B800) {
 		decode_fields32(ENC_FCVTZS_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7309,7 +7355,7 @@ int FCVTZS_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZS_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1B800) {
 		decode_fields32(ENC_FCVTZS_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7520,7 +7566,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=1|11110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=1|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x7EF9B800) {
 		decode_fields32(ENC_FCVTZU_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7536,7 +7582,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZU_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1B800) {
 		decode_fields32(ENC_FCVTZU_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7549,7 +7595,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZU_ASISDMISC_R);
 	}
 	/* class iclass_simd_half */
-	/* 0|Q=x|U=1|01110|o2=1|111100|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|111100|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF9B800) {
 		decode_fields32(ENC_FCVTZU_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -7565,7 +7611,7 @@ int FCVTZU_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_FCVTZU_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|opcode[4:1]=1101|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1B800) {
 		decode_fields32(ENC_FCVTZU_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7729,7 +7775,7 @@ int FCVT_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|0001|opc=xx|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:2]=0001|opc=xx|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3E7C00)==0x1E224000) {
 		decode_fields32(ENC_FCVT_SH_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -7791,7 +7837,7 @@ int FDIV_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FDIV_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20FC00) {
 		decode_fields32(ENC_FDIV_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -8045,7 +8091,7 @@ int FMAXNMV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o1=0|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o1=0|size[0]=0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE30C800) {
 		decode_fields32(ENC_FMAXNMV_ASIMDALL_ONLY_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -8123,7 +8169,7 @@ int FMAXNM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=10|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:2]=01|op=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E206800) {
 		decode_fields32(ENC_FMAXNM_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -8326,7 +8372,7 @@ int FMAX_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=00|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:2]=01|op=00|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E204800) {
 		decode_fields32(ENC_FMAX_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -8451,7 +8497,7 @@ int FMINNMV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o1=1|0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o1=1|size[0]=0|11000|opcode=01100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEB0C800) {
 		decode_fields32(ENC_FMINNMV_ASIMDALL_ONLY_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -8529,7 +8575,7 @@ int FMINNM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=11|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:2]=01|op=11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E207800) {
 		decode_fields32(ENC_FMINNM_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -8732,7 +8778,7 @@ int FMIN_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|01|op=01|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:2]=01|op=01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E205800) {
 		decode_fields32(ENC_FMIN_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -8875,7 +8921,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar_half */
-	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F001000) {
 		decode_fields32(ENC_FMLA_ASISDELEM_RH_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -8893,7 +8939,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLA_ASISDELEM_RH_H);
 	}
 	/* class iclass_2reg_scalar_single_and_double */
-	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F801000) {
 		decode_fields32(ENC_FMLA_ASISDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -8917,7 +8963,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLA_ASISDELEM_R_SD);
 	}
 	/* class iclass_2reg_element_half */
-	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF001000) {
 		decode_fields32(ENC_FMLA_ASIMDELEM_RH_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -8935,7 +8981,7 @@ int FMLA_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLA_ASIMDELEM_RH_H);
 	}
 	/* class iclass_2reg_element_single_and_double */
-	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=0|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF801000) {
 		decode_fields32(ENC_FMLA_ASIMDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9104,7 +9150,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar_half */
-	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=00|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFC0F400)==0x5F005000) {
 		decode_fields32(ENC_FMLS_ASISDELEM_RH_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -9122,7 +9168,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLS_ASISDELEM_RH_H);
 	}
 	/* class iclass_2reg_scalar_single_and_double */
-	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F805000) {
 		decode_fields32(ENC_FMLS_ASISDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9146,7 +9192,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLS_ASISDELEM_R_SD);
 	}
 	/* class iclass_2reg_element_half */
-	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=00|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFC0F400)==0xF005000) {
 		decode_fields32(ENC_FMLS_ASIMDELEM_RH_H, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -9164,7 +9210,7 @@ int FMLS_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMLS_ASIMDELEM_RH_H);
 	}
 	/* class iclass_2reg_element_single_and_double */
-	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|0|o2=1|01|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=01|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF805000) {
 		decode_fields32(ENC_FMLS_ASIMDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9363,7 +9409,7 @@ int FMOV_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=00|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:2]=0000|opc=00|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E204000) {
 		decode_fields32(ENC_FMOV_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9589,7 +9635,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMULX_ASISDELEM_RH_H);
 	}
 	/* class iclass_2reg_scalar_single_and_double */
-	/* 01|U=1|11111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x7F809000) {
 		decode_fields32(ENC_FMULX_ASISDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9631,7 +9677,7 @@ int FMULX_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMULX_ASIMDELEM_RH_H);
 	}
 	/* class iclass_2reg_element_single_and_double */
-	/* 0|Q=x|U=1|01111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0x2F809000) {
 		decode_fields32(ENC_FMULX_ASIMDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9680,7 +9726,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_FMULX_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20DC00) {
 		decode_fields32(ENC_FMULX_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9707,7 +9753,7 @@ int FMULX_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_FMULX_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20DC00) {
 		decode_fields32(ENC_FMULX_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9747,7 +9793,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMUL_ASISDELEM_RH_H);
 	}
 	/* class iclass_2reg_scalar_single_and_double */
-	/* 01|U=0|11111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80F400)==0x5F809000) {
 		decode_fields32(ENC_FMUL_ASISDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9789,7 +9835,7 @@ int FMUL_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_FMUL_ASIMDELEM_RH_H);
 	}
 	/* class iclass_2reg_element_single_and_double */
-	/* 0|Q=x|U=0|01111|1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size[1]=1|sz=x|L=x|M=x|Rm=xxxx|opcode=1001|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80F400)==0xF809000) {
 		decode_fields32(ENC_FMUL_ASIMDELEM_R_SD, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -9838,7 +9884,7 @@ int FMUL_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_FMUL_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11011|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0x2E20DC00) {
 		decode_fields32(ENC_FMUL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9860,7 +9906,7 @@ int FMUL_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=0|000|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=0|opcode[2:0]=000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E200800) {
 		decode_fields32(ENC_FMUL_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9911,7 +9957,7 @@ int FNEG_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FNEG_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode=01111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA0F800) {
 		decode_fields32(ENC_FNEG_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -9933,7 +9979,7 @@ int FNEG_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=10|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:2]=0000|opc=10|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E214000) {
 		decode_fields32(ENC_FNEG_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10055,7 +10101,7 @@ int FNMUL_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=1|000|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|op=1|opcode[2:0]=000|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E208800) {
 		decode_fields32(ENC_FNMUL_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10091,7 +10137,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd_half */
-	/* 01|U=0|11110|size<1>=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|111100|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x5EF9D800) {
 		decode_fields32(ENC_FRECPE_ASISDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10105,7 +10151,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRECPE_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1D800) {
 		decode_fields32(ENC_FRECPE_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10130,7 +10176,7 @@ int FRECPE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRECPE_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1D800) {
 		decode_fields32(ENC_FRECPE_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10166,7 +10212,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRECPS_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5E20FC00) {
 		decode_fields32(ENC_FRECPS_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10193,7 +10239,7 @@ int FRECPS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRECPS_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xE20FC00) {
 		decode_fields32(ENC_FRECPS_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10224,19 +10270,15 @@ int FRECPX_advsimd(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Rd);
 		ctx->n = UINT(ctx->Rn);
 		ctx->esize = 0x10;
-		ctx->datasize = ctx->esize;
-		ctx->elements = 1;
 		OK(ENC_FRECPX_ASISDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 01|U=0|11110|1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5EA1F800) {
 		decode_fields32(ENC_FRECPX_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
 		ctx->n = UINT(ctx->Rn);
 		ctx->esize = (0x20) << (UINT(ctx->sz));
-		ctx->datasize = ctx->esize;
-		ctx->elements = 1;
 		OK(ENC_FRECPX_ASISDMISC_R);
 	}
 	return rc;
@@ -10471,7 +10513,7 @@ int FRINTA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|111100|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E798800) {
 		decode_fields32(ENC_FRINTA_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10502,7 +10544,7 @@ int FRINTA_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTA_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E218800) {
 		decode_fields32(ENC_FRINTA_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10540,7 +10582,7 @@ int FRINTA_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=100|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=100|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E264000) {
 		decode_fields32(ENC_FRINTA_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10591,7 +10633,7 @@ int FRINTI_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=1|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|111100|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2EF99800) {
 		decode_fields32(ENC_FRINTI_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10622,7 +10664,7 @@ int FRINTI_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTI_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=1|sz=x|10000|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA19800) {
 		decode_fields32(ENC_FRINTI_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10660,7 +10702,7 @@ int FRINTI_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=111|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=111|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E27C000) {
 		decode_fields32(ENC_FRINTI_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10711,7 +10753,7 @@ int FRINTM_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|111100|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE799800) {
 		decode_fields32(ENC_FRINTM_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10742,7 +10784,7 @@ int FRINTM_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTM_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE219800) {
 		decode_fields32(ENC_FRINTM_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10780,7 +10822,7 @@ int FRINTM_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=010|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=010|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E254000) {
 		decode_fields32(ENC_FRINTM_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10831,7 +10873,7 @@ int FRINTN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o2=0|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|111100|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xE798800) {
 		decode_fields32(ENC_FRINTN_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10862,7 +10904,7 @@ int FRINTN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTN_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=0|sz=x|10000|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE218800) {
 		decode_fields32(ENC_FRINTN_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10900,7 +10942,7 @@ int FRINTN_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=000|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=000|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E244000) {
 		decode_fields32(ENC_FRINTN_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -10951,7 +10993,7 @@ int FRINTP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|111100|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF98800) {
 		decode_fields32(ENC_FRINTP_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -10982,7 +11024,7 @@ int FRINTP_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTP_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|opcode[4:1]=1100|o1=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA18800) {
 		decode_fields32(ENC_FRINTP_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11020,7 +11062,7 @@ int FRINTP_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=001|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=001|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E24C000) {
 		decode_fields32(ENC_FRINTP_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11071,7 +11113,7 @@ int FRINTX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=1|01110|o2=0|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|111100|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0x2E799800) {
 		decode_fields32(ENC_FRINTX_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -11102,7 +11144,7 @@ int FRINTX_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTX_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|o2=0|sz=x|10000|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E219800) {
 		decode_fields32(ENC_FRINTX_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11140,7 +11182,7 @@ int FRINTX_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=110|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=110|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E274000) {
 		decode_fields32(ENC_FRINTX_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11191,7 +11233,7 @@ int FRINTZ_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_half */
-	/* 0|Q=x|U=0|01110|o2=1|111100|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|111100|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFFFFC00)==0xEF99800) {
 		decode_fields32(ENC_FRINTZ_ASIMDMISCFP16_R, ctx, instr);
 		if(!HaveFP16Ext()) {
@@ -11222,7 +11264,7 @@ int FRINTZ_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRINTZ_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|o2=1|sz=x|10000|opcode[4:1]=1100|o1=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA19800) {
 		decode_fields32(ENC_FRINTZ_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11260,7 +11302,7 @@ int FRINTZ_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|001|rmode=011|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:3]=001|rmode=011|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E25C000) {
 		decode_fields32(ENC_FRINTZ_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11325,7 +11367,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRSQRTE_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7EA1D800) {
 		decode_fields32(ENC_FRSQRTE_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11350,7 +11392,7 @@ int FRSQRTE_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRSQRTE_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1D800) {
 		decode_fields32(ENC_FRSQRTE_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11386,7 +11428,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRSQRTS_ASISDSAMEFP16_ONLY);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x5EA0FC00) {
 		decode_fields32(ENC_FRSQRTS_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11413,7 +11455,7 @@ int FRSQRTS_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FRSQRTS_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|1|Rm=xxxxx|opcode=11111|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0FC00) {
 		decode_fields32(ENC_FRSQRTS_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11449,7 +11491,7 @@ int FSQRT_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FSQRT_ASIMDMISCFP16_R);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode=11111|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1F800) {
 		decode_fields32(ENC_FSQRT_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11470,7 +11512,7 @@ int FSQRT_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|0000|opc=11|10000|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|opcode[5:2]=0000|opc=11|10000|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x1E21C000) {
 		decode_fields32(ENC_FSQRT_H_FLOATDP1, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11532,7 +11574,7 @@ int FSUB_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_FSUB_ASIMDSAMEFP16_ONLY);
 	}
 	/* class iclass_single_and_double */
-	/* 0|Q=x|U=0|01110|1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|1|Rm=xxxxx|opcode=11010|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFA0FC00)==0xEA0D400) {
 		decode_fields32(ENC_FSUB_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11555,7 +11597,7 @@ int FSUB_float(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_float */
-	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|001|op=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* M=0|0|S=0|11110|ftype=xx|1|Rm=xxxxx|opcode[3:1]=001|op=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x1E203800) {
 		decode_fields32(ENC_FSUB_H_FLOATDP2, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -11834,7 +11876,7 @@ int ISB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|1|opc=10|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=xxxx|op2[2]=1|opc=10|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330DF) {
 		decode_fields32(ENC_ISB_BI_BARRIERS, ctx, instr);
 		OK(ENC_ISB_BI_BARRIERS);
@@ -17166,7 +17208,7 @@ int LSLV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
 		decode_fields32(ENC_LSLV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -17187,7 +17229,7 @@ int LSL_LSLV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02000) {
 		decode_fields32(ENC_LSL_LSLV_32_DP_2SRC, ctx, instr);
 		if(ctx->sf==0) OK(ENC_LSL_LSLV_32_DP_2SRC);
@@ -17215,7 +17257,7 @@ int LSRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
 		decode_fields32(ENC_LSRV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -17236,7 +17278,7 @@ int LSR_LSRV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=01|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02400) {
 		decode_fields32(ENC_LSR_LSRV_32_DP_2SRC, ctx, instr);
 		if(ctx->sf==0) OK(ENC_LSR_LSRV_32_DP_2SRC);
@@ -17287,7 +17329,7 @@ int MLA_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F000000) {
 		decode_fields32(ENC_MLA_ASIMDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -17342,7 +17384,7 @@ int MLS_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|00|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=00|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F004000) {
 		decode_fields32(ENC_MLS_ASIMDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -17540,8 +17582,8 @@ int MOVN(context *ctx, Instruction *instr)
 	return rc;
 }
 
-/* movs_and_p_p_pp.xml */
-int MOVS_and_p_p_pp(context *ctx, Instruction *instr)
+/* movs_ands_p_p_pp.xml */
+int MOVS_ands_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
@@ -17553,8 +17595,8 @@ int MOVS_and_p_p_pp(context *ctx, Instruction *instr)
 	return rc;
 }
 
-/* movs_orr_p_p_pp.xml */
-int MOVS_orr_p_p_pp(context *ctx, Instruction *instr)
+/* movs_orrs_p_p_pp.xml */
+int MOVS_orrs_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
@@ -17728,7 +17770,7 @@ int MOV_UMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|op=0|01110000|imm5=xxx00|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|op=0|01110000|imm5=xxx00|0|imm4[3:2]=01|imm4[1]=1|imm4[0]=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE3FC00)==0xE003C00) {
 		decode_fields32(ENC_MOV_UMOV_ASIMDINS_W_W, ctx, instr);
 		if(ctx->Q==0 && (ctx->imm5&7)==4) OK(ENC_MOV_UMOV_ASIMDINS_W_W);
@@ -17855,6 +17897,80 @@ int MOV_dupm_z_i(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* mov_mova_z_p_rza.xml */
+int MOV_mova_z_p_rza(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_byte */
+	/* 11000000|size=00|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|imm4=xxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0020000) {
+		decode_fields32(ENC_MOV_MOVA_Z_P_RZA_B, ctx, instr);
+		OK(ENC_MOV_MOVA_Z_P_RZA_B);
+	}
+	/* class iclass_per_halfword */
+	/* 11000000|size=01|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=x|imm3=xxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0420000) {
+		decode_fields32(ENC_MOV_MOVA_Z_P_RZA_H, ctx, instr);
+		OK(ENC_MOV_MOVA_Z_P_RZA_H);
+	}
+	/* class iclass_per_word */
+	/* 11000000|size=10|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=xx|imm2=xx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0820000) {
+		decode_fields32(ENC_MOV_MOVA_Z_P_RZA_W, ctx, instr);
+		OK(ENC_MOV_MOVA_Z_P_RZA_W);
+	}
+	/* class iclass_per_doubleword */
+	/* 11000000|size=11|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=xxx|i1=x|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0C20000) {
+		decode_fields32(ENC_MOV_MOVA_Z_P_RZA_D, ctx, instr);
+		OK(ENC_MOV_MOVA_Z_P_RZA_D);
+	}
+	/* class iclass_per_quadword */
+	/* 11000000|size=11|00001|Q=1|V=x|Rs=xx|Pg=xxx|0|ZAn=xxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0C30000) {
+		decode_fields32(ENC_MOV_MOVA_Z_P_RZA_Q, ctx, instr);
+		OK(ENC_MOV_MOVA_Z_P_RZA_Q);
+	}
+	return rc;
+}
+
+/* mov_mova_za_p_rz.xml */
+int MOV_mova_za_p_rz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_byte */
+	/* 11000000|size=00|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFFF0010)==0xC0000000) {
+		decode_fields32(ENC_MOV_MOVA_ZA_P_RZ_B, ctx, instr);
+		OK(ENC_MOV_MOVA_ZA_P_RZ_B);
+	}
+	/* class iclass_per_halfword */
+	/* 11000000|size=01|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=x|imm3=xxx */
+	if((INSWORD & 0xFFFF0010)==0xC0400000) {
+		decode_fields32(ENC_MOV_MOVA_ZA_P_RZ_H, ctx, instr);
+		OK(ENC_MOV_MOVA_ZA_P_RZ_H);
+	}
+	/* class iclass_per_word */
+	/* 11000000|size=10|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xx|imm2=xx */
+	if((INSWORD & 0xFFFF0010)==0xC0800000) {
+		decode_fields32(ENC_MOV_MOVA_ZA_P_RZ_W, ctx, instr);
+		OK(ENC_MOV_MOVA_ZA_P_RZ_W);
+	}
+	/* class iclass_per_doubleword */
+	/* 11000000|size=11|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xxx|i1=x */
+	if((INSWORD & 0xFFFF0010)==0xC0C00000) {
+		decode_fields32(ENC_MOV_MOVA_ZA_P_RZ_D, ctx, instr);
+		OK(ENC_MOV_MOVA_ZA_P_RZ_D);
+	}
+	/* class iclass_per_quadword */
+	/* 11000000|size=11|00000|Q=1|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xxxx */
+	if((INSWORD & 0xFFFF0010)==0xC0C10000) {
+		decode_fields32(ENC_MOV_MOVA_ZA_P_RZ_Q, ctx, instr);
+		OK(ENC_MOV_MOVA_ZA_P_RZ_Q);
+	}
+	return rc;
+}
+
 /* mov_orr_p_p_pp.xml */
 int MOV_orr_p_p_pp(context *ctx, Instruction *instr)
 {
@@ -17912,7 +18028,7 @@ int MRS(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=1|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
+	/* 1101010100|L=1|op0[1]=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5300000) {
 		decode_fields32(ENC_MRS_RS_SYSTEMMOVE, ctx, instr);
 		CheckSystemAccess(((1<<1)|ctx->o0),ctx->op1,ctx->CRn,ctx->CRm,ctx->op2,ctx->Rt,ctx->L);
@@ -17933,7 +18049,7 @@ int MSR_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=xxx|CRn=0100|CRm=xxxx|op2=xxx|Rt =11111 */
+	/* 1101010100|L=0|op0=00|op1=xxx|CRn=0100|CRm=xxxx|op2=xxx|Rt=11111 */
 	if((INSWORD & 0xFFF8F01F)==0xD500401F) {
 		decode_fields32(ENC_MSR_SI_PSTATE, ctx, instr);
 		if(ctx->op1==0 && ctx->op2==0) {
@@ -17995,6 +18111,29 @@ int MSR_imm(context *ctx, Instruction *instr)
 			}
 			ctx->field = PSTATEField_DIT;
 		}
+		else if(((ctx->op1<<3)|ctx->op2)==0x1b) {
+			if((ctx->CRm&14)==2) {
+				if(!HaveSME()) {
+					UNDEFINED;
+				}
+				ctx->field = PSTATEField_SVCRSM;
+			}
+			else if((ctx->CRm&14)==4) {
+				if(!HaveSME()) {
+					UNDEFINED;
+				}
+				ctx->field = PSTATEField_SVCRZA;
+			}
+			else if((ctx->CRm&14)==6) {
+				if(!HaveSME()) {
+					UNDEFINED;
+				}
+				ctx->field = PSTATEField_SVCRSMZA;
+			}
+			else {
+				UNDEFINED;
+			}
+		}
 		else if(((ctx->op1<<3)|ctx->op2)==0x1c) {
 			if(!HaveMTEExt()) {
 				UNDEFINED;
@@ -18017,6 +18156,9 @@ int MSR_imm(context *ctx, Instruction *instr)
 			UNDEFINED;
 		}
 		/* if(ctx->pstate_el==EL0 && (ctx->field==PSTATEField_DAIFSet || ctx->field==PSTATEField_DAIFClr)) { if(!ELUsingAArch32(EL1) && ((EL2Enabled() && CONCAT(ctx->HCR_EL2_E2H,ctx->HCR_EL2_TGE,1)==3) || ctx->SCTLR_EL1_UMA==0)) {	if(EL2Enabled() && !ELUsingAArch32(EL2) && ctx->HCR_EL2_TGE==1) {		SystemAccessTrap(EL2,0x18);	}	else {		SystemAccessTrap(EL1,0x18);	}} } */
+		/* regular aliases */
+		if(ctx->op1==3 && (ctx->CRm&9)==1 && ctx->op2==3) return SMSTART_MSR_imm(ctx, instr);
+		if(ctx->op1==3 && !(ctx->CRm&9) && ctx->op2==3) return SMSTOP_MSR_imm(ctx, instr);
 		OK(ENC_MSR_SI_PSTATE);
 	}
 	return rc;
@@ -18027,7 +18169,7 @@ int MSR_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0<1>=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
+	/* 1101010100|L=0|op0[1]=1|o0=x|op1=xxx|CRn=xxxx|CRm=xxxx|op2=xxx|Rt=xxxxx */
 	if((INSWORD & 0xFFF00000)==0xD5100000) {
 		decode_fields32(ENC_MSR_SR_SYSTEMMOVE, ctx, instr);
 		CheckSystemAccess(((1<<1)|ctx->o0),ctx->op1,ctx->CRn,ctx->CRm,ctx->op2,ctx->Rt,ctx->L);
@@ -18429,8 +18571,8 @@ int NOP(context *ctx, Instruction *instr)
 	return rc;
 }
 
-/* nots_eor_p_p_pp.xml */
-int NOTS_eor_p_p_pp(context *ctx, Instruction *instr)
+/* nots_eors_p_p_pp.xml */
+int NOTS_eors_p_p_pp(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
@@ -18511,18 +18653,22 @@ int ORN_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -18648,18 +18794,22 @@ int ORR_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -18690,18 +18840,22 @@ int ORR_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
+			instr->setflags = FALSE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
+			instr->setflags = TRUE;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -19346,7 +19500,7 @@ int PSSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_dsb_memory */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0100|1|opc=00|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0100|op2[2]=1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503349F) {
 		decode_fields32(ENC_PSSBB_DSB_BO_BARRIERS, ctx, instr);
 		OK(ENC_PSSBB_DSB_BO_BARRIERS);
@@ -19359,7 +19513,7 @@ int RADDHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204000) {
 		decode_fields32(ENC_RADDHN_ASIMDDIFF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19567,7 +19721,7 @@ int REV16_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=1|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:1]=0000|o0=1|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE201800) {
 		decode_fields32(ENC_REV16_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19631,7 +19785,7 @@ int REV32_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|10000|opcode[4:1]=0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E200800) {
 		decode_fields32(ENC_REV32_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19707,7 +19861,7 @@ int REV64_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:1]=0000|o0=0|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE200800) {
 		decode_fields32(ENC_REV64_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19757,7 +19911,7 @@ int RORV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
 		decode_fields32(ENC_RORV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19792,7 +19946,7 @@ int ROR_RORV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:2>=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:2]=0010|op2=11|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC02C00) {
 		decode_fields32(ENC_ROR_RORV_32_DP_2SRC, ctx, instr);
 		if(ctx->sf==0) OK(ENC_ROR_RORV_32_DP_2SRC);
@@ -19806,7 +19960,7 @@ int RSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_RSHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19833,7 +19987,7 @@ int RSUBHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206000) {
 		decode_fields32(ENC_RSUBHN_ASIMDDIFF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19858,7 +20012,7 @@ int SABAL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|op=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205000) {
 		decode_fields32(ENC_SABAL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19883,7 +20037,7 @@ int SABA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207C00) {
 		decode_fields32(ENC_SABA_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19907,7 +20061,7 @@ int SABDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|op=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207000) {
 		decode_fields32(ENC_SABDL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19932,7 +20086,7 @@ int SABD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE207400) {
 		decode_fields32(ENC_SABD_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19956,7 +20110,7 @@ int SADALP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:3]=00|op=1|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE206800) {
 		decode_fields32(ENC_SADALP_ASIMDMISC_P, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -19979,7 +20133,7 @@ int SADDLP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|10000|opcode[4:3]=00|op=0|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE202800) {
 		decode_fields32(ENC_SADDLP_ASIMDMISC_P, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20027,7 +20181,7 @@ int SADDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE200000) {
 		decode_fields32(ENC_SADDL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20052,7 +20206,7 @@ int SADDW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE201000) {
 		decode_fields32(ENC_SADDW_ASIMDDIFF_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20077,7 +20231,7 @@ int SB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=(0)(0)(0)(0)|1|opc=11|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=(0)(0)(0)(0)|op2[2]=1|opc=11|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD50330FF) {
 		decode_fields32(ENC_SB_ONLY_BARRIERS, ctx, instr);
 		if(!HaveSBExt()) {
@@ -20281,7 +20435,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_SCVTF_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=0|11110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size[1]=0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x5E21D800) {
 		decode_fields32(ENC_SCVTF_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20308,7 +20462,7 @@ int SCVTF_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_SCVTF_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=0|01110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xE21D800) {
 		decode_fields32(ENC_SCVTF_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20471,7 +20625,7 @@ int SDIV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=1|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:1]=00001|o1=1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00C00) {
 		decode_fields32(ENC_SDIV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20896,7 +21050,7 @@ int SHA256H2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 01011110|size=00|0|Rm=xxxxx|0|opcode[2:1]=10|P=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E005000) {
 		decode_fields32(ENC_SHA256H2_QQV_CRYPTOSHA3, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -20916,7 +21070,7 @@ int SHA256H_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 01011110|size=00|0|Rm=xxxxx|0|10|P=0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 01011110|size=00|0|Rm=xxxxx|0|opcode[2:1]=10|P=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5E004000) {
 		decode_fields32(ENC_SHA256H_QQV_CRYPTOSHA3, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21135,7 +21289,7 @@ int SHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21400,7 +21554,7 @@ int SMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=0|op31[1:0]=01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B200000) {
 		decode_fields32(ENC_SMADDL_64WA_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21423,7 +21577,7 @@ int SMAXP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A400) {
 		decode_fields32(ENC_SMAXP_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21447,7 +21601,7 @@ int SMAXV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|U=0|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|11000|op=0|opcode[3:0]=1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE30A800) {
 		decode_fields32(ENC_SMAXV_ASIMDALL_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21473,7 +21627,7 @@ int SMAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206400) {
 		decode_fields32(ENC_SMAX_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21510,7 +21664,7 @@ int SMINP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20AC00) {
 		decode_fields32(ENC_SMINP_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21534,7 +21688,7 @@ int SMINV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|U=0|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|11000|op=1|opcode[3:0]=1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0xE31A800) {
 		decode_fields32(ENC_SMINV_ASIMDALL_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21560,7 +21714,7 @@ int SMIN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206C00) {
 		decode_fields32(ENC_SMIN_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21584,7 +21738,7 @@ int SMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF002000) {
 		decode_fields32(ENC_SMLAL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -21618,7 +21772,7 @@ int SMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE208000) {
 		decode_fields32(ENC_SMLAL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21643,7 +21797,7 @@ int SMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF006000) {
 		decode_fields32(ENC_SMLSL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -21677,7 +21831,7 @@ int SMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20A000) {
 		decode_fields32(ENC_SMLSL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21736,7 +21890,7 @@ int SMNEGL_SMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=0|op31[1:0]=01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B20FC00) {
 		decode_fields32(ENC_SMNEGL_SMSUBL_64WA_DP_3SRC, ctx, instr);
 		OK(ENC_SMNEGL_SMSUBL_64WA_DP_3SRC);
@@ -21749,7 +21903,7 @@ int SMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=01|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4[3:2]=01|imm4[1]=0|imm4[0]=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE002C00) {
 		decode_fields32(ENC_SMOV_ASIMDINS_W_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21776,12 +21930,38 @@ int SMOV_advsimd(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* smstart_msr_imm.xml */
+int SMSTART_MSR_imm(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0100|CRm=0xx1|op2=011|Rt=11111 */
+	if((INSWORD & 0xFFFFF9FF)==0xD503417F) {
+		decode_fields32(ENC_SMSTART_MSR_SI_PSTATE, ctx, instr);
+		OK(ENC_SMSTART_MSR_SI_PSTATE);
+	}
+	return rc;
+}
+
+/* smstop_msr_imm.xml */
+int SMSTOP_MSR_imm(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_system */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0100|CRm=0xx0|op2=011|Rt=11111 */
+	if((INSWORD & 0xFFFFF9FF)==0xD503407F) {
+		decode_fields32(ENC_SMSTOP_MSR_SI_PSTATE, ctx, instr);
+		OK(ENC_SMSTOP_MSR_SI_PSTATE);
+	}
+	return rc;
+}
+
 /* smsubl.xml */
 int SMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=0|op31[1:0]=01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B208000) {
 		decode_fields32(ENC_SMSUBL_64WA_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21804,7 +21984,7 @@ int SMULH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=0|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=0|op31[1:0]=10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9B400000) {
 		decode_fields32(ENC_SMULH_64_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21824,7 +22004,7 @@ int SMULL_SMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=0|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=0|op31[1:0]=01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9B207C00) {
 		decode_fields32(ENC_SMULL_SMADDL_64WA_DP_3SRC, ctx, instr);
 		OK(ENC_SMULL_SMADDL_64WA_DP_3SRC);
@@ -21870,7 +22050,7 @@ int SMULL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3]=1|opcode[2]=1|opcode[1]=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20C000) {
 		decode_fields32(ENC_SMULL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -21964,7 +22144,7 @@ int SQDMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F003000) {
 		decode_fields32(ENC_SQDMLAL_ASISDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -21990,7 +22170,7 @@ int SQDMLAL_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQDMLAL_ASISDELEM_L);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF003000) {
 		decode_fields32(ENC_SQDMLAL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22023,7 +22203,7 @@ int SQDMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E209000) {
 		decode_fields32(ENC_SQDMLAL_ASISDDIFF_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22040,7 +22220,7 @@ int SQDMLAL_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_SQDMLAL_ASISDDIFF_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE209000) {
 		decode_fields32(ENC_SQDMLAL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22064,7 +22244,7 @@ int SQDMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F007000) {
 		decode_fields32(ENC_SQDMLSL_ASISDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22090,7 +22270,7 @@ int SQDMLSL_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQDMLSL_ASISDELEM_L);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|11|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=11|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF007000) {
 		decode_fields32(ENC_SQDMLSL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22123,7 +22303,7 @@ int SQDMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|10|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E20B000) {
 		decode_fields32(ENC_SQDMLSL_ASISDDIFF_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22140,7 +22320,7 @@ int SQDMLSL_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_SQDMLSL_ASISDDIFF_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|10|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE20B000) {
 		decode_fields32(ENC_SQDMLSL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22164,7 +22344,7 @@ int SQDMULH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:1]=110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00C000) {
 		decode_fields32(ENC_SQDMULH_ASISDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22189,7 +22369,7 @@ int SQDMULH_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQDMULH_ASISDELEM_R);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:1]=110|op=0|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00C000) {
 		decode_fields32(ENC_SQDMULH_ASIMDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22390,7 +22570,7 @@ int SQRDMLAH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=0|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:2]=11|S=0|opcode[0]=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00D000) {
 		decode_fields32(ENC_SQRDMLAH_ASISDELEM_R, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22419,7 +22599,7 @@ int SQRDMLAH_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQRDMLAH_ASISDELEM_R);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|11|S=0|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:2]=11|S=0|opcode[0]=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00D000) {
 		decode_fields32(ENC_SQRDMLAH_ASIMDELEM_R, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22455,7 +22635,7 @@ int SQRDMLAH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|opcode[3:1]=000|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008400) {
 		decode_fields32(ENC_SQRDMLAH_ASISDSAME2_ONLY, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22475,7 +22655,7 @@ int SQRDMLAH_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_SQRDMLAH_ASISDSAME2_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|000|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|opcode[3:1]=000|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E008400) {
 		decode_fields32(ENC_SQRDMLAH_ASIMDSAME2_ONLY, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22502,7 +22682,7 @@ int SQRDMLSH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|11|S=1|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:2]=11|S=1|opcode[0]=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x7F00F000) {
 		decode_fields32(ENC_SQRDMLSH_ASISDELEM_R, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22531,7 +22711,7 @@ int SQRDMLSH_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQRDMLSH_ASISDELEM_R);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|11|S=1|1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:2]=11|S=1|opcode[0]=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F00F000) {
 		decode_fields32(ENC_SQRDMLSH_ASIMDELEM_R, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22567,7 +22747,7 @@ int SQRDMLSH_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|000|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|0|Rm=xxxxx|1|opcode[3:1]=000|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E008C00) {
 		decode_fields32(ENC_SQRDMLSH_ASISDSAME2_ONLY, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22587,7 +22767,7 @@ int SQRDMLSH_advsimd_vec(context *ctx, Instruction *instr)
 		OK(ENC_SQRDMLSH_ASISDSAME2_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|000|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|0|Rm=xxxxx|1|opcode[3:1]=000|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E008C00) {
 		decode_fields32(ENC_SQRDMLSH_ASIMDSAME2_ONLY, ctx, instr);
 		if(!HaveQRDMLAHExt()) {
@@ -22614,7 +22794,7 @@ int SQRDMULH_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_scalar */
-	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:1]=110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF00F400)==0x5F00D000) {
 		decode_fields32(ENC_SQRDMULH_ASISDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22639,7 +22819,7 @@ int SQRDMULH_advsimd_elt(context *ctx, Instruction *instr)
 		OK(ENC_SQRDMULH_ASISDELEM_R);
 	}
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3:1]=110|op=1|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0xF00D000) {
 		decode_fields32(ENC_SQRDMULH_ASIMDELEM_R, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -22710,7 +22890,7 @@ int SQRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205C00) {
 		decode_fields32(ENC_SQRSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22728,7 +22908,7 @@ int SQRSHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQRSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205C00) {
 		decode_fields32(ENC_SQRSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22753,7 +22933,7 @@ int SQRSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22774,7 +22954,7 @@ int SQRSHRN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQRSHRN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22802,7 +22982,7 @@ int SQRSHRUN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRUN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22822,7 +23002,7 @@ int SQRSHRUN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQRSHRUN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F008C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQRSHRUN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22849,7 +23029,7 @@ int SQSHLU_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:2]=011|op=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F006400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHLU_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22879,7 +23059,7 @@ int SQSHLU_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQSHLU_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|011|op=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:2]=011|op=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F006400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHLU_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22919,7 +23099,7 @@ int SQSHL_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:2]=011|op=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHL_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22949,7 +23129,7 @@ int SQSHL_advsimd_imm(context *ctx, Instruction *instr)
 		OK(ENC_SQSHL_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:2]=011|op=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHL_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -22989,7 +23169,7 @@ int SQSHL_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204C00) {
 		decode_fields32(ENC_SQSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23007,7 +23187,7 @@ int SQSHL_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_SQSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204C00) {
 		decode_fields32(ENC_SQSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23032,7 +23212,7 @@ int SQSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23053,7 +23233,7 @@ int SQSHRN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQSHRN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23081,7 +23261,7 @@ int SQSHRUN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRUN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23101,7 +23281,7 @@ int SQSHRUN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SQSHRUN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:1]=1000|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F008400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SQSHRUN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23303,7 +23483,7 @@ int SRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E205400) {
 		decode_fields32(ENC_SRSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23321,7 +23501,7 @@ int SRSHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SRSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE205400) {
 		decode_fields32(ENC_SRSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23346,7 +23526,7 @@ int SRSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSHR_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23364,7 +23544,7 @@ int SRSHR_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SRSHR_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSHR_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23392,7 +23572,7 @@ int SRSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSRA_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23410,7 +23590,7 @@ int SRSRA_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SRSRA_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SRSRA_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23438,7 +23618,7 @@ int SSBB_DSB(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_dsb_memory */
-	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|1|opc=00|Rt=11111 */
+	/* 1101010100|L=0|op0=00|op1=011|CRn=0011|CRm=0000|op2[2]=1|opc=00|Rt=11111 */
 	if((INSWORD & 0xFFFFFFFF)==0xD503309F) {
 		decode_fields32(ENC_SSBB_DSB_BO_BARRIERS, ctx, instr);
 		OK(ENC_SSBB_DSB_BO_BARRIERS);
@@ -23480,7 +23660,7 @@ int SSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5E204400) {
 		decode_fields32(ENC_SSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23498,7 +23678,7 @@ int SSHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE204400) {
 		decode_fields32(ENC_SSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23523,7 +23703,7 @@ int SSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSHR_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23541,7 +23721,7 @@ int SSHR_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SSHR_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSHR_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23569,7 +23749,7 @@ int SSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=0|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=0|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x5F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSRA_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23587,7 +23767,7 @@ int SSRA_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_SSRA_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0xF001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_SSRA_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23615,7 +23795,7 @@ int SSUBL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE202000) {
 		decode_fields32(ENC_SSUBL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -23640,7 +23820,7 @@ int SSUBW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE203000) {
 		decode_fields32(ENC_SSUBW_ASIMDDIFF_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -26815,7 +26995,7 @@ int SUBHN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|01|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE206000) {
 		decode_fields32(ENC_SUBHN_ASIMDDIFF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27483,7 +27663,7 @@ int TRN1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE002800) {
 		decode_fields32(ENC_TRN1_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27507,7 +27687,7 @@ int TRN2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE006800) {
 		decode_fields32(ENC_TRN2_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27704,7 +27884,7 @@ int UABAL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|op=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205000) {
 		decode_fields32(ENC_UABAL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27729,7 +27909,7 @@ int UABA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0111|ac=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207C00) {
 		decode_fields32(ENC_UABA_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27753,7 +27933,7 @@ int UABDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|01|op=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=01|op=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207000) {
 		decode_fields32(ENC_UABDL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27778,7 +27958,7 @@ int UABD_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0111|ac=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E207400) {
 		decode_fields32(ENC_UABD_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27802,7 +27982,7 @@ int UADALP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=1|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|10000|opcode[4:3]=00|op=1|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E206800) {
 		decode_fields32(ENC_UADALP_ASIMDMISC_P, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27825,7 +28005,7 @@ int UADDLP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|10000|00|op=0|10|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|10000|opcode[4:3]=00|op=0|opcode[1:0]=10|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E202800) {
 		decode_fields32(ENC_UADDLP_ASIMDMISC_P, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27873,7 +28053,7 @@ int UADDL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E200000) {
 		decode_fields32(ENC_UADDL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -27898,7 +28078,7 @@ int UADDW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=0|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=0|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E201000) {
 		decode_fields32(ENC_UADDW_ASIMDDIFF_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28065,7 +28245,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_UCVTF_ASISDMISCFP16_R);
 	}
 	/* class iclass_sisd_single_and_double */
-	/* 01|U=1|11110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size[1]=0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFBFFC00)==0x7E21D800) {
 		decode_fields32(ENC_UCVTF_ASISDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28092,7 +28272,7 @@ int UCVTF_advsimd_int(context *ctx, Instruction *instr)
 		OK(ENC_UCVTF_ASIMDMISCFP16_R);
 	}
 	/* class iclass_simd_single_and_double */
-	/* 0|Q=x|U=1|01110|0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=0|sz=x|10000|opcode=11101|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2E21D800) {
 		decode_fields32(ENC_UCVTF_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28268,7 +28448,7 @@ int UDIV(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_general */
-	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2<5:1>=00001|o1=0|Rn=xxxxx|Rd=xxxxx */
+	/* sf=x|op=0|S=0|11010110|Rm=xxxxx|opcode2[5:1]=00001|o1=0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0x7FE0FC00)==0x1AC00800) {
 		decode_fields32(ENC_UDIV_32_DP_2SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28386,7 +28566,7 @@ int UMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=1|op31[1:0]=01|Rm=xxxxx|o0=0|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA00000) {
 		decode_fields32(ENC_UMADDL_64WA_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28409,7 +28589,7 @@ int UMAXP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=1010|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A400) {
 		decode_fields32(ENC_UMAXP_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28433,7 +28613,7 @@ int UMAXV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|U=1|01110|size=xx|11000|op=0|1010|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|11000|op=0|opcode[3:0]=1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E30A800) {
 		decode_fields32(ENC_UMAXV_ASIMDALL_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28459,7 +28639,7 @@ int UMAX_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0110|o1=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206400) {
 		decode_fields32(ENC_UMAX_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28483,7 +28663,7 @@ int UMINP_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=1010|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20AC00) {
 		decode_fields32(ENC_UMINP_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28507,7 +28687,7 @@ int UMINV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|U=1|01110|size=xx|11000|op=1|1010|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|11000|op=1|opcode[3:0]=1010|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF3FFC00)==0x2E31A800) {
 		decode_fields32(ENC_UMINV_ASIMDALL_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28533,7 +28713,7 @@ int UMIN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_same */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:1]=0110|o1=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E206C00) {
 		decode_fields32(ENC_UMIN_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28557,7 +28737,7 @@ int UMLAL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=0|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=0|opcode[1:0]=10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F002000) {
 		decode_fields32(ENC_UMLAL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -28591,7 +28771,7 @@ int UMLAL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=0|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E208000) {
 		decode_fields32(ENC_UMLAL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28616,7 +28796,7 @@ int UMLSL_advsimd_elt(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_2reg_element */
-	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|0|o2=1|10|H=x|0|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01111|size=xx|L=x|M=x|Rm=xxxx|opcode[3]=0|o2=1|opcode[1:0]=10|H=x|0|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF00F400)==0x2F006000) {
 		decode_fields32(ENC_UMLSL_ASIMDELEM_L, ctx, instr);
 		ctx->idxdsize = (ctx->H==1) ? 0x80 : 0x40;
@@ -28650,7 +28830,7 @@ int UMLSL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|10|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=10|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20A000) {
 		decode_fields32(ENC_UMLSL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28709,7 +28889,7 @@ int UMNEGL_UMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=1|op31[1:0]=01|Rm=xxxxx|o0=1|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA0FC00) {
 		decode_fields32(ENC_UMNEGL_UMSUBL_64WA_DP_3SRC, ctx, instr);
 		OK(ENC_UMNEGL_UMSUBL_64WA_DP_3SRC);
@@ -28722,7 +28902,7 @@ int UMOV_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4<3:2>=01|imm4=11|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|op=0|01110000|imm5=xxxxx|0|imm4[3:2]=01|imm4[1]=1|imm4[0]=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFE0FC00)==0xE003C00) {
 		decode_fields32(ENC_UMOV_ASIMDINS_W_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28759,7 +28939,7 @@ int UMSUBL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=1|op31[1:0]=01|Rm=xxxxx|o0=1|Ra=xxxxx|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BA08000) {
 		decode_fields32(ENC_UMSUBL_64WA_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28782,7 +28962,7 @@ int UMULH(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=1|10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=1|op31[1:0]=10|Rm=xxxxx|o0=0|Ra=(1)(1)(1)(1)(1)|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE08000)==0x9BC00000) {
 		decode_fields32(ENC_UMULH_64_DP_3SRC, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28802,7 +28982,7 @@ int UMULL_UMADDL(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_64 */
-	/* sf=1|op54=00|11011|U=1|01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
+	/* sf=1|op54=00|11011|U=1|op31[1:0]=01|Rm=xxxxx|o0=0|Ra=11111|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x9BA07C00) {
 		decode_fields32(ENC_UMULL_UMADDL_64WA_DP_3SRC, ctx, instr);
 		OK(ENC_UMULL_UMADDL_64WA_DP_3SRC);
@@ -28848,7 +29028,7 @@ int UMULL_advsimd_vec(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode=1100|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3]=1|opcode[2]=1|opcode[1]=0|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E20C000) {
 		decode_fields32(ENC_UMULL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28908,7 +29088,7 @@ int UQRSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205C00) {
 		decode_fields32(ENC_UQRSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28926,7 +29106,7 @@ int UQRSHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_UQRSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205C00) {
 		decode_fields32(ENC_UQRSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28951,7 +29131,7 @@ int UQRSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQRSHRN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -28972,7 +29152,7 @@ int UQRSHRN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_UQRSHRN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F009C00 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQRSHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29000,7 +29180,7 @@ int UQSHL_advsimd_imm(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:2]=011|op=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHL_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29030,7 +29210,7 @@ int UQSHL_advsimd_imm(context *ctx, Instruction *instr)
 		OK(ENC_UQSHL_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|011|op=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:2]=011|op=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F007400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHL_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29070,7 +29250,7 @@ int UQSHL_advsimd_reg(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204C00) {
 		decode_fields32(ENC_UQSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29088,7 +29268,7 @@ int UQSHL_advsimd_reg(context *ctx, Instruction *instr)
 		OK(ENC_UQSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=1|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204C00) {
 		decode_fields32(ENC_UQSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29113,7 +29293,7 @@ int UQSHRN_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHRN_ASISDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29134,7 +29314,7 @@ int UQSHRN_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_UQSHRN_ASISDSHF_N);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:1]=1001|op=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F009400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_UQSHRN_ASIMDSHF_N, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29237,7 +29417,7 @@ int URECPE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=0|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=0|01110|size[1]=1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0xEA1C800) {
 		decode_fields32(ENC_URECPE_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29281,7 +29461,7 @@ int URSHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E205400) {
 		decode_fields32(ENC_URSHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29299,7 +29479,7 @@ int URSHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_URSHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=1|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E205400) {
 		decode_fields32(ENC_URSHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29324,7 +29504,7 @@ int URSHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSHR_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29342,7 +29522,7 @@ int URSHR_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_URSHR_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=1|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F002400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSHR_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29370,7 +29550,7 @@ int URSQRTE_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size[1]=1|sz=x|10000|opcode=11100|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBFBFFC00)==0x2EA1C800) {
 		decode_fields32(ENC_URSQRTE_ASIMDMISC_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29391,7 +29571,7 @@ int URSRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSRA_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29409,7 +29589,7 @@ int URSRA_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_URSRA_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=1|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=1|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F003400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_URSRA_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29511,7 +29691,7 @@ int USHL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|11110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x7E204400) {
 		decode_fields32(ENC_USHL_ASISDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29529,7 +29709,7 @@ int USHL_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_USHL_ASISDSAME_ONLY);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[4:2]=010|R=0|S=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E204400) {
 		decode_fields32(ENC_USHL_ASIMDSAME_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29554,7 +29734,7 @@ int USHR_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USHR_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29572,7 +29752,7 @@ int USHR_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_USHR_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=0|o0=0|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=0|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F000400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USHR_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29668,7 +29848,7 @@ int USRA_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_sisd */
-	/* 01|U=1|111110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 01|U=1|111110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF80FC00)==0x7F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USRA_ASISDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29686,7 +29866,7 @@ int USRA_advsimd(context *ctx, Instruction *instr)
 		OK(ENC_USRA_ASISDSHF_R);
 	}
 	/* class iclass_simd */
-	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|00|o1=0|o0=1|0|1|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|011110|immh!=0000|immb=xxx|opcode[4:3]=00|o1=0|o0=1|opcode[0]=0|1|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF80FC00)==0x2F001400 && (INSWORD & 0x780000)!=0x0) {
 		decode_fields32(ENC_USRA_ASIMDSHF_R, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29714,7 +29894,7 @@ int USUBL_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|0|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=1|opcode[0]=0|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E202000) {
 		decode_fields32(ENC_USUBL_ASIMDDIFF_L, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29739,7 +29919,7 @@ int USUBW_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_3reg_diff */
-	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|00|o1=1|1|00|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|U=1|01110|size=xx|1|Rm=xxxxx|opcode[3:2]=00|o1=1|opcode[0]=1|00|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0x2E203000) {
 		decode_fields32(ENC_USUBW_ASIMDDIFF_W, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29803,7 +29983,7 @@ int UZP1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|01|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|opcode[1:0]=01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE001800) {
 		decode_fields32(ENC_UZP1_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -29826,7 +30006,7 @@ int UZP2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|01|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|opcode[1:0]=01|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE005800) {
 		decode_fields32(ENC_UZP2_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -30117,7 +30297,7 @@ int XAFLAG(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_system */
-	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=001|Rt =11111 */
+	/* 1101010100|L=0|op0=00|op1=000|CRn=0100|CRm=(0)(0)(0)(0)|op2=001|Rt=11111 */
 	if((INSWORD & 0xFFFFF0FF)==0xD500403F) {
 		decode_fields32(ENC_XAFLAG_M_PSTATE, ctx, instr);
 		if(!HaveFlagFormatExt()) {
@@ -30314,7 +30494,7 @@ int ZIP1_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|11|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=0|opcode[1:0]=11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE003800) {
 		decode_fields32(ENC_ZIP1_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -30338,7 +30518,7 @@ int ZIP2_advsimd(context *ctx, Instruction *instr)
 {
 	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_advsimd */
-	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|11|10|Rn=xxxxx|Rd=xxxxx */
+	/* 0|Q=x|001110|size=xx|0|Rm=xxxxx|0|op=1|opcode[1:0]=11|10|Rn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xBF20FC00)==0xE007800) {
 		decode_fields32(ENC_ZIP2_ASIMDPERM_ONLY, ctx, instr);
 		ctx->d = UINT(ctx->Rd);
@@ -30365,7 +30545,7 @@ int abs_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x416A000) {
 		decode_fields32(ENC_ABS_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30385,7 +30565,7 @@ int adclb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|0|sz=x|0|Zm=xxxxx|11010|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500D000) {
 		decode_fields32(ENC_ADCLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -30405,7 +30585,7 @@ int adclt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|0|sz=x|0|Zm=xxxxx|11010|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500D400) {
 		decode_fields32(ENC_ADCLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -30425,7 +30605,7 @@ int add_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4000000) {
 		decode_fields32(ENC_ADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30445,7 +30625,7 @@ int add_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2520C000) {
 		decode_fields32(ENC_ADD_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -30470,7 +30650,7 @@ int add_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200000) {
 		decode_fields32(ENC_ADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30478,6 +30658,41 @@ int add_z_zz(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Zm);
 		ctx->d = UINT(ctx->Zd);
 		OK(ENC_ADD_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* addha_za_pp_z.xml */
+int addha_za_pp_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 11|0000001|op=0|01|000|V=0|Pm=xxx|Pn=xxx|Zn=xxxxx|0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFFF001C)==0xC0900000) {
+		decode_fields32(ENC_ADDHA_ZA_PP_Z_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->ZAda);
+		OK(ENC_ADDHA_ZA_PP_Z_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 11|0000001|op=1|01000|V=0|Pm=xxx|Pn=xxx|Zn=xxxxx|0|0|ZAda=xxx */
+	if((INSWORD & 0xFFFF0018)==0xC0D00000) {
+		decode_fields32(ENC_ADDHA_ZA_PP_Z_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->ZAda);
+		OK(ENC_ADDHA_ZA_PP_Z_64);
 	}
 	return rc;
 }
@@ -30490,7 +30705,7 @@ int addhnb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45206000) {
 		decode_fields32(ENC_ADDHNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -30513,7 +30728,7 @@ int addhnt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45206400) {
 		decode_fields32(ENC_ADDHNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -30536,7 +30751,7 @@ int addp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|opc=00|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4411A000) {
 		decode_fields32(ENC_ADDP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30556,13 +30771,48 @@ int addpl_r_ri(context *ctx, Instruction *instr)
 	/* 000001000|op=1|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4605000) {
 		decode_fields32(ENC_ADDPL_R_RI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Rn);
 		ctx->d = UINT(ctx->Rd);
 		ctx->imm = SInt(ctx->imm6,6);
 		OK(ENC_ADDPL_R_RI_);
+	}
+	return rc;
+}
+
+/* addva_za_pp_z.xml */
+int addva_za_pp_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 11|0000001|op=0|01|000|V=1|Pm=xxx|Pn=xxx|Zn=xxxxx|0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFFF001C)==0xC0910000) {
+		decode_fields32(ENC_ADDVA_ZA_PP_Z_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->ZAda);
+		OK(ENC_ADDVA_ZA_PP_Z_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 11|0000001|op=1|01000|V=1|Pm=xxx|Pn=xxx|Zn=xxxxx|0|0|ZAda=xxx */
+	if((INSWORD & 0xFFFF0018)==0xC0D10000) {
+		decode_fields32(ENC_ADDVA_ZA_PP_Z_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->da = UINT(ctx->ZAda);
+		OK(ENC_ADDVA_ZA_PP_Z_64);
 	}
 	return rc;
 }
@@ -30575,7 +30825,7 @@ int addvl_r_ri(context *ctx, Instruction *instr)
 	/* 000001000|op=0|1|Rn=xxxxx|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFE0F800)==0x4205000) {
 		decode_fields32(ENC_ADDVL_R_RI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Rn);
@@ -30719,7 +30969,7 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004000) {
 		decode_fields32(ENC_AND_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -30730,28 +30980,8 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
 		/* regular aliases */
-		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_and_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
 		OK(ENC_AND_P_P_PP_Z);
-	}
-	/* class iclass_s */
-	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
-	if((INSWORD & 0xFFF0C210)==0x25404000) {
-		decode_fields32(ENC_ANDS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
-			UNDEFINED;
-		}
-		ctx->esize = 8;
-		ctx->g = UINT(ctx->Pg);
-		ctx->n = UINT(ctx->Pn);
-		ctx->m = UINT(ctx->Pm);
-		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
-		ctx->setflags = TRUE;
-		/* regular aliases */
-		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_and_p_p_pp(ctx, instr);
-		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
-		OK(ENC_ANDS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -30764,7 +30994,7 @@ int and_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A0000) {
 		decode_fields32(ENC_AND_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30784,7 +31014,7 @@ int and_z_zi(context *ctx, Instruction *instr)
 	/* 00000101|opc=10|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5800000) {
 		decode_fields32(ENC_AND_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->dn = UINT(ctx->Zdn);
@@ -30804,13 +31034,38 @@ int and_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|opc=00|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4203000) {
 		decode_fields32(ENC_AND_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
 		ctx->m = UINT(ctx->Zm);
 		ctx->d = UINT(ctx->Zd);
 		OK(ENC_AND_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* ands_p_p_pp.xml */
+int ands_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_s */
+	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
+	if((INSWORD & 0xFFF0C210)==0x25404000) {
+		decode_fields32(ENC_ANDS_P_P_PP_Z, ctx, instr);
+		if(!HaveSVE() && !HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Pn);
+		ctx->m = UINT(ctx->Pm);
+		ctx->d = UINT(ctx->Pd);
+		instr->setflags = TRUE;
+		ctx->setflags = TRUE;
+		/* regular aliases */
+		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_ands_p_p_pp(ctx, instr);
+		OK(ENC_ANDS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -30823,7 +31078,7 @@ int andv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0110|opc=10|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41A2000) {
 		decode_fields32(ENC_ANDV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30843,7 +31098,7 @@ int asr_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4008000) {
 		decode_fields32(ENC_ASR_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -30878,7 +31133,7 @@ int asr_z_p_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4188000) {
 		decode_fields32(ENC_ASR_Z_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -30901,7 +31156,7 @@ int asr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=0|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4108000) {
 		decode_fields32(ENC_ASR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -30921,7 +31176,7 @@ int asr_z_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209000) {
 		decode_fields32(ENC_ASR_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -30956,7 +31211,7 @@ int asr_z_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208000) {
 		decode_fields32(ENC_ASR_Z_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -30979,7 +31234,7 @@ int asrd_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=01|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4048000) {
 		decode_fields32(ENC_ASRD_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -31014,7 +31269,7 @@ int asrr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=1|L=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4148000) {
 		decode_fields32(ENC_ASRR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31034,7 +31289,7 @@ int bcax_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=01|1|Zm=xxxxx|00111|o2=0|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603800) {
 		decode_fields32(ENC_BCAX_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -31093,7 +31348,7 @@ int bfcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x658AA000) {
 		decode_fields32(ENC_BFCVT_Z_P_Z_S2BF, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->g = UINT(ctx->Pg);
@@ -31112,7 +31367,7 @@ int bfcvtnt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=10|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x648AA000) {
 		decode_fields32(ENC_BFCVTNT_Z_P_Z_S2BF, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->g = UINT(ctx->Pg);
@@ -31131,7 +31386,7 @@ int bfdot_z_zzz(context *ctx, Instruction *instr)
 	/* 011001000|op=1|1|Zm=xxxxx|100000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64608000) {
 		decode_fields32(ENC_BFDOT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31150,7 +31405,7 @@ int bfdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001000|op=1|1|i2=xx|Zm=xxx|010000|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64604000) {
 		decode_fields32(ENC_BFDOT_Z_ZZZI_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31170,7 +31425,7 @@ int bfmlalb_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08000) {
 		decode_fields32(ENC_BFMLALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31189,7 +31444,7 @@ int bfmlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04000) {
 		decode_fields32(ENC_BFMLALB_Z_ZZZI_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31209,7 +31464,7 @@ int bfmlalt_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=1|1|Zm=xxxxx|10|op=0|00|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E08400) {
 		decode_fields32(ENC_BFMLALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31228,7 +31483,7 @@ int bfmlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=1|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64E04400) {
 		decode_fields32(ENC_BFMLALT_Z_ZZZI_, ctx, instr);
-		if(!HaveSVE() || !HaveBF16Ext()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveBF16Ext()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -31255,6 +31510,50 @@ int bfmmla_z_zzz(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Zm);
 		ctx->da = UINT(ctx->Zda);
 		OK(ENC_BFMMLA_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* bfmopa_za32_pp_zz.xml */
+int bfmopa_za32_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 10|000001100|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x81800000) {
+		decode_fields32(ENC_BFMOPA_ZA32_PP_ZZ_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		OK(ENC_BFMOPA_ZA32_PP_ZZ_);
+	}
+	return rc;
+}
+
+/* bfmops_za32_pp_zz.xml */
+int bfmops_za32_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 10|000001100|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x81800010) {
+		decode_fields32(ENC_BFMOPS_ZA32_PP_ZZ_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		OK(ENC_BFMOPS_ZA32_PP_ZZ_);
 	}
 	return rc;
 }
@@ -31287,7 +31586,7 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004010) {
 		decode_fields32(ENC_BIC_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31298,22 +31597,6 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
 		OK(ENC_BIC_P_P_PP_Z);
-	}
-	/* class iclass_s */
-	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
-	if((INSWORD & 0xFFF0C210)==0x25404010) {
-		decode_fields32(ENC_BICS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
-			UNDEFINED;
-		}
-		ctx->esize = 8;
-		ctx->g = UINT(ctx->Pg);
-		ctx->n = UINT(ctx->Pn);
-		ctx->m = UINT(ctx->Pm);
-		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
-		ctx->setflags = TRUE;
-		OK(ENC_BICS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -31326,7 +31609,7 @@ int bic_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B0000) {
 		decode_fields32(ENC_BIC_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31346,13 +31629,36 @@ int bic_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|opc=11|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E03000) {
 		decode_fields32(ENC_BIC_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
 		ctx->m = UINT(ctx->Zm);
 		ctx->d = UINT(ctx->Zd);
 		OK(ENC_BIC_Z_ZZ_);
+	}
+	return rc;
+}
+
+/* bics_p_p_pp.xml */
+int bics_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_s */
+	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
+	if((INSWORD & 0xFFF0C210)==0x25404010) {
+		decode_fields32(ENC_BICS_P_P_PP_Z, ctx, instr);
+		if(!HaveSVE() && !HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Pn);
+		ctx->m = UINT(ctx->Pm);
+		ctx->d = UINT(ctx->Pd);
+		instr->setflags = TRUE;
+		ctx->setflags = TRUE;
+		OK(ENC_BICS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -31365,7 +31671,7 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 	/* 00100101|B=0|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25104000) {
 		decode_fields32(ENC_BRKA_P_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31377,11 +31683,18 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_BRKA_P_P_P_);
 	}
+	return rc;
+}
+
+/* brkas_p_p_p.xml */
+int brkas_p_p_p(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|B=0|S=1|01000001|Pg=xxxx|0|Pn=xxxx|M=0|Pd=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25504000) {
 		decode_fields32(ENC_BRKAS_P_P_P_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31404,7 +31717,7 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 	/* 00100101|B=1|S=0|01000001|Pg=xxxx|0|Pn=xxxx|M=x|Pd=xxxx */
 	if((INSWORD & 0xFFFFC200)==0x25904000) {
 		decode_fields32(ENC_BRKB_P_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31416,11 +31729,18 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_BRKB_P_P_P_);
 	}
+	return rc;
+}
+
+/* brkbs_p_p_p.xml */
+int brkbs_p_p_p(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|B=1|S=1|01000001|Pg=xxxx|0|Pn=xxxx|M=0|Pd=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25D04000) {
 		decode_fields32(ENC_BRKBS_P_P_P_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31443,7 +31763,7 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 	/* 001001010|S=0|01100001|Pg=xxxx|0|Pn=xxxx|0|Pdm=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25184000) {
 		decode_fields32(ENC_BRKN_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->g = UINT(ctx->Pg);
@@ -31453,11 +31773,18 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_BRKN_P_P_PP_);
 	}
+	return rc;
+}
+
+/* brkns_p_p_pp.xml */
+int brkns_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 001001010|S=1|01100001|Pg=xxxx|0|Pn=xxxx|0|Pdm=xxxx */
 	if((INSWORD & 0xFFFFC210)==0x25584000) {
 		decode_fields32(ENC_BRKNS_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->g = UINT(ctx->Pg);
@@ -31478,7 +31805,7 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C000) {
 		decode_fields32(ENC_BRKPA_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31490,11 +31817,18 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_BRKPA_P_P_PP_);
 	}
+	return rc;
+}
+
+/* brkpas_p_p_pp.xml */
+int brkpas_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2540C000) {
 		decode_fields32(ENC_BRKPAS_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31517,7 +31851,7 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2500C010) {
 		decode_fields32(ENC_BRKPB_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31529,11 +31863,18 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_BRKPB_P_P_PP_);
 	}
+	return rc;
+}
+
+/* brkpbs_p_p_pp.xml */
+int brkpbs_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=0|S=1|00|Pm=xxxx|11|Pg=xxxx|0|Pn=xxxx|B=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x2540C010) {
 		decode_fields32(ENC_BRKPBS_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -31556,7 +31897,7 @@ int bsl1n_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=01|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603C00) {
 		decode_fields32(ENC_BSL1N_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -31575,7 +31916,7 @@ int bsl2n_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=10|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4A03C00) {
 		decode_fields32(ENC_BSL2N_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -31594,7 +31935,7 @@ int bsl_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=00|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4203C00) {
 		decode_fields32(ENC_BSL_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -31613,7 +31954,7 @@ int cadd_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|00000|op=0|11011|rot=x|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FF800)==0x4500D800) {
 		decode_fields32(ENC_CADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31634,7 +31975,7 @@ int cdot_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20F000)==0x44001000) {
 		decode_fields32(ENC_CDOT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -31660,7 +32001,7 @@ int cdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|0100|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44A04000) {
 		decode_fields32(ENC_CDOT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -31677,7 +32018,7 @@ int cdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|0100|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44E04000) {
 		decode_fields32(ENC_CDOT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -31701,7 +32042,7 @@ int clasta_r_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|11000|B=0|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x530A000) {
 		decode_fields32(ENC_CLASTA_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31723,7 +32064,7 @@ int clasta_v_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10101|B=0|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52A8000) {
 		decode_fields32(ENC_CLASTA_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31744,7 +32085,7 @@ int clasta_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10100|B=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5288000) {
 		decode_fields32(ENC_CLASTA_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31765,7 +32106,7 @@ int clastb_r_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|11000|B=1|101|Pg=xxx|Zm=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x531A000) {
 		decode_fields32(ENC_CLASTB_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31787,7 +32128,7 @@ int clastb_v_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10101|B=1|100|Pg=xxx|Zm=xxxxx|Vdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52B8000) {
 		decode_fields32(ENC_CLASTB_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31808,7 +32149,7 @@ int clastb_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10100|B=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5298000) {
 		decode_fields32(ENC_CLASTB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31829,7 +32170,7 @@ int cls_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x418A000) {
 		decode_fields32(ENC_CLS_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31849,7 +32190,7 @@ int clz_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x419A000) {
 		decode_fields32(ENC_CLZ_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31869,7 +32210,7 @@ int cmla_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|001|op=0|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20F000)==0x44002000) {
 		decode_fields32(ENC_CMLA_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31893,7 +32234,7 @@ int cmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|0110|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44A06000) {
 		decode_fields32(ENC_CMLA_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -31911,7 +32252,7 @@ int cmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|0110|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44E06000) {
 		decode_fields32(ENC_CMLA_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -31936,7 +32277,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25008000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31952,7 +32293,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25000010) {
 		decode_fields32(ENC_CMPGT_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31968,7 +32309,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25000000) {
 		decode_fields32(ENC_CMPGE_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -31984,7 +32325,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24200010) {
 		decode_fields32(ENC_CMPHI_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32000,7 +32341,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24200000) {
 		decode_fields32(ENC_CMPHS_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32016,7 +32357,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25002000) {
 		decode_fields32(ENC_CMPLT_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32032,7 +32373,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=0|0|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25002010) {
 		decode_fields32(ENC_CMPLE_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32048,7 +32389,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24202000) {
 		decode_fields32(ENC_CMPLO_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32064,7 +32405,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|1|imm7=xxxxxxx|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF202010)==0x24202010) {
 		decode_fields32(ENC_CMPLS_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32080,7 +32421,7 @@ int cmpeq_p_p_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|0|imm5=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x25008010) {
 		decode_fields32(ENC_CMPNE_P_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32103,7 +32444,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24002000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32122,7 +32463,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24004010) {
 		decode_fields32(ENC_CMPGT_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32141,7 +32482,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24004000) {
 		decode_fields32(ENC_CMPGE_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32160,7 +32501,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400C010) {
 		decode_fields32(ENC_CMPHI_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32179,7 +32520,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400C000) {
 		decode_fields32(ENC_CMPHS_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32198,7 +32539,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24006000) {
 		decode_fields32(ENC_CMPLT_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32217,7 +32558,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=0|1|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24006010) {
 		decode_fields32(ENC_CMPLE_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32236,7 +32577,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400E000) {
 		decode_fields32(ENC_CMPLO_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32255,7 +32596,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|U=1|1|lt=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400E010) {
 		decode_fields32(ENC_CMPLS_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32274,7 +32615,7 @@ int cmpeq_p_p_zw(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24002010) {
 		decode_fields32(ENC_CMPNE_P_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -32300,7 +32641,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=1|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400A000) {
 		decode_fields32(ENC_CMPEQ_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32316,7 +32657,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008010) {
 		decode_fields32(ENC_CMPGT_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32332,7 +32673,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24008000) {
 		decode_fields32(ENC_CMPGE_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32348,7 +32689,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000010) {
 		decode_fields32(ENC_CMPHI_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32364,7 +32705,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=0|0|o2=0|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x24000000) {
 		decode_fields32(ENC_CMPHS_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32380,7 +32721,7 @@ int cmpeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 00100100|size=xx|0|Zm=xxxxx|op=1|0|o2=1|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x2400A010) {
 		decode_fields32(ENC_CMPNE_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32403,7 +32744,7 @@ int cnot_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41BA000) {
 		decode_fields32(ENC_CNOT_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32423,7 +32764,7 @@ int cnt_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=01|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41AA000) {
 		decode_fields32(ENC_CNT_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32443,7 +32784,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 	/* 00000100|size=00|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420E000) {
 		decode_fields32(ENC_CNTB_R_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -32456,7 +32797,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 	/* 00000100|size=11|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0E000) {
 		decode_fields32(ENC_CNTD_R_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -32469,7 +32810,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 	/* 00000100|size=01|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460E000) {
 		decode_fields32(ENC_CNTH_R_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -32482,7 +32823,7 @@ int cntb_r_s(context *ctx, Instruction *instr)
 	/* 00000100|size=10|10|imm4=xxxx|11100|op=0|pattern=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0E000) {
 		decode_fields32(ENC_CNTW_R_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -32502,7 +32843,7 @@ int cntp_r_p_p(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=0|10|Pg=xxxx|0|Pn=xxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FC200)==0x25208000) {
 		decode_fields32(ENC_CNTP_R_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32545,7 +32886,7 @@ int cpy_z_o_i(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=0|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5100000) {
 		decode_fields32(ENC_CPY_Z_O_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -32574,7 +32915,7 @@ int cpy_z_p_i(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|01|Pg=xxxx|0|M=1|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30C000)==0x5104000) {
 		decode_fields32(ENC_CPY_Z_P_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -32603,7 +32944,7 @@ int cpy_z_p_r(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|101000101|Pg=xxx|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x528A000) {
 		decode_fields32(ENC_CPY_Z_P_R_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32625,7 +32966,7 @@ int cpy_z_p_v(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|100000100|Pg=xxx|Vn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5208000) {
 		decode_fields32(ENC_CPY_Z_P_V_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32647,7 +32988,7 @@ int ctermeq_rr(context *ctx, Instruction *instr)
 	/* 00|100101|op=1|sz=x|1|Rm=xxxxx|001000|Rn=xxxxx|ne=0|0|0|00 */
 	if((INSWORD & 0xFFA0FC1F)==0x25A02000) {
 		decode_fields32(ENC_CTERMEQ_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -32660,7 +33001,7 @@ int ctermeq_rr(context *ctx, Instruction *instr)
 	/* 00|100101|op=1|sz=x|1|Rm=xxxxx|001000|Rn=xxxxx|ne=1|0|0|00 */
 	if((INSWORD & 0xFFA0FC1F)==0x25A02010) {
 		decode_fields32(ENC_CTERMNE_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -32680,7 +33021,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E400) {
 		decode_fields32(ENC_DECB_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -32693,7 +33034,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0E400) {
 		decode_fields32(ENC_DECD_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -32706,7 +33047,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470E400) {
 		decode_fields32(ENC_DECH_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -32719,7 +33060,7 @@ int decb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|11|imm4=xxxx|11100|D=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0E400) {
 		decode_fields32(ENC_DECW_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -32739,7 +33080,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C400) {
 		decode_fields32(ENC_DECD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -32752,7 +33093,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470C400) {
 		decode_fields32(ENC_DECH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -32765,7 +33106,7 @@ int decd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|11|imm4=xxxx|11000|D=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0C400) {
 		decode_fields32(ENC_DECW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -32785,7 +33126,7 @@ int decp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1011|op=0|D=1|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8800) {
 		decode_fields32(ENC_DECP_R_P_R_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32804,7 +33145,7 @@ int decp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1011|op=0|D=1|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252D8000) {
 		decode_fields32(ENC_DECP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -32818,6 +33159,46 @@ int decp_z_p_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* dup_p_p_pi.xml */
+int dup_p_p_pi(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00100101|i1=x|tszh=x|1|tszl=xxx|Rm=xx|01|Pg=xxxx|S=0|Pn=xxxx|0|Pd=xxxx */
+	if((INSWORD & 0xFF20C210)==0x25204000) {
+		decode_fields32(ENC_DUP_P_P_PI_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->imm = ((ctx->i1<<4)|(ctx->tszh<<3)|ctx->tszl);
+		if(!((ctx->tszh<<3)|ctx->tszl)) {
+			UNDEFINED;
+		}
+		else if(((ctx->tszh<<3)|ctx->tszl)==8) {
+			ctx->esize = 0x40;
+			ctx->offset = UINT(SLICE(ctx->imm,4,4));
+		}
+		else if((((ctx->tszh<<3)|ctx->tszl)&7)==4) {
+			ctx->esize = 0x20;
+			ctx->offset = UINT(SLICE(ctx->imm,4,3));
+		}
+		else if((((ctx->tszh<<3)|ctx->tszl)&3)==2) {
+			ctx->esize = 0x10;
+			ctx->offset = UINT(SLICE(ctx->imm,4,2));
+		}
+		else if(((ctx->tszh<<3)|ctx->tszl)&1) {
+			ctx->esize = 8;
+			ctx->offset = UINT(SLICE(ctx->imm,4,1));
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Pn);
+		ctx->d = UINT(ctx->Pd);
+		ctx->m = UINT(((3<<2)|ctx->Rm));
+		OK(ENC_DUP_P_P_PI_);
+	}
+	return rc;
+}
+
 /* dup_z_i.xml */
 int dup_z_i(context *ctx, Instruction *instr)
 {
@@ -32826,7 +33207,7 @@ int dup_z_i(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|111|opc=00|011|sh=x|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2538C000) {
 		decode_fields32(ENC_DUP_Z_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -32853,7 +33234,7 @@ int dup_z_r(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|100000001110|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5203800) {
 		decode_fields32(ENC_DUP_Z_R_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -32874,7 +33255,7 @@ int dup_z_zi(context *ctx, Instruction *instr)
 	/* 00000101|imm2=xx|1|tsz=xxxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202000) {
 		decode_fields32(ENC_DUP_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->imm = ((ctx->imm2<<5)|ctx->tsz);
@@ -32918,7 +33299,7 @@ int dupm_z_i(context *ctx, Instruction *instr)
 	/* 00000101110000|imm13=xxxxxxxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5C00000) {
 		decode_fields32(ENC_DUPM_Z_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -32941,7 +33322,7 @@ int eor3_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=00|1|Zm=xxxxx|00111|o2=0|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4203800) {
 		decode_fields32(ENC_EOR3_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -32960,7 +33341,7 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004200) {
 		decode_fields32(ENC_EOR_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -32971,28 +33352,8 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
 		/* regular aliases */
-		if(ctx->Pm==ctx->Pg) return NOTS_eor_p_p_pp(ctx, instr);
 		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
 		OK(ENC_EOR_P_P_PP_Z);
-	}
-	/* class iclass_s */
-	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
-	if((INSWORD & 0xFFF0C210)==0x25404200) {
-		decode_fields32(ENC_EORS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
-			UNDEFINED;
-		}
-		ctx->esize = 8;
-		ctx->g = UINT(ctx->Pg);
-		ctx->n = UINT(ctx->Pn);
-		ctx->m = UINT(ctx->Pm);
-		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
-		ctx->setflags = TRUE;
-		/* regular aliases */
-		if(ctx->Pm==ctx->Pg) return NOTS_eor_p_p_pp(ctx, instr);
-		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
-		OK(ENC_EORS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -33005,7 +33366,7 @@ int eor_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4190000) {
 		decode_fields32(ENC_EOR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -33025,7 +33386,7 @@ int eor_z_zi(context *ctx, Instruction *instr)
 	/* 00000101|opc=01|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5400000) {
 		decode_fields32(ENC_EOR_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->dn = UINT(ctx->Zdn);
@@ -33045,7 +33406,7 @@ int eor_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|opc=10|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4A03000) {
 		decode_fields32(ENC_EOR_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -33064,7 +33425,7 @@ int eorbt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|10010|tb=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45009000) {
 		decode_fields32(ENC_EORBT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -33078,6 +33439,31 @@ int eorbt_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* eors_p_p_pp.xml */
+int eors_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_s */
+	/* 00100101|op=0|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
+	if((INSWORD & 0xFFF0C210)==0x25404200) {
+		decode_fields32(ENC_EORS_P_P_PP_Z, ctx, instr);
+		if(!HaveSVE() && !HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Pn);
+		ctx->m = UINT(ctx->Pm);
+		ctx->d = UINT(ctx->Pd);
+		instr->setflags = TRUE;
+		ctx->setflags = TRUE;
+		/* regular aliases */
+		if(ctx->Pm==ctx->Pg) return NOTS_eors_p_p_pp(ctx, instr);
+		OK(ENC_EORS_P_P_PP_Z);
+	}
+	return rc;
+}
+
 /* eortb_z_zz.xml */
 int eortb_z_zz(context *ctx, Instruction *instr)
 {
@@ -33086,7 +33472,7 @@ int eortb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|10010|tb=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45009400) {
 		decode_fields32(ENC_EORTB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -33108,7 +33494,7 @@ int eorv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0110|opc=01|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4192000) {
 		decode_fields32(ENC_EORV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -33128,7 +33514,7 @@ int ext_z_zi(context *ctx, Instruction *instr)
 	/* 00000101011|imm8h=xxxxx|000|imm8l=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x5600000) {
 		decode_fields32(ENC_EXT_Z_ZI_CON, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -33142,7 +33528,7 @@ int ext_z_zi(context *ctx, Instruction *instr)
 	/* 00000101001|imm8h=xxxxx|000|imm8l=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0x5200000) {
 		decode_fields32(ENC_EXT_Z_ZI_DES, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -33163,7 +33549,7 @@ int fabd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65088000) {
 		decode_fields32(ENC_FABD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33186,7 +33572,7 @@ int fabs_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41CA000) {
 		decode_fields32(ENC_FABS_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33209,7 +33595,7 @@ int facge_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=1|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500E010) {
 		decode_fields32(ENC_FACGT_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33227,7 +33613,7 @@ int facge_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C010) {
 		decode_fields32(ENC_FACGE_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33252,7 +33638,7 @@ int fadd_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65188000) {
 		decode_fields32(ENC_FADD_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33275,7 +33661,7 @@ int fadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65008000) {
 		decode_fields32(ENC_FADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33298,7 +33684,7 @@ int fadd_z_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000000) {
 		decode_fields32(ENC_FADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33344,7 +33730,7 @@ int faddp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|010|opc<2:1>=00|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x64108000) {
 		decode_fields32(ENC_FADDP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33367,7 +33753,7 @@ int faddv_v_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65002000) {
 		decode_fields32(ENC_FADDV_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33390,7 +33776,7 @@ int fcadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|00000|rot=x|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x64008000) {
 		decode_fields32(ENC_FCADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33415,7 +33801,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=1|lt=0|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65122000) {
 		decode_fields32(ENC_FCMEQ_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33432,7 +33818,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=0|lt=0|001|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65102010) {
 		decode_fields32(ENC_FCMGT_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33449,7 +33835,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=0|lt=0|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65102000) {
 		decode_fields32(ENC_FCMGE_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33466,7 +33852,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=0|lt=1|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65112000) {
 		decode_fields32(ENC_FCMLT_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33483,7 +33869,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=0|lt=1|001|Pg=xxx|Zn=xxxxx|ne=1|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65112010) {
 		decode_fields32(ENC_FCMLE_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33500,7 +33886,7 @@ int fcmeq_p_p_z0(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0100|eq=1|lt=1|001|Pg=xxx|Zn=xxxxx|ne=0|Pd=xxxx */
 	if((INSWORD & 0xFF3FE010)==0x65132000) {
 		decode_fields32(ENC_FCMNE_P_P_Z0_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33524,7 +33910,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=1|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65006000) {
 		decode_fields32(ENC_FCMEQ_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33542,7 +33928,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004010) {
 		decode_fields32(ENC_FCMGT_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33560,7 +33946,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=0|Pg=xxx|Zn=xxxxx|cmpl=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65004000) {
 		decode_fields32(ENC_FCMGE_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33578,7 +33964,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=0|1|cmph=1|Pg=xxx|Zn=xxxxx|cmpl=1|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x65006010) {
 		decode_fields32(ENC_FCMNE_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33596,7 +33982,7 @@ int fcmeq_p_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|op=1|1|o2=0|Pg=xxx|Zn=xxxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFF20E010)==0x6500C000) {
 		decode_fields32(ENC_FCMUO_P_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33621,7 +34007,7 @@ int fcmla_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|0|Zm=xxxxx|0|rot=xx|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF208000)==0x64000000) {
 		decode_fields32(ENC_FCMLA_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33649,7 +34035,7 @@ int fcmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x64A01000) {
 		decode_fields32(ENC_FCMLA_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -33667,7 +34053,7 @@ int fcmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|0001|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x64E01000) {
 		decode_fields32(ENC_FCMLA_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33692,7 +34078,7 @@ int fcpy_z_p_i(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|01|Pg=xxxx|110|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF30E000)==0x510C000) {
 		decode_fields32(ENC_FCPY_Z_P_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -33717,7 +34103,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6589A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_H2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33732,7 +34118,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65C9A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_H2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33747,7 +34133,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6588A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_S2H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33762,7 +34148,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|0010|opc2=11|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65CBA000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_S2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33777,7 +34163,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65C8A000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_D2H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33792,7 +34178,7 @@ int fcvt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65CAA000) {
 		decode_fields32(ENC_FCVT_Z_P_Z_D2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33814,7 +34200,7 @@ int fcvtlt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=10|0010|opc2=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6489A000) {
 		decode_fields32(ENC_FCVTLT_Z_P_Z_H2S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33827,7 +34213,7 @@ int fcvtlt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=11|0010|opc2=11|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x64CBA000) {
 		decode_fields32(ENC_FCVTLT_Z_P_Z_S2D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33847,7 +34233,7 @@ int fcvtnt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=10|0010|opc2=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6488A000) {
 		decode_fields32(ENC_FCVTNT_Z_P_Z_S2H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33860,7 +34246,7 @@ int fcvtnt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=11|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x64CAA000) {
 		decode_fields32(ENC_FCVTNT_Z_P_Z_D2S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33880,7 +34266,7 @@ int fcvtx_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=00|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x650AA000) {
 		decode_fields32(ENC_FCVTX_Z_P_Z_D2S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33902,7 +34288,7 @@ int fcvtxnt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100100|opc=00|0010|opc2=10|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x640AA000) {
 		decode_fields32(ENC_FCVTXNT_Z_P_Z_D2S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33922,7 +34308,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655AA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -33939,7 +34325,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655CA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33956,7 +34342,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655EA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_FP162X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -33973,7 +34359,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x659CA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_S2W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -33990,7 +34376,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DCA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_S2X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34007,7 +34393,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=00|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D8A000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_D2W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34024,7 +34410,7 @@ int fcvtzs_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DEA000) {
 		decode_fields32(ENC_FCVTZS_Z_P_Z_D2X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34048,7 +34434,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655BA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -34065,7 +34451,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655DA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34082,7 +34468,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|011|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x655FA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_FP162X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34099,7 +34485,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x659DA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_S2W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34116,7 +34502,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DDA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_S2X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34133,7 +34519,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=00|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D9A000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_D2W, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34150,7 +34536,7 @@ int fcvtzu_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|011|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65DFA000) {
 		decode_fields32(ENC_FCVTZU_Z_P_Z_D2X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34174,7 +34560,7 @@ int fdiv_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650D8000) {
 		decode_fields32(ENC_FDIV_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34197,7 +34583,7 @@ int fdivr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=110|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650C8000) {
 		decode_fields32(ENC_FDIVR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34220,7 +34606,7 @@ int fdup_z_i(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|111|opc=00|111|o2=0|imm8=xxxxxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2539C000) {
 		decode_fields32(ENC_FDUP_Z_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34266,7 +34652,7 @@ int flogb_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=00|011|size=xx|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFF9E000)==0x6518A000) {
 		decode_fields32(ENC_FLOGB_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34289,7 +34675,7 @@ int fmad_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65208000) {
 		decode_fields32(ENC_FMAD_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34315,7 +34701,7 @@ int fmax_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651E8000) {
 		decode_fields32(ENC_FMAX_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34338,7 +34724,7 @@ int fmax_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65068000) {
 		decode_fields32(ENC_FMAX_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34361,7 +34747,7 @@ int fmaxnm_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651C8000) {
 		decode_fields32(ENC_FMAXNM_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34384,7 +34770,7 @@ int fmaxnm_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65048000) {
 		decode_fields32(ENC_FMAXNM_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34407,7 +34793,7 @@ int fmaxnmp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|010|opc<2:1>=10|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x64148000) {
 		decode_fields32(ENC_FMAXNMP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34430,7 +34816,7 @@ int fmaxnmv_v_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65042000) {
 		decode_fields32(ENC_FMAXNMV_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34453,7 +34839,7 @@ int fmaxp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|010|opc<2:1>=11|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x64168000) {
 		decode_fields32(ENC_FMAXP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34476,7 +34862,7 @@ int fmaxv_v_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65062000) {
 		decode_fields32(ENC_FMAXV_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34499,7 +34885,7 @@ int fmin_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=11|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651F8000) {
 		decode_fields32(ENC_FMIN_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34522,7 +34908,7 @@ int fmin_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=011|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65078000) {
 		decode_fields32(ENC_FMIN_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34545,7 +34931,7 @@ int fminnm_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=10|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651D8000) {
 		decode_fields32(ENC_FMINNM_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34568,7 +34954,7 @@ int fminnm_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=010|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65058000) {
 		decode_fields32(ENC_FMINNM_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34591,7 +34977,7 @@ int fminnmp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|010|opc<2:1>=10|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x64158000) {
 		decode_fields32(ENC_FMINNMP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34614,7 +35000,7 @@ int fminnmv_v_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65052000) {
 		decode_fields32(ENC_FMINNMV_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34637,7 +35023,7 @@ int fminp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100100|size=xx|010|opc<2:1>=11|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x64178000) {
 		decode_fields32(ENC_FMINP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34660,7 +35046,7 @@ int fminv_v_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65072000) {
 		decode_fields32(ENC_FMINV_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34683,7 +35069,7 @@ int fmla_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65200000) {
 		decode_fields32(ENC_FMLA_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34709,7 +35095,7 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -34725,7 +35111,7 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A00000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34741,7 +35127,7 @@ int fmla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|00000|op=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E00000) {
 		decode_fields32(ENC_FMLA_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34764,7 +35150,7 @@ int fmlalb_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|Zm=xxxxx|10|op=0|00|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A08000) {
 		decode_fields32(ENC_FMLALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34785,7 +35171,7 @@ int fmlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64A04000) {
 		decode_fields32(ENC_FMLALB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34807,7 +35193,7 @@ int fmlalt_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|Zm=xxxxx|10|op=0|00|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A08400) {
 		decode_fields32(ENC_FMLALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34828,7 +35214,7 @@ int fmlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=0|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64A04400) {
 		decode_fields32(ENC_FMLALT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34850,7 +35236,7 @@ int fmls_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=0|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65202000) {
 		decode_fields32(ENC_FMLS_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -34876,7 +35262,7 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64200400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -34892,7 +35278,7 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A00400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34908,7 +35294,7 @@ int fmls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|00000|op=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E00400) {
 		decode_fields32(ENC_FMLS_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -34931,7 +35317,7 @@ int fmlslb_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|Zm=xxxxx|10|op=1|00|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A0A000) {
 		decode_fields32(ENC_FMLSLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34952,7 +35338,7 @@ int fmlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=1|0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64A06000) {
 		decode_fields32(ENC_FMLSLB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34974,7 +35360,7 @@ int fmlslt_z_zzz(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|Zm=xxxxx|10|op=1|00|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A0A400) {
 		decode_fields32(ENC_FMLSLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -34995,7 +35381,7 @@ int fmlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 011001001|o2=0|1|i3h=xx|Zm=xxx|01|op=1|0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x64A06400) {
 		decode_fields32(ENC_FMLSLT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -35042,6 +35428,128 @@ int fmmla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* fmopa_za32_pp_zz.xml */
+int fmopa_za32_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 10|000001101|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x81A00000) {
+		decode_fields32(ENC_FMOPA_ZA32_PP_ZZ_16, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		OK(ENC_FMOPA_ZA32_PP_ZZ_16);
+	}
+	return rc;
+}
+
+/* fmopa_za_pp_zz.xml */
+int fmopa_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_single */
+	/* 10|000000100|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x80800000) {
+		decode_fields32(ENC_FMOPA_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		OK(ENC_FMOPA_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_double */
+	/* 10|000000110|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0x80C00000) {
+		decode_fields32(ENC_FMOPA_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEF64F64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		OK(ENC_FMOPA_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
+/* fmops_za32_pp_zz.xml */
+int fmops_za32_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 10|000001101|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x81A00010) {
+		decode_fields32(ENC_FMOPS_ZA32_PP_ZZ_16, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		OK(ENC_FMOPS_ZA32_PP_ZZ_16);
+	}
+	return rc;
+}
+
+/* fmops_za_pp_zz.xml */
+int fmops_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_single */
+	/* 10|000000100|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0x80800010) {
+		decode_fields32(ENC_FMOPS_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		OK(ENC_FMOPS_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_double */
+	/* 10|000000110|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0x80C00010) {
+		decode_fields32(ENC_FMOPS_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEF64F64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		OK(ENC_FMOPS_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
 /* fmsb_z_p_zzz.xml */
 int fmsb_z_p_zzz(context *ctx, Instruction *instr)
 {
@@ -35050,7 +35558,7 @@ int fmsb_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=0|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520A000) {
 		decode_fields32(ENC_FMSB_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35076,7 +35584,7 @@ int fmul_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=0|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651A8000) {
 		decode_fields32(ENC_FMUL_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35099,7 +35607,7 @@ int fmul_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65028000) {
 		decode_fields32(ENC_FMUL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35122,7 +35630,7 @@ int fmul_z_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=01|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000800) {
 		decode_fields32(ENC_FMUL_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35145,7 +35653,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 	/* 01100100|0|i3h=x|1|i3l=xx|Zm=xxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x64202000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_H, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -35159,7 +35667,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 	/* 01100100|size=10|1|i2=xx|Zm=xxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64A02000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -35173,7 +35681,7 @@ int fmul_z_zzi(context *ctx, Instruction *instr)
 	/* 01100100|size=11|1|i1=x|Zm=xxxx|001000|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x64E02000) {
 		decode_fields32(ENC_FMUL_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -35194,7 +35702,7 @@ int fmulx_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=101|opc<0>=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650A8000) {
 		decode_fields32(ENC_FMULX_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35217,7 +35725,7 @@ int fneg_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=10|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41DA000) {
 		decode_fields32(ENC_FNEG_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35240,7 +35748,7 @@ int fnmad_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=0|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520C000) {
 		decode_fields32(ENC_FNMAD_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35266,7 +35774,7 @@ int fnmla_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65204000) {
 		decode_fields32(ENC_FNMLA_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35292,7 +35800,7 @@ int fnmls_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Zm=xxxxx|0|N=1|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x65206000) {
 		decode_fields32(ENC_FNMLS_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35318,7 +35826,7 @@ int fnmsb_z_p_zzz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|1|Za=xxxxx|1|N=1|op=1|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x6520E000) {
 		decode_fields32(ENC_FNMSB_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35344,7 +35852,7 @@ int frecpe_z_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=0|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650E3000) {
 		decode_fields32(ENC_FRECPE_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35366,7 +35874,7 @@ int frecps_z_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001800) {
 		decode_fields32(ENC_FRECPS_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35389,7 +35897,7 @@ int frecpx_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0011|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650CA000) {
 		decode_fields32(ENC_FRECPX_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35412,7 +35920,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6507A000) {
 		decode_fields32(ENC_FRINTI_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35430,7 +35938,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6506A000) {
 		decode_fields32(ENC_FRINTX_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35448,7 +35956,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=10|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6504A000) {
 		decode_fields32(ENC_FRINTA_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35466,7 +35974,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6500A000) {
 		decode_fields32(ENC_FRINTN_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35484,7 +35992,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=01|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6503A000) {
 		decode_fields32(ENC_FRINTZ_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35502,7 +36010,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=01|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6502A000) {
 		decode_fields32(ENC_FRINTM_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35520,7 +36028,7 @@ int frinta_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|000|opc<2:1>=00|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x6501A000) {
 		decode_fields32(ENC_FRINTP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35545,7 +36053,7 @@ int frsqrte_z_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|001|opc<2:1>=11|opc<0>=1|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x650F3000) {
 		decode_fields32(ENC_FRSQRTE_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35567,7 +36075,7 @@ int frsqrts_z_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=11|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65001C00) {
 		decode_fields32(ENC_FRSQRTS_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35590,7 +36098,7 @@ int fscale_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=100|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65098000) {
 		decode_fields32(ENC_FSCALE_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35613,7 +36121,7 @@ int fsqrt_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0011|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x650DA000) {
 		decode_fields32(ENC_FSQRT_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35636,7 +36144,7 @@ int fsub_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=00|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x65198000) {
 		decode_fields32(ENC_FSUB_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35659,7 +36167,7 @@ int fsub_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=000|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65018000) {
 		decode_fields32(ENC_FSUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35682,7 +36190,7 @@ int fsub_z_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|0|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x65000400) {
 		decode_fields32(ENC_FSUB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35705,7 +36213,7 @@ int fsubr_z_p_zs(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|011|opc<2:1>=01|opc<0>=1|100|Pg=xxx|0000|i1=x|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE3C0)==0x651B8000) {
 		decode_fields32(ENC_FSUBR_Z_P_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35728,7 +36236,7 @@ int fsubr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01100101|size=xx|00|opc<3:1>=001|opc<0>=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x65038000) {
 		decode_fields32(ENC_FSUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -35867,7 +36375,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430E000) {
 		decode_fields32(ENC_INCB_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -35880,7 +36388,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0E000) {
 		decode_fields32(ENC_INCD_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -35893,7 +36401,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470E000) {
 		decode_fields32(ENC_INCH_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -35906,7 +36414,7 @@ int incb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|11|imm4=xxxx|11100|D=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0E000) {
 		decode_fields32(ENC_INCW_R_RS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -35926,7 +36434,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0C000) {
 		decode_fields32(ENC_INCD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -35939,7 +36447,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470C000) {
 		decode_fields32(ENC_INCH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -35952,7 +36460,7 @@ int incd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|11|imm4=xxxx|11000|D=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0C000) {
 		decode_fields32(ENC_INCW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -35972,7 +36480,7 @@ int incp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1011|op=0|D=0|10001|opc2=00|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8800) {
 		decode_fields32(ENC_INCP_R_P_R_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -35991,7 +36499,7 @@ int incp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1011|op=0|D=0|10000|opc2=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252C8000) {
 		decode_fields32(ENC_INCP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -36013,7 +36521,7 @@ int index_z_ii(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|imm5b=xxxxx|010000|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204000) {
 		decode_fields32(ENC_INDEX_Z_II_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36033,7 +36541,7 @@ int index_z_ir(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Rm=xxxxx|010010|imm5=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204800) {
 		decode_fields32(ENC_INDEX_Z_IR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36053,7 +36561,7 @@ int index_z_ri(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|imm5=xxxxx|010001|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204400) {
 		decode_fields32(ENC_INDEX_Z_RI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36073,7 +36581,7 @@ int index_z_rr(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Rm=xxxxx|010011|Rn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4204C00) {
 		decode_fields32(ENC_INDEX_Z_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36093,7 +36601,7 @@ int insr_z_r(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|100100001110|Rm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5243800) {
 		decode_fields32(ENC_INSR_Z_R_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36112,7 +36620,7 @@ int insr_z_v(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|110100001110|Vm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5343800) {
 		decode_fields32(ENC_INSR_Z_V_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36131,7 +36639,7 @@ int lasta_r_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10000|B=0|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x520A000) {
 		decode_fields32(ENC_LASTA_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36153,7 +36661,7 @@ int lasta_v_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10001|B=0|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5228000) {
 		decode_fields32(ENC_LASTA_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36174,7 +36682,7 @@ int lastb_r_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10000|B=1|101|Pg=xxx|Zn=xxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x521A000) {
 		decode_fields32(ENC_LASTB_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36196,7 +36704,7 @@ int lastb_v_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10001|B=1|100|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5238000) {
 		decode_fields32(ENC_LASTB_V_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -36256,7 +36764,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U8, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36272,7 +36780,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA420A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36288,7 +36796,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA440A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36304,7 +36812,7 @@ int ld1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA460A000) {
 		decode_fields32(ENC_LD1B_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36327,7 +36835,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=000|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4004000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U8, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36346,7 +36854,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=000|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4204000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36365,7 +36873,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=001|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4404000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36384,7 +36892,7 @@ int ld1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=001|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4604000) {
 		decode_fields32(ENC_LD1B_Z_P_BR_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36466,6 +36974,30 @@ int ld1b_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ld1b_za_p_rrr.xml */
+int ld1b_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=00|0|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFE00010)==0xE0000000) {
+		decode_fields32(ENC_LD1B_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = 0;
+		ctx->imm = UINT(ctx->imm4);
+		ctx->esize = 8;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_LD1B_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* ld1d_z_p_ai.xml */
 int ld1d_z_p_ai(context *ctx, Instruction *instr)
 {
@@ -36497,7 +37029,7 @@ int ld1d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0A000) {
 		decode_fields32(ENC_LD1D_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36520,7 +37052,7 @@ int ld1d_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=111|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E04000) {
 		decode_fields32(ENC_LD1D_Z_P_BR_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36621,6 +37153,30 @@ int ld1d_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ld1d_za_p_rrr.xml */
+int ld1d_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=11|0|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xxx|i1=x */
+	if((INSWORD & 0xFFE00010)==0xE0C00000) {
+		decode_fields32(ENC_LD1D_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->i1);
+		ctx->esize = 0x40;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_LD1D_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* ld1h_z_p_ai.xml */
 int ld1h_z_p_ai(context *ctx, Instruction *instr)
 {
@@ -36668,7 +37224,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36684,7 +37240,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4C0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36700,7 +37256,7 @@ int ld1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4E0A000) {
 		decode_fields32(ENC_LD1H_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36723,7 +37279,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=010|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36742,7 +37298,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=011|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36761,7 +37317,7 @@ int ld1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=011|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E04000) {
 		decode_fields32(ENC_LD1H_Z_P_BR_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -36900,6 +37456,54 @@ int ld1h_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ld1h_za_p_rrr.xml */
+int ld1h_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=01|0|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=x|imm3=xxx */
+	if((INSWORD & 0xFFE00010)==0xE0400000) {
+		decode_fields32(ENC_LD1H_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->imm3);
+		ctx->esize = 0x10;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_LD1H_ZA_P_RRR_);
+	}
+	return rc;
+}
+
+/* ld1q_za_p_rrr.xml */
+int ld1q_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100001110|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xxxx */
+	if((INSWORD & 0xFFE00010)==0xE1C00000) {
+		decode_fields32(ENC_LD1Q_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = 0;
+		ctx->esize = 0x80;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_LD1Q_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* ld1rb_z_p_bi.xml */
 int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 {
@@ -36908,7 +37512,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84408000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U8, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36924,7 +37528,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440A000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36940,7 +37544,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440C000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36956,7 +37560,7 @@ int ld1rb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=00|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8440E000) {
 		decode_fields32(ENC_LD1RB_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -36979,7 +37583,7 @@ int ld1rd_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0E000) {
 		decode_fields32(ENC_LD1RD_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37002,7 +37606,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0A000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37018,7 +37622,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0C000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37034,7 +37638,7 @@ int ld1rh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C0E000) {
 		decode_fields32(ENC_LD1RH_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37237,7 +37841,7 @@ int ld1rqb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4002000) {
 		decode_fields32(ENC_LD1RQB_Z_P_BI_U8, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37258,7 +37862,7 @@ int ld1rqb_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4000000) {
 		decode_fields32(ENC_LD1RQB_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37282,7 +37886,7 @@ int ld1rqd_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5802000) {
 		decode_fields32(ENC_LD1RQD_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37303,7 +37907,7 @@ int ld1rqd_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5800000) {
 		decode_fields32(ENC_LD1RQD_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37327,7 +37931,7 @@ int ld1rqh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4802000) {
 		decode_fields32(ENC_LD1RQH_Z_P_BI_U16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37348,7 +37952,7 @@ int ld1rqh_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4800000) {
 		decode_fields32(ENC_LD1RQH_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37372,7 +37976,7 @@ int ld1rqw_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|ssz=00|0|imm4=xxxx|001|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5002000) {
 		decode_fields32(ENC_LD1RQW_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37393,7 +37997,7 @@ int ld1rqw_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|ssz=00|Rm=xxxxx|000|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5000000) {
 		decode_fields32(ENC_LD1RQW_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37417,7 +38021,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0C000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37433,7 +38037,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C0A000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37449,7 +38053,7 @@ int ld1rsb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=11|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85C08000) {
 		decode_fields32(ENC_LD1RSB_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37472,7 +38076,7 @@ int ld1rsh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=01|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540A000) {
 		decode_fields32(ENC_LD1RSH_Z_P_BI_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37488,7 +38092,7 @@ int ld1rsh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85408000) {
 		decode_fields32(ENC_LD1RSH_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37511,7 +38115,7 @@ int ld1rsw_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=01|1|imm6=xxxxxx|1|dtypel=00|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x84C08000) {
 		decode_fields32(ENC_LD1RSW_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37534,7 +38138,7 @@ int ld1rw_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=10|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540C000) {
 		decode_fields32(ENC_LD1RW_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37550,7 +38154,7 @@ int ld1rw_z_p_bi(context *ctx, Instruction *instr)
 	/* 1000010|dtypeh=10|1|imm6=xxxxxx|1|dtypel=11|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x8540E000) {
 		decode_fields32(ENC_LD1RW_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37612,7 +38216,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37628,7 +38232,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A0A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37644,7 +38248,7 @@ int ld1sb_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA580A000) {
 		decode_fields32(ENC_LD1SB_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37667,7 +38271,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=111|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C04000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37686,7 +38290,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=110|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A04000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37705,7 +38309,7 @@ int ld1sb_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=110|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5804000) {
 		decode_fields32(ENC_LD1SB_Z_P_BR_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37834,7 +38438,7 @@ int ld1sh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520A000) {
 		decode_fields32(ENC_LD1SH_Z_P_BI_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37850,7 +38454,7 @@ int ld1sh_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA500A000) {
 		decode_fields32(ENC_LD1SH_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -37873,7 +38477,7 @@ int ld1sh_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=100|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5204000) {
 		decode_fields32(ENC_LD1SH_Z_P_BR_S32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -37892,7 +38496,7 @@ int ld1sh_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=100|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5004000) {
 		decode_fields32(ENC_LD1SH_Z_P_BR_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38062,7 +38666,7 @@ int ld1sw_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480A000) {
 		decode_fields32(ENC_LD1SW_Z_P_BI_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38085,7 +38689,7 @@ int ld1sw_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=010|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4804000) {
 		decode_fields32(ENC_LD1SW_Z_P_BR_S64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38233,7 +38837,7 @@ int ld1w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540A000) {
 		decode_fields32(ENC_LD1W_Z_P_BI_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38249,7 +38853,7 @@ int ld1w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|0|imm4=xxxx|101|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA560A000) {
 		decode_fields32(ENC_LD1W_Z_P_BI_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38272,7 +38876,7 @@ int ld1w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=101|dtype<0>=0|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5404000) {
 		decode_fields32(ENC_LD1W_Z_P_BR_U32, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38291,7 +38895,7 @@ int ld1w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|dtype<3:1>=101|dtype<0>=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5604000) {
 		decode_fields32(ENC_LD1W_Z_P_BR_U64, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38430,6 +39034,30 @@ int ld1w_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* ld1w_za_p_rrr.xml */
+int ld1w_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=10|0|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xx|imm2=xx */
+	if((INSWORD & 0xFFE00010)==0xE0800000) {
+		decode_fields32(ENC_LD1W_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->imm2);
+		ctx->esize = 0x20;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_LD1W_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* ld2b_z_p_bi.xml */
 int ld2b_z_p_bi(context *ctx, Instruction *instr)
 {
@@ -38438,7 +39066,7 @@ int ld2b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA420E000) {
 		decode_fields32(ENC_LD2B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38460,7 +39088,7 @@ int ld2b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA420C000) {
 		decode_fields32(ENC_LD2B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38485,7 +39113,7 @@ int ld2d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5A0E000) {
 		decode_fields32(ENC_LD2D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38507,7 +39135,7 @@ int ld2d_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5A0C000) {
 		decode_fields32(ENC_LD2D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38532,7 +39160,7 @@ int ld2h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4A0E000) {
 		decode_fields32(ENC_LD2H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38554,7 +39182,7 @@ int ld2h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4A0C000) {
 		decode_fields32(ENC_LD2H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38579,7 +39207,7 @@ int ld2w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=01|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA520E000) {
 		decode_fields32(ENC_LD2W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38601,7 +39229,7 @@ int ld2w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=01|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA520C000) {
 		decode_fields32(ENC_LD2W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38626,7 +39254,7 @@ int ld3b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA440E000) {
 		decode_fields32(ENC_LD3B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38648,7 +39276,7 @@ int ld3b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA440C000) {
 		decode_fields32(ENC_LD3B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38673,7 +39301,7 @@ int ld3d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5C0E000) {
 		decode_fields32(ENC_LD3D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38695,7 +39323,7 @@ int ld3d_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5C0C000) {
 		decode_fields32(ENC_LD3D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38720,7 +39348,7 @@ int ld3h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4C0E000) {
 		decode_fields32(ENC_LD3H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38742,7 +39370,7 @@ int ld3h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4C0C000) {
 		decode_fields32(ENC_LD3H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38767,7 +39395,7 @@ int ld3w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=10|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA540E000) {
 		decode_fields32(ENC_LD3W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38789,7 +39417,7 @@ int ld3w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=10|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA540C000) {
 		decode_fields32(ENC_LD3W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38814,7 +39442,7 @@ int ld4b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA460E000) {
 		decode_fields32(ENC_LD4B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38836,7 +39464,7 @@ int ld4b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA460C000) {
 		decode_fields32(ENC_LD4B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38861,7 +39489,7 @@ int ld4d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA5E0E000) {
 		decode_fields32(ENC_LD4D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38883,7 +39511,7 @@ int ld4d_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA5E0C000) {
 		decode_fields32(ENC_LD4D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38908,7 +39536,7 @@ int ld4h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA4E0E000) {
 		decode_fields32(ENC_LD4H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38930,7 +39558,7 @@ int ld4h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA4E0C000) {
 		decode_fields32(ENC_LD4H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -38955,7 +39583,7 @@ int ld4w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=11|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA560E000) {
 		decode_fields32(ENC_LD4W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -38977,7 +39605,7 @@ int ld4w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|opc=11|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA560C000) {
 		decode_fields32(ENC_LD4W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -40549,7 +41177,7 @@ int ldnt1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA400E000) {
 		decode_fields32(ENC_LDNT1B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -40570,7 +41198,7 @@ int ldnt1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA400C000) {
 		decode_fields32(ENC_LDNT1B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -40617,7 +41245,7 @@ int ldnt1d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA580E000) {
 		decode_fields32(ENC_LDNT1D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -40638,7 +41266,7 @@ int ldnt1d_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA580C000) {
 		decode_fields32(ENC_LDNT1D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -40701,7 +41329,7 @@ int ldnt1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA480E000) {
 		decode_fields32(ENC_LDNT1H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -40722,7 +41350,7 @@ int ldnt1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA480C000) {
 		decode_fields32(ENC_LDNT1H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -40886,7 +41514,7 @@ int ldnt1w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|000|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xA500E000) {
 		decode_fields32(ENC_LDNT1W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -40907,7 +41535,7 @@ int ldnt1w_z_p_br(context *ctx, Instruction *instr)
 	/* 1010010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xA500C000) {
 		decode_fields32(ENC_LDNT1W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -40931,7 +41559,7 @@ int ldr_p_bi(context *ctx, Instruction *instr)
 	/* 1000010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85800000) {
 		decode_fields32(ENC_LDR_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Pt);
@@ -40950,13 +41578,32 @@ int ldr_z_bi(context *ctx, Instruction *instr)
 	/* 1000010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0x85804000) {
 		decode_fields32(ENC_LDR_Z_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
 		ctx->n = UINT(ctx->Rn);
 		ctx->imm = SInt(((ctx->imm9h<<3)|ctx->imm9l),9);
 		OK(ENC_LDR_Z_BI_);
+	}
+	return rc;
+}
+
+/* ldr_za_ri.xml */
+int ldr_za_ri(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 1110000100|op=0|000000|Rv=xx|000|Rn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFFF9C10)==0xE1000000) {
+		decode_fields32(ENC_LDR_ZA_RI_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->v = UINT(((3<<2)|ctx->Rv));
+		ctx->imm = UINT(ctx->imm4);
+		OK(ENC_LDR_ZA_RI_);
 	}
 	return rc;
 }
@@ -40969,7 +41616,7 @@ int lsl_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=00|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4038000) {
 		decode_fields32(ENC_LSL_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -41004,7 +41651,7 @@ int lsl_z_p_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41B8000) {
 		decode_fields32(ENC_LSL_Z_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -41027,7 +41674,7 @@ int lsl_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=0|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4138000) {
 		decode_fields32(ENC_LSL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41047,7 +41694,7 @@ int lsl_z_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209C00) {
 		decode_fields32(ENC_LSL_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -41082,7 +41729,7 @@ int lsl_z_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|opc=11|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208C00) {
 		decode_fields32(ENC_LSL_Z_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -41105,7 +41752,7 @@ int lslr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=1|L=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4178000) {
 		decode_fields32(ENC_LSLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41125,7 +41772,7 @@ int lsr_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=00|L=0|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4018000) {
 		decode_fields32(ENC_LSR_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -41160,7 +41807,7 @@ int lsr_z_p_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4198000) {
 		decode_fields32(ENC_LSR_Z_P_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -41183,7 +41830,7 @@ int lsr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=0|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4118000) {
 		decode_fields32(ENC_LSR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41203,7 +41850,7 @@ int lsr_z_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|1001|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4209400) {
 		decode_fields32(ENC_LSR_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -41238,7 +41885,7 @@ int lsr_z_zw(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|1000|0|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4208400) {
 		decode_fields32(ENC_LSR_Z_ZW_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -41261,7 +41908,7 @@ int lsrr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|R=1|L=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4158000) {
 		decode_fields32(ENC_LSRR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41281,7 +41928,7 @@ int mad_z_p_zzz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=0|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400C000) {
 		decode_fields32(ENC_MAD_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41327,7 +41974,7 @@ int mla_z_p_zzz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=0|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4004000) {
 		decode_fields32(ENC_MLA_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41349,7 +41996,7 @@ int mla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x44200800) {
 		decode_fields32(ENC_MLA_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -41363,7 +42010,7 @@ int mla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00800) {
 		decode_fields32(ENC_MLA_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -41377,7 +42024,7 @@ int mla_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00800) {
 		decode_fields32(ENC_MLA_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -41398,7 +42045,7 @@ int mls_z_p_zzz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0|Zm=xxxxx|01|op=1|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x4006000) {
 		decode_fields32(ENC_MLS_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41420,7 +42067,7 @@ int mls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x44200C00) {
 		decode_fields32(ENC_MLS_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -41434,7 +42081,7 @@ int mls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00C00) {
 		decode_fields32(ENC_MLS_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -41448,7 +42095,7 @@ int mls_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00C00) {
 		decode_fields32(ENC_MLS_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -41461,6 +42108,200 @@ int mls_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* mova_z_p_rza.xml */
+int mova_z_p_rza(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_byte */
+	/* 11000000|size=00|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|imm4=xxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0020000) {
+		decode_fields32(ENC_MOVA_Z_P_RZA_B, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = 0;
+		ctx->imm = UINT(ctx->imm4);
+		ctx->esize = 8;
+		ctx->d = UINT(ctx->Zd);
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_z_p_rza(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_Z_P_RZA_B);
+	}
+	/* class iclass_per_halfword */
+	/* 11000000|size=01|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=x|imm3=xxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0420000) {
+		decode_fields32(ENC_MOVA_Z_P_RZA_H, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->ZAn);
+		ctx->imm = UINT(ctx->imm3);
+		ctx->esize = 0x10;
+		ctx->d = UINT(ctx->Zd);
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_z_p_rza(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_Z_P_RZA_H);
+	}
+	/* class iclass_per_word */
+	/* 11000000|size=10|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=xx|imm2=xx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0820000) {
+		decode_fields32(ENC_MOVA_Z_P_RZA_W, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->ZAn);
+		ctx->imm = UINT(ctx->imm2);
+		ctx->esize = 0x20;
+		ctx->d = UINT(ctx->Zd);
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_z_p_rza(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_Z_P_RZA_W);
+	}
+	/* class iclass_per_doubleword */
+	/* 11000000|size=11|00001|Q=0|V=x|Rs=xx|Pg=xxx|0|ZAn=xxx|i1=x|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0C20000) {
+		decode_fields32(ENC_MOVA_Z_P_RZA_D, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->ZAn);
+		ctx->imm = UINT(ctx->i1);
+		ctx->esize = 0x40;
+		ctx->d = UINT(ctx->Zd);
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_z_p_rza(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_Z_P_RZA_D);
+	}
+	/* class iclass_per_quadword */
+	/* 11000000|size=11|00001|Q=1|V=x|Rs=xx|Pg=xxx|0|ZAn=xxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFF0200)==0xC0C30000) {
+		decode_fields32(ENC_MOVA_Z_P_RZA_Q, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->ZAn);
+		ctx->imm = 0;
+		ctx->esize = 0x80;
+		ctx->d = UINT(ctx->Zd);
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_z_p_rza(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_Z_P_RZA_Q);
+	}
+	return rc;
+}
+
+/* mova_za_p_rz.xml */
+int mova_za_p_rz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_byte */
+	/* 11000000|size=00|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFFF0010)==0xC0000000) {
+		decode_fields32(ENC_MOVA_ZA_P_RZ_B, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = 0;
+		ctx->imm = UINT(ctx->imm4);
+		ctx->esize = 8;
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_za_p_rz(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_ZA_P_RZ_B);
+	}
+	/* class iclass_per_halfword */
+	/* 11000000|size=01|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=x|imm3=xxx */
+	if((INSWORD & 0xFFFF0010)==0xC0400000) {
+		decode_fields32(ENC_MOVA_ZA_P_RZ_H, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->ZAd);
+		ctx->imm = UINT(ctx->imm3);
+		ctx->esize = 0x10;
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_za_p_rz(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_ZA_P_RZ_H);
+	}
+	/* class iclass_per_word */
+	/* 11000000|size=10|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xx|imm2=xx */
+	if((INSWORD & 0xFFFF0010)==0xC0800000) {
+		decode_fields32(ENC_MOVA_ZA_P_RZ_W, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->ZAd);
+		ctx->imm = UINT(ctx->imm2);
+		ctx->esize = 0x20;
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_za_p_rz(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_ZA_P_RZ_W);
+	}
+	/* class iclass_per_doubleword */
+	/* 11000000|size=11|00000|Q=0|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xxx|i1=x */
+	if((INSWORD & 0xFFFF0010)==0xC0C00000) {
+		decode_fields32(ENC_MOVA_ZA_P_RZ_D, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->ZAd);
+		ctx->imm = UINT(ctx->i1);
+		ctx->esize = 0x40;
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_za_p_rz(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_ZA_P_RZ_D);
+	}
+	/* class iclass_per_quadword */
+	/* 11000000|size=11|00000|Q=1|V=x|Rs=xx|Pg=xxx|Zn=xxxxx|0|ZAd=xxxx */
+	if((INSWORD & 0xFFFF0010)==0xC0C10000) {
+		decode_fields32(ENC_MOVA_ZA_P_RZ_Q, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->ZAd);
+		ctx->imm = 0;
+		ctx->esize = 0x80;
+		ctx->vertical = ctx->V==1;
+		/* unconditional alias */
+		if(MOV_mova_za_p_rz(ctx, instr)==0) return 0;
+		OK(ENC_MOVA_ZA_P_RZ_Q);
+	}
+	return rc;
+}
+
 /* movprfx_z_p_z.xml */
 int movprfx_z_p_z(context *ctx, Instruction *instr)
 {
@@ -41469,7 +42310,7 @@ int movprfx_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|opc=00|M=x|001|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3EE000)==0x4102000) {
 		decode_fields32(ENC_MOVPRFX_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41490,7 +42331,7 @@ int movprfx_z_z(context *ctx, Instruction *instr)
 	/* 00000100|opc=00|1|opc2<4:1>=0000|opc2<0>=0|101111|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFFC00)==0x420BC00) {
 		decode_fields32(ENC_MOVPRFX_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -41508,7 +42349,7 @@ int msb_z_p_zzz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0|Zm=xxxxx|11|op=1|Pg=xxx|Za=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20E000)==0x400E000) {
 		decode_fields32(ENC_MSB_Z_P_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41530,7 +42371,7 @@ int mul_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0100|H=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4100000) {
 		decode_fields32(ENC_MUL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41550,7 +42391,7 @@ int mul_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|110|opc<2:1>=00|opc<0>=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2530C000) {
 		decode_fields32(ENC_MUL_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41569,7 +42410,7 @@ int mul_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|0110|opc=00|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4206000) {
 		decode_fields32(ENC_MUL_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41589,7 +42430,7 @@ int mul_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|111110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4420F800) {
 		decode_fields32(ENC_MUL_Z_ZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -41603,7 +42444,7 @@ int mul_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|111110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A0F800) {
 		decode_fields32(ENC_MUL_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -41617,7 +42458,7 @@ int mul_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|111110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E0F800) {
 		decode_fields32(ENC_MUL_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -41638,7 +42479,7 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804210) {
 		decode_fields32(ENC_NAND_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41650,11 +42491,18 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_NAND_P_P_PP_Z);
 	}
+	return rc;
+}
+
+/* nands_p_p_pp.xml */
+int nands_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04210) {
 		decode_fields32(ENC_NANDS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41677,7 +42525,7 @@ int nbsl_z_zzz(context *ctx, Instruction *instr)
 	/* 00000100|opc=11|1|Zm=xxxxx|00111|o2=1|Zk=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4E03C00) {
 		decode_fields32(ENC_NBSL_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->m = UINT(ctx->Zm);
@@ -41696,7 +42544,7 @@ int neg_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|opc<2:1>=11|opc<0>=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x417A000) {
 		decode_fields32(ENC_NEG_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41740,7 +42588,7 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804200) {
 		decode_fields32(ENC_NOR_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41752,11 +42600,18 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_NOR_P_P_PP_Z);
 	}
+	return rc;
+}
+
+/* nors_p_p_pp.xml */
+int nors_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04200) {
 		decode_fields32(ENC_NORS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41779,7 +42634,7 @@ int not_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=11|opc<0>=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x41EA000) {
 		decode_fields32(ENC_NOT_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41799,7 +42654,7 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804010) {
 		decode_fields32(ENC_ORN_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41811,11 +42666,18 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_ORN_P_P_PP_Z);
 	}
+	return rc;
+}
+
+/* orns_p_p_pp.xml */
+int orns_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25C04010) {
 		decode_fields32(ENC_ORNS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41838,7 +42700,7 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=1|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25804000) {
 		decode_fields32(ENC_ORR_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -41849,28 +42711,8 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
 		/* regular aliases */
-		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orr_p_p_pp(ctx, instr);
 		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
 		OK(ENC_ORR_P_P_PP_Z);
-	}
-	/* class iclass_s */
-	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
-	if((INSWORD & 0xFFF0C210)==0x25C04000) {
-		decode_fields32(ENC_ORRS_P_P_PP_Z, ctx, instr);
-		if(!HaveSVE()) {
-			UNDEFINED;
-		}
-		ctx->esize = 8;
-		ctx->g = UINT(ctx->Pg);
-		ctx->n = UINT(ctx->Pn);
-		ctx->m = UINT(ctx->Pm);
-		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
-		ctx->setflags = TRUE;
-		/* regular aliases */
-		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orr_p_p_pp(ctx, instr);
-		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
-		OK(ENC_ORRS_P_P_PP_Z);
 	}
 	return rc;
 }
@@ -41883,7 +42725,7 @@ int orr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|011|opc<2:1>=00|opc<0>=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4180000) {
 		decode_fields32(ENC_ORR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41903,7 +42745,7 @@ int orr_z_zi(context *ctx, Instruction *instr)
 	/* 00000101|opc=00|0000|imm13=xxxxxxxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFFC0000)==0x5000000) {
 		decode_fields32(ENC_ORR_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->dn = UINT(ctx->Zdn);
@@ -41923,7 +42765,7 @@ int orr_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|opc=01|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4603000) {
 		decode_fields32(ENC_ORR_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->n = UINT(ctx->Zn);
@@ -41936,6 +42778,31 @@ int orr_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* orrs_p_p_pp.xml */
+int orrs_p_p_pp(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_s */
+	/* 00100101|op=1|S=1|00|Pm=xxxx|01|Pg=xxxx|o2=0|Pn=xxxx|o3=0|Pd=xxxx */
+	if((INSWORD & 0xFFF0C210)==0x25C04000) {
+		decode_fields32(ENC_ORRS_P_P_PP_Z, ctx, instr);
+		if(!HaveSVE() && !HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 8;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Pn);
+		ctx->m = UINT(ctx->Pm);
+		ctx->d = UINT(ctx->Pd);
+		instr->setflags = TRUE;
+		ctx->setflags = TRUE;
+		/* regular aliases */
+		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orrs_p_p_pp(ctx, instr);
+		OK(ENC_ORRS_P_P_PP_Z);
+	}
+	return rc;
+}
+
 /* orv_r_p_z.xml */
 int orv_r_p_z(context *ctx, Instruction *instr)
 {
@@ -41944,7 +42811,7 @@ int orv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0110|opc=00|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4182000) {
 		decode_fields32(ENC_ORV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -41964,7 +42831,7 @@ int pfalse_p(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|011000111001|000000|Pd=xxxx */
 	if((INSWORD & 0xFFFFFFF0)==0x2518E400) {
 		decode_fields32(ENC_PFALSE_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->d = UINT(ctx->Pd);
@@ -41981,7 +42848,7 @@ int pfirst_p_p_p(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=1|011000110000|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2558C000) {
 		decode_fields32(ENC_PFIRST_P_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -42000,7 +42867,7 @@ int pmul_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|Zm=xxxxx|0110|opc=01|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x4206400) {
 		decode_fields32(ENC_PMUL_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -42020,7 +42887,7 @@ int pmullb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45006800) {
 		decode_fields32(ENC_PMULLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0 && !HaveSVE2PMULL128()) {
@@ -42054,7 +42921,7 @@ int pmullt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45006C00) {
 		decode_fields32(ENC_PMULLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0 && !HaveSVE2PMULL128()) {
@@ -42088,7 +42955,7 @@ int pnext_p_p_p(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|011001110001|0|Pg=xxxx|0|Pdn=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x2519C400) {
 		decode_fields32(ENC_PNEXT_P_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -42152,7 +43019,7 @@ int prfb_i_p_bi(context *ctx, Instruction *instr)
 	/* 1000010111|imm6=xxxxxx|0|msz=00|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C00000) {
 		decode_fields32(ENC_PRFB_I_P_BI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -42178,7 +43045,7 @@ int prfb_i_p_br(context *ctx, Instruction *instr)
 	/* 1000010|msz=00|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8400C000) {
 		decode_fields32(ENC_PRFB_I_P_BR_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -42322,7 +43189,7 @@ int prfd_i_p_bi(context *ctx, Instruction *instr)
 	/* 1000010111|imm6=xxxxxx|0|msz=11|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C06000) {
 		decode_fields32(ENC_PRFD_I_P_BI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -42348,7 +43215,7 @@ int prfd_i_p_br(context *ctx, Instruction *instr)
 	/* 1000010|msz=11|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8580C000) {
 		decode_fields32(ENC_PRFD_I_P_BR_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -42492,7 +43359,7 @@ int prfh_i_p_bi(context *ctx, Instruction *instr)
 	/* 1000010111|imm6=xxxxxx|0|msz=01|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C02000) {
 		decode_fields32(ENC_PRFH_I_P_BI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -42518,7 +43385,7 @@ int prfh_i_p_br(context *ctx, Instruction *instr)
 	/* 1000010|msz=01|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8480C000) {
 		decode_fields32(ENC_PRFH_I_P_BR_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -42662,7 +43529,7 @@ int prfw_i_p_bi(context *ctx, Instruction *instr)
 	/* 1000010111|imm6=xxxxxx|0|msz=10|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFC0E010)==0x85C04000) {
 		decode_fields32(ENC_PRFW_I_P_BI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -42688,7 +43555,7 @@ int prfw_i_p_br(context *ctx, Instruction *instr)
 	/* 1000010|msz=10|00|Rm=xxxxx|110|Pg=xxx|Rn=xxxxx|0|prfop=xxxx */
 	if((INSWORD & 0xFFE0E010)==0x8500C000) {
 		decode_fields32(ENC_PRFW_I_P_BR_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -42787,7 +43654,7 @@ int ptest_p_p(context *ctx, Instruction *instr)
 	/* 00|100101|op=0|S=1|01|000011|Pg=xxxx|0|Pn=xxxx|0|opc2=0000 */
 	if((INSWORD & 0xFFFFC21F)==0x2550C000) {
 		decode_fields32(ENC_PTEST_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -42806,7 +43673,7 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|01100|S=0|111000|pattern=xxxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFC10)==0x2518E000) {
 		decode_fields32(ENC_PTRUE_P_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -42816,11 +43683,18 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUE_P_S_);
 	}
+	return rc;
+}
+
+/* ptrues_p_s.xml */
+int ptrues_p_s(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|size=xx|01100|S=1|111000|pattern=xxxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFC10)==0x2519E000) {
 		decode_fields32(ENC_PTRUES_P_S_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -42841,7 +43715,7 @@ int punpkhi_p_p(context *ctx, Instruction *instr)
 	/* 000001010011000|H=1|010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x5314000) {
 		decode_fields32(ENC_PUNPKHI_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -42854,7 +43728,7 @@ int punpkhi_p_p(context *ctx, Instruction *instr)
 	/* 000001010011000|H=0|010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x5304000) {
 		decode_fields32(ENC_PUNPKLO_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -42874,7 +43748,7 @@ int raddhnb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45206800) {
 		decode_fields32(ENC_RADDHNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -42897,7 +43771,7 @@ int raddhnt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45206C00) {
 		decode_fields32(ENC_RADDHNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -42939,7 +43813,7 @@ int rbit_z_p_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1001|opc=11|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5278000) {
 		decode_fields32(ENC_RBIT_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -42985,6 +43859,13 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 		ctx->setflags = FALSE;
 		OK(ENC_RDFFR_P_P_F_);
 	}
+	return rc;
+}
+
+/* rdffrs_p_p_f.xml */
+int rdffrs_p_p_f(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
 	/* class iclass_s */
 	/* 00100101|op=0|S=1|011000111100|0|Pg=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFFFFFE10)==0x2558F000) {
@@ -43009,7 +43890,7 @@ int rdvl_r_i(context *ctx, Instruction *instr)
 	/* 000001001|op=0|1|opc2<4:1>=1111|opc2<0>=1|01010|imm6=xxxxxx|Rd=xxxxx */
 	if((INSWORD & 0xFFFFF800)==0x4BF5000) {
 		decode_fields32(ENC_RDVL_R_I_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->d = UINT(ctx->Rd);
@@ -43027,7 +43908,7 @@ int rev_p_p(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|110100010000|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF3FFE10)==0x5344000) {
 		decode_fields32(ENC_REV_P_P_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43046,7 +43927,7 @@ int rev_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|111000001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5383800) {
 		decode_fields32(ENC_REV_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43065,7 +43946,7 @@ int revb_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1001|opc=00|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5248000) {
 		decode_fields32(ENC_REVB_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43082,7 +43963,7 @@ int revb_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1001|opc=01|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5258000) {
 		decode_fields32(ENC_REVH_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if((ctx->size&2)!=2) {
@@ -43099,7 +43980,7 @@ int revb_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1001|opc=10|100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x5268000) {
 		decode_fields32(ENC_REVW_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=3) {
@@ -43115,6 +43996,27 @@ int revb_z_z(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* revd_z_p_z.xml */
+int revd_z_p_z(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 00000101|size=00|101110100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFFFFE000)==0x52E8000) {
+		decode_fields32(ENC_REVD_Z_P_Z_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x80;
+		ctx->g = UINT(ctx->Pg);
+		ctx->n = UINT(ctx->Zn);
+		ctx->d = UINT(ctx->Zd);
+		ctx->swsize = 0x40;
+		OK(ENC_REVD_Z_P_Z_);
+	}
+	return rc;
+}
+
 /* rshrnb_z_zi.xml */
 int rshrnb_z_zi(context *ctx, Instruction *instr)
 {
@@ -43123,7 +44025,7 @@ int rshrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45201800) {
 		decode_fields32(ENC_RSHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -43155,7 +44057,7 @@ int rshrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45201C00) {
 		decode_fields32(ENC_RSHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -43187,7 +44089,7 @@ int rsubhnb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45207800) {
 		decode_fields32(ENC_RSUBHNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43210,7 +44112,7 @@ int rsubhnt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45207C00) {
 		decode_fields32(ENC_RSUBHNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43233,7 +44135,7 @@ int saba_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|11111|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500F800) {
 		decode_fields32(ENC_SABA_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43254,7 +44156,7 @@ int sabalb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500C000) {
 		decode_fields32(ENC_SABALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43277,7 +44179,7 @@ int sabalt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500C400) {
 		decode_fields32(ENC_SABALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43300,7 +44202,7 @@ int sabd_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=10|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40C0000) {
 		decode_fields32(ENC_SABD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43321,7 +44223,7 @@ int sabdlb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45003000) {
 		decode_fields32(ENC_SABDLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43344,7 +44246,7 @@ int sabdlt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45003400) {
 		decode_fields32(ENC_SABDLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43367,7 +44269,7 @@ int sadalp_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00010|U=0|101|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4404A000) {
 		decode_fields32(ENC_SADALP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43390,7 +44292,7 @@ int saddlb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45000000) {
 		decode_fields32(ENC_SADDLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43416,7 +44318,7 @@ int saddlbt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=0|tb=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45008000) {
 		decode_fields32(ENC_SADDLBT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43442,7 +44344,7 @@ int saddlt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45000400) {
 		decode_fields32(ENC_SADDLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43468,7 +44370,7 @@ int saddv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0000|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4002000) {
 		decode_fields32(ENC_SADDV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==3) {
@@ -43491,7 +44393,7 @@ int saddwb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45004000) {
 		decode_fields32(ENC_SADDWB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43514,7 +44416,7 @@ int saddwt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45004400) {
 		decode_fields32(ENC_SADDWT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -43537,7 +44439,7 @@ int sbclb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|1|sz=x|0|Zm=xxxxx|11010|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4580D000) {
 		decode_fields32(ENC_SBCLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -43557,7 +44459,7 @@ int sbclt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|1|sz=x|0|Zm=xxxxx|11010|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4580D400) {
 		decode_fields32(ENC_SBCLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (0x20) << (UINT(ctx->sz));
@@ -43565,6 +44467,26 @@ int sbclt_z_zzz(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Zm);
 		ctx->da = UINT(ctx->Zda);
 		OK(ENC_SBCLT_Z_ZZZ_);
+	}
+	return rc;
+}
+
+/* sclamp_z_zz.xml */
+int sclamp_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|11000|U=0|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4400C000) {
+		decode_fields32(ENC_SCLAMP_Z_ZZ_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_SCLAMP_Z_ZZ_);
 	}
 	return rc;
 }
@@ -43577,7 +44499,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=01|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6552A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_H2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -43594,7 +44516,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6554A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -43611,7 +44533,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6594A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -43628,7 +44550,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=00|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D0A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_W2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -43645,7 +44567,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6556A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -43662,7 +44584,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=10|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D4A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -43679,7 +44601,7 @@ int scvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=11|int_U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D6A000) {
 		decode_fields32(ENC_SCVTF_Z_P_Z_X2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -43703,7 +44625,7 @@ int sdiv_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0101|R=0|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4140000) {
 		decode_fields32(ENC_SDIV_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -43727,7 +44649,7 @@ int sdivr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0101|R=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4160000) {
 		decode_fields32(ENC_SDIVR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -43751,7 +44673,7 @@ int sdot_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000000) {
 		decode_fields32(ENC_SDOT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -43774,7 +44696,7 @@ int sdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00000) {
 		decode_fields32(ENC_SDOT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -43788,7 +44710,7 @@ int sdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00000|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00000) {
 		decode_fields32(ENC_SDOT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -43809,7 +44731,7 @@ int sel_p_p_pp(context *ctx, Instruction *instr)
 	/* 00100101|op=0|S=0|00|Pm=xxxx|01|Pg=xxxx|o2=1|Pn=xxxx|o3=1|Pd=xxxx */
 	if((INSWORD & 0xFFF0C210)==0x25004210) {
 		decode_fields32(ENC_SEL_P_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -43832,7 +44754,7 @@ int sel_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|11|Pg=xxxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20C000)==0x520C000) {
 		decode_fields32(ENC_SEL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43871,7 +44793,7 @@ int shadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=0|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44108000) {
 		decode_fields32(ENC_SHADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43898,7 +44820,7 @@ int shrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45201000) {
 		decode_fields32(ENC_SHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -43930,7 +44852,7 @@ int shrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45201400) {
 		decode_fields32(ENC_SHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -43962,7 +44884,7 @@ int shsub_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=0|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44128000) {
 		decode_fields32(ENC_SHSUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -43982,7 +44904,7 @@ int shsubr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=1|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44168000) {
 		decode_fields32(ENC_SHSUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44002,7 +44924,7 @@ int sli_z_zzi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|11110|op=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500F400) {
 		decode_fields32(ENC_SLI_Z_ZZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -44074,7 +44996,7 @@ int smax_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=00|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4080000) {
 		decode_fields32(ENC_SMAX_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44095,7 +45017,7 @@ int smax_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|101|00|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2528C000) {
 		decode_fields32(ENC_SMAX_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44115,7 +45037,7 @@ int smaxp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|opc=10|U=0|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4414A000) {
 		decode_fields32(ENC_SMAXP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44135,7 +45057,7 @@ int smaxv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0010|op=0|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4082000) {
 		decode_fields32(ENC_SMAXV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44156,7 +45078,7 @@ int smin_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=01|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A0000) {
 		decode_fields32(ENC_SMIN_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44177,7 +45099,7 @@ int smin_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|101|01|U=0|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252AC000) {
 		decode_fields32(ENC_SMIN_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44197,7 +45119,7 @@ int sminp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|opc=11|U=0|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4416A000) {
 		decode_fields32(ENC_SMINP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44217,7 +45139,7 @@ int sminv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0010|op=1|U=0|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40A2000) {
 		decode_fields32(ENC_SMINV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44238,7 +45160,7 @@ int smlalb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44004000) {
 		decode_fields32(ENC_SMLALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44261,7 +45183,7 @@ int smlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A08000) {
 		decode_fields32(ENC_SMLALB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44276,7 +45198,7 @@ int smlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E08000) {
 		decode_fields32(ENC_SMLALB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44298,7 +45220,7 @@ int smlalt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44004400) {
 		decode_fields32(ENC_SMLALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44321,7 +45243,7 @@ int smlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A08400) {
 		decode_fields32(ENC_SMLALT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44336,7 +45258,7 @@ int smlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E08400) {
 		decode_fields32(ENC_SMLALT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44358,7 +45280,7 @@ int smlslb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44005000) {
 		decode_fields32(ENC_SMLSLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44381,7 +45303,7 @@ int smlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0A000) {
 		decode_fields32(ENC_SMLSLB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44396,7 +45318,7 @@ int smlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0A000) {
 		decode_fields32(ENC_SMLSLB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44418,7 +45340,7 @@ int smlslt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44005400) {
 		decode_fields32(ENC_SMLSLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44441,7 +45363,7 @@ int smlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0A400) {
 		decode_fields32(ENC_SMLSLT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44456,7 +45378,7 @@ int smlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0A400) {
 		decode_fields32(ENC_SMLSLT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44491,6 +45413,92 @@ int smmla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* smopa_za_pp_zz.xml */
+int smopa_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=0|10|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA0800000) {
+		decode_fields32(ENC_SMOPA_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_SMOPA_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=0|11|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA0C00000) {
+		decode_fields32(ENC_SMOPA_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_SMOPA_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
+/* smops_za_pp_zz.xml */
+int smops_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=0|10|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA0800010) {
+		decode_fields32(ENC_SMOPS_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_SMOPS_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=0|11|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA0C00010) {
+		decode_fields32(ENC_SMOPS_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_SMOPS_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
 /* smulh_z_p_zz.xml */
 int smulh_z_p_zz(context *ctx, Instruction *instr)
 {
@@ -44499,7 +45507,7 @@ int smulh_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0100|H=1|U=0|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4120000) {
 		decode_fields32(ENC_SMULH_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44520,7 +45528,7 @@ int smulh_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|0110|1|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4206800) {
 		decode_fields32(ENC_SMULH_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44541,7 +45549,7 @@ int smullb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45007000) {
 		decode_fields32(ENC_SMULLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44564,7 +45572,7 @@ int smullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=0|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0C000) {
 		decode_fields32(ENC_SMULLB_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44579,7 +45587,7 @@ int smullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=0|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0C000) {
 		decode_fields32(ENC_SMULLB_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44601,7 +45609,7 @@ int smullt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45007400) {
 		decode_fields32(ENC_SMULLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -44624,7 +45632,7 @@ int smullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=0|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0C400) {
 		decode_fields32(ENC_SMULLT_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44639,7 +45647,7 @@ int smullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=0|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0C400) {
 		decode_fields32(ENC_SMULLT_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -44661,7 +45669,7 @@ int splice_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|101101100|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52D8000) {
 		decode_fields32(ENC_SPLICE_Z_P_ZZ_CON, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44675,7 +45683,7 @@ int splice_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|101100100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x52C8000) {
 		decode_fields32(ENC_SPLICE_Z_P_ZZ_DES, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44696,7 +45704,7 @@ int sqabs_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|0|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4408A000) {
 		decode_fields32(ENC_SQABS_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44716,7 +45724,7 @@ int sqadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=0|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44188000) {
 		decode_fields32(ENC_SQADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44737,7 +45745,7 @@ int sqadd_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|10|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2524C000) {
 		decode_fields32(ENC_SQADD_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -44763,7 +45771,7 @@ int sqadd_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201000) {
 		decode_fields32(ENC_SQADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44784,7 +45792,7 @@ int sqcadd_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|00000|op=1|11011|rot=x|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FF800)==0x4501D800) {
 		decode_fields32(ENC_SQCADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44805,7 +45813,7 @@ int sqdecb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F800) {
 		decode_fields32(ENC_SQDECB_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -44820,7 +45828,7 @@ int sqdecb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F800) {
 		decode_fields32(ENC_SQDECB_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -44842,7 +45850,7 @@ int sqdecd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F800) {
 		decode_fields32(ENC_SQDECD_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -44857,7 +45865,7 @@ int sqdecd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F800) {
 		decode_fields32(ENC_SQDECD_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -44879,7 +45887,7 @@ int sqdecd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C800) {
 		decode_fields32(ENC_SQDECD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -44900,7 +45908,7 @@ int sqdech_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F800) {
 		decode_fields32(ENC_SQDECH_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44915,7 +45923,7 @@ int sqdech_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F800) {
 		decode_fields32(ENC_SQDECH_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44937,7 +45945,7 @@ int sqdech_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C800) {
 		decode_fields32(ENC_SQDECH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -44958,7 +45966,7 @@ int sqdecp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8800) {
 		decode_fields32(ENC_SQDECP_R_P_R_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44972,7 +45980,7 @@ int sqdecp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=0|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8C00) {
 		decode_fields32(ENC_SQDECP_R_P_R_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -44993,7 +46001,7 @@ int sqdecp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252A8000) {
 		decode_fields32(ENC_SQDECP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45016,7 +46024,7 @@ int sqdecw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F800) {
 		decode_fields32(ENC_SQDECW_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45031,7 +46039,7 @@ int sqdecw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=1|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F800) {
 		decode_fields32(ENC_SQDECW_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45053,7 +46061,7 @@ int sqdecw_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C800) {
 		decode_fields32(ENC_SQDECW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45074,7 +46082,7 @@ int sqdmlalb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=0|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44006000) {
 		decode_fields32(ENC_SQDMLALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45099,7 +46107,7 @@ int sqdmlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=0|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A02000) {
 		decode_fields32(ENC_SQDMLALB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45114,7 +46122,7 @@ int sqdmlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=0|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E02000) {
 		decode_fields32(ENC_SQDMLALB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45136,7 +46144,7 @@ int sqdmlalbt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|00001|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000800) {
 		decode_fields32(ENC_SQDMLALBT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45161,7 +46169,7 @@ int sqdmlalt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=0|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44006400) {
 		decode_fields32(ENC_SQDMLALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45186,7 +46194,7 @@ int sqdmlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=0|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A02400) {
 		decode_fields32(ENC_SQDMLALT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45201,7 +46209,7 @@ int sqdmlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=0|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E02400) {
 		decode_fields32(ENC_SQDMLALT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45223,7 +46231,7 @@ int sqdmlslb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=1|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44006800) {
 		decode_fields32(ENC_SQDMLSLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45248,7 +46256,7 @@ int sqdmlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A03000) {
 		decode_fields32(ENC_SQDMLSLB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45263,7 +46271,7 @@ int sqdmlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E03000) {
 		decode_fields32(ENC_SQDMLSLB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45285,7 +46293,7 @@ int sqdmlslbt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|00001|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000C00) {
 		decode_fields32(ENC_SQDMLSLBT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45310,7 +46318,7 @@ int sqdmlslt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|0110|S=1|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44006C00) {
 		decode_fields32(ENC_SQDMLSLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45335,7 +46343,7 @@ int sqdmlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|001|S=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A03400) {
 		decode_fields32(ENC_SQDMLSLT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45350,7 +46358,7 @@ int sqdmlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|001|S=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E03400) {
 		decode_fields32(ENC_SQDMLSLT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45372,7 +46380,7 @@ int sqdmulh_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|01110|R=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4207000) {
 		decode_fields32(ENC_SQDMULH_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45392,7 +46400,7 @@ int sqdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4420F000) {
 		decode_fields32(ENC_SQDMULH_Z_ZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45406,7 +46414,7 @@ int sqdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A0F000) {
 		decode_fields32(ENC_SQDMULH_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45420,7 +46428,7 @@ int sqdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|11110|R=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E0F000) {
 		decode_fields32(ENC_SQDMULH_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -45441,7 +46449,7 @@ int sqdmullb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45006000) {
 		decode_fields32(ENC_SQDMULLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45464,7 +46472,7 @@ int sqdmullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|1110|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0E000) {
 		decode_fields32(ENC_SQDMULLB_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45479,7 +46487,7 @@ int sqdmullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|1110|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0E000) {
 		decode_fields32(ENC_SQDMULLB_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45501,7 +46509,7 @@ int sqdmullt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45006400) {
 		decode_fields32(ENC_SQDMULLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45524,7 +46532,7 @@ int sqdmullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|1110|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0E400) {
 		decode_fields32(ENC_SQDMULLT_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45539,7 +46547,7 @@ int sqdmullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|1110|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0E400) {
 		decode_fields32(ENC_SQDMULLT_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45561,7 +46569,7 @@ int sqincb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F000) {
 		decode_fields32(ENC_SQINCB_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -45576,7 +46584,7 @@ int sqincb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F000) {
 		decode_fields32(ENC_SQINCB_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -45598,7 +46606,7 @@ int sqincd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F000) {
 		decode_fields32(ENC_SQINCD_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -45613,7 +46621,7 @@ int sqincd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F000) {
 		decode_fields32(ENC_SQINCD_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -45635,7 +46643,7 @@ int sqincd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C000) {
 		decode_fields32(ENC_SQINCD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -45656,7 +46664,7 @@ int sqinch_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F000) {
 		decode_fields32(ENC_SQINCH_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45671,7 +46679,7 @@ int sqinch_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F000) {
 		decode_fields32(ENC_SQINCH_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45693,7 +46701,7 @@ int sqinch_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C000) {
 		decode_fields32(ENC_SQINCH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45714,7 +46722,7 @@ int sqincp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=0|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288800) {
 		decode_fields32(ENC_SQINCP_R_P_R_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45728,7 +46736,7 @@ int sqincp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=0|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288C00) {
 		decode_fields32(ENC_SQINCP_R_P_R_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45749,7 +46757,7 @@ int sqincp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=0|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25288000) {
 		decode_fields32(ENC_SQINCP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -45772,7 +46780,7 @@ int sqincw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F000) {
 		decode_fields32(ENC_SQINCW_R_RS_SX, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45787,7 +46795,7 @@ int sqincw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=0|U=0|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F000) {
 		decode_fields32(ENC_SQINCW_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45809,7 +46817,7 @@ int sqincw_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=0|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C000) {
 		decode_fields32(ENC_SQINCW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45830,7 +46838,7 @@ int sqneg_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|0|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4409A000) {
 		decode_fields32(ENC_SQNEG_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45850,7 +46858,7 @@ int sqrdcmlah_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|001|op=1|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20F000)==0x44003000) {
 		decode_fields32(ENC_SQRDCMLAH_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45874,7 +46882,7 @@ int sqrdcmlah_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|0111|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44A07000) {
 		decode_fields32(ENC_SQRDCMLAH_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45892,7 +46900,7 @@ int sqrdcmlah_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|0111|rot=xx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F000)==0x44E07000) {
 		decode_fields32(ENC_SQRDCMLAH_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45917,7 +46925,7 @@ int sqrdmlah_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|01110|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44007000) {
 		decode_fields32(ENC_SQRDMLAH_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -45937,7 +46945,7 @@ int sqrdmlah_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x44201000) {
 		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -45951,7 +46959,7 @@ int sqrdmlah_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01000) {
 		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -45965,7 +46973,7 @@ int sqrdmlah_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00010|S=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E01000) {
 		decode_fields32(ENC_SQRDMLAH_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -45986,7 +46994,7 @@ int sqrdmlsh_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|01110|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44007400) {
 		decode_fields32(ENC_SQRDMLSH_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46006,7 +47014,7 @@ int sqrdmlsh_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x44201400) {
 		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -46020,7 +47028,7 @@ int sqrdmlsh_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01400) {
 		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -46034,7 +47042,7 @@ int sqrdmlsh_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00010|S=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E01400) {
 		decode_fields32(ENC_SQRDMLSH_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -46055,7 +47063,7 @@ int sqrdmulh_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|01110|R=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4207400) {
 		decode_fields32(ENC_SQRDMULH_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46075,7 +47083,7 @@ int sqrdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|0|i3h=x|1|i3l=xx|Zm=xxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4420F400) {
 		decode_fields32(ENC_SQRDMULH_Z_ZZI_H, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -46089,7 +47097,7 @@ int sqrdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A0F400) {
 		decode_fields32(ENC_SQRDMULH_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -46103,7 +47111,7 @@ int sqrdmulh_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|11110|R=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E0F400) {
 		decode_fields32(ENC_SQRDMULH_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -46124,7 +47132,7 @@ int sqrshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=0|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440A8000) {
 		decode_fields32(ENC_SQRSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46144,7 +47152,7 @@ int sqrshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=1|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440E8000) {
 		decode_fields32(ENC_SQRSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46164,7 +47172,7 @@ int sqrshrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45202800) {
 		decode_fields32(ENC_SQRSHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46196,7 +47204,7 @@ int sqrshrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45202C00) {
 		decode_fields32(ENC_SQRSHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46228,7 +47236,7 @@ int sqrshrunb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45200800) {
 		decode_fields32(ENC_SQRSHRUNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46260,7 +47268,7 @@ int sqrshrunt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45200C00) {
 		decode_fields32(ENC_SQRSHRUNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46292,7 +47300,7 @@ int sqshl_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=01|L=1|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4068000) {
 		decode_fields32(ENC_SQSHL_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46327,7 +47335,7 @@ int sqshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=0|N=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44088000) {
 		decode_fields32(ENC_SQSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46347,7 +47355,7 @@ int sqshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=1|N=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440C8000) {
 		decode_fields32(ENC_SQSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46367,7 +47375,7 @@ int sqshlu_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=11|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40F8000) {
 		decode_fields32(ENC_SQSHLU_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46402,7 +47410,7 @@ int sqshrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45202000) {
 		decode_fields32(ENC_SQSHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46434,7 +47442,7 @@ int sqshrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45202400) {
 		decode_fields32(ENC_SQSHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46466,7 +47474,7 @@ int sqshrunb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45200000) {
 		decode_fields32(ENC_SQSHRUNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46498,7 +47506,7 @@ int sqshrunt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=0|U=0|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45200400) {
 		decode_fields32(ENC_SQSHRUNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46530,7 +47538,7 @@ int sqsub_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=0|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441A8000) {
 		decode_fields32(ENC_SQSUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46551,7 +47559,7 @@ int sqsub_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|11|U=0|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2526C000) {
 		decode_fields32(ENC_SQSUB_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -46577,7 +47585,7 @@ int sqsub_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201800) {
 		decode_fields32(ENC_SQSUB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46598,7 +47606,7 @@ int sqsubr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=1|S=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441E8000) {
 		decode_fields32(ENC_SQSUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46619,7 +47627,7 @@ int sqxtnb_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45204000) {
 		decode_fields32(ENC_SQXTNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46650,7 +47658,7 @@ int sqxtnt_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45204400) {
 		decode_fields32(ENC_SQXTNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46681,7 +47689,7 @@ int sqxtunb_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|opc=10|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45205000) {
 		decode_fields32(ENC_SQXTUNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46712,7 +47720,7 @@ int sqxtunt_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|opc=10|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45205400) {
 		decode_fields32(ENC_SQXTUNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46743,7 +47751,7 @@ int srhadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=1|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44148000) {
 		decode_fields32(ENC_SRHADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46763,7 +47771,7 @@ int sri_z_zzi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|11110|op=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500F000) {
 		decode_fields32(ENC_SRI_Z_ZZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46798,7 +47806,7 @@ int srshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|R=0|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44028000) {
 		decode_fields32(ENC_SRSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46818,7 +47826,7 @@ int srshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|R=1|N=1|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44068000) {
 		decode_fields32(ENC_SRSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -46838,7 +47846,7 @@ int srshr_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=11|L=0|U=0|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40C8000) {
 		decode_fields32(ENC_SRSHR_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46873,7 +47881,7 @@ int srsra_z_zi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=1|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500E800) {
 		decode_fields32(ENC_SRSRA_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46908,7 +47916,7 @@ int sshllb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500A000) {
 		decode_fields32(ENC_SSHLLB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46940,7 +47948,7 @@ int sshllt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500A400) {
 		decode_fields32(ENC_SSHLLT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -46972,7 +47980,7 @@ int ssra_z_zi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=0|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500E000) {
 		decode_fields32(ENC_SSRA_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -47007,7 +48015,7 @@ int ssublb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45001000) {
 		decode_fields32(ENC_SSUBLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47033,7 +48041,7 @@ int ssublbt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=1|tb=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45008800) {
 		decode_fields32(ENC_SSUBLBT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47059,7 +48067,7 @@ int ssublt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45001400) {
 		decode_fields32(ENC_SSUBLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47085,7 +48093,7 @@ int ssubltb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1000|S=1|tb=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45008C00) {
 		decode_fields32(ENC_SSUBLTB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47111,7 +48119,7 @@ int ssubwb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45005000) {
 		decode_fields32(ENC_SSUBWB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47134,7 +48142,7 @@ int ssubwt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45005400) {
 		decode_fields32(ENC_SSUBWT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47194,7 +48202,7 @@ int st1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE400E000) {
 		decode_fields32(ENC_ST1B_Z_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -47216,7 +48224,7 @@ int st1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|00|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4004000) {
 		decode_fields32(ENC_ST1B_Z_P_BR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -47294,6 +48302,30 @@ int st1b_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* st1b_za_p_rrr.xml */
+int st1b_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=00|1|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFE00010)==0xE0200000) {
+		decode_fields32(ENC_ST1B_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = 0;
+		ctx->imm = UINT(ctx->imm4);
+		ctx->esize = 8;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_ST1B_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* st1d_z_p_ai.xml */
 int st1d_z_p_ai(context *ctx, Instruction *instr)
 {
@@ -47324,7 +48356,7 @@ int st1d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE580E000) {
 		decode_fields32(ENC_ST1D_Z_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=3) {
@@ -47349,7 +48381,7 @@ int st1d_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|opc<2:1>=11|opc<0>=1|o2=1|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E04000) {
 		decode_fields32(ENC_ST1D_Z_P_BR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -47445,6 +48477,30 @@ int st1d_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* st1d_za_p_rrr.xml */
+int st1d_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=11|1|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xxx|i1=x */
+	if((INSWORD & 0xFFE00010)==0xE0E00000) {
+		decode_fields32(ENC_ST1D_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->i1);
+		ctx->esize = 0x40;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_ST1D_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* st1h_z_p_ai.xml */
 int st1h_z_p_ai(context *ctx, Instruction *instr)
 {
@@ -47490,7 +48546,7 @@ int st1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE480E000) {
 		decode_fields32(ENC_ST1H_Z_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47515,7 +48571,7 @@ int st1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|01|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE4804000) {
 		decode_fields32(ENC_ST1H_Z_P_BR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -47650,6 +48706,54 @@ int st1h_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* st1h_za_p_rrr.xml */
+int st1h_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=01|1|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=x|imm3=xxx */
+	if((INSWORD & 0xFFE00010)==0xE0600000) {
+		decode_fields32(ENC_ST1H_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->imm3);
+		ctx->esize = 0x10;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_ST1H_ZA_P_RRR_);
+	}
+	return rc;
+}
+
+/* st1q_za_p_rrr.xml */
+int st1q_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100001111|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xxxx */
+	if((INSWORD & 0xFFE00010)==0xE1E00000) {
+		decode_fields32(ENC_ST1Q_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = 0;
+		ctx->esize = 0x80;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_ST1Q_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* st1w_z_p_ai.xml */
 int st1w_z_p_ai(context *ctx, Instruction *instr)
 {
@@ -47695,7 +48799,7 @@ int st1w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|size=xx|0|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF90E000)==0xE500E000) {
 		decode_fields32(ENC_ST1W_Z_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if((ctx->size&2)!=2) {
@@ -47720,7 +48824,7 @@ int st1w_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|10|size=xx|Rm=xxxxx|010|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFF80E000)==0xE5004000) {
 		decode_fields32(ENC_ST1W_Z_P_BR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if((ctx->size&2)!=2) {
@@ -47855,6 +48959,30 @@ int st1w_z_p_bz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* st1w_za_p_rrr.xml */
+int st1w_za_p_rrr(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 11100000|msz=10|1|Rm=xxxxx|V=x|Rs=xx|Pg=xxx|Rn=xxxxx|0|ZAt=xx|imm2=xx */
+	if((INSWORD & 0xFFE00010)==0xE0A00000) {
+		decode_fields32(ENC_ST1W_ZA_P_RRR_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->m = UINT(ctx->Rm);
+		ctx->g = UINT(ctx->Pg);
+		ctx->s = UINT(((3<<2)|ctx->Rs));
+		ctx->t = UINT(ctx->ZAt);
+		ctx->imm = UINT(ctx->imm2);
+		ctx->esize = 0x20;
+		ctx->vertical = ctx->V==1;
+		OK(ENC_ST1W_ZA_P_RRR_);
+	}
+	return rc;
+}
+
 /* st2b_z_p_bi.xml */
 int st2b_z_p_bi(context *ctx, Instruction *instr)
 {
@@ -47863,7 +48991,7 @@ int st2b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE430E000) {
 		decode_fields32(ENC_ST2B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -47885,7 +49013,7 @@ int st2b_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4206000) {
 		decode_fields32(ENC_ST2B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -47910,7 +49038,7 @@ int st2d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5B0E000) {
 		decode_fields32(ENC_ST2D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -47932,7 +49060,7 @@ int st2d_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5A06000) {
 		decode_fields32(ENC_ST2D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -47957,7 +49085,7 @@ int st2h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4B0E000) {
 		decode_fields32(ENC_ST2H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -47979,7 +49107,7 @@ int st2h_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4A06000) {
 		decode_fields32(ENC_ST2H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48004,7 +49132,7 @@ int st2w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=01|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE530E000) {
 		decode_fields32(ENC_ST2W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48026,7 +49154,7 @@ int st2w_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=01|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5206000) {
 		decode_fields32(ENC_ST2W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48051,7 +49179,7 @@ int st3b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE450E000) {
 		decode_fields32(ENC_ST3B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48073,7 +49201,7 @@ int st3b_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4406000) {
 		decode_fields32(ENC_ST3B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48098,7 +49226,7 @@ int st3d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5D0E000) {
 		decode_fields32(ENC_ST3D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48120,7 +49248,7 @@ int st3d_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5C06000) {
 		decode_fields32(ENC_ST3D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48145,7 +49273,7 @@ int st3h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4D0E000) {
 		decode_fields32(ENC_ST3H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48167,7 +49295,7 @@ int st3h_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4C06000) {
 		decode_fields32(ENC_ST3H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48192,7 +49320,7 @@ int st3w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=10|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE550E000) {
 		decode_fields32(ENC_ST3W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48214,7 +49342,7 @@ int st3w_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=10|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5406000) {
 		decode_fields32(ENC_ST3W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48239,7 +49367,7 @@ int st4b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE470E000) {
 		decode_fields32(ENC_ST4B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48261,7 +49389,7 @@ int st4b_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4606000) {
 		decode_fields32(ENC_ST4B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48286,7 +49414,7 @@ int st4d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE5F0E000) {
 		decode_fields32(ENC_ST4D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48308,7 +49436,7 @@ int st4d_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5E06000) {
 		decode_fields32(ENC_ST4D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48333,7 +49461,7 @@ int st4h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE4F0E000) {
 		decode_fields32(ENC_ST4H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48355,7 +49483,7 @@ int st4h_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4E06000) {
 		decode_fields32(ENC_ST4H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48380,7 +49508,7 @@ int st4w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=11|1|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE570E000) {
 		decode_fields32(ENC_ST4W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48402,7 +49530,7 @@ int st4w_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|opc=11|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5606000) {
 		decode_fields32(ENC_ST4W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48464,7 +49592,7 @@ int stnt1b_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE410E000) {
 		decode_fields32(ENC_STNT1B_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48485,7 +49613,7 @@ int stnt1b_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=00|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4006000) {
 		decode_fields32(ENC_STNT1B_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48531,7 +49659,7 @@ int stnt1d_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE590E000) {
 		decode_fields32(ENC_STNT1D_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48552,7 +49680,7 @@ int stnt1d_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=11|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5806000) {
 		decode_fields32(ENC_STNT1D_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48613,7 +49741,7 @@ int stnt1h_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE490E000) {
 		decode_fields32(ENC_STNT1H_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48634,7 +49762,7 @@ int stnt1h_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=01|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE4806000) {
 		decode_fields32(ENC_STNT1H_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48695,7 +49823,7 @@ int stnt1w_z_p_bi(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|001|imm4=xxxx|111|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFF0E000)==0xE510E000) {
 		decode_fields32(ENC_STNT1W_Z_P_BI_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
@@ -48716,7 +49844,7 @@ int stnt1w_z_p_br(context *ctx, Instruction *instr)
 	/* 1110010|msz=10|00|Rm=xxxxx|011|Pg=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFE0E000)==0xE5006000) {
 		decode_fields32(ENC_STNT1W_Z_P_BR_CONTIGUOUS, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->Rm==0x1f) {
@@ -48740,7 +49868,7 @@ int str_p_bi(context *ctx, Instruction *instr)
 	/* 1110010110|imm9h=xxxxxx|000|imm9l=xxx|Rn=xxxxx|0|Pt=xxxx */
 	if((INSWORD & 0xFFC0E010)==0xE5800000) {
 		decode_fields32(ENC_STR_P_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Pt);
@@ -48759,13 +49887,32 @@ int str_z_bi(context *ctx, Instruction *instr)
 	/* 1110010110|imm9h=xxxxxx|010|imm9l=xxx|Rn=xxxxx|Zt=xxxxx */
 	if((INSWORD & 0xFFC0E000)==0xE5804000) {
 		decode_fields32(ENC_STR_Z_BI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->t = UINT(ctx->Zt);
 		ctx->n = UINT(ctx->Rn);
 		ctx->imm = SInt(((ctx->imm9h<<3)|ctx->imm9l),9);
 		OK(ENC_STR_Z_BI_);
+	}
+	return rc;
+}
+
+/* str_za_ri.xml */
+int str_za_ri(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 1110000100|op=1|000000|Rv=xx|000|Rn=xxxxx|0|imm4=xxxx */
+	if((INSWORD & 0xFFFF9C10)==0xE1200000) {
+		decode_fields32(ENC_STR_ZA_RI_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->n = UINT(ctx->Rn);
+		ctx->v = UINT(((3<<2)|ctx->Rv));
+		ctx->imm = UINT(ctx->imm4);
+		OK(ENC_STR_ZA_RI_);
 	}
 	return rc;
 }
@@ -48778,7 +49925,7 @@ int sub_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|000|opc<2:1>=00|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4010000) {
 		decode_fields32(ENC_SUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -48798,7 +49945,7 @@ int sub_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|opc<2:1>=00|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2521C000) {
 		decode_fields32(ENC_SUB_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -48823,7 +49970,7 @@ int sub_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|opc<2:1>=00|opc<0>=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4200400) {
 		decode_fields32(ENC_SUB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -48843,7 +49990,7 @@ int subhnb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45207000) {
 		decode_fields32(ENC_SUBHNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -48866,7 +50013,7 @@ int subhnt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|1|Zm=xxxxx|011|S=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45207400) {
 		decode_fields32(ENC_SUBHNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -48889,7 +50036,7 @@ int subr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|000|opc<2:1>=01|opc<0>=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4030000) {
 		decode_fields32(ENC_SUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -48909,7 +50056,7 @@ int subr_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|opc<2:1>=01|opc<0>=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2523C000) {
 		decode_fields32(ENC_SUBR_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -48934,7 +50081,7 @@ int sudot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01C00) {
 		decode_fields32(ENC_SUDOT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE() || !HaveInt8MatMulExt()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveInt8MatMulExt()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -48947,6 +50094,92 @@ int sudot_z_zzzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* sumopa_za_pp_zz.xml */
+int sumopa_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=0|10|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA0A00000) {
+		decode_fields32(ENC_SUMOPA_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_SUMOPA_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=0|11|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA0E00000) {
+		decode_fields32(ENC_SUMOPA_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_SUMOPA_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
+/* sumops_za_pp_zz.xml */
+int sumops_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=0|10|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA0A00010) {
+		decode_fields32(ENC_SUMOPS_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_SUMOPS_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=0|11|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA0E00010) {
+		decode_fields32(ENC_SUMOPS_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = FALSE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_SUMOPS_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
 /* sunpkhi_z_z.xml */
 int sunpkhi_z_z(context *ctx, Instruction *instr)
 {
@@ -48955,7 +50188,7 @@ int sunpkhi_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1100|U=0|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5313800) {
 		decode_fields32(ENC_SUNPKHI_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -48972,7 +50205,7 @@ int sunpkhi_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1100|U=0|H=0|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5303800) {
 		decode_fields32(ENC_SUNPKLO_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -48996,7 +50229,7 @@ int suqadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=1|S=0|U=0|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441C8000) {
 		decode_fields32(ENC_SUQADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49016,7 +50249,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|00|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x410A000) {
 		decode_fields32(ENC_SXTB_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49034,7 +50267,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|01|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x412A000) {
 		decode_fields32(ENC_SXTH_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if((ctx->size&2)!=2) {
@@ -49052,7 +50285,7 @@ int sxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|10|U=0|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x414A000) {
 		decode_fields32(ENC_SXTW_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=3) {
@@ -49077,7 +50310,7 @@ int tbl_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|001100|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5203000) {
 		decode_fields32(ENC_TBL_Z_ZZ_1, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49091,7 +50324,7 @@ int tbl_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|00101|op=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202800) {
 		decode_fields32(ENC_TBL_Z_ZZ_2, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49112,7 +50345,7 @@ int tbx_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|00101|op=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5202C00) {
 		decode_fields32(ENC_TBX_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49132,7 +50365,7 @@ int trn1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=10|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5205000) {
 		decode_fields32(ENC_TRN1_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49146,7 +50379,7 @@ int trn1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=10|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5205400) {
 		decode_fields32(ENC_TRN2_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49167,7 +50400,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|10|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5207000) {
 		decode_fields32(ENC_TRN1_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49181,7 +50414,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|11|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A01800) {
 		decode_fields32(ENC_TRN1_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
@@ -49195,7 +50428,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|10|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5207400) {
 		decode_fields32(ENC_TRN2_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49209,7 +50442,7 @@ int trn1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|11|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A01C00) {
 		decode_fields32(ENC_TRN2_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
@@ -49230,7 +50463,7 @@ int uaba_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|11111|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500FC00) {
 		decode_fields32(ENC_UABA_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49251,7 +50484,7 @@ int uabalb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500C800) {
 		decode_fields32(ENC_UABALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49274,7 +50507,7 @@ int uabalt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|1100|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500CC00) {
 		decode_fields32(ENC_UABALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49297,7 +50530,7 @@ int uabd_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=10|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40D0000) {
 		decode_fields32(ENC_UABD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49318,7 +50551,7 @@ int uabdlb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45003800) {
 		decode_fields32(ENC_UABDLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49341,7 +50574,7 @@ int uabdlt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=1|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45003C00) {
 		decode_fields32(ENC_UABDLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49364,7 +50597,7 @@ int uadalp_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00010|U=1|101|Pg=xxx|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4405A000) {
 		decode_fields32(ENC_UADALP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49387,7 +50620,7 @@ int uaddlb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45000800) {
 		decode_fields32(ENC_UADDLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49413,7 +50646,7 @@ int uaddlt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45000C00) {
 		decode_fields32(ENC_UADDLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49439,7 +50672,7 @@ int uaddv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0000|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4012000) {
 		decode_fields32(ENC_UADDV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49459,7 +50692,7 @@ int uaddwb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45004800) {
 		decode_fields32(ENC_UADDWB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49482,7 +50715,7 @@ int uaddwt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45004C00) {
 		decode_fields32(ENC_UADDWT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49497,6 +50730,26 @@ int uaddwt_z_zz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* uclamp_z_zz.xml */
+int uclamp_z_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_sve2 */
+	/* 01000100|size=xx|0|Zm=xxxxx|11000|U=1|Zn=xxxxx|Zd=xxxxx */
+	if((INSWORD & 0xFF20FC00)==0x4400C400) {
+		decode_fields32(ENC_UCLAMP_Z_ZZ_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = (8) << (UINT(ctx->size));
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->d = UINT(ctx->Zd);
+		OK(ENC_UCLAMP_Z_ZZ_);
+	}
+	return rc;
+}
+
 /* ucvtf_z_p_z.xml */
 int ucvtf_z_p_z(context *ctx, Instruction *instr)
 {
@@ -49505,7 +50758,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=01|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6553A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_H2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -49522,7 +50775,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6555A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -49539,7 +50792,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=10|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6595A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -49556,7 +50809,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=00|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D1A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_W2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -49573,7 +50826,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=01|010|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x6557A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2FP16, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -49590,7 +50843,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=10|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D5A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -49607,7 +50860,7 @@ int ucvtf_z_p_z(context *ctx, Instruction *instr)
 	/* 01100101|opc=11|010|opc2=11|int_U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFFFE000)==0x65D7A000) {
 		decode_fields32(ENC_UCVTF_Z_P_Z_X2D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -49631,7 +50884,7 @@ int udiv_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0101|R=0|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4150000) {
 		decode_fields32(ENC_UDIV_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -49655,7 +50908,7 @@ int udivr_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0101|R=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4170000) {
 		decode_fields32(ENC_UDIVR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -49679,7 +50932,7 @@ int udot_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44000400) {
 		decode_fields32(ENC_UDOT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(!(ctx->size&2)) {
@@ -49702,7 +50955,7 @@ int udot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A00400) {
 		decode_fields32(ENC_UDOT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -49716,7 +50969,7 @@ int udot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i1=x|Zm=xxxx|00000|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44E00400) {
 		decode_fields32(ENC_UDOT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -49737,7 +50990,7 @@ int uhadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=0|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44118000) {
 		decode_fields32(ENC_UHADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49757,7 +51010,7 @@ int uhsub_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=0|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44138000) {
 		decode_fields32(ENC_UHSUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49777,7 +51030,7 @@ int uhsubr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=1|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44178000) {
 		decode_fields32(ENC_UHSUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49797,7 +51050,7 @@ int umax_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=00|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4090000) {
 		decode_fields32(ENC_UMAX_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49818,7 +51071,7 @@ int umax_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|101|00|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x2529C000) {
 		decode_fields32(ENC_UMAX_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49838,7 +51091,7 @@ int umaxp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|opc=10|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4415A000) {
 		decode_fields32(ENC_UMAXP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49858,7 +51111,7 @@ int umaxv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0010|op=0|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4092000) {
 		decode_fields32(ENC_UMAXV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49879,7 +51132,7 @@ int umin_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|001|opc=01|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B0000) {
 		decode_fields32(ENC_UMIN_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49900,7 +51153,7 @@ int umin_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|101|01|U=1|11|o2=0|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x252BC000) {
 		decode_fields32(ENC_UMIN_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49920,7 +51173,7 @@ int uminp_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|opc=11|U=1|101|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4417A000) {
 		decode_fields32(ENC_UMINP_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49940,7 +51193,7 @@ int uminv_r_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0010|op=1|U=1|001|Pg=xxx|Zn=xxxxx|Vd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40B2000) {
 		decode_fields32(ENC_UMINV_R_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -49961,7 +51214,7 @@ int umlalb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44004800) {
 		decode_fields32(ENC_UMLALB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -49984,7 +51237,7 @@ int umlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A09000) {
 		decode_fields32(ENC_UMLALB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -49999,7 +51252,7 @@ int umlalb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E09000) {
 		decode_fields32(ENC_UMLALB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50021,7 +51274,7 @@ int umlalt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=0|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44004C00) {
 		decode_fields32(ENC_UMLALT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50044,7 +51297,7 @@ int umlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=0|U=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A09400) {
 		decode_fields32(ENC_UMLALT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50059,7 +51312,7 @@ int umlalt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=0|U=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E09400) {
 		decode_fields32(ENC_UMLALT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50081,7 +51334,7 @@ int umlslb_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44005800) {
 		decode_fields32(ENC_UMLSLB_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50104,7 +51357,7 @@ int umlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=1|i3l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0B000) {
 		decode_fields32(ENC_UMLSLB_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50119,7 +51372,7 @@ int umlslb_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=1|i2l=x|T=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0B000) {
 		decode_fields32(ENC_UMLSLB_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50141,7 +51394,7 @@ int umlslt_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x44005C00) {
 		decode_fields32(ENC_UMLSLT_Z_ZZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50164,7 +51417,7 @@ int umlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|10|S=1|U=1|i3l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0B400) {
 		decode_fields32(ENC_UMLSLT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50179,7 +51432,7 @@ int umlslt_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|10|S=1|U=1|i2l=x|T=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0B400) {
 		decode_fields32(ENC_UMLSLT_Z_ZZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50214,6 +51467,92 @@ int ummla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* umopa_za_pp_zz.xml */
+int umopa_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=1|10|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA1A00000) {
+		decode_fields32(ENC_UMOPA_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_UMOPA_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=1|11|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA1E00000) {
+		decode_fields32(ENC_UMOPA_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_UMOPA_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
+/* umops_za_pp_zz.xml */
+int umops_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=1|10|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA1A00010) {
+		decode_fields32(ENC_UMOPS_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_UMOPS_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=1|11|u1=1|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA1E00010) {
+		decode_fields32(ENC_UMOPS_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = TRUE;
+		OK(ENC_UMOPS_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
 /* umulh_z_p_zz.xml */
 int umulh_z_p_zz(context *ctx, Instruction *instr)
 {
@@ -50222,7 +51561,7 @@ int umulh_z_p_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|0100|H=1|U=1|000|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4130000) {
 		decode_fields32(ENC_UMULH_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50243,7 +51582,7 @@ int umulh_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|0110|1|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4206C00) {
 		decode_fields32(ENC_UMULH_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50264,7 +51603,7 @@ int umullb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45007800) {
 		decode_fields32(ENC_UMULLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50287,7 +51626,7 @@ int umullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=1|i3l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0D000) {
 		decode_fields32(ENC_UMULLB_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50302,7 +51641,7 @@ int umullb_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=1|i2l=x|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0D000) {
 		decode_fields32(ENC_UMULLB_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50324,7 +51663,7 @@ int umullt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|011|op=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45007C00) {
 		decode_fields32(ENC_UMULLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50347,7 +51686,7 @@ int umullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i3h=xx|Zm=xxx|110|U=1|i3l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44A0D400) {
 		decode_fields32(ENC_UMULLT_Z_ZZI_S, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50362,7 +51701,7 @@ int umullt_z_zzi(context *ctx, Instruction *instr)
 	/* 01000100|size=11|1|i2h=x|Zm=xxxx|110|U=1|i2l=x|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0F400)==0x44E0D400) {
 		decode_fields32(ENC_UMULLT_Z_ZZI_D, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50384,7 +51723,7 @@ int uqadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=0|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44198000) {
 		decode_fields32(ENC_UQADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50405,7 +51744,7 @@ int uqadd_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|10|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2525C000) {
 		decode_fields32(ENC_UQADD_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -50431,7 +51770,7 @@ int uqadd_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|10|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201400) {
 		decode_fields32(ENC_UQADD_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50452,7 +51791,7 @@ int uqdecb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420FC00) {
 		decode_fields32(ENC_UQDECB_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -50467,7 +51806,7 @@ int uqdecb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430FC00) {
 		decode_fields32(ENC_UQDECB_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -50489,7 +51828,7 @@ int uqdecd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0FC00) {
 		decode_fields32(ENC_UQDECD_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50504,7 +51843,7 @@ int uqdecd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0FC00) {
 		decode_fields32(ENC_UQDECD_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50526,7 +51865,7 @@ int uqdecd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0CC00) {
 		decode_fields32(ENC_UQDECD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50547,7 +51886,7 @@ int uqdech_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460FC00) {
 		decode_fields32(ENC_UQDECH_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50562,7 +51901,7 @@ int uqdech_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470FC00) {
 		decode_fields32(ENC_UQDECH_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50584,7 +51923,7 @@ int uqdech_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460CC00) {
 		decode_fields32(ENC_UQDECH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50605,7 +51944,7 @@ int uqdecp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8800) {
 		decode_fields32(ENC_UQDECP_R_P_R_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50619,7 +51958,7 @@ int uqdecp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=1|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8C00) {
 		decode_fields32(ENC_UQDECP_R_P_R_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50640,7 +51979,7 @@ int uqdecp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=1|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x252B8000) {
 		decode_fields32(ENC_UQDECP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50663,7 +52002,7 @@ int uqdecw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0FC00) {
 		decode_fields32(ENC_UQDECW_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50678,7 +52017,7 @@ int uqdecw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=1|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0FC00) {
 		decode_fields32(ENC_UQDECW_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50700,7 +52039,7 @@ int uqdecw_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=1|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0CC00) {
 		decode_fields32(ENC_UQDECW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50721,7 +52060,7 @@ int uqincb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x420F400) {
 		decode_fields32(ENC_UQINCB_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -50736,7 +52075,7 @@ int uqincb_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=00|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x430F400) {
 		decode_fields32(ENC_UQINCB_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 8;
@@ -50758,7 +52097,7 @@ int uqincd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0F400) {
 		decode_fields32(ENC_UQINCD_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50773,7 +52112,7 @@ int uqincd_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4F0F400) {
 		decode_fields32(ENC_UQINCD_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50795,7 +52134,7 @@ int uqincd_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=11|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4E0C400) {
 		decode_fields32(ENC_UQINCD_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x40;
@@ -50816,7 +52155,7 @@ int uqinch_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460F400) {
 		decode_fields32(ENC_UQINCH_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50831,7 +52170,7 @@ int uqinch_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x470F400) {
 		decode_fields32(ENC_UQINCH_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50853,7 +52192,7 @@ int uqinch_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=01|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x460C400) {
 		decode_fields32(ENC_UQINCH_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x10;
@@ -50874,7 +52213,7 @@ int uqincp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=1|10001|sf=0|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298800) {
 		decode_fields32(ENC_UQINCP_R_P_R_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50888,7 +52227,7 @@ int uqincp_r_p_r(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=1|10001|sf=1|op=0|Pm=xxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298C00) {
 		decode_fields32(ENC_UQINCP_R_P_R_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -50909,7 +52248,7 @@ int uqincp_z_p_z(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1010|D=0|U=1|10000|opc=00|Pm=xxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FFE00)==0x25298000) {
 		decode_fields32(ENC_UQINCP_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -50932,7 +52271,7 @@ int uqincw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=0|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0F400) {
 		decode_fields32(ENC_UQINCW_R_RS_UW, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50947,7 +52286,7 @@ int uqincw_r_rs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|1|sf=1|imm4=xxxx|1111|D=0|U=1|pattern=xxxxx|Rdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4B0F400) {
 		decode_fields32(ENC_UQINCW_R_RS_X, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50969,7 +52308,7 @@ int uqincw_z_zs(context *ctx, Instruction *instr)
 	/* 00000100|size=10|10|imm4=xxxx|1100|D=0|U=1|pattern=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFFF0FC00)==0x4A0C400) {
 		decode_fields32(ENC_UQINCW_Z_ZS_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -50990,7 +52329,7 @@ int uqrshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=0|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440B8000) {
 		decode_fields32(ENC_UQRSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51010,7 +52349,7 @@ int uqrshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=1|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440F8000) {
 		decode_fields32(ENC_UQRSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51030,7 +52369,7 @@ int uqrshrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45203800) {
 		decode_fields32(ENC_UQRSHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51062,7 +52401,7 @@ int uqrshrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45203C00) {
 		decode_fields32(ENC_UQRSHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51094,7 +52433,7 @@ int uqshl_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=01|L=1|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4078000) {
 		decode_fields32(ENC_UQSHL_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51129,7 +52468,7 @@ int uqshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=0|N=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44098000) {
 		decode_fields32(ENC_UQSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51149,7 +52488,7 @@ int uqshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=1|R=1|N=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x440D8000) {
 		decode_fields32(ENC_UQSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51169,7 +52508,7 @@ int uqshrnb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=0|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45203000) {
 		decode_fields32(ENC_UQSHRNB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51201,7 +52540,7 @@ int uqshrnt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|imm3=xxx|00|op=1|U=1|R=0|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x45203400) {
 		decode_fields32(ENC_UQSHRNT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51233,7 +52572,7 @@ int uqsub_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=0|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441B8000) {
 		decode_fields32(ENC_UQSUB_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51254,7 +52593,7 @@ int uqsub_z_zi(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|100|11|U=1|11|sh=x|imm8=xxxxxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FC000)==0x2527C000) {
 		decode_fields32(ENC_UQSUB_Z_ZI_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(((ctx->size<<1)|ctx->sh)==1) {
@@ -51280,7 +52619,7 @@ int uqsub_z_zz(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|1|Zm=xxxxx|000|11|U=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4201C00) {
 		decode_fields32(ENC_UQSUB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51301,7 +52640,7 @@ int uqsubr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=1|S=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441F8000) {
 		decode_fields32(ENC_UQSUBR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51322,7 +52661,7 @@ int uqxtnb_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45204800) {
 		decode_fields32(ENC_UQXTNB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51353,7 +52692,7 @@ int uqxtnt_z_zz(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|1|tszl=xx|000010|0|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA7FC00)==0x45204C00) {
 		decode_fields32(ENC_UQXTNT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51384,7 +52723,7 @@ int urecpe_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|0|opc=00|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4400A000) {
 		decode_fields32(ENC_URECPE_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=2) {
@@ -51407,7 +52746,7 @@ int urhadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|010|R=1|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44158000) {
 		decode_fields32(ENC_URHADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51427,7 +52766,7 @@ int urshl_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|R=0|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44038000) {
 		decode_fields32(ENC_URSHL_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51447,7 +52786,7 @@ int urshlr_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|R=1|N=1|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x44078000) {
 		decode_fields32(ENC_URSHLR_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51467,7 +52806,7 @@ int urshr_z_p_zi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|00|opc=11|L=0|U=1|100|Pg=xxx|tszl=xx|imm3=xxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x40D8000) {
 		decode_fields32(ENC_URSHR_Z_P_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51502,7 +52841,7 @@ int ursqrte_z_p_z(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|00|Q=0|0|opc=01|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x4401A000) {
 		decode_fields32(ENC_URSQRTE_Z_P_Z_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=2) {
@@ -51525,7 +52864,7 @@ int ursra_z_zi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=1|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500EC00) {
 		decode_fields32(ENC_URSRA_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51560,7 +52899,7 @@ int usdot_z_zzz(context *ctx, Instruction *instr)
 	/* 01000100|size=10|0|Zm=xxxxx|011110|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44807800) {
 		decode_fields32(ENC_USDOT_Z_ZZZ_S, ctx, instr);
-		if(!HaveSVE() || !HaveInt8MatMulExt()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveInt8MatMulExt()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -51580,7 +52919,7 @@ int usdot_z_zzzi(context *ctx, Instruction *instr)
 	/* 01000100|size=10|1|i2=xx|Zm=xxx|00011|U=0|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x44A01800) {
 		decode_fields32(ENC_USDOT_Z_ZZZI_S, ctx, instr);
-		if(!HaveSVE() || !HaveInt8MatMulExt()) {
+		if((!HaveSVE() && !HaveSME()) || !HaveInt8MatMulExt()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x20;
@@ -51601,7 +52940,7 @@ int ushllb_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500A800) {
 		decode_fields32(ENC_USHLLB_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51633,7 +52972,7 @@ int ushllt_z_zi(context *ctx, Instruction *instr)
 	/* 010001010|tszh=x|0|tszl=xx|imm3=xxx|1010|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFA0FC00)==0x4500AC00) {
 		decode_fields32(ENC_USHLLT_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51678,6 +53017,92 @@ int usmmla_z_zzz(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* usmopa_za_pp_zz.xml */
+int usmopa_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=1|10|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA1800000) {
+		decode_fields32(ENC_USMOPA_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_USMOPA_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=1|11|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=0|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA1C00000) {
+		decode_fields32(ENC_USMOPA_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = FALSE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_USMOPA_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
+/* usmops_za_pp_zz.xml */
+int usmops_za_pp_zz(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_per_word */
+	/* 10|10000|u0=1|10|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|0|ZAda=xx */
+	if((INSWORD & 0xFFE0001C)==0xA1800010) {
+		decode_fields32(ENC_USMOPS_ZA_PP_ZZ_32, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x20;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_USMOPS_ZA_PP_ZZ_32);
+	}
+	/* class iclass_per_doubleword */
+	/* 10|10000|u0=1|11|u1=0|Zm=xxxxx|Pm=xxx|Pn=xxx|Zn=xxxxx|S=1|0|ZAda=xxx */
+	if((INSWORD & 0xFFE00018)==0xA1C00010) {
+		decode_fields32(ENC_USMOPS_ZA_PP_ZZ_64, ctx, instr);
+		if(!HaveSMEI16I64()) {
+			UNDEFINED;
+		}
+		ctx->esize = 0x40;
+		ctx->a = UINT(ctx->Pn);
+		ctx->b = UINT(ctx->Pm);
+		ctx->n = UINT(ctx->Zn);
+		ctx->m = UINT(ctx->Zm);
+		ctx->da = UINT(ctx->ZAda);
+		ctx->sub_op = TRUE;
+		ctx->op1_unsigned = TRUE;
+		ctx->op2_unsigned = FALSE;
+		OK(ENC_USMOPS_ZA_PP_ZZ_64);
+	}
+	return rc;
+}
+
 /* usqadd_z_p_zz.xml */
 int usqadd_z_p_zz(context *ctx, Instruction *instr)
 {
@@ -51686,7 +53111,7 @@ int usqadd_z_p_zz(context *ctx, Instruction *instr)
 	/* 01000100|size=xx|011|op=1|S=0|U=1|100|Pg=xxx|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x441D8000) {
 		decode_fields32(ENC_USQADD_Z_P_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51706,7 +53131,7 @@ int usra_z_zi(context *ctx, Instruction *instr)
 	/* 01000101|tszh=xx|0|tszl=xx|imm3=xxx|1110|R=0|U=1|Zn=xxxxx|Zda=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4500E400) {
 		decode_fields32(ENC_USRA_Z_ZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -51741,7 +53166,7 @@ int usublb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45001800) {
 		decode_fields32(ENC_USUBLB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51767,7 +53192,7 @@ int usublt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|00|op=0|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45001C00) {
 		decode_fields32(ENC_USUBLT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51793,7 +53218,7 @@ int usubwb_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45005800) {
 		decode_fields32(ENC_USUBWB_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51816,7 +53241,7 @@ int usubwt_z_zz(context *ctx, Instruction *instr)
 	/* 01000101|size=xx|0|Zm=xxxxx|010|S=1|U=1|T=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x45005C00) {
 		decode_fields32(ENC_USUBWT_Z_ZZ_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51839,7 +53264,7 @@ int uunpkhi_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1100|U=1|H=1|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5333800) {
 		decode_fields32(ENC_UUNPKHI_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51856,7 +53281,7 @@ int uunpkhi_z_z(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1100|U=1|H=0|001110|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FFC00)==0x5323800) {
 		decode_fields32(ENC_UUNPKLO_Z_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51880,7 +53305,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|00|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x411A000) {
 		decode_fields32(ENC_UXTB_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size==0) {
@@ -51898,7 +53323,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|01|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x413A000) {
 		decode_fields32(ENC_UXTH_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if((ctx->size&2)!=2) {
@@ -51916,7 +53341,7 @@ int uxtb_z_p_z(context *ctx, Instruction *instr)
 	/* 00000100|size=xx|010|10|U=1|101|Pg=xxx|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF3FE000)==0x415A000) {
 		decode_fields32(ENC_UXTW_Z_P_Z_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		if(ctx->size!=3) {
@@ -51941,7 +53366,7 @@ int uzp1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=01|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204800) {
 		decode_fields32(ENC_UZP1_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51955,7 +53380,7 @@ int uzp1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=01|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204C00) {
 		decode_fields32(ENC_UZP2_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51976,7 +53401,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|01|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206800) {
 		decode_fields32(ENC_UZP1_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -51990,7 +53415,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|01|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00800) {
 		decode_fields32(ENC_UZP1_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
@@ -52004,7 +53429,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|01|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206C00) {
 		decode_fields32(ENC_UZP2_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52018,7 +53443,7 @@ int uzp1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|01|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00C00) {
 		decode_fields32(ENC_UZP2_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
@@ -52039,7 +53464,7 @@ int whilege_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=0|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200000) {
 		decode_fields32(ENC_WHILEGE_P_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52062,7 +53487,7 @@ int whilegt_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=0|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200010) {
 		decode_fields32(ENC_WHILEGT_P_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52085,7 +53510,7 @@ int whilehi_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=0|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200810) {
 		decode_fields32(ENC_WHILEHI_P_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52108,7 +53533,7 @@ int whilehs_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=0|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200800) {
 		decode_fields32(ENC_WHILEHS_P_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52131,7 +53556,7 @@ int whilele_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200410) {
 		decode_fields32(ENC_WHILELE_P_P_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52154,7 +53579,7 @@ int whilelo_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C00) {
 		decode_fields32(ENC_WHILELO_P_P_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52177,7 +53602,7 @@ int whilels_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=1|lt=1|Rn=xxxxx|eq=1|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200C10) {
 		decode_fields32(ENC_WHILELS_P_P_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52200,7 +53625,7 @@ int whilelt_p_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|000|sf=x|U=0|lt=1|Rn=xxxxx|eq=0|Pd=xxxx */
 	if((INSWORD & 0xFF20EC10)==0x25200400) {
 		decode_fields32(ENC_WHILELT_P_P_RR_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52223,7 +53648,7 @@ int whilerw_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|001100|Rn=xxxxx|rw=1|Pd=xxxx */
 	if((INSWORD & 0xFF20FC10)==0x25203010) {
 		decode_fields32(ENC_WHILERW_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52243,7 +53668,7 @@ int whilewr_p_rr(context *ctx, Instruction *instr)
 	/* 00100101|size=xx|1|Rm=xxxxx|001100|Rn=xxxxx|rw=0|Pd=xxxx */
 	if((INSWORD & 0xFF20FC10)==0x25203000) {
 		decode_fields32(ENC_WHILEWR_P_RR_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52280,7 +53705,7 @@ int xar_z_zzi(context *ctx, Instruction *instr)
 	/* 00000100|tszh=xx|1|tszl=xx|imm3=xxx|001101|Zm=xxxxx|Zdn=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x4203400) {
 		decode_fields32(ENC_XAR_Z_ZZI_, ctx, instr);
-		if(!HaveSVE2()) {
+		if(!HaveSVE2() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->tsize = ((ctx->tszh<<2)|ctx->tszl);
@@ -52307,6 +53732,24 @@ int xar_z_zzi(context *ctx, Instruction *instr)
 	return rc;
 }
 
+/* zero_za_i.xml */
+int zero_za_i(context *ctx, Instruction *instr)
+{
+	int rc = DECODE_STATUS_UNMATCHED;
+	/* class iclass_mortlach */
+	/* 1100000000001000000000|00|imm8=xxxxxxxx */
+	if((INSWORD & 0xFFFFFF00)==0xC0080000) {
+		decode_fields32(ENC_ZERO_ZA_I_, ctx, instr);
+		if(!HaveSME()) {
+			UNDEFINED;
+		}
+		ctx->mask = ctx->imm8;
+		ctx->esize = 0x40;
+		OK(ENC_ZERO_ZA_I_);
+	}
+	return rc;
+}
+
 /* zip1_p_pp.xml */
 int zip1_p_pp(context *ctx, Instruction *instr)
 {
@@ -52315,7 +53758,7 @@ int zip1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=00|H=1|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204400) {
 		decode_fields32(ENC_ZIP2_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52329,7 +53772,7 @@ int zip1_p_pp(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|10|Pm=xxxx|010|opc=00|H=0|0|Pn=xxxx|0|Pd=xxxx */
 	if((INSWORD & 0xFF30FE10)==0x5204000) {
 		decode_fields32(ENC_ZIP1_P_PP_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52350,7 +53793,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|00|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206400) {
 		decode_fields32(ENC_ZIP2_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52364,7 +53807,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|00|H=1|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00400) {
 		decode_fields32(ENC_ZIP2_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
@@ -52378,7 +53821,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 	/* 00000101|size=xx|1|Zm=xxxxx|011|00|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFF20FC00)==0x5206000) {
 		decode_fields32(ENC_ZIP1_Z_ZZ_, ctx, instr);
-		if(!HaveSVE()) {
+		if(!HaveSVE() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
@@ -52392,7 +53835,7 @@ int zip1_z_zz(context *ctx, Instruction *instr)
 	/* 000001011|op=0|1|Zm=xxxxx|000|00|H=0|Zn=xxxxx|Zd=xxxxx */
 	if((INSWORD & 0xFFE0FC00)==0x5A00000) {
 		decode_fields32(ENC_ZIP1_Z_ZZ_Q, ctx, instr);
-		if(!HaveSVEFP64MatMulExt()) {
+		if(!HaveSVEFP64MatMulExt() && !HaveSME()) {
 			UNDEFINED;
 		}
 		ctx->esize = 0x80;
