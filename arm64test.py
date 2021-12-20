@@ -2,6 +2,11 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+# https://github.com/Vector35/binaryninja-api/issues/2791
+tests_2791 = [
+    (b'\x00\x20\x21\x1e', 'LLIL_FSUB.d{*}(LLIL_REG.d(s0),LLIL_REG.d(s1))'), # fcmp s0, s1
+]
+
 tests_ucvtf = [
     # msr, mrs with unnamed (implementation specific) sysregs
 	(b'\x2B\x19\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x11)]))'), # msr s3_3_c1_c9_1, x11
@@ -1493,6 +1498,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_2791 + \
 	tests_ucvtf + \
 	tests_ret + \
 	tests_svc_hvc_smc + \
@@ -2135,7 +2141,7 @@ test_cases = \
 	(b'\x41\x00\x03\x8B', 'LLIL_SET_REG.q(x1,LLIL_ADD.q(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # add x1,x2,x3
 	(b'\x41\x00\x03\xAB', 'LLIL_SET_REG.q(x1,LLIL_ADD.q{*}(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # adds x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x41\x00\x03\x8A', 'LLIL_SET_REG.q(x1,LLIL_AND.q(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # and x1,x2,x3
-	(b'\x41\x00\x03\xEA', 'LLIL_SET_REG.q(x1,LLIL_AND.q(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # ands x1,x2,x3 with IL_FLAGWRITE_ALL
+	(b'\x41\x00\x03\xEA', 'LLIL_SET_REG.q(x1,LLIL_AND.q{*}(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # ands x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x41\x00\x03\xDA', 'LLIL_SET_REG.q(x1,LLIL_SBB.q(LLIL_REG.q(x2),LLIL_REG.q(x3),LLIL_NOT(LLIL_FLAG(c))))'), # sbc x1,x2,x3
 	(b'\x41\x00\x03\xFA', 'LLIL_SET_REG.q(x1,LLIL_SBB.q{*}(LLIL_REG.q(x2),LLIL_REG.q(x3),LLIL_NOT(LLIL_FLAG(c))))'), # sbcs x1,x2,x3 with IL_FLAGWRITE_ALL
 	(b'\x01\x00\x00\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000000));' + \

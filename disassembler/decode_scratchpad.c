@@ -1796,6 +1796,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_DZ_FLOATCMP:
 	case ENC_FCMP_DZ_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Dn>, #0.0
 		ADD_OPERAND_DN;
 		ADD_OPERAND_FLOAT32(0);
@@ -1804,6 +1805,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_D_FLOATCMP:
 	case ENC_FCMP_D_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Dn>,<Dm>
 		ADD_OPERAND_DN;
 		ADD_OPERAND_DM;
@@ -2155,6 +2157,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_HZ_FLOATCMP:
 	case ENC_FCMP_HZ_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Hn>, #0.0
 		ADD_OPERAND_HN;
 		ADD_OPERAND_FLOAT32(0);
@@ -2163,6 +2166,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_H_FLOATCMP:
 	case ENC_FCMP_H_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Hn>,<Hm>
 		ADD_OPERAND_HN;
 		ADD_OPERAND_HM;
@@ -2857,6 +2861,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_SZ_FLOATCMP:
 	case ENC_FCMP_SZ_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Sn>, #0.0
 		ADD_OPERAND_SN;
 		ADD_OPERAND_FLOAT32(0);
@@ -2865,6 +2870,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_FCMPE_S_FLOATCMP:
 	case ENC_FCMP_S_FLOATCMP:
 	{
+		instr->setflags = 1;
 		// <Sn>,<Sm>
 		ADD_OPERAND_SN;
 		ADD_OPERAND_SM;
