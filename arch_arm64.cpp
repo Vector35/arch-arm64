@@ -1305,20 +1305,6 @@ class Arm64Architecture : public Architecture
 	{
 		switch (op)
 		{
-		case LLIL_AND:
-			switch (flag)
-			{
-			case IL_FLAG_V:
-				return il.CompareNotEqual(0,
-				    il.Xor(0,
-				        il.CompareSignedLessThan(size,
-				            il.GetExprForRegisterOrConstantOperation(op, size, operands, operandCount),
-				            il.Const(size, 0)),
-				        il.Flag(IL_FLAG_V)),
-				    il.Const(0, 0));
-			case IL_FLAG_C:
-				return il.Const(0, 0);
-			}
 		case LLIL_SBB:
 			switch (flag)
 			{
