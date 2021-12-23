@@ -10,8 +10,11 @@ This is the Aarch64 plugin that ships with Binary Ninja.
 
 ## Testing
 
-- [arm64test.py](./arm64test.py) currently implements a very basic "lift to string and compare" set of unit tests
-- [disassembler/test.py](./disassembler/test.py) implements a very basic "disassemble to string and compare" set of unit tests
+There are three tests:
+
+- [./disassembler/test.py](./disassembler/test.py) test of disassembler module, isolated from the architecture module or Binary Ninja
+- [./test_disasm.py](./test_disasm.py) test of disassembler, using the architecture module through the binaryninja API
+- [./arm64test.py](./arm64test.py) runs a very basic "lift to string and compare" test
 
 Personal Binary Ninja users can test via the built in console:
 
@@ -35,7 +38,7 @@ If you're making an architecture or lifter change, add a test case to [arm64test
 
 If you're making a disassembler change, add a test case to [disassembler/test.py](./disassembler/test.py) that fails before your change and succeeds after your change.
 
-When you submit your first PR to one of Vector 35's repositories, you'll receive a notice from [CLA Assistant](https://cla-assistant.io/) that allows you to sign our [Contribution License Agreement](https://binary.ninja/cla.pdf) online. 
+When you submit your first PR to one of Vector 35's repositories, you'll receive a notice from [CLA Assistant](https://cla-assistant.io/) that allows you to sign our [Contribution License Agreement](https://binary.ninja/cla.pdf) online.
 
 
 ## Building

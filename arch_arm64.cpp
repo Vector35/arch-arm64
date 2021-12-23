@@ -770,6 +770,8 @@ class Arm64Architecture : public Architecture
 			if (instr.operands[i].operandClass == NONE)
 				return true;
 
+			struct InstructionOperand *operand = &(instr.operands[i]);
+
 			if (i != 0)
 				result.emplace_back(OperandSeparatorToken, ", ");
 
@@ -810,6 +812,57 @@ class Arm64Architecture : public Architecture
 				result.emplace_back(TextToken, " #");
 				snprintf(buf, sizeof(buf), "0x%" PRIx64, instr.operands[i].immediate);
 				result.emplace_back(IntegerToken, buf);
+				tokenizeSuccess = true;
+				break;
+			case ACCUM_ARRAY: /* eg: "za[w12, #0x6]" */
+				result.emplace_back(TextToken, "ZA");
+				result.emplace_back(TextToken, "[");
+				snprintf(buf, sizeof(buf), "%s", get_register_name(operand->reg[0]));
+				result.emplace_back(RegisterToken, buf);
+				result.emplace_back(OperandSeparatorToken, ", ");
+				result.emplace_back(TextToken, " #");
+				snprintf(buf, sizeof(buf), "0x%" PRIx64, operand->immediate);
+				result.emplace_back(IntegerToken, buf);
+				result.emplace_back(TextToken, "]");
+				tokenizeSuccess = true;
+				break;
+			case SME_TILE: /* eg: "z0v.b[w12, #0xb]" */
+				snprintf(buf, sizeof(buf), "Z%d", operand->tile);
+				result.emplace_back(TextToken, buf);
+				if (operand->slice == SLICE_HORIZONTAL)
+					result.emplace_back(TextToken, "h");
+				else if (operand->slice == SLICE_VERTICAL)
+					result.emplace_back(TextToken, "v");
+				result.emplace_back(TextToken, get_arrspec_str_truncated(operand->arrSpec));
+				if (operand->reg[0] != REG_NONE)
+				{
+					result.emplace_back(TextToken, "[");
+					snprintf(buf, sizeof(buf), "%s", get_register_name(operand->reg[0]));
+					result.emplace_back(RegisterToken, buf);
+					if (operand->arrSpec != ARRSPEC_FULL)
+					{
+						result.emplace_back(OperandSeparatorToken, ", ");
+						result.emplace_back(TextToken, " #");
+						snprintf(buf, sizeof(buf), "0x%" PRIx64, instr.operands[i].immediate);
+						result.emplace_back(IntegerToken, buf);
+					}
+					result.emplace_back(TextToken, "]");
+				}
+				tokenizeSuccess = true;
+				break;
+			case INDEXED_ELEMENT: /* eg: "p12.d[w15, #0xf]" */
+				result.emplace_back(RegisterToken, get_register_name(operand->reg[0]));
+				result.emplace_back(TextToken, get_arrspec_str_truncated(operand->arrSpec));
+				result.emplace_back(TextToken, "[");
+				result.emplace_back(RegisterToken, get_register_name(operand->reg[1]));
+				if (operand->immediate)
+				{
+					result.emplace_back(OperandSeparatorToken, ", ");
+					result.emplace_back(TextToken, "#");
+					snprintf(buf, sizeof(buf), "0x%" PRIx64, operand->immediate);
+					result.emplace_back(IntegerToken, buf);
+				}
+				result.emplace_back(TextToken, "]");
 				tokenizeSuccess = true;
 				break;
 			default:

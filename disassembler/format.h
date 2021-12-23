@@ -46,6 +46,8 @@ uint32_t get_implementation_specific(
 		const InstructionOperand *operand,
 		char *outBuffer,
 		uint32_t outBufferSize);
+const char *get_arrspec_str(ArrangementSpec arrspec);
+const char *get_arrspec_str_truncated(ArrangementSpec arrspec);
 
 #ifdef __cplusplus
 }

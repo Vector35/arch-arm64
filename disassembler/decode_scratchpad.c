@@ -2416,7 +2416,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	{
 		instr->operation = ARM64_MOVA;
 		ArrangementSpec as = ARRSPEC_NONE;
-		uint64_t imm, n;
+		uint64_t imm=0, n=0;
 		switch(instr->encoding) {
 			case ENC_MOV_MOVA_Z_P_RZA_B: as=_1B; imm=ctx->imm4; n=0; break;
 			case ENC_MOV_MOVA_Z_P_RZA_H: as=_1H; imm=ctx->imm3; n=ctx->n; break;
@@ -2438,7 +2438,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	{
 		instr->operation = ARM64_MOVA;
 		ArrangementSpec as = ARRSPEC_NONE;
-		uint64_t imm, d;
+		uint64_t imm=0, d=0;
 		switch(instr->encoding) {
 			case ENC_MOV_MOVA_ZA_P_RZ_B: as=_1B; imm=ctx->imm4; d=0; break;
 			case ENC_MOV_MOVA_ZA_P_RZ_H: as=_1H; imm=ctx->imm3; d=ctx->d; break;

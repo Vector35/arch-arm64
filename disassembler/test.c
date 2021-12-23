@@ -83,6 +83,12 @@ char* oper_class_to_str(enum OperandClass c)
 		return "MEM_OFFSET";
 	case MEM_EXTENDED:
 		return "MEM_EXTENDED";
+	case SME_TILE:
+		return "SME_TILE";
+	case INDEXED_ELEMENT:
+		return "INDEXED_ELEMENT";
+	case ACCUM_ARRAY:
+		return "ACCUM_ARRAY";
 	case LABEL:
 		return "LABEL";
 	case CONDITION:
@@ -91,8 +97,6 @@ char* oper_class_to_str(enum OperandClass c)
 		return "NAME";
 	case IMPLEMENTATION_SPECIFIC:
 		return "IMPLEMENTATION_SPECIFIC";
-	case SME_TILE:
-		return "SME_TILE";
 	default:
 		return "ERROR";
 	}
@@ -203,7 +207,7 @@ int disassemble(uint64_t address, uint32_t insword, char* result)
 			InstructionOperand operand = instr.operands[i];
 
 			/* class */
-			printf("\t.class: %s\n", oper_class_to_str(operand.operandClass));
+			printf("\t.class: %d (\"%s\")\n", operand.operandClass, oper_class_to_str(operand.operandClass));
 			switch (operand.operandClass)
 			{
 			case CONDITION:
