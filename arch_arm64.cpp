@@ -1411,7 +1411,7 @@ class Arm64Architecture : public Architecture
 			REG_V0,   REG_V1,  REG_V2,  REG_V3,   REG_V4,  REG_V5,  REG_V6,  REG_V7,
 			REG_V8,   REG_V9,  REG_V10, REG_V11,  REG_V12, REG_V13, REG_V14, REG_V15,
 			REG_V16,  REG_V17, REG_V18, REG_V19,  REG_V20, REG_V21, REG_V22, REG_V23,
-			REG_V24,  REG_V25, REG_V26, REG_V27,  REG_V28, REG_V29, REG_V30, REG_V31,
+			REG_V24,  REG_V25, REG_V26, REG_V27,  REG_V28, REG_V29, REG_V30, REG_V31, REG_VZR,
 			// SVE
 			REG_P0,   REG_P1,  REG_P2,  REG_P3,   REG_P4,  REG_P5,  REG_P6,  REG_P7,
 			REG_P8,   REG_P9,  REG_P10,  REG_P11,   REG_P12,  REG_P13,  REG_P14,  REG_P15,
@@ -1436,27 +1436,27 @@ class Arm64Architecture : public Architecture
 			REG_V0,  REG_V1,  REG_V2,  REG_V3,  REG_V4,  REG_V5,  REG_V6,  REG_V7,
 			REG_V8,  REG_V9,  REG_V10, REG_V11, REG_V12, REG_V13, REG_V14, REG_V15,
 			REG_V16, REG_V17, REG_V18, REG_V19, REG_V20, REG_V21, REG_V22, REG_V23,
-			REG_V24, REG_V25, REG_V26, REG_V27, REG_V28, REG_V29, REG_V30, REG_V31,
+			REG_V24, REG_V25, REG_V26, REG_V27, REG_V28, REG_V29, REG_V30, REG_V31, REG_VZR,
 			REG_B0,  REG_B1,  REG_B2,  REG_B3,  REG_B4,  REG_B5,  REG_B6,  REG_B7,
 			REG_B8,  REG_B9,  REG_B10, REG_B11, REG_B12, REG_B13, REG_B14, REG_B15,
 			REG_B16, REG_B17, REG_B18, REG_B19, REG_B20, REG_B21, REG_B22, REG_B23,
-			REG_B24, REG_B25, REG_B26, REG_B27, REG_B28, REG_B29, REG_B30, REG_B31,
+			REG_B24, REG_B25, REG_B26, REG_B27, REG_B28, REG_B29, REG_B30, REG_B31, REG_BZR,
 			REG_H0,  REG_H1,  REG_H2,  REG_H3,  REG_H4,  REG_H5,  REG_H6,  REG_H7,
 			REG_H8,  REG_H9,  REG_H10, REG_H11, REG_H12, REG_H13, REG_H14, REG_H15,
 			REG_H16, REG_H17, REG_H18, REG_H19, REG_H20, REG_H21, REG_H22, REG_H23,
-			REG_H24, REG_H25, REG_H26, REG_H27, REG_H28, REG_H29, REG_H30, REG_H31,
+			REG_H24, REG_H25, REG_H26, REG_H27, REG_H28, REG_H29, REG_H30, REG_H31, REG_HZR,
 			REG_S0,  REG_S1,  REG_S2,  REG_S3,  REG_S4,  REG_S5,  REG_S6,  REG_S7,
 			REG_S8,  REG_S9,  REG_S10, REG_S11, REG_S12, REG_S13, REG_S14, REG_S15,
 			REG_S16, REG_S17, REG_S18, REG_S19, REG_S20, REG_S21, REG_S22, REG_S23,
-			REG_S24, REG_S25, REG_S26, REG_S27, REG_S28, REG_S29, REG_S30, REG_S31,
+			REG_S24, REG_S25, REG_S26, REG_S27, REG_S28, REG_S29, REG_S30, REG_S31, REG_SZR,
 			REG_D0,  REG_D1,  REG_D2,  REG_D3,  REG_D4,  REG_D5,  REG_D6,  REG_D7,
 			REG_D8,  REG_D9,  REG_D10, REG_D11, REG_D12, REG_D13, REG_D14, REG_D15,
 			REG_D16, REG_D17, REG_D18, REG_D19, REG_D20, REG_D21, REG_D22, REG_D23,
-			REG_D24, REG_D25, REG_D26, REG_D27, REG_D28, REG_D29, REG_D30, REG_D31,
+			REG_D24, REG_D25, REG_D26, REG_D27, REG_D28, REG_D29, REG_D30, REG_D31, REG_DZR,
 			REG_Q0,  REG_Q1,  REG_Q2,  REG_Q3,  REG_Q4,  REG_Q5,  REG_Q6,  REG_Q7,
 			REG_Q8,  REG_Q9,  REG_Q10, REG_Q11, REG_Q12, REG_Q13, REG_Q14, REG_Q15,
 			REG_Q16, REG_Q17, REG_Q18, REG_Q19, REG_Q20, REG_Q21, REG_Q22, REG_Q23,
-			REG_Q24, REG_Q25, REG_Q26, REG_Q27, REG_Q28, REG_Q29, REG_Q30, REG_Q31,
+			REG_Q24, REG_Q25, REG_Q26, REG_Q27, REG_Q28, REG_Q29, REG_Q30, REG_Q31, REG_QZR,
 			// B vectors
 			REG_V0_B0, REG_V0_B1, REG_V0_B2, REG_V0_B3, REG_V0_B4, REG_V0_B5, REG_V0_B6, REG_V0_B7,
 			REG_V0_B8, REG_V0_B9, REG_V0_B10, REG_V0_B11, REG_V0_B12, REG_V0_B13, REG_V0_B14, REG_V0_B15,
@@ -1862,6 +1862,7 @@ class Arm64Architecture : public Architecture
 			case REG_V29:
 			case REG_V30:
 			case REG_V31:
+			case REG_VZR:
 				return RegisterInfo(reg, 0, 16);
 			case REG_B0:
 			case REG_B1:
@@ -1895,6 +1896,7 @@ class Arm64Architecture : public Architecture
 			case REG_B29:
 			case REG_B30:
 			case REG_B31:
+			case REG_BZR:
 				return RegisterInfo(REG_V0+(reg-REG_B0), 0, 1);
 			case REG_H0:
 			case REG_H1:
@@ -1928,6 +1930,7 @@ class Arm64Architecture : public Architecture
 			case REG_H29:
 			case REG_H30:
 			case REG_H31:
+			case REG_HZR:
 				return RegisterInfo(REG_V0+(reg-REG_H0), 0, 2);
 			case REG_S0:
 			case REG_S1:
@@ -1961,6 +1964,7 @@ class Arm64Architecture : public Architecture
 			case REG_S29:
 			case REG_S30:
 			case REG_S31:
+			case REG_SZR:
 				return RegisterInfo(REG_V0+(reg-REG_S0), 0, 4);
 			case REG_D0:
 			case REG_D1:
@@ -1994,6 +1998,7 @@ class Arm64Architecture : public Architecture
 			case REG_D29:
 			case REG_D30:
 			case REG_D31:
+			case REG_DZR:
 				return RegisterInfo(REG_V0+(reg-REG_D0), 0, 8);
 			case REG_Q0:
 			case REG_Q1:
@@ -2027,6 +2032,7 @@ class Arm64Architecture : public Architecture
 			case REG_Q29:
 			case REG_Q30:
 			case REG_Q31:
+			case REG_QZR:
 				return RegisterInfo(REG_V0+(reg-REG_Q0), 0, 16);
 			case REG_Z0:
 			case REG_Z1:
