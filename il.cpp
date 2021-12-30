@@ -122,14 +122,8 @@ ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size
 {
 	size_t opsz = get_register_size(operand.reg[regNum]);
 
-	switch (operand.reg[regNum])
-	{
-	case REG_WZR:
-	case REG_XZR:
-		return il.Const(resultSize, 0);
-	default:
-		break;
-	}
+	if (IS_ZERO_REG(operand.reg[regNum]))
+	    return il.Const(resultSize, 0);
 
 	ExprId res = 0;
 
@@ -364,7 +358,7 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 	case LABEL:
 		return il.ConstPointer(8, operand.immediate);
 	case REG:
-		if (operand.reg[0] == REG_WZR || operand.reg[0] == REG_XZR)
+		if (IS_ZERO_REG(operand.reg[0]))
 			return il.Const(resultSize, 0);
 		return GetShiftedRegister(il, operand, 0, resultSize);
 	case MEM_REG:

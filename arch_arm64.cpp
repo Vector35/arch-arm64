@@ -1406,7 +1406,7 @@ class Arm64Architecture : public Architecture
 			REG_X0,   REG_X1,  REG_X2,  REG_X3,   REG_X4,  REG_X5,  REG_X6,  REG_X7,
 			REG_X8,   REG_X9,  REG_X10, REG_X11,  REG_X12, REG_X13, REG_X14, REG_X15,
 			REG_X16,  REG_X17, REG_X18, REG_X19,  REG_X20, REG_X21, REG_X22, REG_X23,
-			REG_X24,  REG_X25, REG_X26, REG_X27,  REG_X28, REG_X29, REG_X30, REG_SP,  REG_XZR,
+			REG_X24,  REG_X25, REG_X26, REG_X27,  REG_X28, REG_X29, REG_X30, REG_SP,
 			// Vector
 			REG_V0,   REG_V1,  REG_V2,  REG_V3,   REG_V4,  REG_V5,  REG_V6,  REG_V7,
 			REG_V8,   REG_V9,  REG_V10, REG_V11,  REG_V12, REG_V13, REG_V14, REG_V15,
@@ -1428,11 +1428,11 @@ class Arm64Architecture : public Architecture
 			REG_W0,  REG_W1,  REG_W2,  REG_W3,  REG_W4,  REG_W5,  REG_W6,  REG_W7,
 			REG_W8,  REG_W9,  REG_W10, REG_W11, REG_W12, REG_W13, REG_W14, REG_W15,
 			REG_W16, REG_W17, REG_W18, REG_W19, REG_W20, REG_W21, REG_W22, REG_W23,
-			REG_W24, REG_W25, REG_W26, REG_W27, REG_W28, REG_W29, REG_W30, REG_WSP, REG_WZR,
+			REG_W24, REG_W25, REG_W26, REG_W27, REG_W28, REG_W29, REG_W30, REG_WSP,
 			REG_X0,  REG_X1,  REG_X2,  REG_X3,  REG_X4,  REG_X5,  REG_X6,  REG_X7,
 			REG_X8,  REG_X9,  REG_X10, REG_X11, REG_X12, REG_X13, REG_X14, REG_X15,
 			REG_X16, REG_X17, REG_X18, REG_X19, REG_X20, REG_X21, REG_X22, REG_X23,
-			REG_X24, REG_X25, REG_X26, REG_X27, REG_X28, REG_X29, REG_X30, REG_SP,  REG_XZR,
+			REG_X24, REG_X25, REG_X26, REG_X27, REG_X28, REG_X29, REG_X30, REG_SP,
 			REG_V0,  REG_V1,  REG_V2,  REG_V3,  REG_V4,  REG_V5,  REG_V6,  REG_V7,
 			REG_V8,  REG_V9,  REG_V10, REG_V11, REG_V12, REG_V13, REG_V14, REG_V15,
 			REG_V16, REG_V17, REG_V18, REG_V19, REG_V20, REG_V21, REG_V22, REG_V23,
@@ -1794,7 +1794,6 @@ class Arm64Architecture : public Architecture
 			case REG_W29:
 			case REG_W30:
 			case REG_WSP:
-			case REG_WZR:
 					return RegisterInfo(REG_X0 + (reg-REG_W0), 0, 4, true);
 			case REG_X0:
 			case REG_X1:
@@ -1828,7 +1827,6 @@ class Arm64Architecture : public Architecture
 			case REG_X29:
 			case REG_X30:
 			case REG_SP:
-			case REG_XZR:
 				return RegisterInfo(reg, 0, 8);
 			case REG_V0:
 			case REG_V1:
