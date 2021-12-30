@@ -11,8 +11,27 @@
 #define IL_FLAG_C 29
 #define IL_FLAG_V 28
 
-#define IL_FLAGWRITE_NONE 0
-#define IL_FLAGWRITE_ALL  1
+#define IL_FLAG_WRITE_NONE 0
+#define IL_FLAG_WRITE_ALL  1
+#define IL_FLAG_WRITE_ALL_FLOAT  2
+
+#define IL_FLAG_CLASS_INT 1
+#define IL_FLAG_CLASS_FLOAT 2
+
+#define IL_FLAG_GROUP_EQ 1
+#define IL_FLAG_GROUP_NE 2
+#define IL_FLAG_GROUP_CS 3
+#define IL_FLAG_GROUP_CC 4
+#define IL_FLAG_GROUP_MI 5
+#define IL_FLAG_GROUP_PL 6
+#define IL_FLAG_GROUP_VS 7
+#define IL_FLAG_GROUP_VC 8
+#define IL_FLAG_GROUP_HI 9
+#define IL_FLAG_GROUP_LS 10
+#define IL_FLAG_GROUP_GE 11
+#define IL_FLAG_GROUP_LT 12
+#define IL_FLAG_GROUP_GT 13
+#define IL_FLAG_GROUP_LE 14
 
 enum Arm64Intrinsic : uint32_t
 {

@@ -4,7 +4,7 @@ RET = b'\xc0\x03\x5f\xd6'
 
 # https://github.com/Vector35/binaryninja-api/issues/2791
 tests_2791 = [
-    (b'\x00\x20\x21\x1e', 'LLIL_FSUB.d{*}(LLIL_REG.d(s0),LLIL_REG.d(s1))'), # fcmp s0, s1
+    (b'\x00\x20\x21\x1e', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s0),LLIL_REG.d(s1))'), # fcmp s0, s1
 ]
 
 tests_ucvtf = [
@@ -760,8 +760,8 @@ tests_fcvt = [
 
 tests_fccmp_fccmpe = [
 	# fccmpe d0, d20, #0x7, lo
-	(b'\x17\x34\x74\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_ULT,None),1,3);' + \
-						 ' LLIL_FSUB.q{*}(LLIL_REG.q(d0),LLIL_REG.q(d20));' + \
+	(b'\x17\x34\x74\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(cc),1,3);' + \
+						 ' LLIL_FSUB.q{f*}(LLIL_REG.q(d0),LLIL_REG.q(d20));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -769,8 +769,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmpe d29, d0, #0x8, le
-	(b'\xB8\xD7\x60\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SLE,None),1,3);' + \
-						 ' LLIL_FSUB.q{*}(LLIL_REG.q(d29),LLIL_REG.q(d0));' + \
+	(b'\xB8\xD7\x60\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(le),1,3);' + \
+						 ' LLIL_FSUB.q{f*}(LLIL_REG.q(d29),LLIL_REG.q(d0));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -778,8 +778,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmpe h5, h1, #0x1, ne
-	(b'\xB1\x14\xE1\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NE,None),1,3);' + \
-						 ' LLIL_FSUB.w{*}(LLIL_REG.w(h5),LLIL_REG.w(h1));' + \
+	(b'\xB1\x14\xE1\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(ne),1,3);' + \
+						 ' LLIL_FSUB.w{f*}(LLIL_REG.w(h5),LLIL_REG.w(h1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -787,8 +787,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmpe h0, h22, #0x5, eq
-	(b'\x15\x04\xF6\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
-						 ' LLIL_FSUB.w{*}(LLIL_REG.w(h0),LLIL_REG.w(h22));' + \
+	(b'\x15\x04\xF6\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(eq),1,3);' + \
+						 ' LLIL_FSUB.w{f*}(LLIL_REG.w(h0),LLIL_REG.w(h22));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -796,8 +796,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmpe s10, s19, #0x4, ge
-	(b'\x54\xA5\x33\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SGE,None),1,3);' + \
-						 ' LLIL_FSUB.d{*}(LLIL_REG.d(s10),LLIL_REG.d(s19));' + \
+	(b'\x54\xA5\x33\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(ge),1,3);' + \
+						 ' LLIL_FSUB.d{f*}(LLIL_REG.d(s10),LLIL_REG.d(s19));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -805,8 +805,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmpe s24, s11, #0x4, pl
-	(b'\x14\x57\x2B\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_POS,None),1,3);' + \
-						 ' LLIL_FSUB.d{*}(LLIL_REG.d(s24),LLIL_REG.d(s11));' + \
+	(b'\x14\x57\x2B\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(pl),1,3);' + \
+						 ' LLIL_FSUB.d{f*}(LLIL_REG.d(s24),LLIL_REG.d(s11));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -814,8 +814,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmp d2, d28, #0xf, lo
-	(b'\x4F\x34\x7C\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_ULT,None),1,3);' + \
-						 ' LLIL_FSUB.q{*}(LLIL_REG.q(d2),LLIL_REG.q(d28));' + \
+	(b'\x4F\x34\x7C\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(cc),1,3);' + \
+						 ' LLIL_FSUB.q{f*}(LLIL_REG.q(d2),LLIL_REG.q(d28));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -823,8 +823,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmp d8, d25, #0xc, vs
-	(b'\x0C\x65\x79\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_O,None),1,3);' + \
-						 ' LLIL_FSUB.q{*}(LLIL_REG.q(d8),LLIL_REG.q(d25));' + \
+	(b'\x0C\x65\x79\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(vs),1,3);' + \
+						 ' LLIL_FSUB.q{f*}(LLIL_REG.q(d8),LLIL_REG.q(d25));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -833,7 +833,7 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_GOTO(8)'),
 	# fccmp h0, h11, #0xb, al
 	(b'\x0B\xE4\xEB\x1E', 'LLIL_IF(LLIL_CONST(1),1,3);' + \
-						 ' LLIL_FSUB.w{*}(LLIL_REG.w(h0),LLIL_REG.w(h11));' + \
+						 ' LLIL_FSUB.w{f*}(LLIL_REG.w(h0),LLIL_REG.w(h11));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -842,7 +842,7 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_GOTO(8)'),
 	# fccmp h18, h21, #0xf, al
 	(b'\x4F\xE6\xF5\x1E', 'LLIL_IF(LLIL_CONST(1),1,3);' + \
-						 ' LLIL_FSUB.w{*}(LLIL_REG.w(h18),LLIL_REG.w(h21));' + \
+						 ' LLIL_FSUB.w{f*}(LLIL_REG.w(h18),LLIL_REG.w(h21));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -850,8 +850,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmp s23, s31, #0x6, hs
-	(b'\xE6\x26\x3F\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_UGE,None),1,3);' + \
-						 ' LLIL_FSUB.d{*}(LLIL_REG.d(s23),LLIL_REG.d(s31));' + \
+	(b'\xE6\x26\x3F\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(cs),1,3);' + \
+						 ' LLIL_FSUB.d{f*}(LLIL_REG.d(s23),LLIL_REG.d(s31));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(1));' + \
@@ -859,8 +859,8 @@ tests_fccmp_fccmpe = [
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'),
 	# fccmp s7, s16, #0x0, eq
-	(b'\xE0\x04\x30\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
-						 ' LLIL_FSUB.d{*}(LLIL_REG.d(s7),LLIL_REG.d(s16));' + \
+	(b'\xE0\x04\x30\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(eq),1,3);' + \
+						 ' LLIL_FSUB.d{f*}(LLIL_REG.d(s7),LLIL_REG.d(s16));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(z,LLIL_CONST(0));' + \
@@ -871,7 +871,7 @@ tests_fccmp_fccmpe = [
 
 tests_fcsel = [
 	# fcsel d10, d3, d20, vs
-	(b'\x6A\x6C\x74\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_O,None),1,3);' + \
+	(b'\x6A\x6C\x74\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(vs),1,3);' + \
 						 ' LLIL_SET_REG.q(d10,LLIL_REG.q(d3));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.q(d10,LLIL_REG.q(d20));' + \
@@ -883,25 +883,25 @@ tests_fcsel = [
 						 ' LLIL_SET_REG.q(d30,LLIL_REG.q(d21));' + \
 						 ' LLIL_GOTO(5)'),
 	# fcsel h30, h9, h13, lo
-	(b'\x3E\x3D\xED\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_ULT,None),1,3);' + \
+	(b'\x3E\x3D\xED\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(cc),1,3);' + \
 						 ' LLIL_SET_REG.w(h30,LLIL_REG.w(h9));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.w(h30,LLIL_REG.w(h13));' + \
 						 ' LLIL_GOTO(5)'),
 	# fcsel h29, h20, h31, vs
-	(b'\x9D\x6E\xFF\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_O,None),1,3);' + \
+	(b'\x9D\x6E\xFF\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(vs),1,3);' + \
 						 ' LLIL_SET_REG.w(h29,LLIL_REG.w(h20));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.w(h29,LLIL_REG.w(h31));' + \
 						 ' LLIL_GOTO(5)'),
 	# fcsel s26, s16, s18, lt
-	(b'\x1A\xBE\x32\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SLT,None),1,3);' + \
+	(b'\x1A\xBE\x32\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(lt),1,3);' + \
 						 ' LLIL_SET_REG.d(s26,LLIL_REG.d(s16));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.d(s26,LLIL_REG.d(s18));' + \
 						 ' LLIL_GOTO(5)'),
 	# fcsel s15, s9, s28, vc
-	(b'\x2F\x7D\x3C\x1E', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NO,None),1,3);' + \
+	(b'\x2F\x7D\x3C\x1E', 'LLIL_IF(LLIL_FLAG_GROUP(vc),1,3);' + \
 						 ' LLIL_SET_REG.d(s15,LLIL_REG.d(s9));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.d(s15,LLIL_REG.d(s28));' + \
@@ -910,53 +910,53 @@ tests_fcsel = [
 
 tests_fcmp_fcmpe = [
 	# fcmpe d23, #0.0
-	(b'\xF8\x22\x7F\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d23),LLIL_FLOAT_CONST.q(0.0))'),
+	(b'\xF8\x22\x7F\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d23),LLIL_FLOAT_CONST.q(0.0))'),
 	# fcmpe d2, #0.0
-	(b'\x58\x20\x73\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d2),LLIL_FLOAT_CONST.q(0.0))'),
+	(b'\x58\x20\x73\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d2),LLIL_FLOAT_CONST.q(0.0))'),
 	# fcmpe d4, d23
-	(b'\x90\x20\x77\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d4),LLIL_REG.q(d23))'),
+	(b'\x90\x20\x77\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d4),LLIL_REG.q(d23))'),
 	# fcmpe d15, d16
-	(b'\xF0\x21\x70\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d15),LLIL_REG.q(d16))'),
+	(b'\xF0\x21\x70\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d15),LLIL_REG.q(d16))'),
 	# fcmpe h8, #0.0
-	(b'\x18\x21\xEC\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h8),LLIL_FLOAT_CONST.w(0))'),
+	(b'\x18\x21\xEC\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h8),LLIL_FLOAT_CONST.w(0))'),
 	# fcmpe h23, #0.0
-	(b'\xF8\x22\xEE\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h23),LLIL_FLOAT_CONST.w(0))'),
+	(b'\xF8\x22\xEE\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h23),LLIL_FLOAT_CONST.w(0))'),
 	# fcmpe h14, h17
-	(b'\xD0\x21\xF1\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h14),LLIL_REG.w(h17))'),
+	(b'\xD0\x21\xF1\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h14),LLIL_REG.w(h17))'),
 	# fcmpe h23, h25
-	(b'\xF0\x22\xF9\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h23),LLIL_REG.w(h25))'),
+	(b'\xF0\x22\xF9\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h23),LLIL_REG.w(h25))'),
 	# fcmpe s4, #0.0
-	(b'\x98\x20\x2D\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s4),LLIL_FLOAT_CONST.d(0.0))'),
+	(b'\x98\x20\x2D\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s4),LLIL_FLOAT_CONST.d(0.0))'),
 	# fcmpe s16, #0.0
-	(b'\x18\x22\x27\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s16),LLIL_FLOAT_CONST.d(0.0))'),
+	(b'\x18\x22\x27\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s16),LLIL_FLOAT_CONST.d(0.0))'),
 	# fcmpe s21, s23
-	(b'\xB0\x22\x37\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s21),LLIL_REG.d(s23))'),
+	(b'\xB0\x22\x37\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s21),LLIL_REG.d(s23))'),
 	# fcmpe s26, s6
-	(b'\x50\x23\x26\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s26),LLIL_REG.d(s6))'),
+	(b'\x50\x23\x26\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s26),LLIL_REG.d(s6))'),
 	# fcmp d10, #0.0
-	(b'\x48\x21\x68\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d10),LLIL_FLOAT_CONST.q(0.0))'),
+	(b'\x48\x21\x68\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d10),LLIL_FLOAT_CONST.q(0.0))'),
 	# fcmp d5, #0.0
-	(b'\xA8\x20\x71\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d5),LLIL_FLOAT_CONST.q(0.0))'),
+	(b'\xA8\x20\x71\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d5),LLIL_FLOAT_CONST.q(0.0))'),
 	# fcmp d2, d17
-	(b'\x40\x20\x71\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d2),LLIL_REG.q(d17))'),
+	(b'\x40\x20\x71\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d2),LLIL_REG.q(d17))'),
 	# fcmp d27, d3
-	(b'\x60\x23\x63\x1E', 'LLIL_FSUB.q{*}(LLIL_REG.q(d27),LLIL_REG.q(d3))'),
+	(b'\x60\x23\x63\x1E', 'LLIL_FSUB.q{f*}(LLIL_REG.q(d27),LLIL_REG.q(d3))'),
 	# fcmp h19, #0.0
-	(b'\x68\x22\xF8\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h19),LLIL_FLOAT_CONST.w(0))'),
+	(b'\x68\x22\xF8\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h19),LLIL_FLOAT_CONST.w(0))'),
 	# fcmp h26, #0.0
-	(b'\x48\x23\xEF\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h26),LLIL_FLOAT_CONST.w(0))'),
+	(b'\x48\x23\xEF\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h26),LLIL_FLOAT_CONST.w(0))'),
 	# fcmp h8, h17
-	(b'\x00\x21\xF1\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h8),LLIL_REG.w(h17))'),
+	(b'\x00\x21\xF1\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h8),LLIL_REG.w(h17))'),
 	# fcmp h18, h26
-	(b'\x40\x22\xFA\x1E', 'LLIL_FSUB.w{*}(LLIL_REG.w(h18),LLIL_REG.w(h26))'),
+	(b'\x40\x22\xFA\x1E', 'LLIL_FSUB.w{f*}(LLIL_REG.w(h18),LLIL_REG.w(h26))'),
 	# fcmp s20, #0.0
-	(b'\x88\x22\x27\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s20),LLIL_FLOAT_CONST.d(0.0))'),
+	(b'\x88\x22\x27\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s20),LLIL_FLOAT_CONST.d(0.0))'),
 	# fcmp s29, #0.0
-	(b'\xA8\x23\x39\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s29),LLIL_FLOAT_CONST.d(0.0))'),
+	(b'\xA8\x23\x39\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s29),LLIL_FLOAT_CONST.d(0.0))'),
 	# fcmp s2, s19
-	(b'\x40\x20\x33\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s2),LLIL_REG.d(s19))'),
+	(b'\x40\x20\x33\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s2),LLIL_REG.d(s19))'),
 	# fcmp s4, s7
-	(b'\x80\x20\x27\x1E', 'LLIL_FSUB.d{*}(LLIL_REG.d(s4),LLIL_REG.d(s7))'),
+	(b'\x80\x20\x27\x1E', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s4),LLIL_REG.d(s7))'),
 ]
 
 tests_fmov = [
@@ -1673,7 +1673,7 @@ test_cases = \
 						 ' LLIL_SET_REG.q(x28,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x21),LLIL_CONST.q(0x8))));' + \
 						 ' LLIL_SET_REG.q(x21,LLIL_ADD.q(LLIL_REG.q(x21),LLIL_CONST.q(0x90)))'),
 	# # cset w8, ne
-	(b'\xE8\x07\x9F\x1A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NE,None),1,3);' + \
+	(b'\xE8\x07\x9F\x1A', 'LLIL_IF(LLIL_FLAG_GROUP(ne),1,3);' + \
 						 ' LLIL_SET_REG.d(w8,LLIL_CONST.d(0x1));' + \
 						 ' LLIL_GOTO(5);' + \
 						 ' LLIL_SET_REG.d(w8,LLIL_CONST.d(0x0));' + \
@@ -2126,7 +2126,7 @@ test_cases = \
 	(b'\xA4\x69\x37\xCB', 'LLIL_SET_REG.q(x4,LLIL_SUB.q(LLIL_REG.q(x13),LLIL_LSL.q(LLIL_REG.q(x23),LLIL_CONST.b(0x2))))'), # sub x4, x13, x23, uxtx #2
 	(b'\x21\xF0\x9F\xF8', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xFFFFFFFFFFFFFFFF)))]))'), # prfum pldl1strm, [x1, #-0x1]
 	(b'\x21\x00\x80\xF9', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_REG.q(x1))]))'), # prfm pldl1strm, [x1]
-	(b'\x24\x98\x41\xBA', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_ULE,None),1,3);' + \
+	(b'\x24\x98\x41\xBA', 'LLIL_IF(LLIL_FLAG_GROUP(ls),1,3);' + \
 						 ' LLIL_ADD.q{*}(LLIL_REG.q(x1),LLIL_CONST.q(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2174,7 +2174,7 @@ test_cases = \
 	(b'\x00\x10\x1E\xD5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr sctlr_el3, x0
 #	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_CONST.d(0x4)]))'), # msr daifclr, #0x4
 	(b'\x00\x10\x3E\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(sctlr_el3)]))'), # mrs x0, sctlr_el3
-	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NEG,None),1,3);' + \
+	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(mi),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w6),LLIL_CONST.d(0x12));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2182,7 +2182,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w6, #18, #1, mi
-	(b'\x62\x08\x40\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
+	(b'\x62\x08\x40\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(eq),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w3),LLIL_CONST.d(0x0));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2190,7 +2190,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w3, #0, #2, eq
-	(b'\x43\xBA\x59\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SLT,None),1,3);' + \
+	(b'\x43\xBA\x59\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(lt),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w18),LLIL_CONST.d(0x19));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2198,7 +2198,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(1));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w18, #25, #3, lt
-	(b'\xC4\x29\x5B\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_UGE,None),1,3);' + \
+	(b'\xC4\x29\x5B\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(cs),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w14),LLIL_CONST.d(0x1B));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2206,7 +2206,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w14, #27, #4, hs
-	(b'\x24\x08\x5B\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_E,None),1,3);' + \
+	(b'\x24\x08\x5B\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(eq),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w1),LLIL_CONST.d(0x1B));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2214,7 +2214,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w1, #27, #4, eq
-	(b'\x22\x6A\x41\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_O,None),1,3);' + \
+	(b'\x22\x6A\x41\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(vs),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w17),LLIL_CONST.d(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(0));' + \
@@ -2222,7 +2222,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(1));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w17, #1, #2, vs
-	(b'\xA8\xA8\x41\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_SGE,None),1,3);' + \
+	(b'\xA8\xA8\x41\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(ge),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w5),LLIL_CONST.d(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \
@@ -2230,7 +2230,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w5, #1, #8, ge
-	(b'\x08\x49\x5E\x7A', 'LLIL_IF(LLIL_FLAG_COND(LowLevelILFlagCondition.LLFC_NEG,None),1,3);' + \
+	(b'\x08\x49\x5E\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(mi),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w8),LLIL_CONST.d(0x1E));' + \
 						 ' LLIL_GOTO(8);' + \
 						 ' LLIL_SET_FLAG(n,LLIL_CONST(1));' + \

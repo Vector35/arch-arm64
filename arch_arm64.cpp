@@ -1263,6 +1263,226 @@ class Arm64Architecture : public Architecture
 		}
 	}
 
+	virtual vector<uint32_t> GetAllSemanticFlagClasses() override
+	{
+		return vector<uint32_t> {IL_FLAG_CLASS_INT, IL_FLAG_CLASS_FLOAT};
+	}
+
+	virtual string GetSemanticFlagClassName(uint32_t semClass) override
+	{
+		switch (semClass) {
+			case IL_FLAG_CLASS_INT:
+				return "int";
+			case IL_FLAG_CLASS_FLOAT:
+				return "float";
+			default:
+				return "";
+		}
+	}
+
+	virtual uint32_t GetSemanticClassForFlagWriteType(uint32_t writeType) override
+	{
+		switch (writeType) {
+		case IL_FLAG_WRITE_ALL_FLOAT:
+			return IL_FLAG_CLASS_FLOAT;
+		case IL_FLAG_WRITE_ALL:
+		default:
+			return IL_FLAG_CLASS_INT;
+		}
+	}
+
+	virtual vector<uint32_t> GetAllSemanticFlagGroups() override
+	{
+
+		return vector<uint32_t> {
+			IL_FLAG_GROUP_EQ, IL_FLAG_GROUP_NE, IL_FLAG_GROUP_CS, IL_FLAG_GROUP_CC,
+			IL_FLAG_GROUP_MI, IL_FLAG_GROUP_PL, IL_FLAG_GROUP_VS, IL_FLAG_GROUP_VC,
+			IL_FLAG_GROUP_HI, IL_FLAG_GROUP_LS, IL_FLAG_GROUP_GE, IL_FLAG_GROUP_LT,
+			IL_FLAG_GROUP_GT, IL_FLAG_GROUP_LE};
+	}
+
+	virtual string GetSemanticFlagGroupName(uint32_t semGroup) override
+	{
+		switch (semGroup)
+		{
+		case IL_FLAG_GROUP_EQ:
+			return "eq";
+		case IL_FLAG_GROUP_NE:
+			return "ne";
+		case IL_FLAG_GROUP_CS:
+			return "cs";
+		case IL_FLAG_GROUP_CC:
+			return "cc";
+		case IL_FLAG_GROUP_MI:
+			return "mi";
+		case IL_FLAG_GROUP_PL:
+			return "pl";
+		case IL_FLAG_GROUP_VS:
+			return "vs";
+		case IL_FLAG_GROUP_VC:
+			return "vc";
+		case IL_FLAG_GROUP_HI:
+			return "hi";
+		case IL_FLAG_GROUP_LS:
+			return "ls";
+		case IL_FLAG_GROUP_GE:
+			return "ge";
+		case IL_FLAG_GROUP_LT:
+			return "lt";
+		case IL_FLAG_GROUP_GT:
+			return "gt";
+		case IL_FLAG_GROUP_LE:
+			return "le";
+		default:
+			return "";
+		}
+	}
+
+	virtual vector<uint32_t> GetFlagsRequiredForSemanticFlagGroup(uint32_t semGroup) override
+	{
+		switch (semGroup)
+		{
+		case IL_FLAG_GROUP_EQ:
+		case IL_FLAG_GROUP_NE:
+			return vector<uint32_t> {IL_FLAG_Z};
+		case IL_FLAG_GROUP_CS:
+		case IL_FLAG_GROUP_CC:
+			return vector<uint32_t> {IL_FLAG_C};
+		case IL_FLAG_GROUP_MI:
+		case IL_FLAG_GROUP_PL:
+			return vector<uint32_t> {IL_FLAG_N};
+		case IL_FLAG_GROUP_VS:
+		case IL_FLAG_GROUP_VC:
+			return vector<uint32_t> {IL_FLAG_V};
+		case IL_FLAG_GROUP_HI:
+		case IL_FLAG_GROUP_LS:
+			return vector<uint32_t> {IL_FLAG_C, IL_FLAG_Z};
+		case IL_FLAG_GROUP_GE:
+		case IL_FLAG_GROUP_LT:
+			return vector<uint32_t> {IL_FLAG_N, IL_FLAG_V};
+		case IL_FLAG_GROUP_GT:
+		case IL_FLAG_GROUP_LE:
+			return vector<uint32_t> {IL_FLAG_Z, IL_FLAG_N, IL_FLAG_V};
+		default:
+			return vector<uint32_t>();
+		}
+	}
+
+	virtual map<uint32_t, BNLowLevelILFlagCondition> GetFlagConditionsForSemanticFlagGroup(uint32_t semGroup) override
+	{
+		switch (semGroup) {
+		case IL_FLAG_GROUP_EQ:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_E},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FE},
+			};
+		case IL_FLAG_GROUP_NE:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_NE},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FNE},
+			};
+		case IL_FLAG_GROUP_CS:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_UGE},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FGE},
+			};
+		case IL_FLAG_GROUP_CC:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_ULT},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FLT},
+			};
+		case IL_FLAG_GROUP_MI:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_NEG},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FLT},
+			};
+		case IL_FLAG_GROUP_PL:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_POS},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FGE},
+			};
+		case IL_FLAG_GROUP_VS:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_O},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FO},
+			};
+		case IL_FLAG_GROUP_VC:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_NO},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FUO},
+			};
+		case IL_FLAG_GROUP_HI:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_UGT},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FGT},
+			};
+		case IL_FLAG_GROUP_LS:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_ULE},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FLE},
+			};
+		case IL_FLAG_GROUP_GE:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_SGE},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FGE},
+			};
+		case IL_FLAG_GROUP_LT:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_SLT},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FLT},
+			};
+		case IL_FLAG_GROUP_GT:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_SGT},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FGT},
+			};
+		case IL_FLAG_GROUP_LE:
+			return map<uint32_t, BNLowLevelILFlagCondition> {
+				{IL_FLAG_CLASS_INT, LLFC_SLE},
+				{IL_FLAG_CLASS_FLOAT, LLFC_FLE},
+			};
+		default:
+			return map<uint32_t, BNLowLevelILFlagCondition>();
+		}
+	}
+
+	virtual size_t GetSemanticFlagGroupLowLevelIL(uint32_t semGroup, LowLevelILFunction& il) override
+	{
+		switch (semGroup)
+		{
+		case IL_FLAG_GROUP_EQ:
+			return GetFlagConditionLowLevelIL(LLFC_E, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_NE:
+			return GetFlagConditionLowLevelIL(LLFC_NE, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_CS:
+			return GetFlagConditionLowLevelIL(LLFC_UGE, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_CC:
+			return GetFlagConditionLowLevelIL(LLFC_ULT, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_MI:
+			return GetFlagConditionLowLevelIL(LLFC_NEG, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_PL:
+			return GetFlagConditionLowLevelIL(LLFC_POS, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_VS:
+			return GetFlagConditionLowLevelIL(LLFC_O, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_VC:
+			return GetFlagConditionLowLevelIL(LLFC_NO, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_HI:
+			return GetFlagConditionLowLevelIL(LLFC_UGT, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_LS:
+			return GetFlagConditionLowLevelIL(LLFC_ULE, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_GE:
+			return GetFlagConditionLowLevelIL(LLFC_SGE, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_LT:
+			return GetFlagConditionLowLevelIL(LLFC_SLT, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_GT:
+			return GetFlagConditionLowLevelIL(LLFC_SGT, IL_FLAG_CLASS_INT, il);
+		case IL_FLAG_GROUP_LE:
+			return GetFlagConditionLowLevelIL(LLFC_SLE, IL_FLAG_CLASS_INT, il);
+		default:
+			return il.Unimplemented();
+		}
+	}
+
 
 	/* flag roles */
 
@@ -1288,7 +1508,7 @@ class Arm64Architecture : public Architecture
 
 	virtual vector<uint32_t> GetAllFlagWriteTypes() override
 	{
-		return vector<uint32_t> {IL_FLAGWRITE_ALL};
+		return vector<uint32_t> {IL_FLAG_WRITE_ALL, IL_FLAG_WRITE_ALL_FLOAT};
 	}
 
 
@@ -1296,8 +1516,10 @@ class Arm64Architecture : public Architecture
 	{
 		switch (flags)
 		{
-		case IL_FLAGWRITE_ALL:
+		case IL_FLAG_WRITE_ALL:
 			return "*";
+		case IL_FLAG_WRITE_ALL_FLOAT:
+			return "f*";
 		default:
 			return "";
 		}
@@ -1308,44 +1530,11 @@ class Arm64Architecture : public Architecture
 	{
 		switch (flags)
 		{
-		case IL_FLAGWRITE_ALL:
+		case IL_FLAG_WRITE_ALL:
+		case IL_FLAG_WRITE_ALL_FLOAT:
 			return vector<uint32_t> {IL_FLAG_N, IL_FLAG_Z, IL_FLAG_C, IL_FLAG_V};
 		default:
 			return vector<uint32_t> {};
-		}
-	}
-
-
-	/* connect flags to conditional statements */
-
-	virtual vector<uint32_t> GetFlagsRequiredForFlagCondition(
-	    BNLowLevelILFlagCondition cond, uint32_t) override
-	{
-		switch (cond)
-		{
-		case LLFC_E:
-		case LLFC_NE:
-			return vector<uint32_t> {IL_FLAG_Z};
-		case LLFC_SLT:
-		case LLFC_SGE:
-			return vector<uint32_t> {IL_FLAG_N, IL_FLAG_V};
-		case LLFC_ULT:
-		case LLFC_UGE:
-			return vector<uint32_t> {IL_FLAG_C};
-		case LLFC_SLE:
-		case LLFC_SGT:
-			return vector<uint32_t> {IL_FLAG_Z, IL_FLAG_N, IL_FLAG_V};
-		case LLFC_ULE:
-		case LLFC_UGT:
-			return vector<uint32_t> {IL_FLAG_C, IL_FLAG_Z};
-		case LLFC_NEG:
-		case LLFC_POS:
-			return vector<uint32_t> {IL_FLAG_N};
-		case LLFC_O:
-		case LLFC_NO:
-			return vector<uint32_t> {IL_FLAG_V};
-		default:
-			return vector<uint32_t>();
 		}
 	}
 
