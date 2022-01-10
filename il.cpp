@@ -1744,6 +1744,7 @@ bool GetLowLevelILForInstruction(
 		break;
 	}
 	case ARM64_MVN:
+	case ARM64_MVNI:
 		il.AddInstruction(ILSETREG_O(
 		    operand1, il.Not(REGSZ_O(operand1), ReadILOperand(il, operand2, REGSZ_O(operand1)))));
 		break;
