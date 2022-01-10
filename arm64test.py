@@ -2,6 +2,10 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_mvni = [
+    (b'\xe2\x05\x01\x6f', 'LLIL_SET_REG.o(v2,LLIL_NOT.o(LLIL_CONST.o(0x2F)))'), # mvni    v2.4s, #0x2f
+]
+
 # https://github.com/Vector35/binaryninja-api/issues/2791
 tests_2791 = [
     (b'\x00\x20\x21\x1e', 'LLIL_FSUB.d{f*}(LLIL_REG.d(s0),LLIL_REG.d(s1))'), # fcmp s0, s1
@@ -1498,6 +1502,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_mvni + \
 	tests_2791 + \
 	tests_ucvtf + \
 	tests_ret + \
