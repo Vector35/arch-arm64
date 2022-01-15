@@ -58,8 +58,8 @@ int ADC(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->sf==0) OK(ENC_ADC_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADC_64_ADDSUB_CARRY);
 	}
@@ -79,8 +79,8 @@ int ADCS(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->sf==0) OK(ENC_ADCS_32_ADDSUB_CARRY);
 		if(ctx->sf==1) OK(ENC_ADCS_64_ADDSUB_CARRY);
 	}
@@ -190,8 +190,8 @@ int ADDS_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -217,8 +217,8 @@ int ADDS_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -246,8 +246,8 @@ int ADDS_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -302,8 +302,8 @@ int ADD_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -327,8 +327,8 @@ int ADD_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -356,8 +356,8 @@ int ADD_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -543,22 +543,22 @@ int ANDS_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -589,22 +589,22 @@ int ANDS_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -655,22 +655,22 @@ int AND_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -699,22 +699,22 @@ int AND_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -1209,22 +1209,22 @@ int BICS(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -1347,22 +1347,22 @@ int BIC_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -2015,6 +2015,8 @@ int CCMN_imm(context *ctx, Instruction *instr)
 		if(ctx->sf==0) OK(ENC_CCMN_32_CONDCMP_IMM);
 		if(ctx->sf==1) OK(ENC_CCMN_64_CONDCMP_IMM);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -2035,6 +2037,8 @@ int CCMN_reg(context *ctx, Instruction *instr)
 		if(ctx->sf==0) OK(ENC_CCMN_32_CONDCMP_REG);
 		if(ctx->sf==1) OK(ENC_CCMN_64_CONDCMP_REG);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -2055,6 +2059,8 @@ int CCMP_imm(context *ctx, Instruction *instr)
 		if(ctx->sf==0) OK(ENC_CCMP_32_CONDCMP_IMM);
 		if(ctx->sf==1) OK(ENC_CCMP_64_CONDCMP_IMM);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -2075,6 +2081,8 @@ int CCMP_reg(context *ctx, Instruction *instr)
 		if(ctx->sf==0) OK(ENC_CCMP_32_CONDCMP_REG);
 		if(ctx->sf==1) OK(ENC_CCMP_64_CONDCMP_REG);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -3640,22 +3648,22 @@ int EON(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -3747,22 +3755,22 @@ int EOR_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -3791,22 +3799,22 @@ int EOR_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -4735,6 +4743,8 @@ int FCCMPE_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==0) OK(ENC_FCCMPE_S_FLOATCCMP);
 		if(ctx->ftype==1) OK(ENC_FCCMPE_D_FLOATCCMP);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -4772,6 +4782,8 @@ int FCCMP_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==0) OK(ENC_FCCMP_S_FLOATCCMP);
 		if(ctx->ftype==1) OK(ENC_FCCMP_D_FLOATCCMP);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_NORMAL;
 	return rc;
 }
 
@@ -5873,6 +5885,8 @@ int FCMPE_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==1 && ctx->opc==2) OK(ENC_FCMPE_D_FLOATCMP);
 		if(ctx->ftype==1 && /* PreferBitsEqual(['ctx->Rm'],'00000') */ true && ctx->opc==3) OK(ENC_FCMPE_DZ_FLOATCMP);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_FLOAT;
 	return rc;
 }
 
@@ -5912,6 +5926,8 @@ int FCMP_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==1 && ctx->opc==0) OK(ENC_FCMP_D_FLOATCMP);
 		if(ctx->ftype==1 && /* PreferBitsEqual(['ctx->Rm'],'00000') */ true && ctx->opc==1) OK(ENC_FCMP_DZ_FLOATCMP);
 	}
+	/* relevant operational pcode */
+	instr->setflags = FLAGEFFECT_SETS_FLOAT;
 	return rc;
 }
 
@@ -18653,22 +18669,22 @@ int ORN_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -18794,22 +18810,22 @@ int ORR_log_imm(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && ctx->N!=0) {
 			UNDEFINED;
@@ -18840,22 +18856,22 @@ int ORR_log_shift(context *ctx, Instruction *instr)
 		if(!ctx->opc) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==1) {
 			ctx->op = LogicalOp_ORR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==2) {
 			ctx->op = LogicalOp_EOR;
 			ctx->setflags = FALSE;
-			instr->setflags = FALSE;
+			instr->setflags = FLAGEFFECT_NONE;
 		}
 		else if(ctx->opc==3) {
 			ctx->op = LogicalOp_AND;
 			ctx->setflags = TRUE;
-			instr->setflags = TRUE;
+			instr->setflags = FLAGEFFECT_SETS;
 		}
 		if(ctx->sf==0 && SLICE(ctx->imm6,5,5)==1) {
 			UNDEFINED;
@@ -20255,8 +20271,8 @@ int SBC(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		/* regular aliases */
 		if(ctx->Rn==0x1f) return NGC_SBC(ctx, instr);
 		if(ctx->sf==0) OK(ENC_SBC_32_ADDSUB_CARRY);
@@ -20278,8 +20294,8 @@ int SBCS(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		/* regular aliases */
 		if(ctx->Rn==0x1f) return NGCS_SBCS(ctx, instr);
 		if(ctx->sf==0) OK(ENC_SBCS_32_ADDSUB_CARRY);
@@ -27029,8 +27045,8 @@ int SUBP(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Xd);
 		ctx->n = UINT(ctx->Xn);
 		ctx->m = UINT(ctx->Xm);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_SUBP_64S_DP_2SRC);
 	}
 	return rc;
@@ -27050,8 +27066,8 @@ int SUBPS(context *ctx, Instruction *instr)
 		ctx->d = UINT(ctx->Xd);
 		ctx->n = UINT(ctx->Xn);
 		ctx->m = UINT(ctx->Xm);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Xd==0x1f) return CMPP_SUBPS(ctx, instr);
 		OK(ENC_SUBPS_64S_DP_2SRC);
@@ -27072,8 +27088,8 @@ int SUBS_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -27099,8 +27115,8 @@ int SUBS_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -27128,8 +27144,8 @@ int SUBS_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -27160,8 +27176,8 @@ int SUB_addsub_ext(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		ctx->extend_type = DecodeRegExtend(ctx->option);
 		ctx->shift = UINT(ctx->imm3);
 		if(ctx->shift>4) {
@@ -27185,8 +27201,8 @@ int SUB_addsub_imm(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Rn);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(!ctx->sh) {
 			ctx->imm = ZeroExtend(ctx->imm12,ctx->datasize);
 		}
@@ -27212,8 +27228,8 @@ int SUB_addsub_shift(context *ctx, Instruction *instr)
 		ctx->m = UINT(ctx->Rm);
 		ctx->datasize = (ctx->sf==1) ? 0x40 : 0x20;
 		ctx->sub_op = (ctx->op==1);
-		instr->setflags = (ctx->S==1);
 		ctx->setflags = (ctx->S==1);
+		instr->setflags = (ctx->S==1) ? FLAGEFFECT_SETS : FLAGEFFECT_NONE;
 		if(ctx->shift==3) {
 			UNDEFINED;
 		}
@@ -30977,8 +30993,8 @@ int and_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		/* regular aliases */
 		if(ctx->S==0 && ctx->Pn==ctx->Pm) return MOV_and_p_p_pp(ctx, instr);
 		OK(ENC_AND_P_P_PP_Z);
@@ -31061,8 +31077,8 @@ int ands_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm) return MOVS_ands_p_p_pp(ctx, instr);
 		OK(ENC_ANDS_P_P_PP_Z);
@@ -31594,8 +31610,8 @@ int bic_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BIC_P_P_PP_Z);
 	}
 	return rc;
@@ -31656,8 +31672,8 @@ int bics_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BICS_P_P_PP_Z);
 	}
 	return rc;
@@ -31679,8 +31695,8 @@ int brka_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = (ctx->M==1);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BRKA_P_P_P_);
 	}
 	return rc;
@@ -31702,8 +31718,8 @@ int brkas_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = FALSE;
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BRKAS_P_P_P_Z);
 	}
 	return rc;
@@ -31725,8 +31741,8 @@ int brkb_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = (ctx->M==1);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BRKB_P_P_P_);
 	}
 	return rc;
@@ -31748,8 +31764,8 @@ int brkbs_p_p_p(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->d = UINT(ctx->Pd);
 		ctx->merging = FALSE;
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BRKBS_P_P_P_Z);
 	}
 	return rc;
@@ -31769,8 +31785,8 @@ int brkn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->g = UINT(ctx->Pg);
 		ctx->n = UINT(ctx->Pn);
 		ctx->dm = UINT(ctx->Pdm);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BRKN_P_P_PP_);
 	}
 	return rc;
@@ -31790,8 +31806,8 @@ int brkns_p_p_pp(context *ctx, Instruction *instr)
 		ctx->g = UINT(ctx->Pg);
 		ctx->n = UINT(ctx->Pn);
 		ctx->dm = UINT(ctx->Pdm);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BRKNS_P_P_PP_);
 	}
 	return rc;
@@ -31813,8 +31829,8 @@ int brkpa_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BRKPA_P_P_PP_);
 	}
 	return rc;
@@ -31836,8 +31852,8 @@ int brkpas_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BRKPAS_P_P_PP_);
 	}
 	return rc;
@@ -31859,8 +31875,8 @@ int brkpb_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_BRKPB_P_P_PP_);
 	}
 	return rc;
@@ -31882,8 +31898,8 @@ int brkpbs_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_BRKPBS_P_P_PP_);
 	}
 	return rc;
@@ -33349,8 +33365,8 @@ int eor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		/* regular aliases */
 		if(ctx->Pm==ctx->Pg) return NOT_eor_p_p_pp(ctx, instr);
 		OK(ENC_EOR_P_P_PP_Z);
@@ -33455,8 +33471,8 @@ int eors_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		/* regular aliases */
 		if(ctx->Pm==ctx->Pg) return NOTS_eors_p_p_pp(ctx, instr);
 		OK(ENC_EORS_P_P_PP_Z);
@@ -42487,8 +42503,8 @@ int nand_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_NAND_P_P_PP_Z);
 	}
 	return rc;
@@ -42510,8 +42526,8 @@ int nands_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_NANDS_P_P_PP_Z);
 	}
 	return rc;
@@ -42596,8 +42612,8 @@ int nor_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_NOR_P_P_PP_Z);
 	}
 	return rc;
@@ -42619,8 +42635,8 @@ int nors_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_NORS_P_P_PP_Z);
 	}
 	return rc;
@@ -42662,8 +42678,8 @@ int orn_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_ORN_P_P_PP_Z);
 	}
 	return rc;
@@ -42685,8 +42701,8 @@ int orns_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_ORNS_P_P_PP_Z);
 	}
 	return rc;
@@ -42708,8 +42724,8 @@ int orr_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		/* regular aliases */
 		if(ctx->S==0 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOV_orr_p_p_pp(ctx, instr);
 		OK(ENC_ORR_P_P_PP_Z);
@@ -42794,8 +42810,8 @@ int orrs_p_p_pp(context *ctx, Instruction *instr)
 		ctx->n = UINT(ctx->Pn);
 		ctx->m = UINT(ctx->Pm);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		/* regular aliases */
 		if(ctx->S==1 && ctx->Pn==ctx->Pm && ctx->Pm==ctx->Pg) return MOVS_orrs_p_p_pp(ctx, instr);
 		OK(ENC_ORRS_P_P_PP_Z);
@@ -43678,8 +43694,8 @@ int ptrue_p_s(context *ctx, Instruction *instr)
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUE_P_S_);
 	}
@@ -43699,8 +43715,8 @@ int ptrues_p_s(context *ctx, Instruction *instr)
 		}
 		ctx->esize = (8) << (UINT(ctx->size));
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		ctx->pat = ctx->pattern;
 		OK(ENC_PTRUES_P_S_);
 	}
@@ -43855,8 +43871,8 @@ int rdffr_p_p_f(context *ctx, Instruction *instr)
 		}
 		ctx->g = UINT(ctx->Pg);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = FALSE;
 		ctx->setflags = FALSE;
+		instr->setflags = FLAGEFFECT_NONE;
 		OK(ENC_RDFFR_P_P_F_);
 	}
 	return rc;
@@ -43875,8 +43891,8 @@ int rdffrs_p_p_f(context *ctx, Instruction *instr)
 		}
 		ctx->g = UINT(ctx->Pg);
 		ctx->d = UINT(ctx->Pd);
-		instr->setflags = TRUE;
 		ctx->setflags = TRUE;
+		instr->setflags = FLAGEFFECT_SETS;
 		OK(ENC_RDFFRS_P_P_F_);
 	}
 	return rc;

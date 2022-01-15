@@ -489,6 +489,14 @@ enum Group
 	END_GROUP
 };
 
+enum FlagEffect
+{
+	FLAGEFFECT_NONE=0, // doesn't set flags
+	FLAGEFFECT_SETS=1, // sets flags, but unknown which type
+	FLAGEFFECT_SETS_NORMAL=2, // sets flags after normal comparison
+	FLAGEFFECT_SETS_FLOAT=3 // sets flags after float comparison
+};
+
 #ifndef __cplusplus
 typedef enum SystemReg SystemReg;
 typedef enum OperandClass OperandClass;
@@ -552,7 +560,7 @@ struct Instruction
 	enum Operation operation;
 	InstructionOperand operands[MAX_OPERANDS];
 
-	bool setflags;
+	enum FlagEffect setflags;
 };
 
 #ifndef __cplusplus
