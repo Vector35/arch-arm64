@@ -35,7 +35,7 @@
 #define IS_SVE_O(O)   ((O).operandClass == REG && IS_SVE_REG(REG_O(O)))
 
 /* misc */
-#define SETFLAGS (instr.setflags ? IL_FLAG_WRITE_ALL : IL_FLAG_WRITE_NONE)
+#define SETFLAGS (GetFlagWriteTypeForEffect(instr.setflags))
 #define ONES(N)  (-1ULL >> (64 - (N)))
 #define ABORT_LIFT \
 	{ \

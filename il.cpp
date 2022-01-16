@@ -11,6 +11,19 @@ using namespace BinaryNinja;
 
 #include "il_macros.h"
 
+static uint32_t GetFlagWriteTypeForEffect(FlagEffect e) {
+	switch (e) {
+	case FLAGEFFECT_SETS:
+	case FLAGEFFECT_SETS_NORMAL:
+		return IL_FLAG_WRITE_ALL;
+	case FLAGEFFECT_SETS_FLOAT:
+		return IL_FLAG_WRITE_ALL_FLOAT;
+	case FLAGEFFECT_NONE:
+	default:
+		return 0;
+	}
+}
+
 static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 {
 	switch (cond)
@@ -1466,7 +1479,7 @@ bool GetLowLevelILForInstruction(
 
 		il.MarkLabel(trueCode);
 		il.AddInstruction(il.FloatSub(REGSZ_O(operand1), ILREG_O(operand1),
-		    ReadILOperand(il, operand2, REGSZ_O(operand1)), IL_FLAG_WRITE_ALL_FLOAT));
+		    ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
 		il.AddInstruction(il.Goto(done));
 
 		il.MarkLabel(falseCode);
@@ -1483,7 +1496,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_FCMP:
 	case ARM64_FCMPE:
 		il.AddInstruction(il.FloatSub(REGSZ_O(operand1), ILREG_O(operand1),
-		    ReadILOperand(il, operand2, REGSZ_O(operand1)), IL_FLAG_WRITE_ALL_FLOAT));
+		    ReadILOperand(il, operand2, REGSZ_O(operand1)), SETFLAGS));
 		break;
 	case ARM64_FSUB:
 		switch (instr.encoding)
