@@ -4744,7 +4744,7 @@ int FCCMPE_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==1) OK(ENC_FCCMPE_D_FLOATCCMP);
 	}
 	/* relevant operational pcode */
-	instr->setflags = FLAGEFFECT_SETS_NORMAL;
+	instr->setflags = FLAGEFFECT_SETS_FLOAT;
 	return rc;
 }
 
@@ -4783,7 +4783,7 @@ int FCCMP_float(context *ctx, Instruction *instr)
 		if(ctx->ftype==1) OK(ENC_FCCMP_D_FLOATCCMP);
 	}
 	/* relevant operational pcode */
-	instr->setflags = FLAGEFFECT_SETS_NORMAL;
+	instr->setflags = FLAGEFFECT_SETS_FLOAT;
 	return rc;
 }
 
