@@ -2,6 +2,10 @@
 
 RET = b'\xc0\x03\x5f\xd6'
 
+tests_movk = [
+    (b'\xe9\xae\xb7\xf2', 'LLIL_SET_REG.q(x9,LLIL_AND.q(LLIL_REG.q(x9),LLIL_NOT.q(LLIL_CONST.q(0xFFFF0000)))); LLIL_SET_REG.q(x9,LLIL_OR.q(LLIL_REG.q(x9),LLIL_CONST.q(0xBD770000)))'), # movk    x9, #0xbd77, lsl #0x10
+]
+
 tests_mvni = [
     (b'\xe2\x05\x01\x6f', 'LLIL_SET_REG.o(v2,LLIL_NOT.o(LLIL_CONST.o(0x2F)))'), # mvni    v2.4s, #0x2f
 ]
@@ -1502,6 +1506,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+	tests_movk + \
 	tests_mvni + \
 	tests_2791 + \
 	tests_ucvtf + \

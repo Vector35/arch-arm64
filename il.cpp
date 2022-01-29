@@ -1743,6 +1743,12 @@ bool GetLowLevelILForInstruction(
 		    operand1, il.Not(REGSZ_O(operand1), ReadILOperand(il, operand2, REGSZ_O(operand1)))));
 		break;
 	case ARM64_MOVK:
+		// zero the underling register slice
+		il.AddInstruction(ILSETREG_O(
+		    operand1, il.And(REGSZ_O(operand1), ILREG_O(operand1),
+			il.Not(REGSZ_O(operand1),
+			    il.Const(REGSZ_O(operand1), 0xffffULL << operand2.shiftValue)))));
+		// mov the immediate into it
 		il.AddInstruction(ILSETREG_O(
 		    operand1, il.Or(REGSZ_O(operand1), ILREG_O(operand1),
 		                  il.Const(REGSZ_O(operand1), IMM_O(operand2) << operand2.shiftValue))));
