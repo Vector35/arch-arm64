@@ -396,6 +396,9 @@ class Arm64Architecture : public Architecture
 		case ARM64_SMC:
 			result.AddBranch(SystemCall);
 			break;
+		case ARM64_UDF:
+			result.AddBranch(ExceptionBranch);
+			break;
 
 		default:
 			break;
