@@ -1,24 +1,6 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
-project(arch_arm64)
-
-if((NOT BN_API_PATH) AND (NOT BN_INTERNAL_BUILD))
-	set(BN_API_PATH $ENV{BN_API_PATH})
-	if(NOT BN_API_PATH)
-		message(FATAL_ERROR "Provide path to Binary Ninja API source in BN_API_PATH")
-	endif()
-endif()
-
-if((NOT BN_INSTALL_DIR) AND (NOT BN_INTERNAL_BUILD) AND WIN32)
-	set(BN_INSTALL_DIR $ENV{BN_INSTALL_DIR})
-	if(NOT BN_INSTALL_DIR)
-		message(FATAL_ERROR "Provide path to Binary Ninja installation in BN_INSTALL_DIR")
-	endif()
-endif()
-
-if(NOT BN_INTERNAL_BUILD)
-	add_subdirectory(${BN_API_PATH} ${PROJECT_BINARY_DIR}/api)
-endif()
+project(arch_arm64 CXX C)
 
 file(GLOB SOURCES
 	*.cpp
@@ -40,30 +22,43 @@ file(GLOB SOURCES
 	disassembler/*.h)
 
 if(DEMO)
-	add_library(arch_arm64 STATIC ${SOURCES})
+	add_library(${PROJECT_NAME} STATIC ${SOURCES})
 else()
-	add_library(arch_arm64 SHARED ${SOURCES})
+	add_library(${PROJECT_NAME} SHARED ${SOURCES})
 endif()
 
 if(NOT WIN32)
 	set_source_files_properties(disassembler/arm64dis.c PROPERTIES COMPILE_FLAGS -fno-strict-aliasing)
 endif()
 
-target_include_directories(arch_arm64
+target_include_directories(${PROJECT_NAME}
 	PRIVATE ${PROJECT_SOURCE_DIR}
 	PRIVATE ${PROJECT_SOURCE_DIR}/disassembler)
 
-target_link_libraries(arch_arm64 binaryninjaapi)
-
-if(WIN32)
-	target_link_directories(arch_arm64
-		PRIVATE ${BN_INSTALL_DIR})
-	target_link_libraries(arch_arm64 binaryninjaapi binaryninjacore)
+if((NOT BN_API_BUILD_EXAMPLES) AND (NOT BN_INTERNAL_BUILD))
+	# Out-of-tree build
+	find_path(
+		BN_API_PATH
+		NAMES binaryninjaapi.h
+		HINTS . .. ../.. binaryninjaapi $ENV{BN_API_PATH}
+		PATH_SUFFIXES binaryninja-api
+		REQUIRED
+	)
+	message(STATUS "Found Binary Ninja API Path: ${BN_API_PATH}")
+	add_subdirectory(${BN_API_PATH} api)
+	target_link_libraries(${PROJECT_NAME} binaryninjaapi)
 else()
-	target_link_libraries(arch_arm64 binaryninjaapi)
+	if(WIN32)
+		target_link_directories(${PROJECT_NAME}
+			PRIVATE ${BN_INSTALL_DIR})
+		target_link_libraries(${PROJECT_NAME} binaryninjaapi binaryninjacore)
+	else()
+		target_link_libraries(${PROJECT_NAME} binaryninjaapi)
+	endif()
 endif()
 
-set_target_properties(arch_arm64 PROPERTIES
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 17
 	CXX_VISIBILITY_PRESET hidden
 	CXX_STANDARD_REQUIRED ON
@@ -74,8 +69,10 @@ set_target_properties(arch_arm64 PROPERTIES
 	POSITION_INDEPENDENT_CODE ON)
 
 if(BN_INTERNAL_BUILD)
-	plugin_rpath(arch_arm64)
-	set_target_properties(arch_arm64 PROPERTIES
+	plugin_rpath(${PROJECT_NAME})
+	set_target_properties(${PROJECT_NAME} PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY ${BN_CORE_PLUGIN_DIR}
 	RUNTIME_OUTPUT_DIRECTORY ${BN_CORE_PLUGIN_DIR})
+else()
+	bn_install_plugin(${PROJECT_NAME})
 endif()
