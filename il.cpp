@@ -1860,7 +1860,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_PACIB:
 		// <Xd> is address, <Xn> is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_O(operand1))},
-		    operation_to_intrinsic(instr.operation), {ILREG_O(operand2)}));
+		    operation_to_intrinsic(instr.operation), {ILREG_O(operand1), ILREG_O(operand2)}));
 		break;
 	case ARM64_PACGA:
 		// <Xd> is address, <Xn>, <Xm> are modifiers, keys
@@ -1872,7 +1872,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_PACIB1716:
 		// x17 is address, x16 is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X17)},
-		    operation_to_intrinsic(instr.operation), {il.Register(8, REG_X16)}));
+		    operation_to_intrinsic(instr.operation), {il.Register(8, REG_X17), il.Register(8, REG_X16)}));
 		break;
 	case ARM64_AUTDZA:
 	case ARM64_AUTDZB:
@@ -1886,7 +1886,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_XPACD:
 		// <Xd> is address, modifier is omitted or 0
 		il.AddInstruction(il.Intrinsic(
-		    {RegisterOrFlag::Register(REG_O(operand1))}, operation_to_intrinsic(instr.operation), {}));
+		    {RegisterOrFlag::Register(REG_O(operand1))}, operation_to_intrinsic(instr.operation), {ILREG_O(operand1)}));
 		break;
 	case ARM64_AUTIBZ:
 	case ARM64_PACIAZ:
@@ -1894,14 +1894,14 @@ bool GetLowLevelILForInstruction(
 	case ARM64_XPACLRI:
 		// x30 is address, modifier is omitted or 0
 		il.AddInstruction(il.Intrinsic(
-		    {RegisterOrFlag::Register(REG_X30)}, operation_to_intrinsic(instr.operation), {}));
+		    {RegisterOrFlag::Register(REG_X30)}, operation_to_intrinsic(instr.operation), {il.Register(8, REG_X30)}));
 		break;
 	case ARM64_AUTIBSP:
 	case ARM64_PACIASP:
 	case ARM64_PACIBSP:
 		// x30 is address, sp is modifier
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
-		    operation_to_intrinsic(instr.operation), {il.Register(8, REG_SP)}));
+		    operation_to_intrinsic(instr.operation), {il.Register(8, REG_X30), il.Register(8, REG_SP)}));
 		break;
 	case ARM64_PRFUM:
 	case ARM64_PRFM:

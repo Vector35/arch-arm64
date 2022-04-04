@@ -1030,29 +1030,29 @@ class Arm64Architecture : public Architecture
 	{
 		switch (intrinsic)
 		{
-		case ARM64_INTRIN_AUTDA:      // reads <Xn|SP>
-		case ARM64_INTRIN_AUTDB:      // reads <Xn|SP>
-		case ARM64_INTRIN_AUTIA:      // reads <Xn|SP>
-		case ARM64_INTRIN_AUTIB:      // reads <Xn|SP>
-		case ARM64_INTRIN_AUTIB1716:  // reads x16
 		case ARM64_INTRIN_CLZ:        // reads <Xn>
 		case ARM64_INTRIN_DC:         // reads <Xt>
 		case ARM64_INTRIN_MSR:
 		case ARM64_INTRIN_MRS:
-		case ARM64_INTRIN_PACDA:      // reads <Xn>
-		case ARM64_INTRIN_PACDB:      // reads <Xn>
-		case ARM64_INTRIN_PACIA:      // reads <Xn>
-		case ARM64_INTRIN_PACIA1716:  // reads x16
-		case ARM64_INTRIN_PACIB:      // reads <Xn>
-		case ARM64_INTRIN_PACIB1716:  // reads x16
 		case ARM64_INTRIN_PRFM:
 		case ARM64_INTRIN_REV:   // reads <Xn>
 		case ARM64_INTRIN_RBIT:  // reads <Xn>
 			return {NameAndType(Type::IntegerType(8, false))};
-		case ARM64_INTRIN_AUTIBSP:  // reads x30, sp
-		case ARM64_INTRIN_PACGA:    // reads <Xn>, <Xm|SP>
-		case ARM64_INTRIN_PACIASP:  // reads x30, sp
-		case ARM64_INTRIN_PACIBSP:  // reads x30, sp
+		case ARM64_INTRIN_AUTDA:      // reads <Xd>, <Xn|SP>
+		case ARM64_INTRIN_AUTDB:      // reads <Xd>, <Xn|SP>
+		case ARM64_INTRIN_AUTIA:      // reads <Xd>, <Xn|SP>
+		case ARM64_INTRIN_AUTIB:      // reads <Xd>, <Xn|SP>
+		case ARM64_INTRIN_AUTIB1716:  // reads x17, x16
+		case ARM64_INTRIN_AUTIBSP:    // reads x30, sp
+		case ARM64_INTRIN_PACGA:      // reads <Xn>, <Xm|SP>
+		case ARM64_INTRIN_PACIASP:    // reads x30, sp
+		case ARM64_INTRIN_PACIBSP:    // reads x30, sp
+		case ARM64_INTRIN_PACDA:      // reads <Xd>, <Xn>
+		case ARM64_INTRIN_PACDB:      // reads <Xd>, <Xn>
+		case ARM64_INTRIN_PACIA:      // reads <Xd>, <Xn>
+		case ARM64_INTRIN_PACIA1716:  // reads x17, x16
+		case ARM64_INTRIN_PACIB:      // reads <Xd>, <Xn>
+		case ARM64_INTRIN_PACIB1716:  // reads x17, x16
 			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AESD:
 		case ARM64_INTRIN_AESE:
