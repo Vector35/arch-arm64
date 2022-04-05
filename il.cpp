@@ -1068,69 +1068,48 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 	switch (operation)
 	{
 	case ARM64_AUTDA:
+	case ARM64_AUTDZA:
 		return ARM64_INTRIN_AUTDA;
 	case ARM64_AUTDB:
+	case ARM64_AUTDZB:
 		return ARM64_INTRIN_AUTDB;
 	case ARM64_AUTIA:
-		return ARM64_INTRIN_AUTIA;
 	case ARM64_AUTIA1716:
-		return ARM64_INTRIN_AUTIA1716;
 	case ARM64_AUTIASP:
-		return ARM64_INTRIN_AUTIASP;
 	case ARM64_AUTIAZ:
-		return ARM64_INTRIN_AUTIAZ;
-	case ARM64_AUTIB:
-		return ARM64_INTRIN_AUTIB;
-	case ARM64_AUTIB1716:
-		return ARM64_INTRIN_AUTIB1716;
-	case ARM64_AUTIBSP:
-		return ARM64_INTRIN_AUTIBSP;
-	case ARM64_AUTIBZ:
-		return ARM64_INTRIN_AUTIBZ;
-	case ARM64_AUTDZA:
-		return ARM64_INTRIN_AUTDZA;
-	case ARM64_AUTDZB:
-		return ARM64_INTRIN_AUTDZB;
 	case ARM64_AUTIZA:
-		return ARM64_INTRIN_AUTIZA;
+		return ARM64_INTRIN_AUTIA;
+	case ARM64_AUTIB:
+	case ARM64_AUTIB1716:
+	case ARM64_AUTIBSP:
+	case ARM64_AUTIBZ:
 	case ARM64_AUTIZB:
-		return ARM64_INTRIN_AUTIZB;
+		return ARM64_INTRIN_AUTIB;
 	case ARM64_PACDA:
+	case ARM64_PACDZA:
 		return ARM64_INTRIN_PACDA;
 	case ARM64_PACDB:
-		return ARM64_INTRIN_PACDB;
-	case ARM64_PACDZA:
-		return ARM64_INTRIN_PACDZA;
 	case ARM64_PACDZB:
-		return ARM64_INTRIN_PACDZB;
+		return ARM64_INTRIN_PACDB;
 	case ARM64_PACGA:
 		return ARM64_INTRIN_PACGA;
 	case ARM64_PACIA:
-		return ARM64_INTRIN_PACIA;
 	case ARM64_PACIA1716:
-		return ARM64_INTRIN_PACIA1716;
 	case ARM64_PACIASP:
-		return ARM64_INTRIN_PACIASP;
 	case ARM64_PACIAZ:
-		return ARM64_INTRIN_PACIAZ;
-	case ARM64_PACIB:
-		return ARM64_INTRIN_PACIB;
-	case ARM64_PACIB1716:
-		return ARM64_INTRIN_PACIB1716;
-	case ARM64_PACIBSP:
-		return ARM64_INTRIN_PACIBSP;
-	case ARM64_PACIBZ:
-		return ARM64_INTRIN_PACIBZ;
 	case ARM64_PACIZA:
-		return ARM64_INTRIN_PACIZA;
+		return ARM64_INTRIN_PACIA;
+	case ARM64_PACIB:
+	case ARM64_PACIB1716:
+	case ARM64_PACIBSP:
+	case ARM64_PACIBZ:
 	case ARM64_PACIZB:
-		return ARM64_INTRIN_PACIZB;
+		return ARM64_INTRIN_PACIB;
 	case ARM64_XPACD:
 		return ARM64_INTRIN_XPACD;
 	case ARM64_XPACI:
-		return ARM64_INTRIN_XPACI;
 	case ARM64_XPACLRI:
-		return ARM64_INTRIN_XPACLRI;
+		return ARM64_INTRIN_XPACI;
 	default:
 		return ARM64_INTRIN_INVALID;
 	}
@@ -1889,9 +1868,13 @@ bool GetLowLevelILForInstruction(
 	case ARM64_PACDZB:
 	case ARM64_PACIZA:
 	case ARM64_PACIZB:
+		// <Xd> is address, modifier is 0
+		il.AddInstruction(il.Intrinsic(
+		    {RegisterOrFlag::Register(REG_O(operand1))}, operation_to_intrinsic(instr.operation), {ILREG_O(operand1), il.Const(8, 0)}));
+		break;
 	case ARM64_XPACI:
 	case ARM64_XPACD:
-		// <Xd> is address, modifier is omitted or 0
+		// <Xd> is address
 		il.AddInstruction(il.Intrinsic(
 		    {RegisterOrFlag::Register(REG_O(operand1))}, operation_to_intrinsic(instr.operation), {ILREG_O(operand1)}));
 		break;
@@ -1899,8 +1882,12 @@ bool GetLowLevelILForInstruction(
 	case ARM64_AUTIBZ:
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
+		// x30 is address, modifier is 0
+		il.AddInstruction(il.Intrinsic(
+		    {RegisterOrFlag::Register(REG_X30)}, operation_to_intrinsic(instr.operation), {il.Register(8, REG_X30), il.Const(8, 0)}));
+		break;
 	case ARM64_XPACLRI:
-		// x30 is address, modifier is omitted or 0
+		// x30 is address
 		il.AddInstruction(il.Intrinsic(
 		    {RegisterOrFlag::Register(REG_X30)}, operation_to_intrinsic(instr.operation), {il.Register(8, REG_X30)}));
 		break;

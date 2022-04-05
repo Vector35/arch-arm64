@@ -894,20 +894,6 @@ class Arm64Architecture : public Architecture
 			return "__autia";
 		case ARM64_INTRIN_AUTIB:
 			return "__autib";
-		case ARM64_INTRIN_AUTIB1716:
-			return "__autib1716";
-		case ARM64_INTRIN_AUTIBSP:
-			return "__autibsp";
-		case ARM64_INTRIN_AUTIBZ:
-			return "__autibz";
-		case ARM64_INTRIN_AUTDZA:
-			return "__autdza";
-		case ARM64_INTRIN_AUTDZB:
-			return "__autdzb";
-		case ARM64_INTRIN_AUTIZA:
-			return "__autiza";
-		case ARM64_INTRIN_AUTIZB:
-			return "__autizb";
 		case ARM64_INTRIN_ISB:
 			return "__isb";
 		case ARM64_INTRIN_WFE:
@@ -926,32 +912,12 @@ class Arm64Architecture : public Architecture
 			return "__pacda";
 		case ARM64_INTRIN_PACDB:
 			return "__pacdb";
-		case ARM64_INTRIN_PACDZA:
-			return "__pacdza";
-		case ARM64_INTRIN_PACDZB:
-			return "__pacdzb";
 		case ARM64_INTRIN_PACGA:
 			return "__pacga";
 		case ARM64_INTRIN_PACIA:
 			return "__pacia";
-		case ARM64_INTRIN_PACIA1716:
-			return "__pacia1716";
-		case ARM64_INTRIN_PACIASP:
-			return "__paciasp";
-		case ARM64_INTRIN_PACIAZ:
-			return "__paciaz";
-		case ARM64_INTRIN_PACIZA:
-			return "__paciza";
 		case ARM64_INTRIN_PACIB:
 			return "__pacib";
-		case ARM64_INTRIN_PACIB1716:
-			return "__pacib1716";
-		case ARM64_INTRIN_PACIBSP:
-			return "__pacibsp";
-		case ARM64_INTRIN_PACIBZ:
-			return "__pacibz";
-		case ARM64_INTRIN_PACIZB:
-			return "__pacizb";
 		case ARM64_INTRIN_PSBCSYNC:
 			return "SystemHintOp_PSB";
 		case ARM64_INTRIN_HINT_TSB:
@@ -978,8 +944,6 @@ class Arm64Architecture : public Architecture
 			return "__xpacd";
 		case ARM64_INTRIN_XPACI:
 			return "__xpaci";
-		case ARM64_INTRIN_XPACLRI:
-			return "__xpaclri";
 		case ARM64_INTRIN_ERET:
 			return "_eret";
 		case ARM64_INTRIN_CLZ:
@@ -1006,18 +970,15 @@ class Arm64Architecture : public Architecture
 	{
 		vector<uint32_t> result = NeonGetAllIntrinsics();
 
-		vector<uint32_t> tmp = {ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTDZA,
-		    ARM64_INTRIN_AUTDZB, ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB, ARM64_INTRIN_AUTIZA,
-		    ARM64_INTRIN_AUTIZB, ARM64_INTRIN_AUTIB1716, ARM64_INTRIN_AUTIBSP, ARM64_INTRIN_AUTIBZ,
+		vector<uint32_t> tmp = {
+			ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB,
 		    ARM64_INTRIN_DC, ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB,
 		    ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB,
 		    ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR, ARM64_INTRIN_PACDA,
-		    ARM64_INTRIN_PACDB, ARM64_INTRIN_PACDZA, ARM64_INTRIN_PACDZB, ARM64_INTRIN_PACGA,
-		    ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIA1716, ARM64_INTRIN_PACIASP, ARM64_INTRIN_PACIAZ,
-		    ARM64_INTRIN_PACIZA, ARM64_INTRIN_PACIB, ARM64_INTRIN_PACIB1716, ARM64_INTRIN_PACIBSP,
-		    ARM64_INTRIN_PACIBZ, ARM64_INTRIN_PACIZB, ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC,
+		    ARM64_INTRIN_PACDB, ARM64_INTRIN_PACGA, ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIB,
+		    ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC,
 		    ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
-		    ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_XPACLRI, ARM64_INTRIN_ERET,
+		    ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_ERET,
 		    ARM64_INTRIN_CLZ, ARM64_INTRIN_CLREX, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
 		    ARM64_INTRIN_AESD, ARM64_INTRIN_AESE};
 
@@ -1042,17 +1003,11 @@ class Arm64Architecture : public Architecture
 		case ARM64_INTRIN_AUTDB:      // reads <Xd>, <Xn|SP>
 		case ARM64_INTRIN_AUTIA:      // reads <Xd>, <Xn|SP>
 		case ARM64_INTRIN_AUTIB:      // reads <Xd>, <Xn|SP>
-		case ARM64_INTRIN_AUTIB1716:  // reads x17, x16
-		case ARM64_INTRIN_AUTIBSP:    // reads x30, sp
 		case ARM64_INTRIN_PACGA:      // reads <Xn>, <Xm|SP>
-		case ARM64_INTRIN_PACIASP:    // reads x30, sp
-		case ARM64_INTRIN_PACIBSP:    // reads x30, sp
 		case ARM64_INTRIN_PACDA:      // reads <Xd>, <Xn>
 		case ARM64_INTRIN_PACDB:      // reads <Xd>, <Xn>
 		case ARM64_INTRIN_PACIA:      // reads <Xd>, <Xn>
-		case ARM64_INTRIN_PACIA1716:  // reads x17, x16
 		case ARM64_INTRIN_PACIB:      // reads <Xd>, <Xn>
-		case ARM64_INTRIN_PACIB1716:  // reads x17, x16
 			return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(8, false))};
 		case ARM64_INTRIN_AESD:
 		case ARM64_INTRIN_AESE:
@@ -1074,32 +1029,14 @@ class Arm64Architecture : public Architecture
 		case ARM64_INTRIN_AUTDB:      // writes <Xd>
 		case ARM64_INTRIN_AUTIA:      // writes <Xd>
 		case ARM64_INTRIN_AUTIB:      // writes <Xd>
-		case ARM64_INTRIN_AUTIB1716:  // writes x17
-		case ARM64_INTRIN_AUTIBSP:    // writes x30
-		case ARM64_INTRIN_AUTIBZ:     // writes x30
-		case ARM64_INTRIN_AUTDZA:     // writes <Xd>
-		case ARM64_INTRIN_AUTDZB:     // writes <Xd>
-		case ARM64_INTRIN_AUTIZA:     // writes <Xd>
-		case ARM64_INTRIN_AUTIZB:     // writes <Xd>
 		case ARM64_INTRIN_MRS:
 		case ARM64_INTRIN_PACDA:      // writes <Xd>
 		case ARM64_INTRIN_PACDB:      // writes <Xd>
-		case ARM64_INTRIN_PACDZA:     // writes <Xd>
-		case ARM64_INTRIN_PACDZB:     // writes <Xd>
 		case ARM64_INTRIN_PACIA:      // writes <Xd>
 		case ARM64_INTRIN_PACGA:      // writes <Xd>
-		case ARM64_INTRIN_PACIA1716:  // writes x17
-		case ARM64_INTRIN_PACIASP:    // writes x30
-		case ARM64_INTRIN_PACIAZ:     // writes x30
-		case ARM64_INTRIN_PACIB1716:  // writes x17
 		case ARM64_INTRIN_PACIB:      // writes <Xd>
-		case ARM64_INTRIN_PACIBSP:    // writes x30
-		case ARM64_INTRIN_PACIBZ:     // writes x30
-		case ARM64_INTRIN_PACIZA:     // writes <Xd>
-		case ARM64_INTRIN_PACIZB:     // writes <Xd>
 		case ARM64_INTRIN_XPACD:      // writes <Xd>
 		case ARM64_INTRIN_XPACI:      // writes <Xd>
-		case ARM64_INTRIN_XPACLRI:    // writes x30
 		case ARM64_INTRIN_CLZ:        // writes <Xd>
 		case ARM64_INTRIN_REV:        // writes <Xd>
 		case ARM64_INTRIN_RBIT:       // writes <Xd>
