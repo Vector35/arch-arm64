@@ -1073,6 +1073,12 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 		return ARM64_INTRIN_AUTDB;
 	case ARM64_AUTIA:
 		return ARM64_INTRIN_AUTIA;
+	case ARM64_AUTIA1716:
+		return ARM64_INTRIN_AUTIA1716;
+	case ARM64_AUTIASP:
+		return ARM64_INTRIN_AUTIASP;
+	case ARM64_AUTIAZ:
+		return ARM64_INTRIN_AUTIAZ;
 	case ARM64_AUTIB:
 		return ARM64_INTRIN_AUTIB;
 	case ARM64_AUTIB1716:
@@ -1867,6 +1873,7 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_O(operand1))},
 		    operation_to_intrinsic(instr.operation), {ILREG_O(operand2), ILREG_O(operand3)}));
 		break;
+	case ARM64_AUTIA1716:
 	case ARM64_AUTIB1716:
 	case ARM64_PACIA1716:
 	case ARM64_PACIB1716:
@@ -1888,6 +1895,7 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Intrinsic(
 		    {RegisterOrFlag::Register(REG_O(operand1))}, operation_to_intrinsic(instr.operation), {}));
 		break;
+	case ARM64_AUTIAZ:
 	case ARM64_AUTIBZ:
 	case ARM64_PACIAZ:
 	case ARM64_PACIBZ:
@@ -1896,6 +1904,7 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Intrinsic(
 		    {RegisterOrFlag::Register(REG_X30)}, operation_to_intrinsic(instr.operation), {}));
 		break;
+	case ARM64_AUTIASP:
 	case ARM64_AUTIBSP:
 	case ARM64_PACIASP:
 	case ARM64_PACIBSP:
