@@ -2959,8 +2959,6 @@ struct MOV_WIDE_IMM{
     uint32_t variant:3;
 };
 
-
-
 class Arm64ElfRelocationHandler : public RelocationHandler
 {
  public:
