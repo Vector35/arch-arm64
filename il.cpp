@@ -204,7 +204,7 @@ static ExprId GetShiftedRegister(
 	case ShiftType_ASR:
 		res = ExtractRegister(il, operand, regNum, REGSZ_O(operand), false, resultSize);
 		if (operand.shiftValue)
-			res = il.ArithShiftRight(resultSize, res, il.Const(0, operand.shiftValue));
+			res = il.ArithShiftRight(resultSize, res, il.Const(1, operand.shiftValue));
 		return res;
 	case ShiftType_LSR:
 		res = ExtractRegister(il, operand, regNum, REGSZ_O(operand), false, resultSize);
@@ -334,14 +334,14 @@ static ExprId GetILOperandEffectiveAddress(LowLevelILFunction& il, InstructionOp
 				addr = il.Add(addrSize, ILREG_O(operand),
 				    il.Add(addrSize,
 				        il.ShiftLeft(addrSize, il.Const(addrSize, operand.immediate),
-				            il.Const(0, operand.shiftValue)),
+				            il.Const(1, operand.shiftValue)),
 				        il.Const(addrSize, extra_offset)));
 			}
 			else
 			{
 				addr = il.Add(addrSize, ILREG_O(operand),
 				    il.ShiftLeft(
-				        addrSize, il.Const(addrSize, operand.immediate), il.Const(0, operand.shiftValue)));
+				        addrSize, il.Const(addrSize, operand.immediate), il.Const(1, operand.shiftValue)));
 			}
 		}
 		else
@@ -1238,7 +1238,7 @@ bool GetLowLevelILForInstruction(
 		        il.ShiftLeft(REGSZ_O(operand1),
 		            il.And(REGSZ_O(operand1), il.Const(REGSZ_O(operand1), ONES(IMM_O(operand4))),
 		                ILREG_O(operand2)),
-		            il.Const(0, IMM_O(operand3))))));
+		            il.Const(1, IMM_O(operand3))))));
 		break;
 	case ARM64_BFXIL:
 		il.AddInstruction(ILSETREG_O(operand1,
@@ -1248,7 +1248,7 @@ bool GetLowLevelILForInstruction(
 		        il.LogicalShiftRight(REGSZ_O(operand1),
 		            il.And(REGSZ_O(operand1), ILREG_O(operand2),
 		                il.Const(REGSZ_O(operand1), ONES(IMM_O(operand4)) << IMM_O(operand3))),
-		            il.Const(0, IMM_O(operand3))))));
+		            il.Const(1, IMM_O(operand3))))));
 		break;
 	case ARM64_BR:
 	case ARM64_BRAA:
@@ -2000,7 +2000,7 @@ bool GetLowLevelILForInstruction(
 		for (int i = 0; i < dst_n; ++i)
 		{
 			il.AddInstruction(il.SetRegister(rsize, dsts[i],
-			    il.ShiftLeft(rsize, il.Register(rsize, srcs[i]), il.Const(0, IMM_O(operand3)))));
+			    il.ShiftLeft(rsize, il.Register(rsize, srcs[i]), il.Const(1, IMM_O(operand3)))));
 		}
 
 		break;
@@ -2161,7 +2161,7 @@ bool GetLowLevelILForInstruction(
 		for (int i = 0; i < dst_n; ++i)
 		{
 			il.AddInstruction(il.SetRegister(rsize, dsts[i],
-			    il.LogicalShiftRight(rsize, il.Register(rsize, srcs[i]), il.Const(0, IMM_O(operand3)))));
+			    il.LogicalShiftRight(rsize, il.Register(rsize, srcs[i]), il.Const(1, IMM_O(operand3)))));
 		}
 
 		break;
