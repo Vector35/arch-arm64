@@ -705,11 +705,25 @@ class Arm64Architecture : public Architecture
 		char *instrBytes = NULL, *err = NULL;
 		int instrBytesLen = 0, errLen = 0;
 
+		string prepend = ".arch_extension crc\n" ".arch_extension sm4\n"
+			".arch_extension sha3\n" ".arch_extension sha2\n" ".arch_extension aes\n"
+			".arch_extension crypto\n" ".arch_extension fp\n" ".arch_extension simd\n"
+			".arch_extension ras\n" ".arch_extension lse\n" ".arch_extension predres\n"
+			".arch_extension ccdp\n" ".arch_extension mte\n" ".arch_extension memtag\n"
+			".arch_extension tlb-rmi\n" ".arch_extension pan\n" ".arch_extension pan-rwv\n"
+			".arch_extension ccpp\n" ".arch_extension rcpc\n" ".arch_extension rng\n"
+			".arch_extension sve\n" ".arch_extension sve2\n" ".arch_extension sve2-aes\n"
+			".arch_extension sve2-sm4\n" ".arch_extension sve2-sha3\n" ".arch_extension sve2-bitperm\n"
+			".arch_extension ls64\n" ".arch_extension xs\n" ".arch_extension pauth\n"
+			".arch_extension flagm\n" ".arch_extension rme\n" ".arch_extension sme\n"
+			".arch_extension sme-f64\n" ".arch_extension sme-i64\n" ".arch_extension hbc\n"
+			".arch_extension mops\n";
+
 		BNLlvmServicesInit();
 
 		errors.clear();
 		assembleResult =
-		    BNLlvmServicesAssemble(code.c_str(), LLVM_SVCS_DIALECT_UNSPEC, "aarch64-none-none",
+		    BNLlvmServicesAssemble((prepend + code).c_str(), LLVM_SVCS_DIALECT_UNSPEC, "aarch64-none-none",
 		        LLVM_SVCS_CM_DEFAULT, LLVM_SVCS_RM_STATIC, &instrBytes, &instrBytesLen, &err, &errLen);
 
 		if (assembleResult || errLen)
