@@ -603,6 +603,8 @@ static int unpack_vector(InstructionOperand& oper, Register* result)
 			if (oper.lane >= n_lanes)
 				return 0;
 
+			// int n = v_unpack_lookup_sz[spec];
+			// for (int i = 0; i < n; ++i)
 			result[0] = v_unpack_lookup[spec][oper.reg[0] - REG_V0][oper.lane];
 
 			return 1;
@@ -1634,11 +1636,27 @@ bool GetLowLevelILForInstruction(
 			int src2_n = unpack_vector(operand3, srcs2);
 			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
 				ABORT_LIFT;
-
 			int rsize = get_register_size(dsts[0]);
 			for (int i = 0; i < dst_n; ++i)
 				il.AddInstruction(ILSETREG(
 					dsts[i], il.FloatMult(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		case ENC_FMUL_ASIMDELEM_RH_H:
+		case ENC_FMUL_ASIMDELEM_R_SD:
+		case ENC_FMUL_ASISDELEM_RH_H:
+		case ENC_FMUL_ASISDELEM_R_SD: // test
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || dst_n == 0 || src2_n != 1)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.FloatMult(rsize, ILREG(srcs1[i]), ILREG(srcs2[0]))));
 		}
 		break;
 		default:
