@@ -1645,7 +1645,7 @@ bool GetLowLevelILForInstruction(
 		case ENC_FMUL_ASIMDELEM_RH_H:
 		case ENC_FMUL_ASIMDELEM_R_SD:
 		case ENC_FMUL_ASISDELEM_RH_H:
-		case ENC_FMUL_ASISDELEM_R_SD: // test
+		case ENC_FMUL_ASISDELEM_R_SD:
 		{
 			Register srcs1[16], srcs2[16], dsts[16];
 			int dst_n = unpack_vector(operand1, dsts);

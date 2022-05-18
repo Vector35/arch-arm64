@@ -785,6 +785,124 @@ tests_fmul = [
 						 ' LLIL_SET_REG.w(v29.h[1],LLIL_FMUL.w(LLIL_REG.w(v12.h[1]),LLIL_REG.w(v5.h[1])));' + \
 						 ' LLIL_SET_REG.w(v29.h[2],LLIL_FMUL.w(LLIL_REG.w(v12.h[2]),LLIL_REG.w(v5.h[2])));' + \
 						 ' LLIL_SET_REG.w(v29.h[3],LLIL_FMUL.w(LLIL_REG.w(v12.h[3]),LLIL_REG.w(v5.h[3])))'),
+	# fmul v2.4h, v23.4h, v15.h[0]                                     FMUL_asimdelem_RH_H
+	(b'\xE2\x92\x0F\x0F', 'LLIL_SET_REG.w(v2.h[0],LLIL_FMUL.w(LLIL_REG.w(v23.h[0]),LLIL_REG.w(v15.h[0])));' + \
+						 ' LLIL_SET_REG.w(v2.h[1],LLIL_FMUL.w(LLIL_REG.w(v23.h[1]),LLIL_REG.w(v15.h[0])));' + \
+						 ' LLIL_SET_REG.w(v2.h[2],LLIL_FMUL.w(LLIL_REG.w(v23.h[2]),LLIL_REG.w(v15.h[0])));' + \
+						 ' LLIL_SET_REG.w(v2.h[3],LLIL_FMUL.w(LLIL_REG.w(v23.h[3]),LLIL_REG.w(v15.h[0])))'),
+	# fmul v19.4h, v7.4h, v11.h[3]                                     FMUL_asimdelem_RH_H
+	(b'\xF3\x90\x3B\x0F', 'LLIL_SET_REG.w(v19.h[0],LLIL_FMUL.w(LLIL_REG.w(v7.h[0]),LLIL_REG.w(v11.h[3])));' + \
+						 ' LLIL_SET_REG.w(v19.h[1],LLIL_FMUL.w(LLIL_REG.w(v7.h[1]),LLIL_REG.w(v11.h[3])));' + \
+						 ' LLIL_SET_REG.w(v19.h[2],LLIL_FMUL.w(LLIL_REG.w(v7.h[2]),LLIL_REG.w(v11.h[3])));' + \
+						 ' LLIL_SET_REG.w(v19.h[3],LLIL_FMUL.w(LLIL_REG.w(v7.h[3]),LLIL_REG.w(v11.h[3])))'),
+	# fmul v31.4h, v8.4h, v9.h[1]                                      FMUL_asimdelem_RH_H
+	(b'\x1F\x91\x19\x0F', 'LLIL_SET_REG.w(v31.h[0],LLIL_FMUL.w(LLIL_REG.w(v8.h[0]),LLIL_REG.w(v9.h[1])));' + \
+						 ' LLIL_SET_REG.w(v31.h[1],LLIL_FMUL.w(LLIL_REG.w(v8.h[1]),LLIL_REG.w(v9.h[1])));' + \
+						 ' LLIL_SET_REG.w(v31.h[2],LLIL_FMUL.w(LLIL_REG.w(v8.h[2]),LLIL_REG.w(v9.h[1])));' + \
+						 ' LLIL_SET_REG.w(v31.h[3],LLIL_FMUL.w(LLIL_REG.w(v8.h[3]),LLIL_REG.w(v9.h[1])))'),
+	# fmul v11.8h, v27.8h, v9.h[4]                                     FMUL_asimdelem_RH_H
+	(b'\x6B\x9B\x09\x4F', 'LLIL_SET_REG.w(v11.h[0],LLIL_FMUL.w(LLIL_REG.w(v27.h[0]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[1],LLIL_FMUL.w(LLIL_REG.w(v27.h[1]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[2],LLIL_FMUL.w(LLIL_REG.w(v27.h[2]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[3],LLIL_FMUL.w(LLIL_REG.w(v27.h[3]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[4],LLIL_FMUL.w(LLIL_REG.w(v27.h[4]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[5],LLIL_FMUL.w(LLIL_REG.w(v27.h[5]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[6],LLIL_FMUL.w(LLIL_REG.w(v27.h[6]),LLIL_REG.w(v9.h[4])));' + \
+						 ' LLIL_SET_REG.w(v11.h[7],LLIL_FMUL.w(LLIL_REG.w(v27.h[7]),LLIL_REG.w(v9.h[4])))'),
+	# fmul v5.4h, v5.4h, v5.h[7]                                       FMUL_asimdelem_RH_H
+	(b'\xA5\x98\x35\x0F', 'LLIL_SET_REG.w(v5.h[0],LLIL_FMUL.w(LLIL_REG.w(v5.h[0]),LLIL_REG.w(v5.h[7])));' + \
+						 ' LLIL_SET_REG.w(v5.h[1],LLIL_FMUL.w(LLIL_REG.w(v5.h[1]),LLIL_REG.w(v5.h[7])));' + \
+						 ' LLIL_SET_REG.w(v5.h[2],LLIL_FMUL.w(LLIL_REG.w(v5.h[2]),LLIL_REG.w(v5.h[7])));' + \
+						 ' LLIL_SET_REG.w(v5.h[3],LLIL_FMUL.w(LLIL_REG.w(v5.h[3]),LLIL_REG.w(v5.h[7])))'),
+	# fmul v7.8h, v22.8h, v12.h[3]                                     FMUL_asimdelem_RH_H
+	(b'\xC7\x92\x3C\x4F', 'LLIL_SET_REG.w(v7.h[0],LLIL_FMUL.w(LLIL_REG.w(v22.h[0]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[1],LLIL_FMUL.w(LLIL_REG.w(v22.h[1]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[2],LLIL_FMUL.w(LLIL_REG.w(v22.h[2]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[3],LLIL_FMUL.w(LLIL_REG.w(v22.h[3]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[4],LLIL_FMUL.w(LLIL_REG.w(v22.h[4]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[5],LLIL_FMUL.w(LLIL_REG.w(v22.h[5]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[6],LLIL_FMUL.w(LLIL_REG.w(v22.h[6]),LLIL_REG.w(v12.h[3])));' + \
+						 ' LLIL_SET_REG.w(v7.h[7],LLIL_FMUL.w(LLIL_REG.w(v22.h[7]),LLIL_REG.w(v12.h[3])))'),
+	# fmul v17.4h, v22.4h, v5.h[0]                                     FMUL_asimdelem_RH_H
+	(b'\xD1\x92\x05\x0F', 'LLIL_SET_REG.w(v17.h[0],LLIL_FMUL.w(LLIL_REG.w(v22.h[0]),LLIL_REG.w(v5.h[0])));' + \
+						 ' LLIL_SET_REG.w(v17.h[1],LLIL_FMUL.w(LLIL_REG.w(v22.h[1]),LLIL_REG.w(v5.h[0])));' + \
+						 ' LLIL_SET_REG.w(v17.h[2],LLIL_FMUL.w(LLIL_REG.w(v22.h[2]),LLIL_REG.w(v5.h[0])));' + \
+						 ' LLIL_SET_REG.w(v17.h[3],LLIL_FMUL.w(LLIL_REG.w(v22.h[3]),LLIL_REG.w(v5.h[0])))'),
+	# fmul v24.8h, v14.8h, v0.h[5]                                     FMUL_asimdelem_RH_H
+	(b'\xD8\x99\x10\x4F', 'LLIL_SET_REG.w(v24.h[0],LLIL_FMUL.w(LLIL_REG.w(v14.h[0]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[1],LLIL_FMUL.w(LLIL_REG.w(v14.h[1]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[2],LLIL_FMUL.w(LLIL_REG.w(v14.h[2]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[3],LLIL_FMUL.w(LLIL_REG.w(v14.h[3]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[4],LLIL_FMUL.w(LLIL_REG.w(v14.h[4]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[5],LLIL_FMUL.w(LLIL_REG.w(v14.h[5]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[6],LLIL_FMUL.w(LLIL_REG.w(v14.h[6]),LLIL_REG.w(v0.h[5])));' + \
+						 ' LLIL_SET_REG.w(v24.h[7],LLIL_FMUL.w(LLIL_REG.w(v14.h[7]),LLIL_REG.w(v0.h[5])))'),
+	# fmul v1.2s, v1.2s, v0.s[0]                                       FMUL_asimdelem_R_SD
+	(b'\x21\x90\x80\x0F', 'LLIL_SET_REG.d(v1.s[0],LLIL_FMUL.d(LLIL_REG.d(v1.s[0]),LLIL_REG.d(v0.s[0])));' + \
+						 ' LLIL_SET_REG.d(v1.s[1],LLIL_FMUL.d(LLIL_REG.d(v1.s[1]),LLIL_REG.d(v0.s[0])))'),
+	# fmul v5.2d, v11.2d, v3.d[1]                                      FMUL_asimdelem_R_SD
+	(b'\x65\x99\xC3\x4F', 'LLIL_SET_REG.q(v5.d[0],LLIL_FMUL.q(LLIL_REG.q(v11.d[0]),LLIL_REG.q(v3.d[1])));' + \
+						 ' LLIL_SET_REG.q(v5.d[1],LLIL_FMUL.q(LLIL_REG.q(v11.d[1]),LLIL_REG.q(v3.d[1])))'),
+	# fmul v23.4s, v4.4s, v3.s[3]                                      FMUL_asimdelem_R_SD
+	(b'\x97\x98\xA3\x4F', 'LLIL_SET_REG.d(v23.s[0],LLIL_FMUL.d(LLIL_REG.d(v4.s[0]),LLIL_REG.d(v3.s[3])));' + \
+						 ' LLIL_SET_REG.d(v23.s[1],LLIL_FMUL.d(LLIL_REG.d(v4.s[1]),LLIL_REG.d(v3.s[3])));' + \
+						 ' LLIL_SET_REG.d(v23.s[2],LLIL_FMUL.d(LLIL_REG.d(v4.s[2]),LLIL_REG.d(v3.s[3])));' + \
+						 ' LLIL_SET_REG.d(v23.s[3],LLIL_FMUL.d(LLIL_REG.d(v4.s[3]),LLIL_REG.d(v3.s[3])))'),
+	# fmul v16.2s, v15.2s, v21.s[1]                                    FMUL_asimdelem_R_SD
+	(b'\xF0\x91\xB5\x0F', 'LLIL_SET_REG.d(v16.s[0],LLIL_FMUL.d(LLIL_REG.d(v15.s[0]),LLIL_REG.d(v21.s[1])));' + \
+						 ' LLIL_SET_REG.d(v16.s[1],LLIL_FMUL.d(LLIL_REG.d(v15.s[1]),LLIL_REG.d(v21.s[1])))'),
+	# fmul v24.2s, v18.2s, v5.s[1]                                     FMUL_asimdelem_R_SD
+	(b'\x58\x92\xA5\x0F', 'LLIL_SET_REG.d(v24.s[0],LLIL_FMUL.d(LLIL_REG.d(v18.s[0]),LLIL_REG.d(v5.s[1])));' + \
+						 ' LLIL_SET_REG.d(v24.s[1],LLIL_FMUL.d(LLIL_REG.d(v18.s[1]),LLIL_REG.d(v5.s[1])))'),
+	# fmul v24.2d, v11.2d, v8.d[0]                                     FMUL_asimdelem_R_SD
+	(b'\x78\x91\xC8\x4F', 'LLIL_SET_REG.q(v24.d[0],LLIL_FMUL.q(LLIL_REG.q(v11.d[0]),LLIL_REG.q(v8.d[0])));' + \
+						 ' LLIL_SET_REG.q(v24.d[1],LLIL_FMUL.q(LLIL_REG.q(v11.d[1]),LLIL_REG.q(v8.d[0])))'),
+	# fmul v7.2s, v0.2s, v12.s[0]                                      FMUL_asimdelem_R_SD
+	(b'\x07\x90\x8C\x0F', 'LLIL_SET_REG.d(v7.s[0],LLIL_FMUL.d(LLIL_REG.d(v0.s[0]),LLIL_REG.d(v12.s[0])));' + \
+						 ' LLIL_SET_REG.d(v7.s[1],LLIL_FMUL.d(LLIL_REG.d(v0.s[1]),LLIL_REG.d(v12.s[0])))'),
+	# fmul v9.4s, v9.4s, v25.s[2]                                      FMUL_asimdelem_R_SD
+	(b'\x29\x99\x99\x4F', 'LLIL_SET_REG.d(v9.s[0],LLIL_FMUL.d(LLIL_REG.d(v9.s[0]),LLIL_REG.d(v25.s[2])));' + \
+						 ' LLIL_SET_REG.d(v9.s[1],LLIL_FMUL.d(LLIL_REG.d(v9.s[1]),LLIL_REG.d(v25.s[2])));' + \
+						 ' LLIL_SET_REG.d(v9.s[2],LLIL_FMUL.d(LLIL_REG.d(v9.s[2]),LLIL_REG.d(v25.s[2])));' + \
+						 ' LLIL_SET_REG.d(v9.s[3],LLIL_FMUL.d(LLIL_REG.d(v9.s[3]),LLIL_REG.d(v25.s[2])))'),
+	# fmul v7.2d, v20.2d, v1.2d                                        FMUL_asimdsame_only
+	(b'\x87\xDE\x61\x6E', 'LLIL_SET_REG.q(v7.d[0],LLIL_FMUL.q(LLIL_REG.q(v20.d[0]),LLIL_REG.q(v1.d[0])));' + \
+						 ' LLIL_SET_REG.q(v7.d[1],LLIL_FMUL.q(LLIL_REG.q(v20.d[1]),LLIL_REG.q(v1.d[1])))'),
+	# fmul v28.2s, v21.2s, v1.2s                                       FMUL_asimdsame_only
+	(b'\xBC\xDE\x21\x2E', 'LLIL_SET_REG.d(v28.s[0],LLIL_FMUL.d(LLIL_REG.d(v21.s[0]),LLIL_REG.d(v1.s[0])));' + \
+						 ' LLIL_SET_REG.d(v28.s[1],LLIL_FMUL.d(LLIL_REG.d(v21.s[1]),LLIL_REG.d(v1.s[1])))'),
+	# fmul h19, h5, v4.h[3]                                            FMUL_asisdelem_RH_H
+	(b'\xB3\x90\x34\x5F', 'LLIL_SET_REG.w(h19,LLIL_FMUL.w(LLIL_REG.w(h5),LLIL_REG.w(v4.h[3])))'),
+	# fmul h0, h5, v2.h[7]                                             FMUL_asisdelem_RH_H
+	(b'\xA0\x98\x32\x5F', 'LLIL_SET_REG.w(h0,LLIL_FMUL.w(LLIL_REG.w(h5),LLIL_REG.w(v2.h[7])))'),
+	# fmul h18, h14, v11.h[5]                                          FMUL_asisdelem_RH_H
+	(b'\xD2\x99\x1B\x5F', 'LLIL_SET_REG.w(h18,LLIL_FMUL.w(LLIL_REG.w(h14),LLIL_REG.w(v11.h[5])))'),
+	# fmul h10, h7, v2.h[6]                                            FMUL_asisdelem_RH_H
+	(b'\xEA\x98\x22\x5F', 'LLIL_SET_REG.w(h10,LLIL_FMUL.w(LLIL_REG.w(h7),LLIL_REG.w(v2.h[6])))'),
+	# fmul h24, h25, v1.h[7]                                           FMUL_asisdelem_RH_H
+	(b'\x38\x9B\x31\x5F', 'LLIL_SET_REG.w(h24,LLIL_FMUL.w(LLIL_REG.w(h25),LLIL_REG.w(v1.h[7])))'),
+	# fmul h2, h14, v2.h[6]                                            FMUL_asisdelem_RH_H
+	(b'\xC2\x99\x22\x5F', 'LLIL_SET_REG.w(h2,LLIL_FMUL.w(LLIL_REG.w(h14),LLIL_REG.w(v2.h[6])))'),
+	# fmul h17, h28, v6.h[4]                                           FMUL_asisdelem_RH_H
+	(b'\x91\x9B\x06\x5F', 'LLIL_SET_REG.w(h17,LLIL_FMUL.w(LLIL_REG.w(h28),LLIL_REG.w(v6.h[4])))'),
+	# fmul h15, h3, v9.h[7]                                            FMUL_asisdelem_RH_H
+	(b'\x6F\x98\x39\x5F', 'LLIL_SET_REG.w(h15,LLIL_FMUL.w(LLIL_REG.w(h3),LLIL_REG.w(v9.h[7])))'),
+	# fmul s21, s9, v5.s[3]                                            FMUL_asisdelem_R_SD
+	(b'\x35\x99\xA5\x5F', 'LLIL_SET_REG.d(s21,LLIL_FMUL.d(LLIL_REG.d(s9),LLIL_REG.d(v5.s[3])))'),
+	# fmul s29, s0, v16.s[1]                                           FMUL_asisdelem_R_SD
+	(b'\x1D\x90\xB0\x5F', 'LLIL_SET_REG.d(s29,LLIL_FMUL.d(LLIL_REG.d(s0),LLIL_REG.d(v16.s[1])))'),
+	# fmul s25, s8, v30.s[1]                                           FMUL_asisdelem_R_SD
+	(b'\x19\x91\xBE\x5F', 'LLIL_SET_REG.d(s25,LLIL_FMUL.d(LLIL_REG.d(s8),LLIL_REG.d(v30.s[1])))'),
+	# fmul d2, d27, v4.d[0]                                            FMUL_asisdelem_R_SD
+	(b'\x62\x93\xC4\x5F', 'LLIL_SET_REG.q(d2,LLIL_FMUL.q(LLIL_REG.q(d27),LLIL_REG.q(v4.d[0])))'),
+	# fmul d26, d3, v27.d[1]                                           FMUL_asisdelem_R_SD
+	(b'\x7A\x98\xDB\x5F', 'LLIL_SET_REG.q(d26,LLIL_FMUL.q(LLIL_REG.q(d3),LLIL_REG.q(v27.d[1])))'),
+	# fmul s26, s30, v13.s[3]                                          FMUL_asisdelem_R_SD
+	(b'\xDA\x9B\xAD\x5F', 'LLIL_SET_REG.d(s26,LLIL_FMUL.d(LLIL_REG.d(s30),LLIL_REG.d(v13.s[3])))'),
+	# fmul s4, s24, v8.s[3]                                            FMUL_asisdelem_R_SD
+	(b'\x04\x9B\xA8\x5F', 'LLIL_SET_REG.d(s4,LLIL_FMUL.d(LLIL_REG.d(s24),LLIL_REG.d(v8.s[3])))'),
+	# fmul s28, s11, v9.s[0]                                           FMUL_asisdelem_R_SD
+	(b'\x7C\x91\x89\x5F', 'LLIL_SET_REG.d(s28,LLIL_FMUL.d(LLIL_REG.d(s11),LLIL_REG.d(v9.s[0])))'),
 ]
 
 tests_fadd = [
