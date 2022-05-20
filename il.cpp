@@ -1663,6 +1663,64 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_FSQRT:
+		switch (instr.encoding)
+		{
+		case ENC_FSQRT_D_FLOATDP1:
+		case ENC_FSQRT_H_FLOATDP1:
+		case ENC_FSQRT_S_FLOATDP1:
+		{
+			il.AddInstruction(ILSETREG_O(
+			    operand1, il.FloatSqrt(REGSZ_O(operand1), ILREG_O(operand2))));
+			break;
+		}
+		case ENC_FSQRT_ASIMDMISCFP16_R:
+		case ENC_FSQRT_ASIMDMISC_R:
+		{
+			Register srcs1[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			if ((dst_n != src1_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.FloatSqrt(rsize, ILREG(srcs1[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FNEG:
+		switch (instr.encoding)
+		{
+		case ENC_FNEG_D_FLOATDP1:
+		case ENC_FNEG_H_FLOATDP1:
+		case ENC_FNEG_S_FLOATDP1:
+		{
+			il.AddInstruction(ILSETREG_O(
+			    operand1, il.FloatNeg(REGSZ_O(operand1), ILREG_O(operand2))));
+			break;
+		}
+		case ENC_FNEG_ASIMDMISCFP16_R:
+		case ENC_FNEG_ASIMDMISC_R:
+		{
+			Register srcs1[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			if ((dst_n != src1_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.FloatNeg(rsize, ILREG(srcs1[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_ERET:
 	case ARM64_ERETAA:
 	case ARM64_ERETAB:
