@@ -1663,6 +1663,20 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_FNMUL:
+		switch (instr.encoding)
+		{
+		case ENC_FNMUL_H_FLOATDP2:
+		case ENC_FNMUL_S_FLOATDP2:
+		case ENC_FNMUL_D_FLOATDP2:
+			il.AddInstruction(ILSETREG_O(
+			    operand1, il.FloatNeg(REGSZ_O(operand1),
+					il.FloatMult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_FSQRT:
 		switch (instr.encoding)
 		{
