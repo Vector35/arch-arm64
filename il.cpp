@@ -1721,6 +1721,108 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_SCVTF:
+		switch (instr.encoding)
+		{
+		case ENC_SCVTF_D32_FLOAT2INT:
+		case ENC_SCVTF_D64_FLOAT2INT:
+		case ENC_SCVTF_H32_FLOAT2INT:
+		case ENC_SCVTF_H64_FLOAT2INT:
+		case ENC_SCVTF_S32_FLOAT2INT:
+		case ENC_SCVTF_S64_FLOAT2INT:
+		{
+			il.AddInstruction(ILSETREG_O(
+			    operand1, il.IntToFloat(REGSZ_O(operand1),
+					il.SignExtend(REGSZ_O(operand1), ILREG_O(operand2)))));
+			break;
+		}
+		case ENC_SCVTF_ASIMDMISCFP16_R:
+		case ENC_SCVTF_ASIMDMISC_R:
+		case ENC_SCVTF_ASIMDSHF_C:
+		case ENC_SCVTF_ASISDMISCFP16_R:
+		case ENC_SCVTF_ASISDMISC_R:
+		case ENC_SCVTF_ASISDSHF_C:
+		{
+			Register srcs1[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			if ((dst_n != src1_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.IntToFloat(rsize, 
+						il.SignExtend(rsize, ILREG(srcs1[i])))));
+		}
+		break;
+		// Until we support fixed-point in LLIL...
+		case ENC_SCVTF_D32_FLOAT2FIX:
+		case ENC_SCVTF_D64_FLOAT2FIX:
+		case ENC_SCVTF_H32_FLOAT2FIX:
+		case ENC_SCVTF_H64_FLOAT2FIX:
+		case ENC_SCVTF_S32_FLOAT2FIX:
+		case ENC_SCVTF_S64_FLOAT2FIX:
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_UCVTF:
+	{
+		int float_sz = 0;
+		switch (instr.encoding)
+		{
+		case ENC_UCVTF_H32_FLOAT2INT:
+		case ENC_UCVTF_H64_FLOAT2INT:
+		case ENC_UCVTF_ASISDMISCFP16_R:
+			float_sz = 2;
+		case ENC_UCVTF_S32_FLOAT2INT:
+		case ENC_UCVTF_S64_FLOAT2INT:
+			if (!float_sz)
+				float_sz = 4;
+		case ENC_UCVTF_D32_FLOAT2INT:
+		case ENC_UCVTF_D64_FLOAT2INT:
+			if (!float_sz)
+				float_sz = 8;
+		case ENC_UCVTF_ASISDMISC_R:
+			if (!float_sz)
+				float_sz = REGSZ_O(operand1);
+		{
+			il.AddInstruction(ILSETREG_O(
+			    // operand1, il.IntToFloat(REGSZ_O(operand1),
+			    operand1, il.IntToFloat(float_sz,
+					// il.ZeroExtend(REGSZ_O(operand1), ILREG_O(operand2)))));
+					ExtractRegister(il, operand2, 0, REGSZ_O(operand2), false, REGSZ_O(operand2)))));
+			break;
+		}
+		case ENC_UCVTF_ASIMDMISCFP16_R:
+		case ENC_UCVTF_ASIMDMISC_R:
+		{
+			Register srcs1[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			if ((dst_n != src1_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.IntToFloat(rsize, 
+						il.ZeroExtend(rsize, ILREG(srcs1[i])))));
+		}
+		break;
+		// Until we support fixed-point in LLIL...
+		case ENC_UCVTF_ASIMDSHF_C:
+		case ENC_UCVTF_ASISDSHF_C:
+		case ENC_UCVTF_D32_FLOAT2FIX:
+		case ENC_UCVTF_D64_FLOAT2FIX:
+		case ENC_UCVTF_H32_FLOAT2FIX:
+		case ENC_UCVTF_H64_FLOAT2FIX:
+		case ENC_UCVTF_S32_FLOAT2FIX:
+		case ENC_UCVTF_S64_FLOAT2FIX:
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	}
 	case ARM64_ERET:
 	case ARM64_ERETAA:
 	case ARM64_ERETAB:
