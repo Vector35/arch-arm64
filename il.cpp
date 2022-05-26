@@ -1721,6 +1721,35 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_FABS:
+		switch (instr.encoding)
+		{
+		case ENC_FABS_D_FLOATDP1:
+		case ENC_FABS_H_FLOATDP1:
+		case ENC_FABS_S_FLOATDP1:
+		{
+			il.AddInstruction(ILSETREG_O(
+			    operand1, il.FloatAbs(REGSZ_O(operand1), ILREG_O(operand2))));
+			break;
+		}
+		case ENC_FABS_ASIMDMISCFP16_R:
+		case ENC_FABS_ASIMDMISC_R:
+		{
+			Register srcs1[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			if ((dst_n != src1_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.FloatAbs(rsize, ILREG(srcs1[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_SCVTF:
 		switch (instr.encoding)
 		{
