@@ -64,7 +64,7 @@ static ExprId GetCondition(LowLevelILFunction& il, Condition cond)
 	}
 }
 
-static void GenIfElse(LowLevelILFunction& il, ExprId clause, ExprId trueCase, ExprId falseCase)
+static void GenIfElse(LowLevelILFunction& il, ExprId clause, ExprId trueCase, ExprId falseCase=0)
 {
 	if (falseCase)
 	{
@@ -1565,6 +1565,106 @@ bool GetLowLevelILForInstruction(
 			for (int i = 0; i < dst_n; ++i)
 				il.AddInstruction(ILSETREG(
 					dsts[i], il.FloatDiv(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FMIN:
+		switch (instr.encoding)
+		{
+		case ENC_FMIN_D_FLOATDP2:
+		case ENC_FMIN_H_FLOATDP2:
+		case ENC_FMIN_S_FLOATDP2:
+			if (REG_O(operand1) == REG_O(operand2))
+				GenIfElse(il,
+					il.FloatCompareGreaterThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand3)));
+			else if (REG_O(operand1) == REG_O(operand3))
+				GenIfElse(il,
+					il.FloatCompareLessThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand2)));
+			else
+				GenIfElse(il,
+					il.FloatCompareLessThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand2)),
+					ILSETREG_O(operand1, ILREG_O(operand3)));
+			break;
+		case ENC_FMIN_ASIMDSAMEFP16_ONLY:
+		case ENC_FMIN_ASIMDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				if (REG_O(operand1) == REG_O(operand2))
+					GenIfElse(il,
+						il.FloatCompareGreaterThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs2[i])));
+				else if (REG_O(operand1) == REG_O(operand3))
+					GenIfElse(il,
+						il.FloatCompareLessThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs1[i])));
+				else
+					GenIfElse(il,
+						il.FloatCompareLessThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs1[i])),
+						ILSETREG(dsts[i], ILREG(srcs2[i])));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FMAX:
+		switch (instr.encoding)
+		{
+		case ENC_FMAX_D_FLOATDP2:
+		case ENC_FMAX_H_FLOATDP2:
+		case ENC_FMAX_S_FLOATDP2:
+			if (REG_O(operand1) == REG_O(operand2))
+				GenIfElse(il,
+					il.FloatCompareLessThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand3)));
+			else if (REG_O(operand1) == REG_O(operand3))
+				GenIfElse(il,
+					il.FloatCompareGreaterThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand2)));
+			else
+				GenIfElse(il,
+					il.FloatCompareGreaterThan(REGSZ_O(operand2), ILREG_O(operand2), ILREG_O(operand3)),
+					ILSETREG_O(operand1, ILREG_O(operand2)),
+					ILSETREG_O(operand1, ILREG_O(operand3)));
+			break;
+		case ENC_FMAX_ASIMDSAMEFP16_ONLY:
+		case ENC_FMAX_ASIMDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				if (REG_O(operand1) == REG_O(operand2))
+					GenIfElse(il,
+						il.FloatCompareLessThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs2[i])));
+				else if (REG_O(operand1) == REG_O(operand3))
+					GenIfElse(il,
+						il.FloatCompareGreaterThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs1[i])));
+				else
+					GenIfElse(il,
+						il.FloatCompareGreaterThan(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])),
+						ILSETREG(dsts[i], ILREG(srcs1[i])),
+						ILSETREG(dsts[i], ILREG(srcs2[i])));
 		}
 		break;
 		default:
