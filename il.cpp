@@ -128,6 +128,8 @@ ExprId ExtractImmediate(LowLevelILFunction& il, InstructionOperand& operand, int
 	return ILCONST(sizeof_imm, imm & ONES(sizeof_imm * 8));
 }
 
+static int unpack_vector(InstructionOperand& oper, Register* result);
+
 // extractSize can be smaller than the register, generating an LLIL_LOWPART
 // resultSize can be larger than the register, generating sign or zero extension
 ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size_t regNum,
@@ -139,6 +141,8 @@ ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size
 	    return il.Const(resultSize, 0);
 
 	ExprId res = 0;
+	Register regs[16];
+	int n = unpack_vector(operand, regs);
 
 	switch (operand.operandClass)
 	{
@@ -147,7 +151,10 @@ ExprId ExtractRegister(LowLevelILFunction& il, InstructionOperand& operand, size
 		break;
 	case REG:
 	default:
-		res = il.Register(opsz, operand.reg[regNum]);
+		if (n >= 1)
+			res = ILREG(regs[0]);
+		else
+			res = il.Register(opsz, operand.reg[regNum]);
 		break;
 	}
 
@@ -194,7 +201,6 @@ static ExprId GetShiftedRegister(
     LowLevelILFunction& il, InstructionOperand& operand, size_t regNum, size_t resultSize)
 {
 	ExprId res;
-
 	// peel off the variants that return early
 	switch (operand.shiftType)
 	{
@@ -400,71 +406,70 @@ unsigned v_unpack_lookup_sz[15] = {0, 1, 2, 4, 8, 16, 1, 2, 4, 8, 1, 2, 4, 1, 1}
 extern "C" Register* v_unpack_lookup[15][32];
 
 Register v_consolidate_lookup[32][15] = {
-    // NONE .q .2d .4s .8h .16b .d .2s .4h .8b .s .2h .4b .h .b
-    {REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0_D0, REG_V0_D0, REG_V0_D0, REG_V0_D0,
-        REG_V0_S0, REG_V0_S0, REG_V0_S0, REG_V0_H0, REG_V0_B0},
-    {REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1_D0, REG_V1_D0, REG_V1_D0, REG_V1_D0,
+    // NONE  .q      .2d     .4s     .8h     .16b    .d         .2s        .4h        .8b        .s         .2h        .4b        .h         .b
+    {REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0, REG_V0_D0, REG_V0_D0, REG_V0_D0, REG_V0, REG_V0_S0, REG_V0_S0, REG_V0_S0, REG_V0_H0, REG_V0_B0},
+    {REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1, REG_V1_D0, REG_V1_D0, REG_V1_D0, REG_V1,
         REG_V1_S0, REG_V1_S0, REG_V1_S0, REG_V1_H0, REG_V1_B0},
-    {REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2_D0, REG_V2_D0, REG_V2_D0, REG_V2_D0,
+    {REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2, REG_V2_D0, REG_V2_D0, REG_V2_D0, REG_V2,
         REG_V2_S0, REG_V2_S0, REG_V2_S0, REG_V2_H0, REG_V2_B0},
-    {REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3_D0, REG_V3_D0, REG_V3_D0, REG_V3_D0,
+    {REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3, REG_V3_D0, REG_V3_D0, REG_V3_D0, REG_V3,
         REG_V3_S0, REG_V3_S0, REG_V3_S0, REG_V3_H0, REG_V3_B0},
-    {REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4_D0, REG_V4_D0, REG_V4_D0, REG_V4_D0,
+    {REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4, REG_V4_D0, REG_V4_D0, REG_V4_D0, REG_V4,
         REG_V4_S0, REG_V4_S0, REG_V4_S0, REG_V4_H0, REG_V4_B0},
-    {REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5_D0, REG_V5_D0, REG_V5_D0, REG_V5_D0,
+    {REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5, REG_V5_D0, REG_V5_D0, REG_V5_D0, REG_V5,
         REG_V5_S0, REG_V5_S0, REG_V5_S0, REG_V5_H0, REG_V5_B0},
-    {REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6_D0, REG_V6_D0, REG_V6_D0, REG_V6_D0,
+    {REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6, REG_V6_D0, REG_V6_D0, REG_V6_D0, REG_V6,
         REG_V6_S0, REG_V6_S0, REG_V6_S0, REG_V6_H0, REG_V6_B0},
-    {REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7_D0, REG_V7_D0, REG_V7_D0, REG_V7_D0,
+    {REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7, REG_V7_D0, REG_V7_D0, REG_V7_D0, REG_V7,
         REG_V7_S0, REG_V7_S0, REG_V7_S0, REG_V7_H0, REG_V7_B0},
-    {REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8_D0, REG_V8_D0, REG_V8_D0, REG_V8_D0,
+    {REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8, REG_V8_D0, REG_V8_D0, REG_V8_D0, REG_V8,
         REG_V8_S0, REG_V8_S0, REG_V8_S0, REG_V8_H0, REG_V8_B0},
-    {REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9_D0, REG_V9_D0, REG_V9_D0, REG_V9_D0,
+    {REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9, REG_V9_D0, REG_V9_D0, REG_V9_D0, REG_V9,
         REG_V9_S0, REG_V9_S0, REG_V9_S0, REG_V9_H0, REG_V9_B0},
     {REG_V10, REG_V10, REG_V10, REG_V10, REG_V10, REG_V10, REG_V10_D0, REG_V10_D0, REG_V10_D0,
-        REG_V10_D0, REG_V10_S0, REG_V10_S0, REG_V10_S0, REG_V10_H0, REG_V10_B0},
+        REG_V10, REG_V10_S0, REG_V10_S0, REG_V10_S0, REG_V10_H0, REG_V10_B0},
     {REG_V11, REG_V11, REG_V11, REG_V11, REG_V11, REG_V11, REG_V11_D0, REG_V11_D0, REG_V11_D0,
-        REG_V11_D0, REG_V11_S0, REG_V11_S0, REG_V11_S0, REG_V11_H0, REG_V11_B0},
+        REG_V11, REG_V11_S0, REG_V11_S0, REG_V11_S0, REG_V11_H0, REG_V11_B0},
     {REG_V12, REG_V12, REG_V12, REG_V12, REG_V12, REG_V12, REG_V12_D0, REG_V12_D0, REG_V12_D0,
-        REG_V12_D0, REG_V12_S0, REG_V12_S0, REG_V12_S0, REG_V12_H0, REG_V12_B0},
+        REG_V12, REG_V12_S0, REG_V12_S0, REG_V12_S0, REG_V12_H0, REG_V12_B0},
     {REG_V13, REG_V13, REG_V13, REG_V13, REG_V13, REG_V13, REG_V13_D0, REG_V13_D0, REG_V13_D0,
-        REG_V13_D0, REG_V13_S0, REG_V13_S0, REG_V13_S0, REG_V13_H0, REG_V13_B0},
+        REG_V13, REG_V13_S0, REG_V13_S0, REG_V13_S0, REG_V13_H0, REG_V13_B0},
     {REG_V14, REG_V14, REG_V14, REG_V14, REG_V14, REG_V14, REG_V14_D0, REG_V14_D0, REG_V14_D0,
-        REG_V14_D0, REG_V14_S0, REG_V14_S0, REG_V14_S0, REG_V14_H0, REG_V14_B0},
+        REG_V14, REG_V14_S0, REG_V14_S0, REG_V14_S0, REG_V14_H0, REG_V14_B0},
     {REG_V15, REG_V15, REG_V15, REG_V15, REG_V15, REG_V15, REG_V15_D0, REG_V15_D0, REG_V15_D0,
-        REG_V15_D0, REG_V15_S0, REG_V15_S0, REG_V15_S0, REG_V15_H0, REG_V15_B0},
+        REG_V15, REG_V15_S0, REG_V15_S0, REG_V15_S0, REG_V15_H0, REG_V15_B0},
     {REG_V16, REG_V16, REG_V16, REG_V16, REG_V16, REG_V16, REG_V16_D0, REG_V16_D0, REG_V16_D0,
-        REG_V16_D0, REG_V16_S0, REG_V16_S0, REG_V16_S0, REG_V16_H0, REG_V16_B0},
+        REG_V16, REG_V16_S0, REG_V16_S0, REG_V16_S0, REG_V16_H0, REG_V16_B0},
     {REG_V17, REG_V17, REG_V17, REG_V17, REG_V17, REG_V17, REG_V17_D0, REG_V17_D0, REG_V17_D0,
-        REG_V17_D0, REG_V17_S0, REG_V17_S0, REG_V17_S0, REG_V17_H0, REG_V17_B0},
+        REG_V17, REG_V17_S0, REG_V17_S0, REG_V17_S0, REG_V17_H0, REG_V17_B0},
     {REG_V18, REG_V18, REG_V18, REG_V18, REG_V18, REG_V18, REG_V18_D0, REG_V18_D0, REG_V18_D0,
-        REG_V18_D0, REG_V18_S0, REG_V18_S0, REG_V18_S0, REG_V18_H0, REG_V18_B0},
+        REG_V18, REG_V18_S0, REG_V18_S0, REG_V18_S0, REG_V18_H0, REG_V18_B0},
     {REG_V19, REG_V19, REG_V19, REG_V19, REG_V19, REG_V19, REG_V19_D0, REG_V19_D0, REG_V19_D0,
-        REG_V19_D0, REG_V19_S0, REG_V19_S0, REG_V19_S0, REG_V19_H0, REG_V19_B0},
+        REG_V19, REG_V19_S0, REG_V19_S0, REG_V19_S0, REG_V19_H0, REG_V19_B0},
     {REG_V20, REG_V20, REG_V20, REG_V20, REG_V20, REG_V20, REG_V20_D0, REG_V20_D0, REG_V20_D0,
-        REG_V20_D0, REG_V20_S0, REG_V20_S0, REG_V20_S0, REG_V20_H0, REG_V20_B0},
+        REG_V20, REG_V20_S0, REG_V20_S0, REG_V20_S0, REG_V20_H0, REG_V20_B0},
     {REG_V21, REG_V21, REG_V21, REG_V21, REG_V21, REG_V21, REG_V21_D0, REG_V21_D0, REG_V21_D0,
-        REG_V21_D0, REG_V21_S0, REG_V21_S0, REG_V21_S0, REG_V21_H0, REG_V21_B0},
+        REG_V21, REG_V21_S0, REG_V21_S0, REG_V21_S0, REG_V21_H0, REG_V21_B0},
     {REG_V22, REG_V22, REG_V22, REG_V22, REG_V22, REG_V22, REG_V22_D0, REG_V22_D0, REG_V22_D0,
-        REG_V22_D0, REG_V22_S0, REG_V22_S0, REG_V22_S0, REG_V22_H0, REG_V22_B0},
+        REG_V22, REG_V22_S0, REG_V22_S0, REG_V22_S0, REG_V22_H0, REG_V22_B0},
     {REG_V23, REG_V23, REG_V23, REG_V23, REG_V23, REG_V23, REG_V23_D0, REG_V23_D0, REG_V23_D0,
-        REG_V23_D0, REG_V23_S0, REG_V23_S0, REG_V23_S0, REG_V23_H0, REG_V23_B0},
+        REG_V23, REG_V23_S0, REG_V23_S0, REG_V23_S0, REG_V23_H0, REG_V23_B0},
     {REG_V24, REG_V24, REG_V24, REG_V24, REG_V24, REG_V24, REG_V24_D0, REG_V24_D0, REG_V24_D0,
-        REG_V24_D0, REG_V24_S0, REG_V24_S0, REG_V24_S0, REG_V24_H0, REG_V24_B0},
+        REG_V24, REG_V24_S0, REG_V24_S0, REG_V24_S0, REG_V24_H0, REG_V24_B0},
     {REG_V25, REG_V25, REG_V25, REG_V25, REG_V25, REG_V25, REG_V25_D0, REG_V25_D0, REG_V25_D0,
-        REG_V25_D0, REG_V25_S0, REG_V25_S0, REG_V25_S0, REG_V25_H0, REG_V25_B0},
+        REG_V25, REG_V25_S0, REG_V25_S0, REG_V25_S0, REG_V25_H0, REG_V25_B0},
     {REG_V26, REG_V26, REG_V26, REG_V26, REG_V26, REG_V26, REG_V26_D0, REG_V26_D0, REG_V26_D0,
-        REG_V26_D0, REG_V26_S0, REG_V26_S0, REG_V26_S0, REG_V26_H0, REG_V26_B0},
+        REG_V26, REG_V26_S0, REG_V26_S0, REG_V26_S0, REG_V26_H0, REG_V26_B0},
     {REG_V27, REG_V27, REG_V27, REG_V27, REG_V27, REG_V27, REG_V27_D0, REG_V27_D0, REG_V27_D0,
-        REG_V27_D0, REG_V27_S0, REG_V27_S0, REG_V27_S0, REG_V27_H0, REG_V27_B0},
+        REG_V27, REG_V27_S0, REG_V27_S0, REG_V27_S0, REG_V27_H0, REG_V27_B0},
     {REG_V28, REG_V28, REG_V28, REG_V28, REG_V28, REG_V28, REG_V28_D0, REG_V28_D0, REG_V28_D0,
-        REG_V28_D0, REG_V28_S0, REG_V28_S0, REG_V28_S0, REG_V28_H0, REG_V28_B0},
+        REG_V28, REG_V28_S0, REG_V28_S0, REG_V28_S0, REG_V28_H0, REG_V28_B0},
     {REG_V29, REG_V29, REG_V29, REG_V29, REG_V29, REG_V29, REG_V29_D0, REG_V29_D0, REG_V29_D0,
-        REG_V29_D0, REG_V29_S0, REG_V29_S0, REG_V29_S0, REG_V29_H0, REG_V29_B0},
+        REG_V29, REG_V29_S0, REG_V29_S0, REG_V29_S0, REG_V29_H0, REG_V29_B0},
     {REG_V30, REG_V30, REG_V30, REG_V30, REG_V30, REG_V30, REG_V30_D0, REG_V30_D0, REG_V30_D0,
-        REG_V30_D0, REG_V30_S0, REG_V30_S0, REG_V30_S0, REG_V30_H0, REG_V30_B0},
+        REG_V30, REG_V30_S0, REG_V30_S0, REG_V30_S0, REG_V30_H0, REG_V30_B0},
     {REG_V31, REG_V31, REG_V31, REG_V31, REG_V31, REG_V31, REG_V31_D0, REG_V31_D0, REG_V31_D0,
-        REG_V31_D0, REG_V31_S0, REG_V31_S0, REG_V31_S0, REG_V31_H0, REG_V31_B0},
+        REG_V31, REG_V31_S0, REG_V31_S0, REG_V31_S0, REG_V31_H0, REG_V31_B0},
 };
 
 /* v28.d[1] -> REG_V0_D1 */
@@ -662,7 +667,7 @@ static int unpack_vector(InstructionOperand& oper, Register* result)
 static int consolidate_vector(
 		InstructionOperand& operand1,
 		InstructionOperand& operand2,
-		Register *result)
+		Register *result, LowLevelILFunction& il)
 {
 	/* make sure both our operand classes are single regs */
 	if (operand1.operandClass != REG || operand2.operandClass != REG)
@@ -671,6 +676,12 @@ static int consolidate_vector(
 	/* make sure our arrSpec's match. We need this to deal with cases where the arrSpec might
         have different sizes, e.g. 'uxtl v2.2d, v8.2s'.*/
 	if (operand1.arrSpec != operand2.arrSpec)
+		return 0;
+
+	if (operand1.arrSpec == ARRSPEC_NONE || operand2.arrSpec == ARRSPEC_NONE)
+		return 0;
+
+	if (operand1.reg[0]-REG_V0 >= 32 || operand2.reg[0]-REG_V0 >= 32)
 		return 0;
 
 	result[0] = v_consolidate_lookup[operand1.reg[0]-REG_V0][operand1.arrSpec];
@@ -1940,7 +1951,7 @@ bool GetLowLevelILForInstruction(
 			int rsize = get_register_size(dsts[0]);
 			for (int i = 0; i < dst_n; ++i)
 				il.AddInstruction(ILSETREG(
-					dsts[i], il.IntToFloat(rsize, 
+					dsts[i], il.IntToFloat(rsize,
 						il.SignExtend(rsize, ILREG(srcs1[i])))));
 		}
 		break;
@@ -1994,7 +2005,7 @@ bool GetLowLevelILForInstruction(
 			int rsize = get_register_size(dsts[0]);
 			for (int i = 0; i < dst_n; ++i)
 				il.AddInstruction(ILSETREG(
-					dsts[i], il.IntToFloat(rsize, 
+					dsts[i], il.IntToFloat(rsize,
 						il.ZeroExtend(rsize, ILREG(srcs1[i])))));
 		}
 		break;
@@ -2101,19 +2112,28 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_MOV:
 	{
-		Register regs[16];
-		int n = unpack_vector(operand1, regs);
+		switch (instr.encoding)
+		{
+		case ENC_MOV_DUP_ASISDONE_ONLY:
+			goto _ENC_MOV_DUP_ASISDONE_ONLY;
 
-		if (n == 1) {
-			il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, operand2, get_register_size(regs[0]))));
-		} else {
-			Register cregs[2];
-			if (consolidate_vector(operand1, operand2, cregs))
-				il.AddInstruction(ILSETREG(cregs[0], ILREG(cregs[1])));
-			else
-				ABORT_LIFT;
+		default:
+		{
+			Register regs[16], srcs[16];
+			int n = unpack_vector(operand1, regs);
+			int srcs_n = unpack_vector(operand2, srcs);
+
+			if (n == 1) {
+				il.AddInstruction(ILSETREG(regs[0], ReadILOperand(il, operand2, get_register_size(regs[0]))));
+			} else {
+				Register cregs[2];
+				if (consolidate_vector(operand1, operand2, cregs, il))
+					il.AddInstruction(ILSETREG(cregs[0], ILREG(cregs[1])));
+				else
+					ABORT_LIFT;
+			}
 		}
-
+		}
 		break;
 	}
 	case ARM64_MOVI:
@@ -2629,15 +2649,46 @@ bool GetLowLevelILForInstruction(
 		return false;
 	case ARM64_DUP:
 	{
-		if (instr.encoding != ENC_DUP_ASIMDINS_DR_R)
-			ABORT_LIFT;
-		Register regs[16];
-		int regs_n = unpack_vector(operand1, regs);
-		if (regs_n <= 0)
-			ABORT_LIFT;
-		int lane_sz = REGSZ(regs[0]);
-		for (int i = 0; i < regs_n; ++i)
-			il.AddInstruction(ILSETREG(regs[i], ExtractRegister(il, operand2, 0, lane_sz, 0, lane_sz)));
+_ENC_MOV_DUP_ASISDONE_ONLY:
+		switch (instr.encoding)
+		{
+
+		// if (instr.encoding != ENC_DUP_ASIMDINS_DR_R)
+		// 	ABORT_LIFT;
+		case ENC_MOV_DUP_ASISDONE_ONLY:
+		case ENC_DUP_ASISDONE_ONLY:
+		// <V><d>,<Vn>.<T>[<index>]
+
+		case ENC_DUP_ASIMDINS_DV_V:
+		// <Vd>.<T>,<Vn>.<T>[<index>]
+		{
+			Register regs[16], srcs[16];
+			int regs_n = unpack_vector(operand1, regs);
+			int srcs_n = unpack_vector(operand2, srcs);
+			if (regs_n <= 0)
+				ABORT_LIFT;
+			int lane_sz = REGSZ(regs[0]);
+			for (int i = 0; i < regs_n; ++i)
+				il.AddInstruction(ILSETREG(regs[i], ILREG(srcs[0])));
+			break;
+		}
+
+		case ENC_DUP_ASIMDINS_DR_R:
+		// <Vd>.<T>,<R><n>
+		{
+			Register regs[16];
+			int regs_n = unpack_vector(operand1, regs);
+			if (regs_n <= 0)
+				ABORT_LIFT;
+			int lane_sz = REGSZ(regs[0]);
+			for (int i = 0; i < regs_n; ++i)
+				il.AddInstruction(ILSETREG(regs[i], ExtractRegister(il, operand2, 0, lane_sz, 0, lane_sz)));
+			break;
+		}
+		default:
+			il.AddInstruction(il.Unimplemented());
+			break;
+		}
 	}
 	break;
 	case ARM64_DGH:
