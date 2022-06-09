@@ -1445,6 +1445,21 @@ bool GetLowLevelILForInstruction(
 		                                 ILREG_O(operand3)),
 		                             il.Const(1, IMM_O(operand4)))));
 		break;
+	case ARM64_FMADD:
+		switch (instr.encoding)
+		{
+		case ENC_FMADD_D_FLOATDP3:
+		case ENC_FMADD_H_FLOATDP3:
+		case ENC_FMADD_S_FLOATDP3:
+			il.AddInstruction(ILSETREG_O(
+			    operand1, 
+				il.FloatAdd(REGSZ_O(operand1), ILREG_O(operand4),
+					il.FloatMult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_FADD:
 		switch (instr.encoding)
 		{
@@ -1700,12 +1715,15 @@ bool GetLowLevelILForInstruction(
 		case ENC_FMOV_32S_FLOAT2INT:
 		case ENC_FMOV_64H_FLOAT2INT:
 		case ENC_FMOV_64D_FLOAT2INT:
+			il.AddInstruction(
+			    ILSETREG_O(operand1, il.FloatToInt(REGSZ_O(operand1), ILREG_O(instr.operands[1]))));
+			break;
 		case ENC_FMOV_D64_FLOAT2INT:
 		case ENC_FMOV_H32_FLOAT2INT:
 		case ENC_FMOV_H64_FLOAT2INT:
 		case ENC_FMOV_S32_FLOAT2INT:
 			il.AddInstruction(
-			    ILSETREG_O(operand1, il.FloatToInt(REGSZ_O(operand1), ILREG_O(instr.operands[1]))));
+			    ILSETREG_O(operand1, il.IntToFloat(REGSZ_O(operand1), ILREG_O(instr.operands[1]))));
 			break;
 		case ENC_FMOV_H_FLOATIMM:
 		case ENC_FMOV_S_FLOATIMM:
