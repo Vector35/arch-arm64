@@ -1452,9 +1452,25 @@ bool GetLowLevelILForInstruction(
 		case ENC_FMADD_H_FLOATDP3:
 		case ENC_FMADD_S_FLOATDP3:
 			il.AddInstruction(ILSETREG_O(
-			    operand1, 
+			    operand1,
 				il.FloatAdd(REGSZ_O(operand1), ILREG_O(operand4),
 					il.FloatMult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_FMSUB:
+		switch (instr.encoding)
+		{
+		case ENC_FMSUB_D_FLOATDP3:
+		case ENC_FMSUB_H_FLOATDP3:
+		case ENC_FMSUB_S_FLOATDP3:
+			il.AddInstruction(ILSETREG_O(
+			    operand1,
+				il.FloatAdd(REGSZ_O(operand1), ILREG_O(operand4),
+					il.FloatNeg(REGSZ_O(operand1),
+						il.FloatMult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3))))));
 			break;
 		default:
 			il.AddInstruction(il.Unimplemented());
