@@ -697,8 +697,8 @@ static void LoadStoreOperandPair(LowLevelILFunction& il, bool load, InstructionO
 	/* load/store */
 	if (load)
 	{
-		il.AddInstruction(il.SetRegister(sz, REG_O(operand1), il.Load(sz, addr0)));
-		il.AddInstruction(il.SetRegister(sz, REG_O(operand2), il.Load(sz, addr1)));
+		il.AddInstruction(ILSETREG_O(operand1, il.Load(sz, addr0)));
+		il.AddInstruction(ILSETREG_O(operand2, il.Load(sz, addr1)));
 	}
 	else
 	{

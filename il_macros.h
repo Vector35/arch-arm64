@@ -26,7 +26,7 @@
 
 /* construct IL from an InstructionOperand */
 #define ILREG_O(O)           ExtractRegister(il, O, 0, REGSZ_O(O), false, REGSZ_O(O))
-#define ILSETREG_O(O, VALUE) il.SetRegister(REGSZ_O(O), REG_O(O), (VALUE))
+#define ILSETREG_O(O, VALUE) IS_ZERO_REG(REG_O(O)) ? (VALUE) : il.SetRegister(REGSZ_O(O), REG_O(O), (VALUE))
 #define ILADDREG_O(O, VALUE) il.Add(REGSZ_O(O), ILREG_O(O), (VALUE))
 #define ILCONST_O(SZ, O)     ExtractImmediate(il, (O), SZ)
 
