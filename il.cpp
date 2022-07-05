@@ -1445,6 +1445,27 @@ bool GetLowLevelILForInstruction(
 		                                 ILREG_O(operand3)),
 		                             il.Const(1, IMM_O(operand4)))));
 		break;
+	case ARM64_ADDV:
+		switch (instr.encoding)
+		{
+		case ENC_ADDV_ASIMDALL_ONLY:
+		{
+			Register srcs[16];
+			int src_n = unpack_vector(operand2, srcs);
+
+			int rsize = REGSZ_O(operand1);
+			il.AddInstruction(il.SetRegister(rsize, LLIL_TEMP(0), ILREG(srcs[0])));
+			for (int i = 1; i < src_n; ++i)
+				// It is unclear from the spec whether this should be integer or floating point add
+				il.AddInstruction(il.SetRegister(rsize,
+					LLIL_TEMP(0), il.FloatAdd(rsize, il.Register(rsize, LLIL_TEMP(0)), ILREG(srcs[i]))));
+			il.AddInstruction(ILSETREG_O(operand1, il.Register(rsize, LLIL_TEMP(0))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_FMADD:
 		switch (instr.encoding)
 		{
@@ -1499,6 +1520,55 @@ bool GetLowLevelILForInstruction(
 			for (int i = 0; i < dst_n; ++i)
 				il.AddInstruction(ILSETREG(
 					dsts[i], il.FloatAdd(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
+	case ARM64_MLA:
+	case ARM64_MLS:
+		switch (instr.encoding)
+		{
+		case ENC_MLA_ASIMDSAME_ONLY:
+		case ENC_MLS_ASIMDSAME_ONLY:
+		{
+			bool subtract = instr.encoding == ENC_MLS_ASIMDSAME_ONLY;
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], subtract
+						? il.Sub(rsize, ILREG(dsts[i]),
+							il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])))
+						: il.Add(rsize, ILREG(dsts[i]),
+							il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[i])))));
+		}
+		break;
+		case ENC_MLA_ASIMDELEM_R:
+		case ENC_MLS_ASIMDELEM_R:
+		{
+			bool subtract = instr.encoding == ENC_MLS_ASIMDELEM_R;
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || dst_n == 0 || src2_n != 1)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], subtract
+						? il.Sub(rsize, ILREG(dsts[i]),
+							il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[0])))
+						: il.Add(rsize, ILREG(dsts[i]),
+							il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[0])))));
 		}
 		break;
 		default:
