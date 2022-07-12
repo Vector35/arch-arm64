@@ -1115,9 +1115,28 @@ bool GetLowLevelILForInstruction(
 	{
 	case ARM64_ADD:
 	case ARM64_ADDS:
-		il.AddInstruction(
-		    ILSETREG_O(operand1, il.Add(REGSZ_O(operand1), ILREG_O(operand2),
-		                             ReadILOperand(il, operand3, REGSZ_O(operand1)), SETFLAGS)));
+		switch (instr.encoding)
+		{
+		case ENC_ADD_ASIMDSAME_ONLY:
+		case ENC_ADD_ASISDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.Add(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(
+				ILSETREG_O(operand1, il.Add(REGSZ_O(operand1), ILREG_O(operand2),
+										ReadILOperand(il, operand3, REGSZ_O(operand1)), SETFLAGS)));
+		}
 		break;
 	case ARM64_ADC:
 	case ARM64_ADCS:
@@ -1817,6 +1836,30 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_SMOV:
+	{
+		Register srcs1[16];
+		int src1_n = unpack_vector(operand2, srcs1);
+		if (src1_n != 1)
+			ABORT_LIFT;
+		int rsize = REGSZ_O(operand1);
+		switch (instr.encoding)
+		{
+		case ENC_SMOV_ASIMDINS_W_W:
+			if (rsize != 4)
+				ABORT_LIFT;
+			il.AddInstruction(ILSETREG_O(operand1, il.SignExtend(rsize, ILREG(srcs1[0]))));
+			break;
+		case ENC_SMOV_ASIMDINS_X_X:
+			if (rsize != 8)
+				ABORT_LIFT;
+			il.AddInstruction(ILSETREG_O(operand1, il.SignExtend(rsize, ILREG(srcs1[0]))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+	}
+	break;
 	case ARM64_FMUL:
 		switch (instr.encoding)
 		{
@@ -2247,8 +2290,44 @@ bool GetLowLevelILForInstruction(
 		    ILSETREG_O(operand1, il.Const(REGSZ_O(operand1), IMM_O(operand2) << operand2.shiftValue)));
 		break;
 	case ARM64_MUL:
-		il.AddInstruction(
-		    ILSETREG_O(operand1, il.Mult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3))));
+		switch (instr.encoding)
+		{
+		case ENC_MUL_ASIMDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		case ENC_MUL_ASIMDELEM_R:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || dst_n == 0 || src2_n != 1)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.Mult(rsize, ILREG(srcs1[i]), ILREG(srcs2[0]))));
+		}
+		break;	
+		case ENC_MUL_MADD_32A_DP_3SRC:
+		case ENC_MUL_MADD_64A_DP_3SRC:
+			il.AddInstruction(
+				ILSETREG_O(operand1, il.Mult(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3))));
+			break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
 		break;
 	case ARM64_MADD:
 		il.AddInstruction(ILSETREG_O(operand1,
@@ -2519,9 +2598,28 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_SUB:
 	case ARM64_SUBS:
-		il.AddInstruction(ILSETREG_O(
-		    operand1, il.Sub(REGSZ_O(operand1), ILREG_O(operand2),
-		                  ReadILOperand(il, instr.operands[2], REGSZ_O(operand1)), SETFLAGS)));
+		switch (instr.encoding)
+		{
+		case ENC_SUB_ASIMDSAME_ONLY:
+		case ENC_SUB_ASISDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.Sub(rsize, ILREG(srcs1[i]), ILREG(srcs2[i]))));
+		}
+		break;
+		default:
+			il.AddInstruction(ILSETREG_O(
+				operand1, il.Sub(REGSZ_O(operand1), ILREG_O(operand2),
+							ReadILOperand(il, instr.operands[2], REGSZ_O(operand1)), SETFLAGS)));
+		}
 		break;
 	case ARM64_SVC:
 	case ARM64_HVC:
