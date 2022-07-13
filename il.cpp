@@ -1877,23 +1877,32 @@ bool GetLowLevelILForInstruction(
 		}
 		break;
 	case ARM64_SMOV:
+	case ARM64_UMOV:
 	{
+_ENV_MOV_UMOV:
 		Register srcs1[16];
 		int src1_n = unpack_vector(operand2, srcs1);
 		if (src1_n != 1)
 			ABORT_LIFT;
 		int rsize = REGSZ_O(operand1);
+		auto extended = instr.operation == ARM64_SMOV
+			? il.SignExtend(rsize, ILREG(srcs1[0]))
+			: il.ZeroExtend(rsize, ILREG(srcs1[0]));
 		switch (instr.encoding)
 		{
 		case ENC_SMOV_ASIMDINS_W_W:
+		case ENC_UMOV_ASIMDINS_W_W:
+		case ENC_MOV_UMOV_ASIMDINS_W_W:
 			if (rsize != 4)
 				ABORT_LIFT;
-			il.AddInstruction(ILSETREG_O(operand1, il.SignExtend(rsize, ILREG(srcs1[0]))));
+			il.AddInstruction(ILSETREG_O(operand1, extended));
 			break;
 		case ENC_SMOV_ASIMDINS_X_X:
+		case ENC_UMOV_ASIMDINS_X_X:
+		case ENC_MOV_UMOV_ASIMDINS_X_X:
 			if (rsize != 8)
 				ABORT_LIFT;
-			il.AddInstruction(ILSETREG_O(operand1, il.SignExtend(rsize, ILREG(srcs1[0]))));
+			il.AddInstruction(ILSETREG_O(operand1, extended));
 			break;
 		default:
 			il.AddInstruction(il.Unimplemented());
@@ -2318,7 +2327,9 @@ bool GetLowLevelILForInstruction(
 		{
 		case ENC_MOV_DUP_ASISDONE_ONLY:
 			goto _ENC_MOV_DUP_ASISDONE_ONLY;
-
+		case ENC_MOV_UMOV_ASIMDINS_W_W:
+		case ENC_MOV_UMOV_ASIMDINS_X_X:
+			goto _ENV_MOV_UMOV;
 		default:
 		{
 			Register regs[16], srcs[16];
