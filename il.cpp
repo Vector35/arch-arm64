@@ -1473,6 +1473,32 @@ bool GetLowLevelILForInstruction(
 		                                 ILREG_O(operand3)),
 		                             il.Const(1, IMM_O(operand4)))));
 		break;
+	case ARM64_EXT:
+		switch (instr.encoding)
+		{
+		case ENC_EXT_ASIMDEXT_ONLY:
+		{
+			int index = IMM_O(operand4);
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0 || ((index & (1 << 3)) == 1 && dst_n != 16))
+				ABORT_LIFT;
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+				if (i < dst_n - index)
+					il.AddInstruction(ILSETREG(
+						dsts[i], ILREG(srcs1[i + index])));
+				else
+					il.AddInstruction(ILSETREG(
+						dsts[i], ILREG(srcs2[i - (dst_n - index)])));
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_ADDV:
 		switch (instr.encoding)
 		{
