@@ -2946,6 +2946,58 @@ _ENV_MOV_UMOV:
 		il.AddInstruction(
 		    il.Trap(IMM_O(operand1)));  // FIXME Breakpoint may need a parameter (IMM_O(operand1)));
 		return false;
+	case ARM64_XTN:
+	case ARM64_XTN2:
+	{
+		int upper = -1;
+		switch (operand1.arrSpec)
+		{
+			case ARRSPEC_16BYTES:
+			case ARRSPEC_8HALVES:
+			case ARRSPEC_4SINGLES:
+				upper = 1;
+				break;
+			case ARRSPEC_8BYTES:
+			case ARRSPEC_4HALVES:
+			case ARRSPEC_2SINGLES:
+				upper = 0;
+				break;
+			default:
+				upper = -1;
+		}
+		if (upper < 0)
+			ABORT_LIFT;
+		Register srcs1[16], dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
+		int src1_n = unpack_vector(operand2, srcs1);
+		if (dst_n == 0 || src1_n == 0 || (src1_n * (1 + upper) != dst_n))
+			ABORT_LIFT;
+		int rsize = get_register_size(srcs1[0]) / 2;
+		int dsize = get_register_size(dsts[0]);
+		if (upper == 0)
+			// Note: for XTN, the upper half of the destination vector should be cleared
+			// This can be done with a single 128-bit SetRegister, or a number of smaller SetRegister instructions
+			// Unfortunately, the size of the first SetRegister gets lost translating from LLIL to MLIL:
+			// A: 100015114  0828a10e   xtn     v8.2s, v0.2d  {0x0}  {0x0}
+			// L: 46 @ 100015114  v8.s[0] = 0
+			// L: 47 @ 100015114  v8.s[1] = 0
+			// M: 25 @ 100015114  v8.s8 = 0
+			// M: 26 @ 100015114  v8.v8.s[1] = 0
+			// H: 100015114          v8.d = 0
+			// H: 100015114          v8:4.d = 0
+			// C: 100015114          v8 = 0;
+			// C: 100015114          *(int32_t*)((char*)v8)[4] = 0;
+			// Only the LLIL and HLIL make the size of the first SetRegister obvious.
+			// TODO: decide whether the single SetRegister (below) is "better":
+			// il.AddInstruction(ILSETREG_O(operand1, il.Const(REGSZ_O(operand1), 0)));
+			for (int i = 0; i < dst_n; ++i)
+				il.AddInstruction(ILSETREG(
+					dsts[i], il.Const(dsize, 0)));
+		for (int i = 0; i < src1_n; ++i)
+			il.AddInstruction(ILSETREG(
+				dsts[i + upper * dst_n/2], il.Register(rsize, srcs1[i])));
+	}
+	break;
 	case ARM64_DUP:
 	{
 _ENC_MOV_DUP_ASISDONE_ONLY:
