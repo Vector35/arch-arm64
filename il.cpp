@@ -2967,6 +2967,29 @@ _ENV_MOV_UMOV:
 
 	}
 	break;
+	case ARM64_UZP1:
+	case ARM64_UZP2:
+	{
+		int odd = instr.operation == ARM64_UZP2 ? 1 : 0;
+		Register srcs1[16], srcs2[16], dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
+		int src1_n = unpack_vector(operand2, srcs1);
+		int src2_n = unpack_vector(operand3, srcs2);
+		if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+			ABORT_LIFT;
+		int rsize = get_register_size(dsts[0]);
+		for (int i = 0; i < dst_n; ++i)
+		{
+			if (i < dst_n / 2)
+				il.AddInstruction(ILSETREG(
+					dsts[i], ILREG(srcs1[2 * i + odd])));
+			else
+				il.AddInstruction(ILSETREG(
+					dsts[i], ILREG(srcs2[2 * (i - dst_n / 2) + odd])));
+		}
+
+	}
+	break;
 	case ARM64_XTN:
 	case ARM64_XTN2:
 	{
