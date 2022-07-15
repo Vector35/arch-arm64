@@ -660,9 +660,10 @@ static int consolidate_vector(
 }
 
 static void LoadStoreOperandPair(LowLevelILFunction& il, bool load, InstructionOperand& operand1,
-    InstructionOperand& operand2, InstructionOperand& operand3)
+    InstructionOperand& operand2, InstructionOperand& operand3, int size=0)
 {
-	unsigned sz = REGSZ_O(operand1);
+	unsigned dst_sz = REGSZ_O(operand1);
+	unsigned sz = size == 0 ? dst_sz : size;
 
 	/* do pre-indexing */
 	ExprId tmp = GetILOperandPreIndex(il, operand3);
@@ -677,8 +678,16 @@ static void LoadStoreOperandPair(LowLevelILFunction& il, bool load, InstructionO
 	/* load/store */
 	if (load)
 	{
-		il.AddInstruction(ILSETREG_O(operand1, il.Load(sz, addr0)));
-		il.AddInstruction(ILSETREG_O(operand2, il.Load(sz, addr1)));
+		if (size == 0)
+		{
+			il.AddInstruction(ILSETREG_O(operand1, il.Load(sz, addr0)));
+			il.AddInstruction(ILSETREG_O(operand2, il.Load(sz, addr1)));
+		}
+		else
+		{
+			il.AddInstruction(ILSETREG_O(operand1, il.SignExtend(dst_sz, il.Load(sz, addr0))));
+			il.AddInstruction(ILSETREG_O(operand2, il.SignExtend(dst_sz, il.Load(sz, addr1))));
+		}
 	}
 	else
 	{
@@ -2254,6 +2263,9 @@ _ENV_MOV_UMOV:
 	case ARM64_LDP:
 	case ARM64_LDNP:
 		LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2]);
+		break;
+	case ARM64_LDPSW:
+		LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2], 4);
 		break;
 	case ARM64_LDR:
 	case ARM64_LDUR:
