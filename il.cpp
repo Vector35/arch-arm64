@@ -1580,6 +1580,56 @@ bool GetLowLevelILForInstruction(
 			il.AddInstruction(il.Unimplemented());
 		}
 		break;
+	case ARM64_ADDP:
+	case ARM64_FADDP:
+		switch (instr.encoding)
+		{
+		case ENC_ADDP_ASISDPAIR_ONLY:
+		case ENC_FADDP_ASISDPAIR_ONLY_H:
+		case ENC_FADDP_ASISDPAIR_ONLY_SD:
+		{
+			Register srcs1[16];
+			int src1_n = unpack_vector(operand2, srcs1);
+			if (src1_n != 2)
+				ABORT_LIFT;
+			int rsize = get_register_size(srcs1[0]);
+			if (instr.encoding == ENC_ADDP_ASISDPAIR_ONLY)
+				il.AddInstruction(ILSETREG_O(operand1,
+					il.Add(REGSZ_O(operand1), ILREG(srcs1[0]), ILREG(srcs1[1]))));
+			else
+				il.AddInstruction(ILSETREG_O(operand1,
+					il.FloatAdd(REGSZ_O(operand1), ILREG(srcs1[0]), ILREG(srcs1[1]))));
+		}
+		break;
+		case ENC_ADDP_ASIMDSAME_ONLY:
+		case ENC_FADDP_ASIMDSAMEFP16_ONLY:
+		case ENC_FADDP_ASIMDSAME_ONLY:
+		{
+			Register srcs1[16], srcs2[16], dsts[16];
+			int dst_n = unpack_vector(operand1, dsts);
+			int src1_n = unpack_vector(operand2, srcs1);
+			int src2_n = unpack_vector(operand3, srcs2);
+			if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+				ABORT_LIFT;
+
+			int rsize = get_register_size(dsts[0]);
+			for (int i = 0; i < dst_n; ++i)
+			{
+				auto srcs = i * 2 < dst_n ? srcs1 : srcs2;
+				int j = i * 2 < dst_n ? i : i - dst_n / 2;
+				if (instr.encoding == ENC_ADDP_ASISDPAIR_ONLY)
+					il.AddInstruction(ILSETREG(
+						dsts[i], il.Add(rsize, ILREG(srcs[2 * j]), ILREG(srcs[2 * j+1]))));
+				else
+					il.AddInstruction(ILSETREG(
+						dsts[i], il.FloatAdd(rsize, ILREG(srcs[2 * j]), ILREG(srcs[2 * j+1]))));
+			}
+		}
+		break;
+		default:
+			il.AddInstruction(il.Unimplemented());
+		}
+		break;
 	case ARM64_MLA:
 	case ARM64_MLS:
 		switch (instr.encoding)
