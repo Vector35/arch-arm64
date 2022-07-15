@@ -2946,6 +2946,27 @@ _ENV_MOV_UMOV:
 		il.AddInstruction(
 		    il.Trap(IMM_O(operand1)));  // FIXME Breakpoint may need a parameter (IMM_O(operand1)));
 		return false;
+	case ARM64_TRN1:
+	case ARM64_TRN2:
+	{
+		int odd = instr.operation == ARM64_TRN2 ? 1 : 0;
+		Register srcs1[16], srcs2[16], dsts[16];
+		int dst_n = unpack_vector(operand1, dsts);
+		int src1_n = unpack_vector(operand2, srcs1);
+		int src2_n = unpack_vector(operand3, srcs2);
+		if ((dst_n != src1_n) || (src1_n != src2_n) || dst_n == 0)
+			ABORT_LIFT;
+		int rsize = get_register_size(dsts[0]);
+		for (int i = 0; i < dst_n; i += 2)
+		{
+			il.AddInstruction(ILSETREG(
+				dsts[i], ILREG(srcs1[i + odd])));
+			il.AddInstruction(ILSETREG(
+				dsts[i + 1], ILREG(srcs2[i + odd])));
+		}
+
+	}
+	break;
 	case ARM64_XTN:
 	case ARM64_XTN2:
 	{
