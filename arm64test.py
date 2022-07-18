@@ -124,85 +124,85 @@ tests_ucvtf = [
 	(b'\x80\x10\x30\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,[LLIL_REG(oslar_el1)])'), # mrs x0, oslar_el1
 	# when same input/output register, encoding is UCVTF_asisdmisc_R
 	# ucvtf s16, s7                                                    UCVTF_asisdmisc_R
-	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,[LLIL_REG.d(s7)])'),
+	(b'\xF0\xD8\x21\x7E', 'LLIL_SET_REG.d(s16,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(s7)))'),
 	# ucvtf d26, d30                                                   UCVTF_asisdmisc_R
-	(b'\xDA\xDB\x61\x7E', 'LLIL_INTRINSIC([d26],vcvt_f64_u64,[LLIL_REG.q(d30)])'),
+	(b'\xDA\xDB\x61\x7E', 'LLIL_SET_REG.q(d26,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(d30)))'),
 	# ucvtf s6, s19                                                    UCVTF_asisdmisc_R
-	(b'\x66\xDA\x21\x7E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,[LLIL_REG.d(s19)])'),
+	(b'\x66\xDA\x21\x7E', 'LLIL_SET_REG.d(s6,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(s19)))'),
 	# ucvtf s13, s0                                                    UCVTF_asisdmisc_R
-	(b'\x0D\xD8\x21\x7E', 'LLIL_INTRINSIC([s13],vcvts_f32_u32,[LLIL_REG.d(s0)])'),
+	(b'\x0D\xD8\x21\x7E', 'LLIL_SET_REG.d(s13,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(s0)))'),
 	# ucvtf d28, d26                                                   UCVTF_asisdmisc_R
-	(b'\x5C\xDB\x61\x7E', 'LLIL_INTRINSIC([d28],vcvt_f64_u64,[LLIL_REG.q(d26)])'),
+	(b'\x5C\xDB\x61\x7E', 'LLIL_SET_REG.q(d28,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(d26)))'),
 	# ucvtf d25, d11                                                   UCVTF_asisdmisc_R
-	(b'\x79\xD9\x61\x7E', 'LLIL_INTRINSIC([d25],vcvt_f64_u64,[LLIL_REG.q(d11)])'),
+	(b'\x79\xD9\x61\x7E', 'LLIL_SET_REG.q(d25,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(d11)))'),
 	# ucvtf d24, d21                                                   UCVTF_asisdmisc_R
-	(b'\xB8\xDA\x61\x7E', 'LLIL_INTRINSIC([d24],vcvt_f64_u64,[LLIL_REG.q(d21)])'),
+	(b'\xB8\xDA\x61\x7E', 'LLIL_SET_REG.q(d24,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(d21)))'),
 	# ucvtf s7, s18                                                    UCVTF_asisdmisc_R
-	(b'\x47\xDA\x21\x7E', 'LLIL_INTRINSIC([s7],vcvts_f32_u32,[LLIL_REG.d(s18)])'),
+	(b'\x47\xDA\x21\x7E', 'LLIL_SET_REG.d(s7,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(s18)))'),
 	# when 16-bit reg, needs FP16 extension and encoding name breaks convention
 	# ucvtf h30, h0                                                    UCVTF_asisdmiscfp16_R
-	(b'\x1E\xD8\x79\x7E', 'LLIL_INTRINSIC([h30],vcvth_f16_u16,[LLIL_REG.w(h0)])'),
+	(b'\x1E\xD8\x79\x7E', 'LLIL_SET_REG.w(h30,LLIL_INT_TO_FLOAT.w(LLIL_REG.w(h0)))'),
 	# ucvtf h22, h6                                                    UCVTF_asisdmiscfp16_R
-	(b'\xD6\xD8\x79\x7E', 'LLIL_INTRINSIC([h22],vcvth_f16_u16,[LLIL_REG.w(h6)])'),
+	(b'\xD6\xD8\x79\x7E', 'LLIL_SET_REG.w(h22,LLIL_INT_TO_FLOAT.w(LLIL_REG.w(h6)))'),
 	# ucvtf h7, h2                                                     UCVTF_asisdmiscfp16_R
-	(b'\x47\xD8\x79\x7E', 'LLIL_INTRINSIC([h7],vcvth_f16_u16,[LLIL_REG.w(h2)])'),
+	(b'\x47\xD8\x79\x7E', 'LLIL_SET_REG.w(h7,LLIL_INT_TO_FLOAT.w(LLIL_REG.w(h2)))'),
 	# ucvtf h24, h18                                                   UCVTF_asisdmiscfp16_R
-	(b'\x58\xDA\x79\x7E', 'LLIL_INTRINSIC([h24],vcvth_f16_u16,[LLIL_REG.w(h18)])'),
+	(b'\x58\xDA\x79\x7E', 'LLIL_SET_REG.w(h24,LLIL_INT_TO_FLOAT.w(LLIL_REG.w(h18)))'),
 	# ucvtf h8, h21                                                    UCVTF_asisdmiscfp16_R
 	# 64-bit GPR to 64-bit FP
 	# ucvtf d30, x19                                                   UCVTF_D64_float2int
-	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,[LLIL_REG.q(x19)])'),
+	(b'\x7E\x02\x63\x9E', 'LLIL_SET_REG.q(d30,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x19)))'),
 	# ucvtf d10, x28                                                   UCVTF_D64_float2int
-	(b'\x8A\x03\x63\x9E', 'LLIL_INTRINSIC([d10],vcvt_f64_u64,[LLIL_REG.q(x28)])'),
+	(b'\x8A\x03\x63\x9E', 'LLIL_SET_REG.q(d10,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x28)))'),
 	# ucvtf d16, x21                                                   UCVTF_D64_float2int
-	(b'\xB0\x02\x63\x9E', 'LLIL_INTRINSIC([d16],vcvt_f64_u64,[LLIL_REG.q(x21)])'),
+	(b'\xB0\x02\x63\x9E', 'LLIL_SET_REG.q(d16,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x21)))'),
 	# ucvtf d18, x24                                                   UCVTF_D64_float2int
-	(b'\x12\x03\x63\x9E', 'LLIL_INTRINSIC([d18],vcvt_f64_u64,[LLIL_REG.q(x24)])'),
+	(b'\x12\x03\x63\x9E', 'LLIL_SET_REG.q(d18,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x24)))'),
 	# 64-bit GPR to 32-bit FP
 	# ucvtf s29, x5                                                    UCVTF_S64_float2int
-	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,[LLIL_REG.q(x5)])'),
+	(b'\xBD\x00\x23\x9E', 'LLIL_SET_REG.d(s29,LLIL_INT_TO_FLOAT.d(LLIL_REG.q(x5)))'),
 	# ucvtf s23, x8                                                    UCVTF_S64_float2int
-	(b'\x17\x01\x23\x9E', 'LLIL_INTRINSIC([s23],vcvth_f16_u16,[LLIL_REG.q(x8)])'),
+	(b'\x17\x01\x23\x9E', 'LLIL_SET_REG.d(s23,LLIL_INT_TO_FLOAT.d(LLIL_REG.q(x8)))'),
 	# ucvtf s22, x14                                                   UCVTF_S64_float2int
-	(b'\xD6\x01\x23\x9E', 'LLIL_INTRINSIC([s22],vcvth_f16_u16,[LLIL_REG.q(x14)])'),
+	(b'\xD6\x01\x23\x9E', 'LLIL_SET_REG.d(s22,LLIL_INT_TO_FLOAT.d(LLIL_REG.q(x14)))'),
 	# ucvtf s10, x11                                                   UCVTF_S64_float2int
-	(b'\x6A\x01\x23\x9E', 'LLIL_INTRINSIC([s10],vcvth_f16_u16,[LLIL_REG.q(x11)])'),
+	(b'\x6A\x01\x23\x9E', 'LLIL_SET_REG.d(s10,LLIL_INT_TO_FLOAT.d(LLIL_REG.q(x11)))'),
 	# 64-bit GPR to 16-bit FP
 	# ucvtf h3, x2                                                     UCVTF_H64_float2int
-	(b'\x43\x00\xE3\x9E', 'LLIL_INTRINSIC([h3],vcvth_f16_u64,[LLIL_REG.q(x2)])'),
+	(b'\x43\x00\xE3\x9E', 'LLIL_SET_REG.w(h3,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x2)))'),
 	# ucvtf h18, x21                                                   UCVTF_H64_float2int
-	(b'\xB2\x02\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,[LLIL_REG.q(x21)])'),
+	(b'\xB2\x02\xE3\x9E', 'LLIL_SET_REG.w(h18,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x21)))'),
 	# ucvtf h18, x7                                                    UCVTF_H64_float2int
-	(b'\xF2\x00\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,[LLIL_REG.q(x7)])'),
+	(b'\xF2\x00\xE3\x9E', 'LLIL_SET_REG.w(h18,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x7)))'),
 	# ucvtf h27, x29                                                   UCVTF_H64_float2int
-	(b'\xBB\x03\xE3\x9E', 'LLIL_INTRINSIC([h27],vcvth_f16_u64,[LLIL_REG.q(x29)])'),
+	(b'\xBB\x03\xE3\x9E', 'LLIL_SET_REG.w(h27,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x29)))'),
 	# 32-bit GPR to 64-bit FP
 	# ucvtf d0, w7                                                     UCVTF_D32_float2int
-	(b'\xE0\x00\x63\x1E', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,[LLIL_REG.d(w7)])'),
+	(b'\xE0\x00\x63\x1E', 'LLIL_SET_REG.q(d0,LLIL_INT_TO_FLOAT.q(LLIL_REG.d(w7)))'),
 	# ucvtf d19, w25                                                   UCVTF_D32_float2int
-	(b'\x33\x03\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w25)])'),
+	(b'\x33\x03\x63\x1E', 'LLIL_SET_REG.q(d19,LLIL_INT_TO_FLOAT.q(LLIL_REG.d(w25)))'),
 	# ucvtf d19, w5                                                    UCVTF_D32_float2int
-	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w5)])'),
+	(b'\xB3\x00\x63\x1E', 'LLIL_SET_REG.q(d19,LLIL_INT_TO_FLOAT.q(LLIL_REG.d(w5)))'),
 	# ucvtf d26, w16                                                   UCVTF_D32_float2int
-	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,[LLIL_REG.d(w16)])'),
+	(b'\x1A\x02\x63\x1E', 'LLIL_SET_REG.q(d26,LLIL_INT_TO_FLOAT.q(LLIL_REG.d(w16)))'),
 	# 32-bit GPR to 32-bit FP
 	# ucvtf s29, w24                                                   UCVTF_S32_float2int
-	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,[LLIL_REG.d(w24)])'),
+	(b'\x1D\x03\x23\x1E', 'LLIL_SET_REG.d(s29,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(w24)))'),
 	# ucvtf s6, w7                                                     UCVTF_S32_float2int
-	(b'\xE6\x00\x23\x1E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,[LLIL_REG.d(w7)])'),
+	(b'\xE6\x00\x23\x1E', 'LLIL_SET_REG.d(s6,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(w7)))'),
 	# ucvtf s31, w23                                                   UCVTF_S32_float2int
-	(b'\xFF\x02\x23\x1E', 'LLIL_INTRINSIC([s31],vcvts_f32_u32,[LLIL_REG.d(w23)])'),
+	(b'\xFF\x02\x23\x1E', 'LLIL_SET_REG.d(s31,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(w23)))'),
 	# ucvtf s21, w0                                                    UCVTF_S32_float2int
-	(b'\x15\x00\x23\x1E', 'LLIL_INTRINSIC([s21],vcvts_f32_u32,[LLIL_REG.d(w0)])'),
+	(b'\x15\x00\x23\x1E', 'LLIL_SET_REG.d(s21,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(w0)))'),
 	# 32-bit GPR to 16-bit FP
 	# ucvtf h5, w12                                                    UCVTF_H32_float2int
-	(b'\x85\x01\xE3\x1E', 'LLIL_INTRINSIC([h5],vcvth_f16_u32,[LLIL_REG.d(w12)])'),
+	(b'\x85\x01\xE3\x1E', 'LLIL_SET_REG.w(h5,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w12)))'),
 	# ucvtf h30, w15                                                   UCVTF_H32_float2int
-	(b'\xFE\x01\xE3\x1E', 'LLIL_INTRINSIC([h30],vcvth_f16_u32,[LLIL_REG.d(w15)])'),
+	(b'\xFE\x01\xE3\x1E', 'LLIL_SET_REG.w(h30,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w15)))'),
 	# ucvtf h7, w13                                                    UCVTF_H32_float2int
-	(b'\xA7\x01\xE3\x1E', 'LLIL_INTRINSIC([h7],vcvth_f16_u32,[LLIL_REG.d(w13)])'),
+	(b'\xA7\x01\xE3\x1E', 'LLIL_SET_REG.w(h7,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w13)))'),
 	# ucvtf h26, w8                                                    UCVTF_H32_float2int
-	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,[LLIL_REG.d(w8)])'),
+	(b'\x1A\x01\xE3\x1E', 'LLIL_SET_REG.w(h26,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w8)))'),
 ]
 
 tests_ret = [
@@ -672,8 +672,8 @@ tests_mov = [
 	(b'\x0A\x00\x80\x52', 'LLIL_SET_REG.d(w10,LLIL_CONST.d(0x0))'),
 	# mov v8.16b, v1.16b
 	(b'\x28\x1C\xA1\x4E', 'LLIL_SET_REG.o(v8,LLIL_REG.o(v1))'),
-	# mov v0.2s, v1.2s
-	(b'\x20\x1C\xA1\x0E', 'LLIL_SET_REG.q(v0.d[0],LLIL_REG.q(v1.d[0]))'),
+	# mov v0.8b, v1.8b
+	(b'\x20\x1C\xA1\x0E', 'LLIL_SET_REG.o(v0,LLIL_REG.o(v1))'),
 ]
 
 tests_movi = [
@@ -1548,9 +1548,9 @@ tests_fmov = [
 	# fmov x7, v8.d[1]
 	(b'\x07\x01\xAE\x9E', 'LLIL_SET_REG.q(x7,LLIL_FLOAT_TO_INT.q(LLIL_REG.q(v8.d[1])))'),
 	# fmov d19, x0
-	(b'\x13\x00\x67\x9E', 'LLIL_SET_REG.q(d19,LLIL_FLOAT_TO_INT.q(LLIL_REG.q(x0)))'),
+	(b'\x13\x00\x67\x9E', 'LLIL_SET_REG.q(d19,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x0)))'),
 	# fmov d8, x21
-	(b'\xA8\x02\x67\x9E', 'LLIL_SET_REG.q(d8,LLIL_FLOAT_TO_INT.q(LLIL_REG.q(x21)))'),
+	(b'\xA8\x02\x67\x9E', 'LLIL_SET_REG.q(d8,LLIL_INT_TO_FLOAT.q(LLIL_REG.q(x21)))'),
 	# fmov d24, d27
 	(b'\x78\x43\x60\x1E', 'LLIL_SET_REG.q(d24,LLIL_REG.q(d27))'),
 	# fmov d19, d19
@@ -1560,13 +1560,13 @@ tests_fmov = [
 	# TODO fmov d19, #-3.125
 	(b'\x13\x30\x71\x1E', 'LLIL_SET_REG.q(d19,LLIL_FLOAT_CONST.q(-3.125))'),
 	# fmov h28, w19
-	(b'\x7C\x02\xE7\x1E', 'LLIL_SET_REG.w(h28,LLIL_FLOAT_TO_INT.w(LLIL_REG.d(w19)))'),
+	(b'\x7C\x02\xE7\x1E', 'LLIL_SET_REG.w(h28,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w19)))'),
 	# fmov h2, w5
-	(b'\xA2\x00\xE7\x1E', 'LLIL_SET_REG.w(h2,LLIL_FLOAT_TO_INT.w(LLIL_REG.d(w5)))'),
+	(b'\xA2\x00\xE7\x1E', 'LLIL_SET_REG.w(h2,LLIL_INT_TO_FLOAT.w(LLIL_REG.d(w5)))'),
 	# fmov h10, x14
-	(b'\xCA\x01\xE7\x9E', 'LLIL_SET_REG.w(h10,LLIL_FLOAT_TO_INT.w(LLIL_REG.q(x14)))'),
+	(b'\xCA\x01\xE7\x9E', 'LLIL_SET_REG.w(h10,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x14)))'),
 	# fmov h9, x29
-	(b'\xA9\x03\xE7\x9E', 'LLIL_SET_REG.w(h9,LLIL_FLOAT_TO_INT.w(LLIL_REG.q(x29)))'),
+	(b'\xA9\x03\xE7\x9E', 'LLIL_SET_REG.w(h9,LLIL_INT_TO_FLOAT.w(LLIL_REG.q(x29)))'),
 	# fmov h6, h23
 	(b'\xE6\x42\xE0\x1E', 'LLIL_SET_REG.w(h6,LLIL_REG.w(h23))'),
 	# fmov h6, h28
@@ -1576,9 +1576,9 @@ tests_fmov = [
 	# fmov h25, #11.0
 	(b'\x19\xD0\xE4\x1E', 'LLIL_SET_REG.w(h25,LLIL_FLOAT_CONST.w(1093664768))'),
 	# fmov s17, w2
-	(b'\x51\x00\x27\x1E', 'LLIL_SET_REG.d(s17,LLIL_FLOAT_TO_INT.d(LLIL_REG.d(w2)))'),
+	(b'\x51\x00\x27\x1E', 'LLIL_SET_REG.d(s17,LLIL_INT_TO_FLOAT.d(LLIL_REG.d(w2)))'),
 	# fmov s1, wzr
-	(b'\xE1\x03\x27\x1E', 'LLIL_SET_REG.d(s1,LLIL_FLOAT_TO_INT.d(LLIL_CONST.d(0x0)))'),
+	(b'\xE1\x03\x27\x1E', 'LLIL_SET_REG.d(s1,LLIL_INT_TO_FLOAT.d(LLIL_CONST.d(0x0)))'),
 	# fmov s4, s11
 	(b'\x64\x41\x20\x1E', 'LLIL_SET_REG.d(s4,LLIL_REG.d(s11))'),
 	# fmov s23, s2
