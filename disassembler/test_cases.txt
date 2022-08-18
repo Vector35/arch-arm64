@@ -13605,6 +13605,7 @@ D503221F esb
 0F1F9A11 fmul v17.4h, v16.4h, v15.h[5]
 0F089B0A fmul v10.4h, v24.4h, v8.h[4]
 // FMUL_asimdelem_R_SD 0x0011111xxxxxxx1001x0xxxxxxxxxx
+0F809021 fmul v1.2s, v1.2s, v0.s[0]
 4FC39965 fmul v5.2d, v11.2d, v3.d[1]
 4FA39897 fmul v23.4s, v4.4s, v3.s[3]
 0FB591F0 fmul v16.2s, v15.2s, v21.s[1]

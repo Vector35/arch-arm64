@@ -41,11 +41,23 @@ def gather_samples(mnems, encodings):
 	with open(fpath) as fp:
 		lines = fp.readlines()
 
+	mnems = [re.compile(x, re.IGNORECASE) for x in mnems]
+
 	samples = 0
 	current_encoding = None
 	for line in lines:
 		if line.startswith('// NOTE:'): continue
 		if line.startswith('// SYNTAX:'): continue
+		if line.startswith('// https:'): continue
+		if line.startswith('// 1101010100|L=0|OP0=00|OP1=011|CRN=0011|CRM=0100|1|OPC=00|RT=11111'): continue
+		if line.strip().endswith('// TCOMMIT'): continue
+		if line.strip().endswith('// DRPS'): continue
+		if line.strip().endswith('// ERET'): continue
+		if line.strip().endswith('// ERETAA'): continue
+		if line.strip().endswith('// ERETAB'): continue
+		if line.strip().endswith('// PSSBB'): continue
+		if line.strip().endswith('// SSBB'): continue
+		if line.strip().endswith('// PSSBB_DSB_BO_BARRIERS'): continue
 
 		if re.match(r'^// .*? .*', line):
 			m = re.match(r'^// (.*?) .*', line)
@@ -66,7 +78,8 @@ def gather_samples(mnems, encodings):
 			data = codecs.decode(b3+b2+b1+b0, 'hex_codec')
 			#if not (instxt==mnem or instxt.startswith(mnem+' ')):
 
-			mnemonic_match = [x for x in mnems if instxt.startswith(x)]
+			# mnemonic_match = [x for x in mnems if instxt.lower().startswith(x.lower()) or current_encoding.lower().startswith(x.lower())]
+			mnemonic_match = [x for x in mnems if x.search(instxt) or x.search(current_encoding)]
 			encoding_match = current_encoding.upper() in encodings
 			if not (mnemonic_match or encoding_match):
 				continue
@@ -79,7 +92,7 @@ def gather_samples(mnems, encodings):
 			samples += 1
 			continue
 
-		print('unable to parse line: %s' % line)
+		print('unable to parse line: %r' % line)
 		sys.exit(-1)
 
 # generate lifting tests for a given mnemonic
