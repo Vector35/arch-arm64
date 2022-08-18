@@ -2653,7 +2653,7 @@ class Arm64CallingConvention : public CallingConvention
 	virtual vector<uint32_t> GetCalleeSavedRegisters() override
 	{
 		return vector<uint32_t> {REG_X19, REG_X20, REG_X21, REG_X22, REG_X23, REG_X24, REG_X25, REG_X26,
-		    REG_X27, REG_X28, REG_X29};
+			REG_X27, REG_X28, REG_X29, REG_V8, REG_V9, REG_V10, REG_V11, REG_V12, REG_V13, REG_V14, REG_V15};
 	}
 
 
