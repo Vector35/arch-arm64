@@ -863,7 +863,7 @@ static void LoadStoreOperand(LowLevelILFunction& il, bool load,
 	}
 }
 
-static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedImm, size_t size,
+static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool sign_extend, size_t size,
     InstructionOperand& operand1, InstructionOperand& operand2)
 {
 	ExprId tmp;
@@ -875,7 +875,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedI
 			// operand1.reg = [operand2.reg]
 			tmp = il.Operand(1, il.Load(size, ILREG_O(operand2)));
 
-			if (signedImm)
+			if (sign_extend)
 				tmp = il.SignExtend(REGSZ_O(operand1), tmp);
 			else
 				tmp = il.ZeroExtend(REGSZ_O(operand1), tmp);
@@ -891,7 +891,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedI
 
 			tmp = il.Operand(1, il.Load(size, tmp));
 
-			if (signedImm)
+			if (sign_extend)
 				tmp = il.SignExtend(REGSZ_O(operand1), tmp);
 			else
 				tmp = il.ZeroExtend(REGSZ_O(operand1), tmp);
@@ -906,7 +906,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedI
 			// operand1.reg = [operand2.reg]
 			tmp = il.Operand(1, il.Load(size, ILREG_O(operand2)));
 
-			if (signedImm)
+			if (sign_extend)
 				tmp = il.SignExtend(REGSZ_O(operand1), tmp);
 			else
 				tmp = il.ZeroExtend(REGSZ_O(operand1), tmp);
@@ -917,7 +917,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedI
 			// operand1.reg = [operand2.reg]
 			tmp = il.Operand(1, il.Load(size, ILREG_O(operand2)));
 
-			if (signedImm)
+			if (sign_extend)
 				tmp = il.SignExtend(REGSZ_O(operand1), tmp);
 			else
 				tmp = il.ZeroExtend(REGSZ_O(operand1), tmp);
@@ -933,7 +933,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool signedI
 			    il.Operand(1, il.Load(size, il.Add(REGSZ_O(operand2), ILREG_O(operand2),
 			                                    GetShiftedRegister(il, operand2, 1, REGSZ_O(operand2)))));
 
-			if (signedImm)
+			if (sign_extend)
 				tmp = il.SignExtend(REGSZ_O(operand1), tmp);
 			else
 				tmp = il.ZeroExtend(REGSZ_O(operand1), tmp);
@@ -1674,14 +1674,20 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_LDAR:
 	case ARM64_LDAXR:
+	case ARM64_LDAPR:
+	case ARM64_LDAPUR:
 		LoadStoreOperand(il, true, instr.operands[0], instr.operands[1], 0);
 		break;
 	case ARM64_LDARB:
 	case ARM64_LDAXRB:
+	case ARM64_LDAPRB:
+	case ARM64_LDAPURB:
 		LoadStoreOperandSize(il, true, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDARH:
 	case ARM64_LDAXRH:
+	case ARM64_LDAPRH:
+	case ARM64_LDAPURH:
 		LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDP:
@@ -1704,14 +1710,17 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_LDRSB:
 	case ARM64_LDURSB:
+	case ARM64_LDAPURSB:
 		LoadStoreOperandSize(il, true, true, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRSH:
 	case ARM64_LDURSH:
+	case ARM64_LDAPURSH:
 		LoadStoreOperandSize(il, true, true, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDRSW:
 	case ARM64_LDURSW:
+	case ARM64_LDAPURSW:
 		LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LD1:
@@ -2051,16 +2060,19 @@ bool GetLowLevelILForInstruction(
 	case ARM64_STR:
 	case ARM64_STLR:
 	case ARM64_STUR:
+	case ARM64_STLUR:
 		LoadStoreOperand(il, false, instr.operands[0], instr.operands[1], 0);
 		break;
 	case ARM64_STRB:
 	case ARM64_STLRB:
 	case ARM64_STURB:
+	case ARM64_STLURB:
 		LoadStoreOperandSize(il, false, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_STRH:
 	case ARM64_STLRH:
 	case ARM64_STURH:
+	case ARM64_STLURH:
 		LoadStoreOperandSize(il, false, false, 2, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_SUB:
