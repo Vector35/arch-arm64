@@ -3488,8 +3488,6 @@ extern "C"
 		BinaryViewType::RegisterArchitecture("COFF", 0xaa64, LittleEndian, arm64);
 		BinaryViewType::RegisterArchitecture("PE", 0xaa64, LittleEndian, arm64);
 		BinaryViewType::RegisterArchitecture("PE", 0xaa64, BigEndian, arm64);
-		arm64->SetBinaryViewTypeConstant("ELF", "R_COPY", 0x400);
-		arm64->SetBinaryViewTypeConstant("ELF", "R_JUMP_SLOT", 0x402);
 
 		return true;
 	}
