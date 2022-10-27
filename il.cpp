@@ -1117,6 +1117,80 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 	}
 }
 
+enum MemAtomicOp {
+    MemAtomicOp_ADD,
+    MemAtomicOp_BIC,
+    MemAtomicOp_EOR,
+    MemAtomicOp_ORR,
+    MemAtomicOp_SMAX,
+    MemAtomicOp_SMIN,
+    MemAtomicOp_UMAX,
+    MemAtomicOp_UMIN,
+    MemAtomicOp_SWP
+};
+
+static inline ExprId MemAtomicExprToSInt(LowLevelILFunction& il, ExprId reg, uint32_t regSize, uint32_t dataSize) {
+    if (regSize == dataSize) {
+        return reg;
+    }
+    return il.SignExtend(regSize, il.LowPart(dataSize, reg));
+}
+
+static ExprId MemAtomicOpToIL(LowLevelILFunction& il, MemAtomicOp op, ExprId regValue, uint32_t regSize, ExprId memValue, uint32_t dataSize) {
+    switch (op) {
+        case MemAtomicOp_ADD:
+            return il.Add(regSize, memValue, regValue);
+        case MemAtomicOp_BIC:
+            return il.And(regSize, memValue, il.Not(regSize, regValue));
+        case MemAtomicOp_EOR:
+            return il.Xor(regSize, memValue, regValue);
+        case MemAtomicOp_ORR:
+            return il.Or(regSize, memValue, regValue);
+        case MemAtomicOp_SMAX: {
+            GenIfElse(il, il.CompareSignedGreaterThan(regSize,
+                                                      MemAtomicExprToSInt(il, memValue, regSize, dataSize),
+                                                      MemAtomicExprToSInt(il, regValue, regSize, dataSize)),
+                      il.SetRegister(regSize, LLIL_TEMP(1), memValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), regValue));
+            return il.Register(regSize, LLIL_TEMP(1));
+        }
+        case MemAtomicOp_SMIN: {
+            GenIfElse(il, il.CompareSignedGreaterThan(regSize,
+                                                      MemAtomicExprToSInt(il, memValue, regSize, dataSize),
+                                                      MemAtomicExprToSInt(il, regValue, regSize, dataSize)),
+                      il.SetRegister(regSize, LLIL_TEMP(1), regValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), memValue));
+            return il.Register(regSize, LLIL_TEMP(1));
+        }
+        case MemAtomicOp_UMAX:
+            GenIfElse(il, il.CompareUnsignedGreaterThan(regSize, memValue, regValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), memValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), regValue));
+            return il.Register(regSize, LLIL_TEMP(1));
+        case MemAtomicOp_UMIN:
+            GenIfElse(il, il.CompareUnsignedGreaterThan(regSize, memValue, regValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), regValue),
+                      il.SetRegister(regSize, LLIL_TEMP(1), memValue));
+            return il.Register(regSize, LLIL_TEMP(1));
+        case MemAtomicOp_SWP:
+            return regValue;
+    }
+}
+
+static void GenMemAtomic(LowLevelILFunction& il, InstructionOperand& regAddr, MemAtomicOp op, uint32_t regSize,
+                         uint32_t dataSize, InstructionOperand& regSrc, InstructionOperand& regDst) {
+    if (dataSize < regSize) {
+        il.AddInstruction(il.SetRegister(regSize, LLIL_TEMP(0), il.ZeroExtend(regSize, il.Load(dataSize, ILREG_O(regAddr)))));
+    } else {
+        il.AddInstruction(il.SetRegister(regSize, LLIL_TEMP(0), il.Load(dataSize, ILREG_O(regAddr))));
+    }
+    il.AddInstruction(
+            il.Store(dataSize, ILREG_O(regAddr),
+                     MemAtomicOpToIL(il, op, ILREG_O(regSrc), regSize, il.Register(regSize, LLIL_TEMP(0)), dataSize)));
+    if (!IS_ZERO_REG(REG_O(regDst))) {
+        il.AddInstruction(il.SetRegister(regSize, REG_O(regDst), il.Register(regSize, LLIL_TEMP(0))));
+    }
+}
 
 bool GetLowLevelILForInstruction(
     Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize)
@@ -1726,30 +1800,6 @@ bool GetLowLevelILForInstruction(
 	case ARM64_LD1:
 		LoadStoreVector(il, true, instr.operands[0], instr.operands[1]);
 		break;
-	case ARM64_LDADD:
-	case ARM64_LDADDA:
-	case ARM64_LDADDL:
-	case ARM64_LDADDAL:
-		LoadStoreOperand(il, true, operand2, operand3, 0);
-		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
-		    il.Add(REGSZ_O(operand1), ILREG_O(operand1), ILREG_O(operand2))));
-		break;
-	case ARM64_LDADDB:
-	case ARM64_LDADDAB:
-	case ARM64_LDADDLB:
-	case ARM64_LDADDALB:
-		LoadStoreOperand(il, true, operand2, operand3, 1);
-		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
-		    il.Add(1, il.LowPart(1, ILREG_O(operand1)), il.LowPart(1, ILREG_O(operand2)))));
-		break;
-	case ARM64_LDADDH:
-	case ARM64_LDADDAH:
-	case ARM64_LDADDLH:
-	case ARM64_LDADDALH:
-		LoadStoreOperand(il, true, operand2, operand3, 2);
-		il.AddInstruction(il.Store(REGSZ_O(operand3), ILREG_O(operand3),
-		    il.Add(2, il.LowPart(2, ILREG_O(operand1)), il.LowPart(2, ILREG_O(operand2)))));
-		break;
 	case ARM64_LSL:
 		il.AddInstruction(ILSETREG_O(operand1, il.ShiftLeft(REGSZ_O(operand2), ILREG_O(operand2),
 		                                           ReadILOperand(il, operand3, REGSZ_O(operand2)))));
@@ -2099,27 +2149,6 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.SystemCall());
 		break;
 	}
-	case ARM64_SWP: /* word (4) or doubleword (8) */
-	case ARM64_SWPA:
-	case ARM64_SWPL:
-	case ARM64_SWPAL:
-		LoadStoreOperand(il, true, operand2, operand3, 0);
-		LoadStoreOperand(il, false, operand1, operand3, 0);
-		break;
-	case ARM64_SWPB: /* byte (1) */
-	case ARM64_SWPAB:
-	case ARM64_SWPLB:
-	case ARM64_SWPALB:
-		LoadStoreOperand(il, true, operand2, operand3, 1);
-		il.AddInstruction(il.Store(1, ILREG_O(operand3), il.LowPart(1, ILREG_O(operand1))));
-		break;
-	case ARM64_SWPH: /* half-word (2) */
-	case ARM64_SWPAH:
-	case ARM64_SWPLH:
-	case ARM64_SWPALH:
-		LoadStoreOperand(il, true, operand2, operand3, 2);
-		il.AddInstruction(il.Store(2, ILREG_O(operand3), il.LowPart(2, ILREG_O(operand1))));
-		break;
 	case ARM64_SXTB:
 		il.AddInstruction(
 		    ILSETREG_O(operand1, ExtractRegister(il, operand2, 0, 1, true, REGSZ_O(operand1))));
@@ -2327,6 +2356,170 @@ bool GetLowLevelILForInstruction(
 	case ARM64_YIELD:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));
 		break;
+    // MemAtomic operations
+    case ARM64_LDADD:
+    case ARM64_LDADDA:
+    case ARM64_LDADDAL:
+    case ARM64_LDADDL:
+        GenMemAtomic(il, operand3, MemAtomicOp_ADD, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDADDB:
+    case ARM64_LDADDAB:
+    case ARM64_LDADDALB:
+    case ARM64_LDADDLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_ADD, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDADDH:
+    case ARM64_LDADDAH:
+    case ARM64_LDADDALH:
+    case ARM64_LDADDLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_ADD, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDCLR:
+    case ARM64_LDCLRA:
+    case ARM64_LDCLRAL:
+    case ARM64_LDCLRL:
+        GenMemAtomic(il, operand3, MemAtomicOp_BIC, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDCLRB:
+    case ARM64_LDCLRAB:
+    case ARM64_LDCLRALB:
+    case ARM64_LDCLRLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_BIC, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDCLRH:
+    case ARM64_LDCLRAH:
+    case ARM64_LDCLRALH:
+    case ARM64_LDCLRLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_BIC, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+
+    case ARM64_LDEOR:
+    case ARM64_LDEORA:
+    case ARM64_LDEORAL:
+    case ARM64_LDEORL:
+        GenMemAtomic(il, operand3, MemAtomicOp_EOR, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDEORB:
+    case ARM64_LDEORAB:
+    case ARM64_LDEORALB:
+    case ARM64_LDEORLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_EOR, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDEORH:
+    case ARM64_LDEORAH:
+    case ARM64_LDEORALH:
+    case ARM64_LDEORLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_EOR, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDSET:
+    case ARM64_LDSETA:
+    case ARM64_LDSETAL:
+    case ARM64_LDSETL:
+        GenMemAtomic(il, operand3, MemAtomicOp_ORR, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDSETB:
+    case ARM64_LDSETAB:
+    case ARM64_LDSETALB:
+    case ARM64_LDSETLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_ORR, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDSETH:
+    case ARM64_LDSETAH:
+    case ARM64_LDSETALH:
+    case ARM64_LDSETLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_ORR, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDSMAX:
+    case ARM64_LDSMAXA:
+    case ARM64_LDSMAXAL:
+    case ARM64_LDSMAXL:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMAX, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDSMAXB:
+    case ARM64_LDSMAXAB:
+    case ARM64_LDSMAXALB:
+    case ARM64_LDSMAXLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMAX, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDSMAXH:
+    case ARM64_LDSMAXAH:
+    case ARM64_LDSMAXALH:
+    case ARM64_LDSMAXLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMAX, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDSMIN:
+    case ARM64_LDSMINA:
+    case ARM64_LDSMINAL:
+    case ARM64_LDSMINL:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMIN, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDSMINB:
+    case ARM64_LDSMINAB:
+    case ARM64_LDSMINALB:
+    case ARM64_LDSMINLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMIN, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDSMINH:
+    case ARM64_LDSMINAH:
+    case ARM64_LDSMINALH:
+    case ARM64_LDSMINLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_SMIN, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDUMAX:
+    case ARM64_LDUMAXA:
+    case ARM64_LDUMAXAL:
+    case ARM64_LDUMAXL:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMAX, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDUMAXB:
+    case ARM64_LDUMAXAB:
+    case ARM64_LDUMAXALB:
+    case ARM64_LDUMAXLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMAX, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDUMAXH:
+    case ARM64_LDUMAXAH:
+    case ARM64_LDUMAXALH:
+    case ARM64_LDUMAXLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMAX, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_LDUMIN:
+    case ARM64_LDUMINA:
+    case ARM64_LDUMINAL:
+    case ARM64_LDUMINL:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMIN, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_LDUMINB:
+    case ARM64_LDUMINAB:
+    case ARM64_LDUMINALB:
+    case ARM64_LDUMINLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMIN, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_LDUMINH:
+    case ARM64_LDUMINAH:
+    case ARM64_LDUMINALH:
+    case ARM64_LDUMINLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_UMIN, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
+    case ARM64_SWP:
+    case ARM64_SWPA:
+    case ARM64_SWPAL:
+    case ARM64_SWPL:
+        GenMemAtomic(il, operand3, MemAtomicOp_SWP, REGSZ_O(operand1), REGSZ_O(operand1), operand1, operand2);
+        break;
+    case ARM64_SWPB:
+    case ARM64_SWPAB:
+    case ARM64_SWPALB:
+    case ARM64_SWPLB:
+        GenMemAtomic(il, operand3, MemAtomicOp_SWP, REGSZ_O(operand1), 1, operand1, operand2);
+        break;
+    case ARM64_SWPH:
+    case ARM64_SWPAH:
+    case ARM64_SWPALH:
+    case ARM64_SWPLH:
+        GenMemAtomic(il, operand3, MemAtomicOp_SWP, REGSZ_O(operand1), 2, operand1, operand2);
+        break;
 	default:
 		break;
 	}
