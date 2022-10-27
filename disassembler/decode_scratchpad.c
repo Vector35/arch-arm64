@@ -670,6 +670,8 @@ ArrangementSpec table_8b_16b[2] = {_8B, _16B};
 ArrangementSpec table_2s_r_4s_2d[4] = {_2S, ARRSPEC_NONE, _4S, _2D};
 ArrangementSpec table_2s_4s_r_2d[4] = {_2S, _4S, ARRSPEC_NONE, _2D};
 ArrangementSpec table_8h_4s_2d_1q[4] = {_8H, _4S, _2D, _1Q};
+ArrangementSpec table_r_h_s_r_d[5] = { ARRSPEC_NONE, _1H, _1S, ARRSPEC_NONE, _1D};
+ArrangementSpec table_r_b_h_r_s[5] = { ARRSPEC_NONE, _1B, _1H, ARRSPEC_NONE, _1S};
 ArrangementSpec table_4h_8h_2s_4s_1d_2d_r_r[8] = {
     _4H, _8H, _2S, _4S, _1D, _2D, ARRSPEC_NONE, ARRSPEC_NONE};
 ArrangementSpec table_8b_16b_4h_8h_2s_4s_1d_2d[8] = {_8B, _16B, _4H, _8H, _2S, _4S, _1D, _2D};
@@ -1216,8 +1218,7 @@ const char* reg_lookup_c[16] = {"c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", 
 	{ \
 		SystemReg sr = ((ctx->sys_op0 << 14) | (ctx->sys_op1 << 11) | (ctx->sys_crn << 7) | \
 		                (ctx->sys_crm << 3) | ctx->sys_op2); \
-		const char* name = get_system_register_name(sr); \
-		if (name[0]) \
+		if (has_system_register_name(sr)) \
 		{ \
 			ADD_OPERAND_SYSTEMREG(sr); \
 		} \
@@ -3331,7 +3332,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	}
 	case ENC_DUP_P_P_PI_:
 	{
-		ArrangementSpec arr_spec = table16_r_b_h_s_d[ctx->esize];
+		ArrangementSpec arr_spec = table16_r_b_h_s_d[ctx->esize >> 3];
 		// DUP <Pd>.<T>, <Pg>/Z, <Pn>.<T>[<Wm>{, #<imm>}]
 		ADD_OPERAND_PRED_REG_T(ctx->d, arr_spec);
 		ADD_OPERAND_PRED_REG_QUAL(ctx->g, 'z');
@@ -10565,8 +10566,8 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_UQSHRNB_Z_ZI_:
 	case ENC_UQSHRNT_Z_ZI_:
 	{
-		ArrangementSpec T = table_d_b_h_s[ctx->tsize];
-		ArrangementSpec Tb = table_b_h_s_d[ctx->tsize];
+		ArrangementSpec T = table_r_b_h_r_s[ctx->esize >> 3];
+		ArrangementSpec Tb = table_r_h_s_r_d[ctx->esize >> 3];
 		// <Zd>.<T>,<Zn>.<Tb>, #<const>
 		ADD_OPERAND_ZREG_T(ctx->d, T)
 		ADD_OPERAND_ZREG_T(ctx->n, Tb)
@@ -10578,8 +10579,8 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_USHLLB_Z_ZI_:
 	case ENC_USHLLT_Z_ZI_:
 	{
-		ArrangementSpec T = table_b_h_s_d[ctx->tsize];
-		ArrangementSpec Tb = table_d_b_h_s[ctx->tsize];
+		ArrangementSpec T = table_r_h_s_r_d[ctx->esize >> 3];
+		ArrangementSpec Tb = table_r_b_h_r_s[ctx->esize >> 3];
 		// <Zd>.<T>,<Zn>.<Tb>, #<const>
 		ADD_OPERAND_ZREG_T(ctx->d, T)
 		ADD_OPERAND_ZREG_T(ctx->n, Tb)

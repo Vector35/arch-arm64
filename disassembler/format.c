@@ -7,6 +7,7 @@
 #include "format.h"
 #include "regs.h"
 #include "pcode.h"
+#include "sysregs_fmt.h"
 
 const char *get_arrspec_str(ArrangementSpec arrspec)
 {
@@ -442,6 +443,8 @@ uint32_t get_sme_tile(const InstructionOperand *operand, char *outBuffer, uint32
 
 uint32_t get_indexed_element(const InstructionOperand *operand, char *outBuffer, uint32_t outBufferSize)
 {
+	char result[32];
+
 	// make the "{, #<imm>}"
 	char optional_comma_and[32];
 	if(operand->immediate)

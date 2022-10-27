@@ -274,17 +274,55 @@ int main(int ac, char** av)
 		return 0;
 	}
 
-	if (!strcmp(av[1], "strain") || !strcmp(av[1], "strainer") || !strcmp(av[1], "stress") ||
-	    !strcmp(av[1], "stresser"))
+	if (!strcmp(av[1], "strain") || !strcmp(av[1], "strainer") ||
+	    !strcmp(av[1], "stress") || !strcmp(av[1], "stresser"))
 	{
 		verbose = 0;
-		for (uint32_t insword = 0; insword != 0xFFFFFFFF; insword++)
+		uint32_t insword = 0;
+
+		while(1)
 		{
 			disassemble(0, insword, instxt);
 
-			if ((insword & 0xFFFFFF) == 0)
+			if ((insword & 0xFFFFF) == 0)
 				printf("%08X: %s\n", insword, instxt);
+
+			if(insword == 0xFFFFFFFF)
+				break;
+
+			insword += 1;
 		}
+		return 0;
+	}
+
+	if (!strcmp(av[1], "straindecode") || !strcmp(av[1], "strainerdecode") ||
+	    !strcmp(av[1], "stressdecode") || !strcmp(av[1], "stresserdecode"))
+	{
+		/* decoded struct */
+		Instruction instr;
+		memset(&instr, 0, sizeof(instr));
+
+		/* where to start decoding */
+		uint32_t insword = 0;
+		if(ac > 2)
+			insword = strtoul(av[2], NULL, 16);
+
+		/* go! */
+		while(1)
+		{
+			aarch64_decompose(insword, &instr, 0);
+
+			//if(1)
+			if((insword & 0xFFFFF) == 0)
+				printf("%08X\n", insword);
+
+			if(insword == 0xFFFFFFFF)
+				break;
+
+			insword += 1;
+		}
+
+		return 0;
 	}
 
 	if (!strcmp(av[1], "test"))
@@ -298,6 +336,8 @@ int main(int ac, char** av)
 			aarch64_decompose(insword, &instr, 0);
 			printf("%08X: %d\n", insword, instr.encoding);
 		}
+
+		return 0;
 	}
 
 	else
