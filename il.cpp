@@ -5,7 +5,7 @@
 
 #include "il.h"
 #include "neon_intrinsics.h"
-#include "sysregs.h"
+#include "arm64dis.h"
 
 using namespace BinaryNinja;
 

@@ -9,6 +9,7 @@ file(GLOB SOURCES
 	disassembler/decode.c
 	disassembler/format.c
 	disassembler/sysregs.c
+	disassembler/sysregs_fmt.c
 	disassembler/regs.c
 	disassembler/encodings_dec.c
 	disassembler/encodings_fmt.c

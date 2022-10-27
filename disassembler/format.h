@@ -9,6 +9,7 @@
 #include "operations.h"
 #include "regs.h"
 #include "sysregs.h"
+#include "sysregs_fmt.h"
 
 //-----------------------------------------------------------------------------
 // disassembly function prototypes, return values
