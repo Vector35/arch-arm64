@@ -2988,7 +2988,7 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 		{
 			ADD_SUB_IMM* decode = (ADD_SUB_IMM*)dest;
 			aarch64_decompose(dest32[0], &inst, reloc->GetAddress());
-			decode->imm = inst.operands[2].immediate + target;
+			decode->imm = target + info.addend;
 			break;
 		}
 		case R_AARCH64_CALL26:
