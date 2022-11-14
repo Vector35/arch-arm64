@@ -2996,7 +2996,7 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 		{
 			UNCONDITIONAL_BRANCH* decode = (UNCONDITIONAL_BRANCH*)dest;
 			aarch64_decompose(dest32[0], &inst, 0);
-			decode->imm = (inst.operands[0].immediate + target - reloc->GetAddress()) >> 2;
+			decode->imm = (target + info.addend - reloc->GetAddress()) >> 2;
 			break;
 		}
 		case R_AARCH64_ABS16:
