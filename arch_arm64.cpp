@@ -3115,8 +3115,7 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 		return true;
 	}
 
-	virtual bool GetRelocationInfo(
-	    Ref<BinaryView> view, Ref<Architecture> arch, vector<BNRelocationInfo>& result) override
+	virtual bool GetRelocationInfo(Ref<BinaryView> view, Ref<Architecture> arch, vector<BNRelocationInfo>& result) override
 	{
 		(void)view;
 		(void)arch;
@@ -3167,6 +3166,10 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 				reloc.pcRelative = true;
 				reloc.size = 4;
 				break;
+			case R_AARCH64_PREL64:
+				reloc.pcRelative = true;
+				reloc.size = 8;
+				break;
 			case R_AARCH64_MOVW_UABS_G0:
 			case R_AARCH64_MOVW_UABS_G0_NC:
 			case R_AARCH64_MOVW_UABS_G1:
@@ -3207,8 +3210,7 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 			}
 		}
 		for (auto& reloc : relocTypes)
-			LogWarn("Unsupported ELF relocation type: %s",
-			    GetRelocationString((ElfArm64RelocationType)reloc));
+			LogWarn("Unsupported ELF relocation type: %s", GetRelocationString((ElfArm64RelocationType)reloc));
 		return true;
 	}
 
