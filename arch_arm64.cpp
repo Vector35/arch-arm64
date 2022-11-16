@@ -539,7 +539,7 @@ class Arm64Architecture : public Architecture
 		/* only use index if this is isolated REG (not, for example, MULTIREG */
 		if (operand->operandClass == REG && operand->laneUsed)
 		{
-			sprintf(buf, "%u", operand->lane);
+			snprintf(buf, sizeof(buf), "%u", operand->lane);
 			result.emplace_back(TextToken, "[");
 			result.emplace_back(IntegerToken, buf);
 			result.emplace_back(TextToken, "]");
@@ -1212,7 +1212,7 @@ class Arm64Architecture : public Architecture
 		case IL_FLAG_V:
 			return "v";
 		default:
-			sprintf(result, "flag%" PRIu32, flag);
+			snprintf(result, sizeof(result), "flag%" PRIu32, flag);
 			return result;
 		}
 	}

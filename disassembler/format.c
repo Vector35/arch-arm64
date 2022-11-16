@@ -418,9 +418,9 @@ uint32_t get_sme_tile(const InstructionOperand *operand, char *outBuffer, uint32
 	char base_offset[32] = {'\0'};
 	if(operand->reg[0] != REG_NONE) {
 		if(operand->arrSpec == ARRSPEC_FULL)
-			sprintf(base_offset, "[%s]", get_register_name(operand->reg[0]));
+			snprintf(base_offset, sizeof(base_offset), "[%s]", get_register_name(operand->reg[0]));
 		else
-			sprintf(base_offset, "[%s, #%llu]", get_register_name(operand->reg[0]), operand->immediate);
+			snprintf(base_offset, sizeof(base_offset), "[%s, #%llu]", get_register_name(operand->reg[0]), operand->immediate);
 	}
 
 	char *slice = "";
