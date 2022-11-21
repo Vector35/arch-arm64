@@ -22,6 +22,8 @@ using namespace std;
 
 #define EMPTY(S) (S[0] == '\0')
 
+#define BINARYNINJA_MANUAL_RELOCATION ((uint64_t)-2)
+
 enum MachoArm64RelocationType : uint32_t
 {
 	ARM64_RELOC_UNSIGNED = 0,
@@ -2750,7 +2752,7 @@ class Arm64MachoRelocationHandler : public RelocationHandler
 		// printf("reloc->GetTarget(): 0x%llX\n", reloc->GetTarget());
 		// printf("reloc->GetAddress(): 0x%llX\n", reloc->GetAddress());
 
-		if (info.nativeType == (uint64_t)-2)
+		if (info.nativeType == BINARYNINJA_MANUAL_RELOCATION)
 		{  // Magic number defined in MachOView.cpp for tagged pointers
 			*(uint64_t*)dest = info.target;
 		}
