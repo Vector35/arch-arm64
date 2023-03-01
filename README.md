@@ -2,6 +2,10 @@
 
 This is the Aarch64 plugin that ships with Binary Ninja.
 
+## Issues
+
+Issues for this repository have been disabled. Please file an issue for this repository at https://github.com/Vector35/binaryninja-api/issues. All previously existing issues for this repository have been transferred there as well.
+
 ## What's What
 
 - [arch_arm64.cpp](./arch_arm64.cpp) implements the Architecture class
