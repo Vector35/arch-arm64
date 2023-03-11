@@ -3202,7 +3202,8 @@ class Arm64ElfRelocationHandler : public RelocationHandler
 				reloc.size = 4;
 				break;
 			case R_AARCH64_RELATIVE:
-				reloc.pcRelative = true;
+				reloc.pcRelative = false;
+				reloc.baseRelative = true;
 				reloc.size = 8;
 				break;
 			default:
