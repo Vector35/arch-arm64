@@ -718,7 +718,7 @@ class Arm64Architecture : public Architecture
 			".arch_extension sve2-sm4\n" ".arch_extension sve2-sha3\n" ".arch_extension sve2-bitperm\n"
 			".arch_extension ls64\n" ".arch_extension xs\n" ".arch_extension pauth\n"
 			".arch_extension flagm\n" ".arch_extension rme\n" ".arch_extension sme\n"
-			".arch_extension sme-f64\n" ".arch_extension sme-i64\n" ".arch_extension hbc\n"
+			".arch_extension sme-f64f64\n" ".arch_extension sme-i16i64\n" ".arch_extension hbc\n"
 			".arch_extension mops\n";
 
 		BNLlvmServicesInit();
