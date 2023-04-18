@@ -2230,15 +2230,17 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_UMULH:
 		il.AddInstruction(ILSETREG_O(operand1,
-		    il.LogicalShiftRight(16,
-		        il.MultDoublePrecUnsigned(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)),
-		        il.Const(1, 8))));
+			il.LowPart(8,
+				il.LogicalShiftRight(16,
+					il.MultDoublePrecUnsigned(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)),
+					il.Const(1, 64)))));
 		break;
 	case ARM64_SMULH:
 		il.AddInstruction(ILSETREG_O(operand1,
-		    il.LogicalShiftRight(16,
-		        il.MultDoublePrecSigned(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)),
-		        il.Const(1, 8))));
+			il.LowPart(8,
+				il.LogicalShiftRight(16,
+					il.MultDoublePrecSigned(REGSZ_O(operand1), ILREG_O(operand2), ILREG_O(operand3)),
+					il.Const(1, 64)))));
 		break;
 	case ARM64_UDIV:
 		il.AddInstruction(ILSETREG_O(
