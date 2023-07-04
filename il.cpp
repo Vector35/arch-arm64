@@ -1262,8 +1262,8 @@ bool GetLowLevelILForInstruction(
 	case ARM64_BIC:
 	case ARM64_BICS:
 		il.AddInstruction(ILSETREG_O(operand1,
-		    il.And(REGSZ_O(operand2), ILREG_O(operand2),
-		        il.Not(REGSZ_O(operand2), ReadILOperand(il, operand3, REGSZ_O(operand2))), SETFLAGS)));
+		    il.And(REGSZ_O(operand1), ILREG_O(operand1),
+		        il.Not(REGSZ_O(operand2), ReadILOperand(il, operand2, REGSZ_O(operand2))), SETFLAGS)));
 		break;
 	case ARM64_CAS:  // these compare-and-swaps can be 32 or 64 bit
 	case ARM64_CASA:

@@ -2544,6 +2544,7 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmp w8, #30, #8, mi
+    (b'\x20\x14\x00\x6f', 'LLIL_SET_REG.o(v0, LLIL_AND.o(LLIL_REG.o(v0), LLIL_NOT(LLIL_CONST(1))))'), # bic v0.4s, #0x1
 	(b'\x1F\x20\x03\xD5', 'LLIL_NOP()'), # nop, gets optimized from function
 ]
 
