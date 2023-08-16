@@ -1732,6 +1732,24 @@ bool GetLowLevelILForInstruction(
 	case ARM64_LDAPURSW:
 		LoadStoreOperandSize(il, true, true, 4, instr.operands[0], instr.operands[1]);
 		break;
+	case ARM64_LDXR:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDXR, { ILREG_O(operand2) }));
+		break;
+	case ARM64_LDXRB:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDXRB, { ILREG_O(operand2) }));
+		break;
+	case ARM64_LDXRH:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDXRH, { ILREG_O(operand2) }));
+		break;
+	case ARM64_STXR:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STXR, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
+	case ARM64_STXRB:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STXRB, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
+	case ARM64_STXRH:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STXRH, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
 	case ARM64_LD1:
 		LoadStoreVector(il, true, instr.operands[0], instr.operands[1]);
 		break;

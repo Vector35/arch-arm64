@@ -71,6 +71,12 @@ enum Arm64Intrinsic : uint32_t
 	ARM64_INTRIN_RBIT,
 	ARM64_INTRIN_AESD,
 	ARM64_INTRIN_AESE,
+	ARM64_INTRIN_LDXR,
+	ARM64_INTRIN_LDXRB,
+	ARM64_INTRIN_LDXRH,
+	ARM64_INTRIN_STXR,
+	ARM64_INTRIN_STXRB,
+	ARM64_INTRIN_STXRH,
 	ARM64_INTRIN_NORMAL_END, /* needed so intrinsics can be extended by other lists, like neon
 	                            intrinsics */
 	ARM64_INTRIN_INVALID = 0xFFFFFFFF,

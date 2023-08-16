@@ -974,6 +974,18 @@ class Arm64Architecture : public Architecture
 			return "__aesd";
 		case ARM64_INTRIN_AESE:
 			return "__aese";
+		case ARM64_INTRIN_LDXR:
+			return "__ldxr";
+		case ARM64_INTRIN_LDXRB:
+			return "__ldxrb";
+		case ARM64_INTRIN_LDXRH:
+			return "__ldxrh";
+		case ARM64_INTRIN_STXR:
+			return "__stxr";
+		case ARM64_INTRIN_STXRB:
+			return "__stxrb";
+		case ARM64_INTRIN_STXRH:
+			return "__stxrh";
 		default:
 			break;
 		}
@@ -996,7 +1008,8 @@ class Arm64Architecture : public Architecture
 		    ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
 		    ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_ERET,
 		    ARM64_INTRIN_CLZ, ARM64_INTRIN_CLREX, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
-		    ARM64_INTRIN_AESD, ARM64_INTRIN_AESE};
+		    ARM64_INTRIN_AESD, ARM64_INTRIN_AESE, ARM64_INTRIN_LDXR, ARM64_INTRIN_LDXRB, ARM64_INTRIN_LDXRH,
+			ARM64_INTRIN_STXR, ARM64_INTRIN_STXRB, ARM64_INTRIN_STXRH};
 
 		result.insert(result.end(), tmp.begin(), tmp.end());
 		return result;
