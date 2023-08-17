@@ -20811,6 +20811,21 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_TBL_ASIMDTBL_L1_1:
+		intrin_id = ARM64_INTRIN_VTBL1_S8;
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_reg(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_TBL_ASIMDTBL_L2_2:
+		// TODO
+		break;
+	case ENC_TBL_ASIMDTBL_L3_3:
+		// TODO
+		break;
+	case ENC_TBL_ASIMDTBL_L4_4:
+		// TODO
+		break;
 	case ENC_ST2_ASISDLSE_R2:
 	case ENC_ST2_ASISDLSEP_I2_I:
 		// Handling: st2 {Vt.8B - Vt2.8B}, [Xn] [, <IMM>]
