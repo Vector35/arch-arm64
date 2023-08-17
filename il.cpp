@@ -1791,6 +1791,15 @@ bool GetLowLevelILForInstruction(
 	case ARM64_STXRH:
 		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STXRH, { ILREG_O(operand2), ILREG_O(operand3) }));
 		break;
+	case ARM64_STLXR:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STLXR, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
+	case ARM64_STLXRB:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STLXRB, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
+	case ARM64_STLXRH:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STLXRH, { ILREG_O(operand2), ILREG_O(operand3) }));
+		break;
 	case ARM64_LD1:
 		LoadStoreVector(il, true, instr.operands[0], instr.operands[1]);
 		break;
