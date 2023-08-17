@@ -1713,19 +1713,17 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_ISB, {}));
 		break;
 	case ARM64_LDAR:
-	case ARM64_LDAXR:
+
 	case ARM64_LDAPR:
 	case ARM64_LDAPUR:
 		LoadStoreOperand(il, true, instr.operands[0], instr.operands[1], 0);
 		break;
 	case ARM64_LDARB:
-	case ARM64_LDAXRB:
 	case ARM64_LDAPRB:
 	case ARM64_LDAPURB:
 		LoadStoreOperandSize(il, true, false, 1, instr.operands[0], instr.operands[1]);
 		break;
 	case ARM64_LDARH:
-	case ARM64_LDAXRH:
 	case ARM64_LDAPRH:
 	case ARM64_LDAPURH:
 		LoadStoreOperandSize(il, true, false, 2, instr.operands[0], instr.operands[1]);
@@ -1774,6 +1772,15 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_LDXRH:
 		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDXRH, { ILREG_O(operand2) }));
+	// We don't have a way to specify intrinsic register size, so we explicitly embed the size in the intrinsic name.
+	case ARM64_LDAXR:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDAXR, { ILREG_O(operand2) }));
+		break;
+	case ARM64_LDAXRB:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDAXRB, { ILREG_O(operand2) }));
+		break;
+	case ARM64_LDAXRH:
+		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_LDAXRH, { ILREG_O(operand2) }));
 		break;
 	case ARM64_STXR:
 		il.AddInstruction(il.Intrinsic({ RegisterOrFlag::Register(REG_O(operand1)) }, ARM64_INTRIN_STXR, { ILREG_O(operand2), ILREG_O(operand3) }));

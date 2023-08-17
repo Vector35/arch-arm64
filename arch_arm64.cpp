@@ -980,6 +980,12 @@ class Arm64Architecture : public Architecture
 			return "__ldxrb";
 		case ARM64_INTRIN_LDXRH:
 			return "__ldxrh";
+		case ARM64_INTRIN_LDAXR:
+			return "__ldaxr";
+		case ARM64_INTRIN_LDAXRB:
+			return "__ldaxrb";
+		case ARM64_INTRIN_LDAXRH:
+			return "__ldaxrh";
 		case ARM64_INTRIN_STXR:
 			return "__stxr";
 		case ARM64_INTRIN_STXRB:
@@ -1009,6 +1015,7 @@ class Arm64Architecture : public Architecture
 		    ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_ERET,
 		    ARM64_INTRIN_CLZ, ARM64_INTRIN_CLREX, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
 		    ARM64_INTRIN_AESD, ARM64_INTRIN_AESE, ARM64_INTRIN_LDXR, ARM64_INTRIN_LDXRB, ARM64_INTRIN_LDXRH,
+			ARM64_INTRIN_LDAXR, ARM64_INTRIN_LDAXRB, ARM64_INTRIN_LDAXRH,
 			ARM64_INTRIN_STXR, ARM64_INTRIN_STXRB, ARM64_INTRIN_STXRH};
 
 		result.insert(result.end(), tmp.begin(), tmp.end());
