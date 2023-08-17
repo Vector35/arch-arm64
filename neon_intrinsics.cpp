@@ -20811,6 +20811,28 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_ST2_ASISDLSE_R2:
+	case ENC_ST2_ASISDLSEP_I2_I:
+		// Handling: st2 {Vt.8B - Vt2.8B}, [Xn] [, <IMM>]
+		// All these st2 instructions are using the same intrinsic.
+		// Semantic between different vector representation is the same at the assembly level.
+		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
+			intrin_id = ARM64_INTRIN_VST2_S8;   // ST2 {Vt.8B - Vt2.8B}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
+			intrin_id = ARM64_INTRIN_VST2Q_S8;  // ST2 {Vt.16B - Vt2.16B}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_4HALVES)
+			intrin_id = ARM64_INTRIN_VST2_S16;  // ST2 {Vt.4H - Vt2.4H}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_8HALVES)
+			intrin_id = ARM64_INTRIN_VST2Q_S16; // ST2 {Vt.8H - Vt2.8H}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_2SINGLES)
+			intrin_id = ARM64_INTRIN_VST2_S32;  // ST2 {Vt.2S - Vt2.2S}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_4SINGLES)
+			intrin_id = ARM64_INTRIN_VST2Q_S32; // ST2 {Vt.4S - Vt2.4S}, [Xn], <IMM>
+		if (instr.operands[0].arrSpec == ARRSPEC_2DOUBLES)
+			intrin_id = ARM64_INTRIN_VST2Q_S64; // ST2 {Vt.2D - Vt2.2D}, [Xn], <IMM>
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_reg(inputs, il, instr.operands[0]);
+		break;
 	case ENC_TRN1_ASIMDPERM_ONLY:
 		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
 			intrin_id = ARM64_INTRIN_VTRN1_S8;  // TRN1 Vd.8B,Vn.8B,Vm.8B
