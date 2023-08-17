@@ -712,6 +712,37 @@ static void LoadStoreOperandPair(LowLevelILFunction& il, bool load, InstructionO
 		il.AddInstruction(tmp);
 }
 
+static void LoadStoreOperandPairSize(LowLevelILFunction& il, bool load, size_t load_size, InstructionOperand& operand1,
+	InstructionOperand& operand2, InstructionOperand& operand3)
+{
+	/* do pre-indexing */
+	ExprId tmp = GetILOperandPreIndex(il, operand3);
+	if (tmp)
+		il.AddInstruction(tmp);
+
+	/* compute addresses */
+	OperandClass oclass = (operand3.operandClass == MEM_PRE_IDX) ? MEM_REG : operand3.operandClass;
+	ExprId addr0 = GetILOperandEffectiveAddress(il, operand3, 8, oclass, 0);
+	ExprId addr1 = GetILOperandEffectiveAddress(il, operand3, 8, oclass, load_size);
+
+	/* load/store */
+	if (load)
+	{
+		il.AddInstruction(ILSETREG_O(operand1, il.Load(load_size, addr0)));
+		il.AddInstruction(ILSETREG_O(operand2, il.Load(load_size, addr1)));
+	}
+	else
+	{
+		il.AddInstruction(il.Store(load_size, addr0, ILREG_O(operand1)));
+		il.AddInstruction(il.Store(load_size, addr1, ILREG_O(operand2)));
+	}
+
+	/* do post-indexing */
+	tmp = GetILOperandPostIndex(il, operand3);
+	if (tmp)
+		il.AddInstruction(tmp);
+}
+
 
 static void LoadStoreVector(
     LowLevelILFunction& il, bool is_load, InstructionOperand& oper0, InstructionOperand& oper1)
@@ -1702,6 +1733,9 @@ bool GetLowLevelILForInstruction(
 	case ARM64_LDP:
 	case ARM64_LDNP:
 		LoadStoreOperandPair(il, true, instr.operands[0], instr.operands[1], instr.operands[2]);
+		break;
+	case ARM64_LDPSW:
+		LoadStoreOperandPairSize(il, true, 4, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
 	case ARM64_LDR:
 	case ARM64_LDUR:
