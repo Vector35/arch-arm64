@@ -18694,13 +18694,13 @@ bool NeonGetLowLevelILForInstruction(
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
 	case ENC_PMULL_ASIMDDIFF_L:
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
+		if (instr.operands[0].arrSpec == ARRSPEC_8HALVES && instr.operands[1].arrSpec == ARRSPEC_8BYTES)
 			intrin_id = ARM64_INTRIN_VMULL_P8;  // PMULL Vd.8H,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
+		if (instr.operands[0].arrSpec == ARRSPEC_8HALVES && instr.operands[1].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VMULL_HIGH_P8;  // PMULL2 Vd.8H,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_FULL)
+		if (instr.operands[0].arrSpec == ARRSPEC_FULL && instr.operands[1].arrSpec == ARRSPEC_1DOUBLE)
 			intrin_id = ARM64_INTRIN_VMULL_P64;  // PMULL Vd.1Q,Vn.1D,Vm.1D
-		if (instr.operands[1].arrSpec == ARRSPEC_FULL)
+		if (instr.operands[0].arrSpec == ARRSPEC_FULL && instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
 			intrin_id = ARM64_INTRIN_VMULL_HIGH_P64;  // PMULL2 Vd.1Q,Vn.2D,Vm.2D
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_reg(inputs, il, instr.operands[2]);
