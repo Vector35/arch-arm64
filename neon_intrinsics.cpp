@@ -15372,36 +15372,60 @@ bool NeonGetLowLevelILForInstruction(
 			intrin_id = ARM64_INTRIN_VBIC_S8;  // BIC Vd.8B,Vn.8B,Vm.8B
 		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VBICQ_S8;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_S16;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_S16;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_S32;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_S32;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_S64;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_S64;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_U8;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_U8;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_U16;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_U16;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_U32;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_U32;  // BIC Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBIC_U64;  // BIC Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBICQ_U64;  // BIC Vd.16B,Vn.16B,Vm.16B
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_reg(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_BIT_ASIMDSAME_ONLY:
+		// There is no intrinsic for the bit instruction in the ARM documentation.
+		// Although, the bit instruction is just a bsl instruction with a specific operand order.
+		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
+			intrin_id = ARM64_INTRIN_VBSL_S8;  // BSL Vd.8B,Vn.8B,Vm.8B
+		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
+			intrin_id = ARM64_INTRIN_VBSLQ_S8;  // BSL Vd.16B,Vn.16B,Vm.16B
+		// As per bsl & bit documentation:
+		// 
+		// "Bitwise Select. This instruction sets each bit in the destination SIMD and FP register
+		// to the corresponding bit from the first source SIMD and FP register when the original
+		// destination bit was 1, otherwise from the second source SIMD and FP register."
+		//
+		// and as per bit documentation:
+		// 
+		// "Bitwise Insert if True. This instruction inserts each bit from the first source SIMD
+		// and FP register into the SIMD and FP destination register if the corresponding bit of
+		// the second source SIMD and FP register is 1, otherwise leaves the bit in the destination
+		// register unchanged."
+		//
+		// We can then emulate this behavior using the bsl instruction as follow:
+		add_input_reg(inputs, il, instr.operands[2]);
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_reg(inputs, il, instr.operands[0]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_BIF_ASIMDSAME_ONLY:
+		// There is no intrinsic for the bif instruction in the ARM documentation.
+		// Although, the bif instruction is just a bsl instruction with a specific operand order.
+		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
+			intrin_id = ARM64_INTRIN_VBSL_S8;  // BIF Vd.8B,Vn.8B,Vm.8B
+		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
+			intrin_id = ARM64_INTRIN_VBSLQ_S8;  // BIF Vd.16B,Vn.16B,Vm.16B
+		// As per BSL documentation:
+		// 
+		// "Bitwise Select. This instruction sets each bit in the destination SIMD and FP register
+		// to the corresponding bit from the first source SIMD and FP register when the original
+		// destination bit was 1, otherwise from the second source SIMD and FP register."
+		//
+		// and as per bif documentation:
+		// 
+		// "Bitwise Insert if False. This instruction inserts each bit from the first source SIMD
+		// and FP register into the destination SIMD and FP register if the corresponding bit of the
+		// second source SIMD and FP register is 0, otherwise leaves the bit in the destination
+		// register unchanged."
+		//
+		// We can then emulate this behavior using the bsl instruction as follow:
+		add_input_reg(inputs, il, instr.operands[2]);
+		add_input_reg(inputs, il, instr.operands[0]);
+		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
 	case ENC_BSL_ASIMDSAME_ONLY:
@@ -15409,58 +15433,6 @@ bool NeonGetLowLevelILForInstruction(
 			intrin_id = ARM64_INTRIN_VBSL_S8;  // BSL Vd.8B,Vn.8B,Vm.8B
 		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VBSLQ_S8;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_S16;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_S16;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_S32;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_S32;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_S64;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_S64;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_U8;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_U8;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_U16;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_U16;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_U32;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_U32;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_U64;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_U64;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_P64;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_P64;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_F32;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_F32;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_P8;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_P8;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_P16;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_P16;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_F64;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_F64;  // BSL Vd.16B,Vn.16B,Vm.16B
-		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VBSL_F16;  // BSL Vd.8B,Vn.8B,Vm.8B
-		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VBSLQ_F16;  // BSL Vd.16B,Vn.16B,Vm.16B
 		add_input_reg(inputs, il, instr.operands[0]);
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_reg(inputs, il, instr.operands[2]);
