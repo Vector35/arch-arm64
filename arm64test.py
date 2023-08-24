@@ -105,104 +105,104 @@ tests_2791 = [
 
 tests_ucvtf = [
     # msr, mrs with unnamed (implementation specific) sysregs
-	(b'\x2B\x19\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x11)]))'), # msr s3_3_c1_c9_1, x11
-	(b'\xEE\x47\x1E\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'), # msr s3_6_c4_c7_7, x14
-	(b'\x39\xB5\x15\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x25)]))'), # msr s2_5_c11_c5_1, x25
-	(b'\x87\xBF\x11\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'), # msr s2_1_c11_c15_4, x7
-	(b'\x3E\x53\x39\xD5', 'LLIL_INTRINSIC([x30],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x30, s3_1_c5_c3_1
-	(b'\x5D\x93\x3C\xD5', 'LLIL_INTRINSIC([x29],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x29, s3_4_c9_c3_2
-	(b'\x30\x0E\x34\xD5', 'LLIL_INTRINSIC([x16],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x16, s2_4_c0_c14_1
-	(b'\x3A\x8E\x33\xD5', 'LLIL_INTRINSIC([x26],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x26, s2_3_c8_c14_1
+	(b'\x2B\x19\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,[LLIL_REG.q(x11)])'), # msr s3_3_c1_c9_1, x11
+	(b'\xEE\x47\x1E\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,[LLIL_REG.q(x14)])'), # msr s3_6_c4_c7_7, x14
+	(b'\x39\xB5\x15\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,[LLIL_REG.q(x25)])'), # msr s2_5_c11_c5_1, x25
+	(b'\x87\xBF\x11\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,[LLIL_REG.q(x7)])'), # msr s2_1_c11_c15_4, x7
+	(b'\x3E\x53\x39\xD5', 'LLIL_INTRINSIC([x30],_ReadStatusReg,[LLIL_REG.q(sysreg_unknown)])'), # mrs x30, s3_1_c5_c3_1
+	(b'\x5D\x93\x3C\xD5', 'LLIL_INTRINSIC([x29],_ReadStatusReg,[LLIL_REG.q(sysreg_unknown)])'), # mrs x29, s3_4_c9_c3_2
+	(b'\x30\x0E\x34\xD5', 'LLIL_INTRINSIC([x16],_ReadStatusReg,[LLIL_REG.q(sysreg_unknown)])'), # mrs x16, s2_4_c0_c14_1
+	(b'\x3A\x8E\x33\xD5', 'LLIL_INTRINSIC([x26],_ReadStatusReg,[LLIL_REG.q(sysreg_unknown)])'), # mrs x26, s2_3_c8_c14_1
     # msr, mrs with named sysregs
-	(b'\x36\xE2\x1C\xD5', 'LLIL_INTRINSIC([cnthp_ctl_el2],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x22)]))'), # msr cnthp_ctl_el2, x22
-	(b'\xF4\xEA\x1B\xD5', 'LLIL_INTRINSIC([pmevcntr23_el0],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x20)]))'), # msr pmevcntr23_el0, x20
-	(b'\x05\xE1\x18\xD5', 'LLIL_INTRINSIC([cntkctl_el1],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'), # msr cntkctl_el1, x5
-	(b'\x00\xE2\x1D\xD5', 'LLIL_INTRINSIC([cntp_tval_el02],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr cntp_tval_el02, x
-	(b'\xF9\x20\x31\xD5', 'LLIL_INTRINSIC([x25],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(trcdvcmr4)]))'), # mrs x25, trcdvcmr4
-	(b'\x4D\xC9\x3C\xD5', 'LLIL_INTRINSIC([x13],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(ich_ap1r2_el2)]))'), # mrs x13, ich_ap1r2_el2
-	(b'\xC4\xC8\x38\xD5', 'LLIL_INTRINSIC([x4],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(icc_ap0r2_el1)]))'), # mrs x4, icc_ap0r2_el1
-	(b'\x80\x10\x30\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(oslar_el1)]))'), # mrs x0, oslar_el1
+	(b'\x36\xE2\x1C\xD5', 'LLIL_INTRINSIC([cnthp_ctl_el2],_WriteStatusReg,[LLIL_REG.q(x22)])'), # msr cnthp_ctl_el2, x22
+	(b'\xF4\xEA\x1B\xD5', 'LLIL_INTRINSIC([pmevcntr23_el0],_WriteStatusReg,[LLIL_REG.q(x20)])'), # msr pmevcntr23_el0, x20
+	(b'\x05\xE1\x18\xD5', 'LLIL_INTRINSIC([cntkctl_el1],_WriteStatusReg,[LLIL_REG.q(x5)])'), # msr cntkctl_el1, x5
+	(b'\x00\xE2\x1D\xD5', 'LLIL_INTRINSIC([cntp_tval_el02],_WriteStatusReg,[LLIL_REG.q(x0)])'), # msr cntp_tval_el02, x
+	(b'\xF9\x20\x31\xD5', 'LLIL_INTRINSIC([x25],_ReadStatusReg,[LLIL_REG(trcdvcmr4)])'), # mrs x25, trcdvcmr4
+	(b'\x4D\xC9\x3C\xD5', 'LLIL_INTRINSIC([x13],_ReadStatusReg,[LLIL_REG(ich_ap1r2_el2)])'), # mrs x13, ich_ap1r2_el2
+	(b'\xC4\xC8\x38\xD5', 'LLIL_INTRINSIC([x4],_ReadStatusReg,[LLIL_REG(icc_ap0r2_el1)])'), # mrs x4, icc_ap0r2_el1
+	(b'\x80\x10\x30\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,[LLIL_REG(oslar_el1)])'), # mrs x0, oslar_el1
 	# when same input/output register, encoding is UCVTF_asisdmisc_R
 	# ucvtf s16, s7                                                    UCVTF_asisdmisc_R
-	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s7)]))'),
+	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,[LLIL_REG.d(s7)])'),
 	# ucvtf d26, d30                                                   UCVTF_asisdmisc_R
-	(b'\xDA\xDB\x61\x7E', 'LLIL_INTRINSIC([d26],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d30)]))'),
+	(b'\xDA\xDB\x61\x7E', 'LLIL_INTRINSIC([d26],vcvt_f64_u64,[LLIL_REG.q(d30)])'),
 	# ucvtf s6, s19                                                    UCVTF_asisdmisc_R
-	(b'\x66\xDA\x21\x7E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s19)]))'),
+	(b'\x66\xDA\x21\x7E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,[LLIL_REG.d(s19)])'),
 	# ucvtf s13, s0                                                    UCVTF_asisdmisc_R
-	(b'\x0D\xD8\x21\x7E', 'LLIL_INTRINSIC([s13],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s0)]))'),
+	(b'\x0D\xD8\x21\x7E', 'LLIL_INTRINSIC([s13],vcvts_f32_u32,[LLIL_REG.d(s0)])'),
 	# ucvtf d28, d26                                                   UCVTF_asisdmisc_R
-	(b'\x5C\xDB\x61\x7E', 'LLIL_INTRINSIC([d28],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d26)]))'),
+	(b'\x5C\xDB\x61\x7E', 'LLIL_INTRINSIC([d28],vcvt_f64_u64,[LLIL_REG.q(d26)])'),
 	# ucvtf d25, d11                                                   UCVTF_asisdmisc_R
-	(b'\x79\xD9\x61\x7E', 'LLIL_INTRINSIC([d25],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d11)]))'),
+	(b'\x79\xD9\x61\x7E', 'LLIL_INTRINSIC([d25],vcvt_f64_u64,[LLIL_REG.q(d11)])'),
 	# ucvtf d24, d21                                                   UCVTF_asisdmisc_R
-	(b'\xB8\xDA\x61\x7E', 'LLIL_INTRINSIC([d24],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(d21)]))'),
+	(b'\xB8\xDA\x61\x7E', 'LLIL_INTRINSIC([d24],vcvt_f64_u64,[LLIL_REG.q(d21)])'),
 	# ucvtf s7, s18                                                    UCVTF_asisdmisc_R
-	(b'\x47\xDA\x21\x7E', 'LLIL_INTRINSIC([s7],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(s18)]))'),
+	(b'\x47\xDA\x21\x7E', 'LLIL_INTRINSIC([s7],vcvts_f32_u32,[LLIL_REG.d(s18)])'),
 	# when 16-bit reg, needs FP16 extension and encoding name breaks convention
 	# ucvtf h30, h0                                                    UCVTF_asisdmiscfp16_R
-	(b'\x1E\xD8\x79\x7E', 'LLIL_INTRINSIC([h30],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h0)]))'),
+	(b'\x1E\xD8\x79\x7E', 'LLIL_INTRINSIC([h30],vcvth_f16_u16,[LLIL_REG.w(h0)])'),
 	# ucvtf h22, h6                                                    UCVTF_asisdmiscfp16_R
-	(b'\xD6\xD8\x79\x7E', 'LLIL_INTRINSIC([h22],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h6)]))'),
+	(b'\xD6\xD8\x79\x7E', 'LLIL_INTRINSIC([h22],vcvth_f16_u16,[LLIL_REG.w(h6)])'),
 	# ucvtf h7, h2                                                     UCVTF_asisdmiscfp16_R
-	(b'\x47\xD8\x79\x7E', 'LLIL_INTRINSIC([h7],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h2)]))'),
+	(b'\x47\xD8\x79\x7E', 'LLIL_INTRINSIC([h7],vcvth_f16_u16,[LLIL_REG.w(h2)])'),
 	# ucvtf h24, h18                                                   UCVTF_asisdmiscfp16_R
-	(b'\x58\xDA\x79\x7E', 'LLIL_INTRINSIC([h24],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.w(h18)]))'),
+	(b'\x58\xDA\x79\x7E', 'LLIL_INTRINSIC([h24],vcvth_f16_u16,[LLIL_REG.w(h18)])'),
 	# ucvtf h8, h21                                                    UCVTF_asisdmiscfp16_R
 	# 64-bit GPR to 64-bit FP
 	# ucvtf d30, x19                                                   UCVTF_D64_float2int
-	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x19)]))'),
+	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,[LLIL_REG.q(x19)])'),
 	# ucvtf d10, x28                                                   UCVTF_D64_float2int
-	(b'\x8A\x03\x63\x9E', 'LLIL_INTRINSIC([d10],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x28)]))'),
+	(b'\x8A\x03\x63\x9E', 'LLIL_INTRINSIC([d10],vcvt_f64_u64,[LLIL_REG.q(x28)])'),
 	# ucvtf d16, x21                                                   UCVTF_D64_float2int
-	(b'\xB0\x02\x63\x9E', 'LLIL_INTRINSIC([d16],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x21)]))'),
+	(b'\xB0\x02\x63\x9E', 'LLIL_INTRINSIC([d16],vcvt_f64_u64,[LLIL_REG.q(x21)])'),
 	# ucvtf d18, x24                                                   UCVTF_D64_float2int
-	(b'\x12\x03\x63\x9E', 'LLIL_INTRINSIC([d18],vcvt_f64_u64,LLIL_CALL_PARAM([LLIL_REG.q(x24)]))'),
+	(b'\x12\x03\x63\x9E', 'LLIL_INTRINSIC([d18],vcvt_f64_u64,[LLIL_REG.q(x24)])'),
 	# 64-bit GPR to 32-bit FP
 	# ucvtf s29, x5                                                    UCVTF_S64_float2int
-	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x5)]))'),
+	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,[LLIL_REG.q(x5)])'),
 	# ucvtf s23, x8                                                    UCVTF_S64_float2int
-	(b'\x17\x01\x23\x9E', 'LLIL_INTRINSIC([s23],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x8)]))'),
+	(b'\x17\x01\x23\x9E', 'LLIL_INTRINSIC([s23],vcvth_f16_u16,[LLIL_REG.q(x8)])'),
 	# ucvtf s22, x14                                                   UCVTF_S64_float2int
-	(b'\xD6\x01\x23\x9E', 'LLIL_INTRINSIC([s22],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x14)]))'),
+	(b'\xD6\x01\x23\x9E', 'LLIL_INTRINSIC([s22],vcvth_f16_u16,[LLIL_REG.q(x14)])'),
 	# ucvtf s10, x11                                                   UCVTF_S64_float2int
-	(b'\x6A\x01\x23\x9E', 'LLIL_INTRINSIC([s10],vcvth_f16_u16,LLIL_CALL_PARAM([LLIL_REG.q(x11)]))'),
+	(b'\x6A\x01\x23\x9E', 'LLIL_INTRINSIC([s10],vcvth_f16_u16,[LLIL_REG.q(x11)])'),
 	# 64-bit GPR to 16-bit FP
 	# ucvtf h3, x2                                                     UCVTF_H64_float2int
-	(b'\x43\x00\xE3\x9E', 'LLIL_INTRINSIC([h3],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x2)]))'),
+	(b'\x43\x00\xE3\x9E', 'LLIL_INTRINSIC([h3],vcvth_f16_u64,[LLIL_REG.q(x2)])'),
 	# ucvtf h18, x21                                                   UCVTF_H64_float2int
-	(b'\xB2\x02\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x21)]))'),
+	(b'\xB2\x02\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,[LLIL_REG.q(x21)])'),
 	# ucvtf h18, x7                                                    UCVTF_H64_float2int
-	(b'\xF2\x00\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'),
+	(b'\xF2\x00\xE3\x9E', 'LLIL_INTRINSIC([h18],vcvth_f16_u64,[LLIL_REG.q(x7)])'),
 	# ucvtf h27, x29                                                   UCVTF_H64_float2int
-	(b'\xBB\x03\xE3\x9E', 'LLIL_INTRINSIC([h27],vcvth_f16_u64,LLIL_CALL_PARAM([LLIL_REG.q(x29)]))'),
+	(b'\xBB\x03\xE3\x9E', 'LLIL_INTRINSIC([h27],vcvth_f16_u64,[LLIL_REG.q(x29)])'),
 	# 32-bit GPR to 64-bit FP
 	# ucvtf d0, w7                                                     UCVTF_D32_float2int
-	(b'\xE0\x00\x63\x1E', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w7)]))'),
+	(b'\xE0\x00\x63\x1E', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,[LLIL_REG.d(w7)])'),
 	# ucvtf d19, w25                                                   UCVTF_D32_float2int
-	(b'\x33\x03\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w25)]))'),
+	(b'\x33\x03\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w25)])'),
 	# ucvtf d19, w5                                                    UCVTF_D32_float2int
-	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w5)]))'),
+	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w5)])'),
 	# ucvtf d26, w16                                                   UCVTF_D32_float2int
-	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,LLIL_CALL_PARAM([LLIL_REG.d(w16)]))'),
+	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,[LLIL_REG.d(w16)])'),
 	# 32-bit GPR to 32-bit FP
 	# ucvtf s29, w24                                                   UCVTF_S32_float2int
-	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w24)]))'),
+	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,[LLIL_REG.d(w24)])'),
 	# ucvtf s6, w7                                                     UCVTF_S32_float2int
-	(b'\xE6\x00\x23\x1E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w7)]))'),
+	(b'\xE6\x00\x23\x1E', 'LLIL_INTRINSIC([s6],vcvts_f32_u32,[LLIL_REG.d(w7)])'),
 	# ucvtf s31, w23                                                   UCVTF_S32_float2int
-	(b'\xFF\x02\x23\x1E', 'LLIL_INTRINSIC([s31],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w23)]))'),
+	(b'\xFF\x02\x23\x1E', 'LLIL_INTRINSIC([s31],vcvts_f32_u32,[LLIL_REG.d(w23)])'),
 	# ucvtf s21, w0                                                    UCVTF_S32_float2int
-	(b'\x15\x00\x23\x1E', 'LLIL_INTRINSIC([s21],vcvts_f32_u32,LLIL_CALL_PARAM([LLIL_REG.d(w0)]))'),
+	(b'\x15\x00\x23\x1E', 'LLIL_INTRINSIC([s21],vcvts_f32_u32,[LLIL_REG.d(w0)])'),
 	# 32-bit GPR to 16-bit FP
 	# ucvtf h5, w12                                                    UCVTF_H32_float2int
-	(b'\x85\x01\xE3\x1E', 'LLIL_INTRINSIC([h5],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w12)]))'),
+	(b'\x85\x01\xE3\x1E', 'LLIL_INTRINSIC([h5],vcvth_f16_u32,[LLIL_REG.d(w12)])'),
 	# ucvtf h30, w15                                                   UCVTF_H32_float2int
-	(b'\xFE\x01\xE3\x1E', 'LLIL_INTRINSIC([h30],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w15)]))'),
+	(b'\xFE\x01\xE3\x1E', 'LLIL_INTRINSIC([h30],vcvth_f16_u32,[LLIL_REG.d(w15)])'),
 	# ucvtf h7, w13                                                    UCVTF_H32_float2int
-	(b'\xA7\x01\xE3\x1E', 'LLIL_INTRINSIC([h7],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w13)]))'),
+	(b'\xA7\x01\xE3\x1E', 'LLIL_INTRINSIC([h7],vcvth_f16_u32,[LLIL_REG.d(w13)])'),
 	# ucvtf h26, w8                                                    UCVTF_H32_float2int
-	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,LLIL_CALL_PARAM([LLIL_REG.d(w8)]))'),
+	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,[LLIL_REG.d(w8)])'),
 ]
 
 tests_ret = [
@@ -253,43 +253,43 @@ tests_svc_hvc_smc = [
 
 tests_clrex = [
 	# clrex #0xe                                                       CLREX_BN_BARRIERS
-	(b'\x5F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	(b'\x5F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__clrex,[])'),
 	# clrex #0x1                                                       CLREX_BN_BARRIERS
-	(b'\x5F\x31\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	(b'\x5F\x31\x03\xD5', 'LLIL_INTRINSIC([],__clrex,[])'),
 	# clrex #0xb                                                       CLREX_BN_BARRIERS
-	(b'\x5F\x3B\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	(b'\x5F\x3B\x03\xD5', 'LLIL_INTRINSIC([],__clrex,[])'),
 	# clrex #0x2                                                       CLREX_BN_BARRIERS
-	(b'\x5F\x32\x03\xD5', 'LLIL_INTRINSIC([],__clrex,LLIL_CALL_PARAM([]))'),
+	(b'\x5F\x32\x03\xD5', 'LLIL_INTRINSIC([],__clrex,[])'),
 ]
 
 tests_xtn_xtn2 = [
 	# xtn v17.4h, v24.4s                                               XTN_ASIMDMISC_N
-	(b'\x11\x2B\x61\x0E', 'LLIL_INTRINSIC([v17],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24)]))'),
+	(b'\x11\x2B\x61\x0E', 'LLIL_INTRINSIC([v17],vmovn_u32,[LLIL_REG.o(v24)])'),
 	# xtn v13.4h, v30.4s                                               XTN_ASIMDMISC_N
-	(b'\xCD\x2B\x61\x0E', 'LLIL_INTRINSIC([v13],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v30)]))'),
+	(b'\xCD\x2B\x61\x0E', 'LLIL_INTRINSIC([v13],vmovn_u32,[LLIL_REG.o(v30)])'),
 	# xtn v30.4h, v20.4s                                               XTN_ASIMDMISC_N
-	(b'\x9E\x2A\x61\x0E', 'LLIL_INTRINSIC([v30],vmovn_u32,LLIL_CALL_PARAM([LLIL_REG.o(v20)]))'),
+	(b'\x9E\x2A\x61\x0E', 'LLIL_INTRINSIC([v30],vmovn_u32,[LLIL_REG.o(v20)])'),
 	# xtn v13.2s, v10.2d                                               XTN_ASIMDMISC_N
-	(b'\x4D\x29\xA1\x0E', 'LLIL_INTRINSIC([v13],vmovn_u64,LLIL_CALL_PARAM([LLIL_REG.o(v10)]))'),
+	(b'\x4D\x29\xA1\x0E', 'LLIL_INTRINSIC([v13],vmovn_u64,[LLIL_REG.o(v10)])'),
 	# xtn2 v27.8h, v19.4s                                              XTN_ASIMDMISC_N
-	(b'\x7B\x2A\x61\x4E', 'LLIL_INTRINSIC([v27],vmovn_high_u32,LLIL_CALL_PARAM([LLIL_REG.o(v19)]))'),
+	(b'\x7B\x2A\x61\x4E', 'LLIL_INTRINSIC([v27],vmovn_high_u32,[LLIL_REG.o(v19)])'),
 	# xtn2 v26.4s, v7.2d                                               XTN_ASIMDMISC_N
-	(b'\xFA\x28\xA1\x4E', 'LLIL_INTRINSIC([v26],vmovn_high_u64,LLIL_CALL_PARAM([LLIL_REG.o(v7)]))'),
+	(b'\xFA\x28\xA1\x4E', 'LLIL_INTRINSIC([v26],vmovn_high_u64,[LLIL_REG.o(v7)])'),
 	# xtn2 v3.4s, v22.2d                                               XTN_ASIMDMISC_N
-	(b'\xC3\x2A\xA1\x4E', 'LLIL_INTRINSIC([v3],vmovn_high_u64,LLIL_CALL_PARAM([LLIL_REG.o(v22)]))'),
+	(b'\xC3\x2A\xA1\x4E', 'LLIL_INTRINSIC([v3],vmovn_high_u64,[LLIL_REG.o(v22)])'),
 	# xtn2 v13.8h, v23.4s                                              XTN_ASIMDMISC_N
-	(b'\xED\x2A\x61\x4E', 'LLIL_INTRINSIC([v13],vmovn_high_u32,LLIL_CALL_PARAM([LLIL_REG.o(v23)]))'),
+	(b'\xED\x2A\x61\x4E', 'LLIL_INTRINSIC([v13],vmovn_high_u32,[LLIL_REG.o(v23)])'),
 ]
 
 tests_dc = [
 	# dc cvadp, x26                                                    DC_SYS_CR_SYSTEMINSTRS
-	(b'\x3A\x7D\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x26)]))'),
+	(b'\x3A\x7D\x0B\xD5', 'LLIL_INTRINSIC([],__dc,[LLIL_REG.q(x26)])'),
 	# dc zva, x24                                                      DC_SYS_CR_SYSTEMINSTRS
-	(b'\x38\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x24)]))'),
+	(b'\x38\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,[LLIL_REG.q(x24)])'),
 	# dc zva, xzr                                                      DC_SYS_CR_SYSTEMINSTRS
-	(b'\x3F\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_CONST.q(0x0)]))'),
+	(b'\x3F\x74\x0B\xD5', 'LLIL_INTRINSIC([],__dc,[LLIL_CONST.q(0x0)])'),
 	# dc cisw, x18                                                     DC_SYS_CR_SYSTEMINSTRS
-	(b'\x52\x7E\x08\xD5', 'LLIL_INTRINSIC([],__dc,LLIL_CALL_PARAM([LLIL_REG.q(x18)]))'),
+	(b'\x52\x7E\x08\xD5', 'LLIL_INTRINSIC([],__dc,[LLIL_REG.q(x18)])'),
 ]
 
 tests_uxtl_uxtl2 = [
@@ -1355,97 +1355,97 @@ tests_fmov = [
 
 tests_sha = [
 	# sha1c q13, s7, v27.4s
-	(b'\xED\x00\x1B\x5E', 'LLIL_INTRINSIC([q13],vsha1cq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.d(s7),LLIL_REG.o(v27)]))'),
+	(b'\xED\x00\x1B\x5E', 'LLIL_INTRINSIC([q13],vsha1cq_u32,[LLIL_REG.o(q13),LLIL_REG.d(s7),LLIL_REG.o(v27)])'),
 	# sha1c q20, s15, v13.4s
-	(b'\xF4\x01\x0D\x5E', 'LLIL_INTRINSIC([q20],vsha1cq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q20),LLIL_REG.d(s15),LLIL_REG.o(v13)]))'),
+	(b'\xF4\x01\x0D\x5E', 'LLIL_INTRINSIC([q20],vsha1cq_u32,[LLIL_REG.o(q20),LLIL_REG.d(s15),LLIL_REG.o(v13)])'),
 	# sha1h s27, s21
-	(b'\xBB\x0A\x28\x5E', 'LLIL_INTRINSIC([s27],vsha1h_u32,LLIL_CALL_PARAM([LLIL_REG.d(s21)]))'),
+	(b'\xBB\x0A\x28\x5E', 'LLIL_INTRINSIC([s27],vsha1h_u32,[LLIL_REG.d(s21)])'),
 	# sha1h s7, s9
-	(b'\x27\x09\x28\x5E', 'LLIL_INTRINSIC([s7],vsha1h_u32,LLIL_CALL_PARAM([LLIL_REG.d(s9)]))'),
+	(b'\x27\x09\x28\x5E', 'LLIL_INTRINSIC([s7],vsha1h_u32,[LLIL_REG.d(s9)])'),
 	# sha1m q3, s31, v10.4s
-	(b'\xE3\x23\x0A\x5E', 'LLIL_INTRINSIC([q3],vsha1mq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q3),LLIL_REG.d(s31),LLIL_REG.o(v10)]))'),
+	(b'\xE3\x23\x0A\x5E', 'LLIL_INTRINSIC([q3],vsha1mq_u32,[LLIL_REG.o(q3),LLIL_REG.d(s31),LLIL_REG.o(v10)])'),
 	# sha1m q26, s2, v6.4s
-	(b'\x5A\x20\x06\x5E', 'LLIL_INTRINSIC([q26],vsha1mq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q26),LLIL_REG.d(s2),LLIL_REG.o(v6)]))'),
+	(b'\x5A\x20\x06\x5E', 'LLIL_INTRINSIC([q26],vsha1mq_u32,[LLIL_REG.o(q26),LLIL_REG.d(s2),LLIL_REG.o(v6)])'),
 	# sha1p q15, s15, v19.4s
-	(b'\xEF\x11\x13\x5E', 'LLIL_INTRINSIC([q15],vsha1pq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q15),LLIL_REG.d(s15),LLIL_REG.o(v19)]))'),
+	(b'\xEF\x11\x13\x5E', 'LLIL_INTRINSIC([q15],vsha1pq_u32,[LLIL_REG.o(q15),LLIL_REG.d(s15),LLIL_REG.o(v19)])'),
 	# sha1p q16, s31, v18.4s
-	(b'\xF0\x13\x12\x5E', 'LLIL_INTRINSIC([q16],vsha1pq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q16),LLIL_REG.d(s31),LLIL_REG.o(v18)]))'),
+	(b'\xF0\x13\x12\x5E', 'LLIL_INTRINSIC([q16],vsha1pq_u32,[LLIL_REG.o(q16),LLIL_REG.d(s31),LLIL_REG.o(v18)])'),
 	# sha1su0 v31.4s, v30.4s, v5.4s
-	(b'\xDF\x33\x05\x5E', 'LLIL_INTRINSIC([v31],vsha1su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v31),LLIL_REG.o(v30),LLIL_REG.o(v5)]))'),
+	(b'\xDF\x33\x05\x5E', 'LLIL_INTRINSIC([v31],vsha1su0q_u32,[LLIL_REG.o(v31),LLIL_REG.o(v30),LLIL_REG.o(v5)])'),
 	# sha1su0 v16.4s, v16.4s, v31.4s
-	(b'\x10\x32\x1F\x5E', 'LLIL_INTRINSIC([v16],vsha1su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v16),LLIL_REG.o(v16),LLIL_REG.o(v31)]))'),
+	(b'\x10\x32\x1F\x5E', 'LLIL_INTRINSIC([v16],vsha1su0q_u32,[LLIL_REG.o(v16),LLIL_REG.o(v16),LLIL_REG.o(v31)])'),
 	# sha1su1 v13.4s, v19.4s
-	(b'\x6D\x1A\x28\x5E', 'LLIL_INTRINSIC([v13],vsha1su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v19)]))'),
+	(b'\x6D\x1A\x28\x5E', 'LLIL_INTRINSIC([v13],vsha1su1q_u32,[LLIL_REG.o(v13),LLIL_REG.o(v19)])'),
 	# sha1su1 v29.4s, v0.4s
-	(b'\x1D\x18\x28\x5E', 'LLIL_INTRINSIC([v29],vsha1su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v29),LLIL_REG.o(v0)]))'),
+	(b'\x1D\x18\x28\x5E', 'LLIL_INTRINSIC([v29],vsha1su1q_u32,[LLIL_REG.o(v29),LLIL_REG.o(v0)])'),
 	# sha256h2 q21, q29, v18.4s
-	(b'\xB5\x53\x12\x5E', 'LLIL_INTRINSIC([q21],vsha256h2q_u32,LLIL_CALL_PARAM([LLIL_REG.o(q21),LLIL_REG.o(q29),LLIL_REG.o(v18)]))'),
+	(b'\xB5\x53\x12\x5E', 'LLIL_INTRINSIC([q21],vsha256h2q_u32,[LLIL_REG.o(q21),LLIL_REG.o(q29),LLIL_REG.o(v18)])'),
 	# sha256h2 q2, q9, v4.4s
-	(b'\x22\x51\x04\x5E', 'LLIL_INTRINSIC([q2],vsha256h2q_u32,LLIL_CALL_PARAM([LLIL_REG.o(q2),LLIL_REG.o(q9),LLIL_REG.o(v4)]))'),
+	(b'\x22\x51\x04\x5E', 'LLIL_INTRINSIC([q2],vsha256h2q_u32,[LLIL_REG.o(q2),LLIL_REG.o(q9),LLIL_REG.o(v4)])'),
 	# sha256h q7, q0, v30.4s
-	(b'\x07\x40\x1E\x5E', 'LLIL_INTRINSIC([q7],vsha256hq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q7),LLIL_REG.o(q0),LLIL_REG.o(v30)]))'),
+	(b'\x07\x40\x1E\x5E', 'LLIL_INTRINSIC([q7],vsha256hq_u32,[LLIL_REG.o(q7),LLIL_REG.o(q0),LLIL_REG.o(v30)])'),
 	# sha256h q16, q11, v4.4s
-	(b'\x70\x41\x04\x5E', 'LLIL_INTRINSIC([q16],vsha256hq_u32,LLIL_CALL_PARAM([LLIL_REG.o(q16),LLIL_REG.o(q11),LLIL_REG.o(v4)]))'),
+	(b'\x70\x41\x04\x5E', 'LLIL_INTRINSIC([q16],vsha256hq_u32,[LLIL_REG.o(q16),LLIL_REG.o(q11),LLIL_REG.o(v4)])'),
 	# sha256su0 v9.4s, v11.4s
-	(b'\x69\x29\x28\x5E', 'LLIL_INTRINSIC([v9],vsha256su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v9),LLIL_REG.o(v11)]))'),
+	(b'\x69\x29\x28\x5E', 'LLIL_INTRINSIC([v9],vsha256su0q_u32,[LLIL_REG.o(v9),LLIL_REG.o(v11)])'),
 	# sha256su0 v24.4s, v26.4s
-	(b'\x58\x2B\x28\x5E', 'LLIL_INTRINSIC([v24],vsha256su0q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v24),LLIL_REG.o(v26)]))'),
+	(b'\x58\x2B\x28\x5E', 'LLIL_INTRINSIC([v24],vsha256su0q_u32,[LLIL_REG.o(v24),LLIL_REG.o(v26)])'),
 	# sha256su1 v13.4s, v17.4s, v12.4s
-	(b'\x2D\x62\x0C\x5E', 'LLIL_INTRINSIC([v13],vsha256su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v17),LLIL_REG.o(v12)]))'),
+	(b'\x2D\x62\x0C\x5E', 'LLIL_INTRINSIC([v13],vsha256su1q_u32,[LLIL_REG.o(v13),LLIL_REG.o(v17),LLIL_REG.o(v12)])'),
 	# sha256su1 v1.4s, v28.4s, v8.4s
-	(b'\x81\x63\x08\x5E', 'LLIL_INTRINSIC([v1],vsha256su1q_u32,LLIL_CALL_PARAM([LLIL_REG.o(v1),LLIL_REG.o(v28),LLIL_REG.o(v8)]))'),
+	(b'\x81\x63\x08\x5E', 'LLIL_INTRINSIC([v1],vsha256su1q_u32,[LLIL_REG.o(v1),LLIL_REG.o(v28),LLIL_REG.o(v8)])'),
 	# sha512h2 q30, q0, v15.2d
-	(b'\x1E\x84\x6F\xCE', 'LLIL_INTRINSIC([q30],vsha512h2q_u64,LLIL_CALL_PARAM([LLIL_REG.o(q30),LLIL_REG.o(q0),LLIL_REG.o(v15)]))'),
+	(b'\x1E\x84\x6F\xCE', 'LLIL_INTRINSIC([q30],vsha512h2q_u64,[LLIL_REG.o(q30),LLIL_REG.o(q0),LLIL_REG.o(v15)])'),
 	# sha512h2 q13, q3, v0.2d
-	(b'\x6D\x84\x60\xCE', 'LLIL_INTRINSIC([q13],vsha512h2q_u64,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.o(q3),LLIL_REG.o(v0)]))'),
+	(b'\x6D\x84\x60\xCE', 'LLIL_INTRINSIC([q13],vsha512h2q_u64,[LLIL_REG.o(q13),LLIL_REG.o(q3),LLIL_REG.o(v0)])'),
 	# sha512h q30, q14, v10.2d
-	(b'\xDE\x81\x6A\xCE', 'LLIL_INTRINSIC([q30],vsha512hq_u64,LLIL_CALL_PARAM([LLIL_REG.o(q30),LLIL_REG.o(q14),LLIL_REG.o(v10)]))'),
+	(b'\xDE\x81\x6A\xCE', 'LLIL_INTRINSIC([q30],vsha512hq_u64,[LLIL_REG.o(q30),LLIL_REG.o(q14),LLIL_REG.o(v10)])'),
 	# sha512h q13, q14, v28.2d
-	(b'\xCD\x81\x7C\xCE', 'LLIL_INTRINSIC([q13],vsha512hq_u64,LLIL_CALL_PARAM([LLIL_REG.o(q13),LLIL_REG.o(q14),LLIL_REG.o(v28)]))'),
+	(b'\xCD\x81\x7C\xCE', 'LLIL_INTRINSIC([q13],vsha512hq_u64,[LLIL_REG.o(q13),LLIL_REG.o(q14),LLIL_REG.o(v28)])'),
 	# sha512su0 v10.2d, v6.2d
-	(b'\xCA\x80\xC0\xCE', 'LLIL_INTRINSIC([v10],vsha512su0q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v10),LLIL_REG.o(v6)]))'),
+	(b'\xCA\x80\xC0\xCE', 'LLIL_INTRINSIC([v10],vsha512su0q_u64,[LLIL_REG.o(v10),LLIL_REG.o(v6)])'),
 	# sha512su0 v13.2d, v9.2d
-	(b'\x2D\x81\xC0\xCE', 'LLIL_INTRINSIC([v13],vsha512su0q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v9)]))'),
+	(b'\x2D\x81\xC0\xCE', 'LLIL_INTRINSIC([v13],vsha512su0q_u64,[LLIL_REG.o(v13),LLIL_REG.o(v9)])'),
 	# sha512su1 v13.2d, v6.2d, v5.2d
-	(b'\xCD\x88\x65\xCE', 'LLIL_INTRINSIC([v13],vsha512su1q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v13),LLIL_REG.o(v6),LLIL_REG.o(v5)]))'),
+	(b'\xCD\x88\x65\xCE', 'LLIL_INTRINSIC([v13],vsha512su1q_u64,[LLIL_REG.o(v13),LLIL_REG.o(v6),LLIL_REG.o(v5)])'),
 	# sha512su1 v18.2d, v19.2d, v12.2d
-	(b'\x72\x8A\x6C\xCE', 'LLIL_INTRINSIC([v18],vsha512su1q_u64,LLIL_CALL_PARAM([LLIL_REG.o(v18),LLIL_REG.o(v19),LLIL_REG.o(v12)]))'),
+	(b'\x72\x8A\x6C\xCE', 'LLIL_INTRINSIC([v18],vsha512su1q_u64,[LLIL_REG.o(v18),LLIL_REG.o(v19),LLIL_REG.o(v12)])'),
 ]
 
 tests_rev = [
 	(b'\x49\x29\xC8\x9A', 'LLIL_SET_REG.q(x9,LLIL_ASR.q(LLIL_REG.q(x10),LLIL_REG.q(x8)))'), # asr     x9, x10, x8
 	# rev16 w25, w2
-	(b'\x59\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w2)]))'),
+	(b'\x59\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,[LLIL_REG.d(w2)])'),
 	# rev16 w25, w6
-	(b'\xD9\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w6)]))'),
+	(b'\xD9\x04\xC0\x5A', 'LLIL_INTRINSIC([w25],_byteswap,[LLIL_REG.d(w6)])'),
 	# rev16 x23, x3
-	(b'\x77\x04\xC0\xDA', 'LLIL_INTRINSIC([x23],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x3)]))'),
+	(b'\x77\x04\xC0\xDA', 'LLIL_INTRINSIC([x23],_byteswap,[LLIL_REG.q(x3)])'),
 	# rev16 x14, x17
-	(b'\x2E\x06\xC0\xDA', 'LLIL_INTRINSIC([x14],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x17)]))'),
+	(b'\x2E\x06\xC0\xDA', 'LLIL_INTRINSIC([x14],_byteswap,[LLIL_REG.q(x17)])'),
 	# rev16 v8.16b, v26.16b
-	(b'\x48\x1B\x20\x4E', 'LLIL_INTRINSIC([v8],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	(b'\x48\x1B\x20\x4E', 'LLIL_INTRINSIC([v8],_byteswap,[LLIL_REG.o(v26)])'),
 	# rev16 v4.8b, v27.8b
-	(b'\x64\x1B\x20\x0E', 'LLIL_INTRINSIC([v4],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v27)]))'),
+	(b'\x64\x1B\x20\x0E', 'LLIL_INTRINSIC([v4],_byteswap,[LLIL_REG.o(v27)])'),
 	# rev32 x29, x8
-	(b'\x1D\x09\xC0\xDA', 'LLIL_INTRINSIC([x29],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x8)]))'),
+	(b'\x1D\x09\xC0\xDA', 'LLIL_INTRINSIC([x29],_byteswap,[LLIL_REG.q(x8)])'),
 	# rev32 x18, x26
-	(b'\x52\x0B\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x26)]))'),
+	(b'\x52\x0B\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,[LLIL_REG.q(x26)])'),
 	# rev32 v18.4h, v15.4h
-	(b'\xF2\x09\x60\x2E', 'LLIL_INTRINSIC([v18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v15)]))'),
+	(b'\xF2\x09\x60\x2E', 'LLIL_INTRINSIC([v18],_byteswap,[LLIL_REG.o(v15)])'),
 	# rev32 v20.8h, v26.8h
-	(b'\x54\x0B\x60\x6E', 'LLIL_INTRINSIC([v20],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	(b'\x54\x0B\x60\x6E', 'LLIL_INTRINSIC([v20],_byteswap,[LLIL_REG.o(v26)])'),
 	# rev64 v9.2s, v26.2s
-	(b'\x49\x0B\xA0\x0E', 'LLIL_INTRINSIC([v9],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v26)]))'),
+	(b'\x49\x0B\xA0\x0E', 'LLIL_INTRINSIC([v9],_byteswap,[LLIL_REG.o(v26)])'),
 	# rev64 v17.16b, v18.16b
-	(b'\x51\x0A\x20\x4E', 'LLIL_INTRINSIC([v17],_byteswap,LLIL_CALL_PARAM([LLIL_REG.o(v18)]))'),
+	(b'\x51\x0A\x20\x4E', 'LLIL_INTRINSIC([v17],_byteswap,[LLIL_REG.o(v18)])'),
 	# rev w14, w21
-	(b'\xAE\x0A\xC0\x5A', 'LLIL_INTRINSIC([w14],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w21)]))'),
+	(b'\xAE\x0A\xC0\x5A', 'LLIL_INTRINSIC([w14],_byteswap,[LLIL_REG.d(w21)])'),
 	# rev w23, w3
-	(b'\x77\x08\xC0\x5A', 'LLIL_INTRINSIC([w23],_byteswap,LLIL_CALL_PARAM([LLIL_REG.d(w3)]))'),
+	(b'\x77\x08\xC0\x5A', 'LLIL_INTRINSIC([w23],_byteswap,[LLIL_REG.d(w3)])'),
 	# rev x11, x6
-	(b'\xCB\x0C\xC0\xDA', 'LLIL_INTRINSIC([x11],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'),
+	(b'\xCB\x0C\xC0\xDA', 'LLIL_INTRINSIC([x11],_byteswap,[LLIL_REG.q(x6)])'),
 	# rev x18, x0
-	(b'\x12\x0C\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'),
+	(b'\x12\x0C\xC0\xDA', 'LLIL_INTRINSIC([x18],_byteswap,[LLIL_REG.q(x0)])'),
 	# rev p1.s, p8.s
 	(b'\x01\x41\xB4\x05', 'LLIL_UNIMPL()'),
 	# rev p15.d, p11.d
@@ -2016,20 +2016,20 @@ test_cases = \
 	(b'\x20\x00\x02\xBA', 'LLIL_SET_REG.q(x0,LLIL_ADC.q{*}(LLIL_REG.q(x1),LLIL_REG.q(x2),LLIL_FLAG(c)))'), # adcs x0, x1, x2
 	(b'\x08\x75\x93\x13', 'LLIL_SET_REG.d(w8,LLIL_LSR.q(LLIL_OR.q(LLIL_LSL.q(LLIL_REG.d(w8),LLIL_CONST.b(0x20)),LLIL_REG.d(w19)),LLIL_CONST.b(0x1D)))'), # extr    w8, w8, w19, #0x1d
 	(b'\x20\x28\xC2\x93', 'LLIL_SET_REG.q(x0,LLIL_LSR.o(LLIL_OR.o(LLIL_LSL.o(LLIL_REG.q(x1),LLIL_CONST.b(0x40)),LLIL_REG.q(x2)),LLIL_CONST.b(0xA)))'), # extr x0, x1, x2, #10
-	(b'\xC6\x0C\xC0\xDA', 'LLIL_INTRINSIC([x6],_byteswap,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # rev x6, x6
-	(b'\xCB\x10\xC0\xDA', 'LLIL_INTRINSIC([x11],_CountLeadingZeros,LLIL_CALL_PARAM([LLIL_REG.q(x6)]))'), # clz     x11, x6
-	(b'\x63\x00\xC0\xDA', 'LLIL_INTRINSIC([x3],__rbit,LLIL_CALL_PARAM([LLIL_REG.q(x3)]))'), # rbit    x3, x3
+	(b'\xC6\x0C\xC0\xDA', 'LLIL_INTRINSIC([x6],_byteswap,[LLIL_REG.q(x6)])'), # rev x6, x6
+	(b'\xCB\x10\xC0\xDA', 'LLIL_INTRINSIC([x11],_CountLeadingZeros,[LLIL_REG.q(x6)])'), # clz     x11, x6
+	(b'\x63\x00\xC0\xDA', 'LLIL_INTRINSIC([x3],__rbit,[LLIL_REG.q(x3)])'), # rbit    x3, x3
 	# Unknown system register
-	(b'\x21\x00\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x1)]))'), # msr s3_3_c0_c0_1, x1
-	(b'\x23\x00\x3B\xD5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(sysreg_unknown)]))'), # mrs x3, s3_3_c0_c0_1
-	(b'\xE0\x03\x9F\xD6', 'LLIL_INTRINSIC([],_eret,LLIL_CALL_PARAM([]));' + \
+	(b'\x21\x00\x1B\xD5', 'LLIL_INTRINSIC([sysreg_unknown],_WriteStatusReg,[LLIL_REG.q(x1)])'), # msr s3_3_c0_c0_1, x1
+	(b'\x23\x00\x3B\xD5', 'LLIL_INTRINSIC([x3],_ReadStatusReg,[LLIL_REG.q(sysreg_unknown)])'), # mrs x3, s3_3_c0_c0_1
+	(b'\xE0\x03\x9F\xD6', 'LLIL_INTRINSIC([],_eret,[]);' + \
 						 ' LLIL_TRAP(0)'), # eret
 	(b'\x00\x08\x21\x1E', 'LLIL_SET_REG.d(s0,LLIL_FMUL.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fmul s0, s0, s1
 	(b'\x00\x18\x21\x1E', 'LLIL_SET_REG.d(s0,LLIL_FDIV.d(LLIL_REG.d(s0),LLIL_REG.d(s1)))'), # fdiv s0, s0, s1
 	(b'\xE0\x0F\x40\xBD', 'LLIL_SET_REG.d(s0,LLIL_LOAD.d(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0xC))))'), # ldr s0, [sp, #0xc]
 	(b'\xE1\x0B\x40\xBD', 'LLIL_SET_REG.d(s1,LLIL_LOAD.d(LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0x8))))'), # ldr s1, [sp, #0x8]
 	(b'\x29\x7D\x40\xD3', 'LLIL_SET_REG.q(x9,LLIL_LOW_PART.d(LLIL_REG.q(x9)))'), # ubfx x9, x9, #0, #0x20
-	(b'\x00\xC0\x1E\xD5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr vbar_el3, x0
+	(b'\x00\xC0\x1E\xD5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,[LLIL_REG.q(x0)])'), # msr vbar_el3, x0
 	(b'\x69\x01\x08\x4A', 'LLIL_SET_REG.d(w9,LLIL_XOR.d(LLIL_REG.d(w11),LLIL_REG.d(w8)))'), # eor w9, w11, w8
 	(b'\x2C\x09\xD5\x4A', 'LLIL_SET_REG.d(w12,LLIL_XOR.d(LLIL_REG.d(w9),LLIL_ROR.d(LLIL_REG.d(w21),LLIL_CONST.b(0x2))))'), # eor w12, w9, w21, ror #0x2
 	# adrp
@@ -2226,35 +2226,35 @@ test_cases = \
 	#(b'\x4E\x43\x9B\xE5', 'LLIL_UNDEF()'), # str z14, [x26, #216, mul vl]
 	# pointer auth instructions
 	# AUTDA_64P_dp_1src 1101101011000001000110xxxxxxxxxx
-	(b'\x04\x18\xC1\xDA', 'LLIL_INTRINSIC([x4],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x4),LLIL_REG.q(x0)]))'), # autda x4, x0
-	(b'\xF4\x18\xC1\xDA', 'LLIL_INTRINSIC([x20],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_REG.q(x7)]))'), # autda x20, x7
+	(b'\x04\x18\xC1\xDA', 'LLIL_INTRINSIC([x4],__autda,[LLIL_REG.q(x4),LLIL_REG.q(x0)])'), # autda x4, x0
+	(b'\xF4\x18\xC1\xDA', 'LLIL_INTRINSIC([x20],__autda,[LLIL_REG.q(x20),LLIL_REG.q(x7)])'), # autda x20, x7
 	# AUTDB_64P_dp_1src 110110101100000100xxxxxxxxxxxxxx
-	(b'\x94\x1C\xC1\xDA', 'LLIL_INTRINSIC([x20],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_REG.q(x4)]))'), # autdb x20, x4
-	(b'\xCB\x1E\xC1\xDA', 'LLIL_INTRINSIC([x11],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x11),LLIL_REG.q(x22)]))'), # autdb x11, x22
+	(b'\x94\x1C\xC1\xDA', 'LLIL_INTRINSIC([x20],__autdb,[LLIL_REG.q(x20),LLIL_REG.q(x4)])'), # autdb x20, x4
+	(b'\xCB\x1E\xC1\xDA', 'LLIL_INTRINSIC([x11],__autdb,[LLIL_REG.q(x11),LLIL_REG.q(x22)])'), # autdb x11, x22
 	# AUTDZA_64Z_dp_1src 110110101100000100111xxxxxxxxxxx
-	(b'\xF3\x3B\xC1\xDA', 'LLIL_INTRINSIC([x19],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x19),LLIL_CONST.q(0x0)]))'), # autdza x19
-	(b'\xF4\x3B\xC1\xDA', 'LLIL_INTRINSIC([x20],__autda,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_CONST.q(0x0)]))'), # autdza x20
+	(b'\xF3\x3B\xC1\xDA', 'LLIL_INTRINSIC([x19],__autda,[LLIL_REG.q(x19),LLIL_CONST.q(0x0)])'), # autdza x19
+	(b'\xF4\x3B\xC1\xDA', 'LLIL_INTRINSIC([x20],__autda,[LLIL_REG.q(x20),LLIL_CONST.q(0x0)])'), # autdza x20
 	# AUTDZB_64Z_dp_1src 11011010110000010xxxxxxxxxxxxxxx
-	(b'\xFE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x30],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_CONST.q(0x0)]))'), # autdzb x30
-	(b'\xEE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x14],__autdb,LLIL_CALL_PARAM([LLIL_REG.q(x14),LLIL_CONST.q(0x0)]))'), # autdzb x14
+	(b'\xFE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x30],__autdb,[LLIL_REG.q(x30),LLIL_CONST.q(0x0)])'), # autdzb x30
+	(b'\xEE\x3F\xC1\xDA', 'LLIL_INTRINSIC([x14],__autdb,[LLIL_REG.q(x14),LLIL_CONST.q(0x0)])'), # autdzb x14
 	# AUTIA_64P_dp_1src 1101101011000001000100xxxxxxxxxx
-	(b'\x83\x11\xC1\xDA', 'LLIL_INTRINSIC([x3],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x3),LLIL_REG.q(x12)]))'), # autia x3, x12
-	(b'\xD5\x13\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x21),LLIL_REG.q(x30)]))'), # autia x21, x30
+	(b'\x83\x11\xC1\xDA', 'LLIL_INTRINSIC([x3],__autia,[LLIL_REG.q(x3),LLIL_REG.q(x12)])'), # autia x3, x12
+	(b'\xD5\x13\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,[LLIL_REG.q(x21),LLIL_REG.q(x30)])'), # autia x21, x30
 	# AUTIB1716_HI_hints 1101010100000011001000xxxxxxxxxx
-	(b'\xDF\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x17),LLIL_REG.q(x16)]))'), # autib1716
+	(b'\xDF\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__autib,[LLIL_REG.q(x17),LLIL_REG.q(x16)])'), # autib1716
 	# AUTIBSP_HI_hints 110101010000001100100xxxxxxxxxxx
-	(b'\xFF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_REG.q(sp)]))'), # autibsp
+	(b'\xFF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autib,[LLIL_REG.q(x30),LLIL_REG.q(sp)])'), # autibsp
 	# AUTIBZ_HI_hints 11010101000000110010001111xxxxxx
-	(b'\xDF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_CONST.q(0x0)]))'), # autibz
+	(b'\xDF\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__autib,[LLIL_REG.q(x30),LLIL_CONST.q(0x0)])'), # autibz
 	# AUTIB_64P_dp_1src 1101101011000001000101xxxxxxxxxx
-	(b'\x7C\x16\xC1\xDA', 'LLIL_INTRINSIC([x28],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x28),LLIL_REG.q(x19)]))'), # autib x28, x19
-	(b'\xCB\x16\xC1\xDA', 'LLIL_INTRINSIC([x11],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x11),LLIL_REG.q(x22)]))'), # autib x11, x22
+	(b'\x7C\x16\xC1\xDA', 'LLIL_INTRINSIC([x28],__autib,[LLIL_REG.q(x28),LLIL_REG.q(x19)])'), # autib x28, x19
+	(b'\xCB\x16\xC1\xDA', 'LLIL_INTRINSIC([x11],__autib,[LLIL_REG.q(x11),LLIL_REG.q(x22)])'), # autib x11, x22
 	# AUTIZA_64Z_dp_1src 110110101100000100110xxxxxxxxxxx
-	(b'\xEF\x33\xC1\xDA', 'LLIL_INTRINSIC([x15],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x15),LLIL_CONST.q(0x0)]))'), # autiza x15
-	(b'\xF5\x33\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,LLIL_CALL_PARAM([LLIL_REG.q(x21),LLIL_CONST.q(0x0)]))'), # autiza x21
+	(b'\xEF\x33\xC1\xDA', 'LLIL_INTRINSIC([x15],__autia,[LLIL_REG.q(x15),LLIL_CONST.q(0x0)])'), # autiza x15
+	(b'\xF5\x33\xC1\xDA', 'LLIL_INTRINSIC([x21],__autia,[LLIL_REG.q(x21),LLIL_CONST.q(0x0)])'), # autiza x21
 	# AUTIZB_64Z_dp_1src 11011010110000010011xxxxxxxxxxxx
-	(b'\xE4\x37\xC1\xDA', 'LLIL_INTRINSIC([x4],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x4),LLIL_CONST.q(0x0)]))'), # autizb x4
-	(b'\xF4\x37\xC1\xDA', 'LLIL_INTRINSIC([x20],__autib,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_CONST.q(0x0)]))'), # autizb x20
+	(b'\xE4\x37\xC1\xDA', 'LLIL_INTRINSIC([x4],__autib,[LLIL_REG.q(x4),LLIL_CONST.q(0x0)])'), # autizb x4
+	(b'\xF4\x37\xC1\xDA', 'LLIL_INTRINSIC([x20],__autib,[LLIL_REG.q(x20),LLIL_CONST.q(0x0)])'), # autizb x20
 	# BLRAA_64P_branch_reg 1101011100111111000010xxxxxxxxxx
 	(b'\x14\x0B\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x24))'), # blraa x24, x20
 	(b'\xFD\x0A\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x23))'), # blraa x23, x29
@@ -2297,58 +2297,58 @@ test_cases = \
 	(b'\x2B\x35\xAA\xF8', 'LLIL_SET_REG.q(x11,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_CONST.q(0x518))))'), # ldrab x11, [x9, #1304]
 	(b'\x28\x1b\x02\x90', 'LLIL_SET_REG.q(x8,LLIL_CONST.q(0x4364000))'), # ldrsw   x8, 0x100008000
 	# PACDA_64P_dp_1src 1101101011000001000010xxxxxxxxxx
-	(b'\xAC\x0B\xC1\xDA', 'LLIL_INTRINSIC([x12],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x12),LLIL_REG.q(x29)]))'), # pacda x12, x29
-	(b'\xD2\x09\xC1\xDA', 'LLIL_INTRINSIC([x18],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x18),LLIL_REG.q(x14)]))'), # pacda x18, x14
+	(b'\xAC\x0B\xC1\xDA', 'LLIL_INTRINSIC([x12],__pacda,[LLIL_REG.q(x12),LLIL_REG.q(x29)])'), # pacda x12, x29
+	(b'\xD2\x09\xC1\xDA', 'LLIL_INTRINSIC([x18],__pacda,[LLIL_REG.q(x18),LLIL_REG.q(x14)])'), # pacda x18, x14
 	# PACDB_64P_dp_1src 1101101011000001000011xxxxxxxxxx
-	(b'\xF9\x0E\xC1\xDA', 'LLIL_INTRINSIC([x25],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x25),LLIL_REG.q(x23)]))'), # pacdb x25, x23
-	(b'\xBA\x0C\xC1\xDA', 'LLIL_INTRINSIC([x26],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x26),LLIL_REG.q(x5)]))'), # pacdb x26, x5
+	(b'\xF9\x0E\xC1\xDA', 'LLIL_INTRINSIC([x25],__pacdb,[LLIL_REG.q(x25),LLIL_REG.q(x23)])'), # pacdb x25, x23
+	(b'\xBA\x0C\xC1\xDA', 'LLIL_INTRINSIC([x26],__pacdb,[LLIL_REG.q(x26),LLIL_REG.q(x5)])'), # pacdb x26, x5
 	# PACDZA_64Z_dp_1src 110110101100000100101xxxxxxxxxxx
-	(b'\xE7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x7),LLIL_CONST.q(0x0)]))'), # pacdza x7
-	(b'\xF7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x23],__pacda,LLIL_CALL_PARAM([LLIL_REG.q(x23),LLIL_CONST.q(0x0)]))'), # pacdza x23
+	(b'\xE7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacda,[LLIL_REG.q(x7),LLIL_CONST.q(0x0)])'), # pacdza x7
+	(b'\xF7\x2B\xC1\xDA', 'LLIL_INTRINSIC([x23],__pacda,[LLIL_REG.q(x23),LLIL_CONST.q(0x0)])'), # pacdza x23
 	# PACDZB_64Z_dp_1src 1101101011000001001xxxxxxxxxxxxx
-	(b'\xE6\x2F\xC1\xDA', 'LLIL_INTRINSIC([x6],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x6),LLIL_CONST.q(0x0)]))'), # pacdzb x6
-	(b'\xE0\x2F\xC1\xDA', 'LLIL_INTRINSIC([x0],__pacdb,LLIL_CALL_PARAM([LLIL_REG.q(x0),LLIL_CONST.q(0x0)]))'), # pacdzb x0
+	(b'\xE6\x2F\xC1\xDA', 'LLIL_INTRINSIC([x6],__pacdb,[LLIL_REG.q(x6),LLIL_CONST.q(0x0)])'), # pacdzb x6
+	(b'\xE0\x2F\xC1\xDA', 'LLIL_INTRINSIC([x0],__pacdb,[LLIL_REG.q(x0),LLIL_CONST.q(0x0)])'), # pacdzb x0
 	# PACGA_64P_dp_2src 10011010110xxxxx001100xxxxxxxxxx
-	(b'\x22\x30\xCD\x9A', 'LLIL_INTRINSIC([x2],__pacga,LLIL_CALL_PARAM([LLIL_REG.q(x1),LLIL_REG.q(x13)]))'), # pacga x2, x1, x13
-	(b'\x99\x32\xD3\x9A', 'LLIL_INTRINSIC([x25],__pacga,LLIL_CALL_PARAM([LLIL_REG.q(x20),LLIL_REG.q(x19)]))'), # pacga x25, x20, x19
+	(b'\x22\x30\xCD\x9A', 'LLIL_INTRINSIC([x2],__pacga,[LLIL_REG.q(x1),LLIL_REG.q(x13)])'), # pacga x2, x1, x13
+	(b'\x99\x32\xD3\x9A', 'LLIL_INTRINSIC([x25],__pacga,[LLIL_REG.q(x20),LLIL_REG.q(x19)])'), # pacga x25, x20, x19
 	# PACIA1716_HI_hints 1101010100000011001000010xxxxxxx
-	(b'\x1F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x17),LLIL_REG.q(x16)]))'), # pacia1716
+	(b'\x1F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacia,[LLIL_REG.q(x17),LLIL_REG.q(x16)])'), # pacia1716
 	# PACIAZ_HI_hints 11010101000000110010001100xxxxxx
-	(b'\x1F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_CONST.q(0x0)]))'), # paciaz
+	(b'\x1F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacia,[LLIL_REG.q(x30),LLIL_CONST.q(0x0)])'), # paciaz
 	# PACIA_64P_dp_1src 1101101011000001000000xxxxxxxxxx
-	(b'\x4A\x02\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x10),LLIL_REG.q(x18)]))'), # pacia x10, x18
-	(b'\xAA\x00\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x10),LLIL_REG.q(x5)]))'), # pacia x10, x5
+	(b'\x4A\x02\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,[LLIL_REG.q(x10),LLIL_REG.q(x18)])'), # pacia x10, x18
+	(b'\xAA\x00\xC1\xDA', 'LLIL_INTRINSIC([x10],__pacia,[LLIL_REG.q(x10),LLIL_REG.q(x5)])'), # pacia x10, x5
 	# PACIB1716_HI_hints 110101010000001100100001xxxxxxxx
-	(b'\x5F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x17),LLIL_REG.q(x16)]))'), # pacib1716
+	(b'\x5F\x21\x03\xD5', 'LLIL_INTRINSIC([x17],__pacib,[LLIL_REG.q(x17),LLIL_REG.q(x16)])'), # pacib1716
 	# PACIASP_HI_hints 1101010100000011001000110xxxxxxx
 	# writes x30 (after PAC computation), reads sp for modifier
-	(b'\x3F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_REG.q(sp)]))'), # paciasp
+	(b'\x3F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacia,[LLIL_REG.q(x30),LLIL_REG.q(sp)])'), # paciasp
 	# PACIBSP_HI_hints 110101010000001100100011xxxxxxxx
-	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_REG.q(sp)]))'), # pacibsp
+	(b'\x7F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacib,[LLIL_REG.q(x30),LLIL_REG.q(sp)])'), # pacibsp
 	# PACIBZ_HI_hints 11010101000000110010001101xxxxxx
-	(b'\x5F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_CONST.q(0x0)]))'), # pacibz
+	(b'\x5F\x23\x03\xD5', 'LLIL_INTRINSIC([x30],__pacib,[LLIL_REG.q(x30),LLIL_CONST.q(0x0)])'), # pacibz
 	# PACIB_64P_dp_1src 1101101011000001000001xxxxxxxxxx
-	(b'\x84\x06\xC1\xDA', 'LLIL_INTRINSIC([x4],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x4),LLIL_REG.q(x20)]))'), # pacib x4, x20
-	(b'\x61\x06\xC1\xDA', 'LLIL_INTRINSIC([x1],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x1),LLIL_REG.q(x19)]))'), # pacib x1, x19
+	(b'\x84\x06\xC1\xDA', 'LLIL_INTRINSIC([x4],__pacib,[LLIL_REG.q(x4),LLIL_REG.q(x20)])'), # pacib x4, x20
+	(b'\x61\x06\xC1\xDA', 'LLIL_INTRINSIC([x1],__pacib,[LLIL_REG.q(x1),LLIL_REG.q(x19)])'), # pacib x1, x19
 	# PACIZA_64Z_dp_1src 110110101100000100100xxxxxxxxxxx
-	(b'\xE3\x23\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x3),LLIL_CONST.q(0x0)]))'), # paciza x3
-	(b'\xFE\x23\xC1\xDA', 'LLIL_INTRINSIC([x30],__pacia,LLIL_CALL_PARAM([LLIL_REG.q(x30),LLIL_CONST.q(0x0)]))'), # paciza x30
+	(b'\xE3\x23\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacia,[LLIL_REG.q(x3),LLIL_CONST.q(0x0)])'), # paciza x3
+	(b'\xFE\x23\xC1\xDA', 'LLIL_INTRINSIC([x30],__pacia,[LLIL_REG.q(x30),LLIL_CONST.q(0x0)])'), # paciza x30
 	# PACIZB_64Z_dp_1src 11011010110000010010xxxxxxxxxxxx
-	(b'\xE3\x27\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x3),LLIL_CONST.q(0x0)]))'), # pacizb x3
-	(b'\xE7\x27\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacib,LLIL_CALL_PARAM([LLIL_REG.q(x7),LLIL_CONST.q(0x0)]))'), # pacizb x7
+	(b'\xE3\x27\xC1\xDA', 'LLIL_INTRINSIC([x3],__pacib,[LLIL_REG.q(x3),LLIL_CONST.q(0x0)])'), # pacizb x3
+	(b'\xE7\x27\xC1\xDA', 'LLIL_INTRINSIC([x7],__pacib,[LLIL_REG.q(x7),LLIL_CONST.q(0x0)])'), # pacizb x7
 	# RETAA_64E_branch_reg 11010110010111110000101111111111
 	# (just a return, so function is optimized to nothing)
 	(b'\xFF\x0B\x5F\xD6', ''), # retaa
 	# RETAB_64E_branch_reg 11010110010111110000111111111111
 	(b'\xFF\x0F\x5F\xD6', ''), # retab
 	# XPACD_64Z_dp_1src 110110101100000101000111111xxxxx
-	(b'\xF8\x47\xC1\xDA', 'LLIL_INTRINSIC([x24],__xpacd,LLIL_CALL_PARAM([LLIL_REG.q(x24)]))'), # xpacd x24
-	(b'\xED\x47\xC1\xDA', 'LLIL_INTRINSIC([x13],__xpacd,LLIL_CALL_PARAM([LLIL_REG.q(x13)]))'), # xpacd x13
+	(b'\xF8\x47\xC1\xDA', 'LLIL_INTRINSIC([x24],__xpacd,[LLIL_REG.q(x24)])'), # xpacd x24
+	(b'\xED\x47\xC1\xDA', 'LLIL_INTRINSIC([x13],__xpacd,[LLIL_REG.q(x13)])'), # xpacd x13
 	# XPACI_64Z_dp_1src 110110101100000101000xxxxxxxxxxx
-	(b'\xE2\x43\xC1\xDA', 'LLIL_INTRINSIC([x2],__xpaci,LLIL_CALL_PARAM([LLIL_REG.q(x2)]))'), # xpaci x2
-	(b'\xE7\x43\xC1\xDA', 'LLIL_INTRINSIC([x7],__xpaci,LLIL_CALL_PARAM([LLIL_REG.q(x7)]))'), # xpaci x7
+	(b'\xE2\x43\xC1\xDA', 'LLIL_INTRINSIC([x2],__xpaci,[LLIL_REG.q(x2)])'), # xpaci x2
+	(b'\xE7\x43\xC1\xDA', 'LLIL_INTRINSIC([x7],__xpaci,[LLIL_REG.q(x7)])'), # xpaci x7
 	# XPACLRI_HI_hints 11010101000000110010000xxxxxxxxx
-	(b'\xFF\x20\x03\xD5', 'LLIL_INTRINSIC([x30],__xpaci,LLIL_CALL_PARAM([LLIL_REG.q(x30)]))'), # xpaclri
+	(b'\xFF\x20\x03\xD5', 'LLIL_INTRINSIC([x30],__xpaci,[LLIL_REG.q(x30)])'), # xpaclri
 	# signed bitfield insert zeros, lsb is position in DESTINATION register (position 0 in source)
 	# strategy: LSL extracted field to the most significant end, then ASR it back
 	(b'\x20\x00\x40\x93', 'LLIL_SET_REG.q(x0,LLIL_ASR.q(LLIL_LSL.q(LLIL_AND.q(LLIL_REG.q(x1),LLIL_CONST.q(0x1)),LLIL_CONST.b(0x3F)),LLIL_CONST.b(0x3F)))'), # sbfiz x0, x1, #0, #1
@@ -2430,8 +2430,8 @@ test_cases = \
 	(b'\xFF\x64\x27\xCB', 'LLIL_SET_REG.q(sp,LLIL_SUB.q(LLIL_REG.q(x7),LLIL_LSL.q(LLIL_REG.q(x7),LLIL_CONST.b(0x1))))'), # sub sp, x7, x7, lsl #1
 	(b'\xA5\x23\x23\xCB', 'LLIL_SET_REG.q(x5,LLIL_SUB.q(LLIL_REG.q(x29),LLIL_ZX.q(LLIL_LOW_PART.w(LLIL_REG.d(w3)))))'), # sub x5, x29, w3, uxth
 	(b'\xA4\x69\x37\xCB', 'LLIL_SET_REG.q(x4,LLIL_SUB.q(LLIL_REG.q(x13),LLIL_LSL.q(LLIL_REG.q(x23),LLIL_CONST.b(0x2))))'), # sub x4, x13, x23, uxtx #2
-	(b'\x21\xF0\x9F\xF8', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xFFFFFFFFFFFFFFFF)))]))'), # prfum pldl1strm, [x1, #-0x1]
-	(b'\x21\x00\x80\xF9', 'LLIL_INTRINSIC([],__prefetch,LLIL_CALL_PARAM([LLIL_LOAD.q(LLIL_REG.q(x1))]))'), # prfm pldl1strm, [x1]
+	(b'\x21\xF0\x9F\xF8', 'LLIL_INTRINSIC([],__prefetch,[LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xFFFFFFFFFFFFFFFF)))])'), # prfum pldl1strm, [x1, #-0x1]
+	(b'\x21\x00\x80\xF9', 'LLIL_INTRINSIC([],__prefetch,[LLIL_LOAD.q(LLIL_REG.q(x1))])'), # prfm pldl1strm, [x1]
 	(b'\x24\x98\x41\xBA', 'LLIL_IF(LLIL_FLAG_GROUP(ls),1,3);' + \
 						 ' LLIL_ADD.q{*}(LLIL_REG.q(x1),LLIL_CONST.q(0x1));' + \
 						 ' LLIL_GOTO(8);' + \
@@ -2458,28 +2458,28 @@ test_cases = \
 						 ' LLIL_SYSCALL()'), # svc #2; ret; ZwAcceptConnectPort() on win-arm64
 	(b'\x61\x00\x00\xD4', 'LLIL_SET_REG.d(syscall_info,LLIL_CONST.d(0x40000003));' + \
 						 ' LLIL_SYSCALL()'), # svc #3; ret; ZwMapUserPhysicalPagesScatter() on win-arm64
-	(b'\xBF\x3F\x03\xD5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb sy (data memory barrier, system)
-	(b'\xBF\x3E\x03\xD5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb st (data memory barrier, stores)
-	(b'\xBF\x3A\x03\xD5', 'LLIL_INTRINSIC([],__dmb,LLIL_CALL_PARAM([]))'), # dmb ishst (data memory barrier, inner shareable domain)
-	(b'\x9F\x3F\x03\xD5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb sy (data synchronization barrier, system)
-	(b'\x9F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb st (data synchronization barrier, stores)
-	(b'\x9F\x3A\x03\xD5', 'LLIL_INTRINSIC([],__dsb,LLIL_CALL_PARAM([]))'), # dsb ishst (data synchronization barrier, inner shareable domain)
-	(b'\xDF\x3F\x03\xD5', 'LLIL_INTRINSIC([],__isb,LLIL_CALL_PARAM([]))'), # isb (instruction synchronization barrier, implied system)
-	(b'\x3F\x20\x03\xD5', 'LLIL_INTRINSIC([],__yield,LLIL_CALL_PARAM([]))'), # "yield" or "hint 0x1"
-	(b'\x5F\x20\x03\xD5', 'LLIL_INTRINSIC([],__wfe,LLIL_CALL_PARAM([]))'), # "wfe" or "hint 0x2"
-	(b'\x7F\x20\x03\xD5', 'LLIL_INTRINSIC([],__wfi,LLIL_CALL_PARAM([]))'), # "wfi" or "hint 0x3"
-	(b'\x9F\x20\x03\xD5', 'LLIL_INTRINSIC([],__sev,LLIL_CALL_PARAM([]))'), # "hint 0x4" or "sev"
-	(b'\xBF\x20\x03\xD5', 'LLIL_INTRINSIC([],__sevl,LLIL_CALL_PARAM([]))'), # "hint 0x5" or "sevl"
-	#(b'\xdf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_DGH,LLIL_CALL_PARAM([]))'), # hint 0x6 - now ARM64_DGH
-	#(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,LLIL_CALL_PARAM([]))'), # hint 0x10 - now ARM64_ESB
-	#(b'\x3f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_PSB,LLIL_CALL_PARAM([]))'), # hint 0x11 - now ARM64_PSB
-	#(b'\x5f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_TSB,LLIL_CALL_PARAM([]))'), # hint 0x12 - now ARM64_TSB
-	#(b'\x9f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_CSDB,LLIL_CALL_PARAM([]))'), # hint 0x14 - now ARM64_CSDB
-	#(b'\x5f\x24\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_BTI,LLIL_CALL_PARAM([]))'), # hint 0x22 - now ARM64_BTI
-	(b'\x00\xC0\x1E\xD5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr vbar_el3, x0
-	(b'\x00\x10\x1E\xD5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_REG.q(x0)]))'), # msr sctlr_el3, x0
-#	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,LLIL_CALL_PARAM([LLIL_CONST.d(0x4)]))'), # msr daifclr, #0x4
-	(b'\x00\x10\x3E\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,LLIL_CALL_PARAM([LLIL_REG(sctlr_el3)]))'), # mrs x0, sctlr_el3
+	(b'\xBF\x3F\x03\xD5', 'LLIL_INTRINSIC([],__dmb,[])'), # dmb sy (data memory barrier, system)
+	(b'\xBF\x3E\x03\xD5', 'LLIL_INTRINSIC([],__dmb,[])'), # dmb st (data memory barrier, stores)
+	(b'\xBF\x3A\x03\xD5', 'LLIL_INTRINSIC([],__dmb,[])'), # dmb ishst (data memory barrier, inner shareable domain)
+	(b'\x9F\x3F\x03\xD5', 'LLIL_INTRINSIC([],__dsb,[])'), # dsb sy (data synchronization barrier, system)
+	(b'\x9F\x3E\x03\xD5', 'LLIL_INTRINSIC([],__dsb,[])'), # dsb st (data synchronization barrier, stores)
+	(b'\x9F\x3A\x03\xD5', 'LLIL_INTRINSIC([],__dsb,[])'), # dsb ishst (data synchronization barrier, inner shareable domain)
+	(b'\xDF\x3F\x03\xD5', 'LLIL_INTRINSIC([],__isb,[])'), # isb (instruction synchronization barrier, implied system)
+	(b'\x3F\x20\x03\xD5', 'LLIL_INTRINSIC([],__yield,[])'), # "yield" or "hint 0x1"
+	(b'\x5F\x20\x03\xD5', 'LLIL_INTRINSIC([],__wfe,[])'), # "wfe" or "hint 0x2"
+	(b'\x7F\x20\x03\xD5', 'LLIL_INTRINSIC([],__wfi,[])'), # "wfi" or "hint 0x3"
+	(b'\x9F\x20\x03\xD5', 'LLIL_INTRINSIC([],__sev,[])'), # "hint 0x4" or "sev"
+	(b'\xBF\x20\x03\xD5', 'LLIL_INTRINSIC([],__sevl,[])'), # "hint 0x5" or "sevl"
+	#(b'\xdf\x20\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_DGH,[])'), # hint 0x6 - now ARM64_DGH
+	#(b'\x1f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_ESB,[])'), # hint 0x10 - now ARM64_ESB
+	#(b'\x3f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_PSB,[])'), # hint 0x11 - now ARM64_PSB
+	#(b'\x5f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_TSB,[])'), # hint 0x12 - now ARM64_TSB
+	#(b'\x9f\x22\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_CSDB,[])'), # hint 0x14 - now ARM64_CSDB
+	#(b'\x5f\x24\x03\xd5', 'LLIL_INTRINSIC([],SystemHintOp_BTI,[])'), # hint 0x22 - now ARM64_BTI
+	(b'\x00\xC0\x1E\xD5', 'LLIL_INTRINSIC([vbar_el3],_WriteStatusReg,[LLIL_REG.q(x0)])'), # msr vbar_el3, x0
+	(b'\x00\x10\x1E\xD5', 'LLIL_INTRINSIC([sctlr_el3],_WriteStatusReg,[LLIL_REG.q(x0)])'), # msr sctlr_el3, x0
+#	(b'\xff\x44\x03\xd5', 'LLIL_INTRINSIC([daifclr],_WriteStatusReg,[LLIL_CONST.d(0x4)])'), # msr daifclr, #0x4
+	(b'\x00\x10\x3E\xD5', 'LLIL_INTRINSIC([x0],_ReadStatusReg,[LLIL_REG(sctlr_el3)])'), # mrs x0, sctlr_el3
 	(b'\xC1\x48\x52\x7A', 'LLIL_IF(LLIL_FLAG_GROUP(mi),1,3);' + \
 						 ' LLIL_SUB.d{*}(LLIL_REG.d(w6),LLIL_CONST.d(0x12));' + \
 						 ' LLIL_GOTO(8);' + \
