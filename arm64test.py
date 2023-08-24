@@ -2440,8 +2440,8 @@ test_cases = \
 						 ' LLIL_SET_FLAG(c,LLIL_CONST(0));' + \
 						 ' LLIL_SET_FLAG(v,LLIL_CONST(0));' + \
 						 ' LLIL_GOTO(8)'), # ccmn x1, #0x1, #0x4, ls
-	(b'\x41\x7C\xC3\x9B', 'LLIL_SET_REG.q(x1,LLIL_LSR.o(LLIL_MULU_DP.q(LLIL_REG.q(x2),LLIL_REG.q(x3)),LLIL_CONST.b(0x8)))'), # umulh x1, x2, x3
-	(b'\x41\x7C\x43\x9B', 'LLIL_SET_REG.q(x1,LLIL_LSR.o(LLIL_MULS_DP.q(LLIL_REG.q(x2),LLIL_REG.q(x3)),LLIL_CONST.b(0x8)))'), # smulh x1, x2, x3
+	(b'\x41\x7C\xC3\x9B', 'LLIL_SET_REG.q(x1,LLIL_LOW_PART.q(LLIL_LSR.o(LLIL_MULU_DP.q(LLIL_REG.q(x2),LLIL_REG.q(x3)),LLIL_CONST.b(0x40))))'), # umulh x1, x2, x3
+	(b'\x41\x7C\x43\x9B', 'LLIL_SET_REG.q(x1,LLIL_LOW_PART.q(LLIL_LSR.o(LLIL_MULS_DP.q(LLIL_REG.q(x2),LLIL_REG.q(x3)),LLIL_CONST.b(0x40))))'), # smulh x1, x2, x3
 	(b'\x41\x7C\x23\x9B', 'LLIL_SET_REG.q(x1,LLIL_MULS_DP.q(LLIL_REG.d(w2),LLIL_REG.d(w3)))'), # smull x1, w2, w3
 	(b'\x41\x7C\xA3\x9B', 'LLIL_SET_REG.q(x1,LLIL_MULU_DP.q(LLIL_REG.d(w2),LLIL_REG.d(w3)))'), # umull x1, w2, w3
 	(b'\x41\x00\x03\x8B', 'LLIL_SET_REG.q(x1,LLIL_ADD.q(LLIL_REG.q(x2),LLIL_REG.q(x3)))'), # add x1,x2,x3
