@@ -205,6 +205,11 @@ tests_ucvtf = [
 	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,[LLIL_REG.d(w8)])'),
 ]
 
+tests_scvtf = [
+	# scvtf d1, x15                                                    SCVTF_D64_float2int
+	(b'\xe1\x01b\x9e', 'LLIL_INTRINSIC([d1],vcvtd_f64_s64,[LLIL_REG.q(x15)])')
+]
+
 tests_ret = [
 	# ret
 	(b'\xC0\x03\x5F\xD6', ''), # test harness strips this LLIL_RET, empty string is correct
@@ -1804,6 +1809,7 @@ test_cases = \
 	tests_mvni + \
 	tests_2791 + \
 	tests_ucvtf + \
+	tests_scvtf + \
 	tests_ret + \
 	tests_svc_hvc_smc + \
 	tests_clrex + \

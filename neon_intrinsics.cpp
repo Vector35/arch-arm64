@@ -19028,6 +19028,12 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_SCVTF_D64_FLOAT2INT:
+		// Lift instruction such as `scvtf d3, x15` to vcvtd_f64_s64(int64_t)
+		intrin_id = ARM64_INTRIN_VCVTD_F64_S64;  // SCVTF Dd,Dn
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
 	case ENC_SCVTF_D32_FLOAT2INT:
 		intrin_id = ARM64_INTRIN_VCVT_F64_S64;  // SCVTF Dd,Dn
 		add_input_reg(inputs, il, instr.operands[1]);
