@@ -34,13 +34,14 @@ success!
 
 And, of course, you can open a test binary in Binary Ninja with this architecture built and activated to see if results are as expected.
 
-## Pull Requests
+## Requirements for Pull Requesters
+
+1. **TEST!** If you're making an architecture or lifter change, add a test case to [arm64test.py](./arm64test.py) that fails before your change and succeeds after your change.
+
+2. **TEST!** If you're making a disassembler change, add a test case to [disassembler/test.py](./disassembler/test.py) that fails before your change and succeeds after your change.
+3. Compile with warnings enabled. Do this cmake invocation: `ARM64_WARNINGS=1 cmake .`
 
 Please follow whatever formatting conventions are present in the file you edit. Pay attention to curly brackets, spacing, tabs vs. spaces, etc.
-
-If you're making an architecture or lifter change, add a test case to [arm64test.py](./arm64test.py) that fails before your change and succeeds after your change.
-
-If you're making a disassembler change, add a test case to [disassembler/test.py](./disassembler/test.py) that fails before your change and succeeds after your change.
 
 When you submit your first PR to one of Vector 35's repositories, you'll receive a notice from [CLA Assistant](https://cla-assistant.io/) that allows you to sign our [Contribution License Agreement](https://binary.ninja/cla.pdf) online.
 
@@ -54,7 +55,7 @@ First, set the `BN_API_PATH` environment variable to the path containing the
 Binary Ninja API source tree.
 
 Run `cmake`. This can be done either from a separate build directory or from the source
-directory. If your app is installed in a non-default location, set BN_INSTALL_DIR in your
+directory. If your app is installed in a non-default location, set `BN_INSTALL_DIR` in your
 cmake invocation, like `cmake -DBN_INSTALL_DIR=/Applications/Binary\ Ninja\ DEV.app/`.
 Once that is complete, run `make` in the build directory to compile the plugin.
 

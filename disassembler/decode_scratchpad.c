@@ -4376,7 +4376,8 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	{
 		ArrangementSpec arr_spec = size_spec_method3(ctx->imm5);
 
-		uint64_t INDEX1 = 0, INDEX2 = 0;
+		/*
+		uint64_t INDEX1= 0, INDEX2 = 0;
 		if ((ctx->imm5 & 1) == 1)
 		{
 			INDEX1 = (ctx->imm5 >> 1) & 15;
@@ -4397,6 +4398,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 			INDEX1 = (ctx->imm5 >> 4) & 1;
 			INDEX2 = (ctx->imm4 >> 3) & 1;
 		}
+		*/
 
 		// <Vd>.<T>[<index1>],<Vn>.<T>[<index2>]
 		ADD_OPERAND_VREG_T_LANE(ctx->d, arr_spec, ctx->dst_index);
@@ -7891,6 +7893,8 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 		ADD_OPERAND_NAME(prfop);
 		ADD_OPERAND_PRED_REG(ctx->g);
 		ADD_OPERAND_MEM_REG_OFFSET_VL(REGSET_SP, REG_X_BASE, ctx->n, imm);
+
+		/*
 		unsigned factor;
 		switch (instr->encoding)
 		{
@@ -7900,6 +7904,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 		default:
 			factor = 1;
 		}
+		*/
 		break;
 	}
 	case ENC_PRFB_I_P_AI_D:

@@ -27,6 +27,7 @@ else()
 	add_library(${PROJECT_NAME} SHARED ${SOURCES})
 endif()
 
+
 if(NOT WIN32)
 	set_source_files_properties(disassembler/arm64dis.c PROPERTIES COMPILE_FLAGS -fno-strict-aliasing)
 endif()
@@ -57,6 +58,12 @@ else()
 	endif()
 endif()
 
+IF(DEFINED ENV{ARM64_WARNINGS})
+    MESSAGE(STATUS "ARM64 WARNINGS ON")
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+ELSE()
+    MESSAGE(STATUS "ARM64 WARNINGS OFF")
+ENDIF()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 17
