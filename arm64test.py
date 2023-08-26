@@ -1071,7 +1071,29 @@ tests_fcvt = [
 	# fcvtzu x10, d0
 	(b'\x0A\x00\x79\x9E', 'LLIL_INTRINSIC([x10],vcvtd_u64_f64,[LLIL_REG.q(d0)])'),
 	# fcvtzu X3, D0, #3
-	(b'\x03\xF4\x59\x9E', 'LLIL_INTRINSIC([x3],vcvtd_n_u64_f64,[LLIL_REG.q(d0),LLIL_CONST(3)])')
+	(b'\x03\xF4\x59\x9E', 'LLIL_INTRINSIC([x3],vcvtd_n_u64_f64,[LLIL_REG.q(d0),LLIL_CONST(3)])'),
+	# fcvtzu v23.4s, v22.4s
+	(b'\xd7\xba\xa1\x6e', 'LLIL_INTRINSIC([v23],vcvtq_u32_f32,[LLIL_REG.o(v22)])'),
+	# fcvtzu v24.2s, v20.2s
+	(b'\x98\xba\xa1\x2e', 'LLIL_INTRINSIC([v24],vcvt_u32_f32,[LLIL_REG.o(v20)])'),
+	# fcvtzu v9.2d, v18.2d
+	(b'\x49\xba\xe1\x6e', 'LLIL_INTRINSIC([v9],vcvtq_u64_f64,[LLIL_REG.o(v18)])'),
+	# fcvtzu v16.4h, v1.4h
+	(b'\x30\xB8\xF9\x2E', 'LLIL_INTRINSIC([v16],vcvt_u16_f16,[LLIL_REG.o(v1)])'),
+	# fcvtzu v28.8h, v5.8h
+	(b'\xBC\xB8\xF9\x6E', 'LLIL_INTRINSIC([v28],vcvtq_u16_f16,[LLIL_REG.o(v5)])'),
+	# fcvtzu v3.2d, v25.2d, #0x2f
+	(b'\x23\xff\x51\x6f', 'LLIL_INTRINSIC([v3],vcvtq_n_u64_f64,[LLIL_REG.o(v25),LLIL_CONST(47)])'),
+	# fcvtzu v16.4s, v14.4s, #0x15
+	(b'\xd0\xfd\x2b\x6f', 'LLIL_INTRINSIC([v16],vcvtq_n_u32_f32,[LLIL_REG.o(v14),LLIL_CONST(21)])'),
+	# fcvtzu v11.2s, v4.2s, #0xb
+	(b'\x8b\xfc\x35\x2f', 'LLIL_INTRINSIC([v11],vcvt_n_u32_f32,[LLIL_REG.o(v4),LLIL_CONST(11)])'),
+	# fcvtzu v11.4h, v20.4h, #2
+	(b'\x8B\xFE\x1E\x2F', 'LLIL_INTRINSIC([v11],vcvt_n_u16_f16,[LLIL_REG.o(v20),LLIL_CONST(2)])'),
+	# fcvtzu v11.8h, v4.8h, #0xb
+	(b'\x8B\xFC\x15\x6F', 'LLIL_INTRINSIC([v11],vcvtq_n_u16_f16,[LLIL_REG.o(v4),LLIL_CONST(11)])'),
+	# fcvtzu w4, s18
+	(b'\x44\x02\x39\x1E', 'LLIL_INTRINSIC([w4],vcvts_u32_f32,[LLIL_REG.d(s18)])')
 ]
 
 tests_fccmp_fccmpe = [
