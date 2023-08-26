@@ -15887,6 +15887,12 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_FCVTZU_64D_FLOAT2FIX:
+		intrin_id = ARM64_INTRIN_VCVTD_N_U64_F64;  // FCVTZU Xd, Dn, #n
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
 	case ENC_FCVTZU_ASIMDMISCFP16_R:
 		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
 			intrin_id = ARM64_INTRIN_VCVT_U32_F32;  // FCVTZU Vd.2S,Vn.2S
