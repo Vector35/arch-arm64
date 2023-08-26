@@ -17149,23 +17149,43 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_imm(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
-	case ENC_FCVTZU_ASIMDMISCFP16_R:
+	case ENC_FCVTZU_ASIMDMISC_R:
+		// Lift instruction such as fcvtzu v23.4s, v22.4s and fcvtzu v9.2d, v18.2d
 		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
 			intrin_id = ARM64_INTRIN_VCVT_U32_F32;  // FCVTZU Vd.2S,Vn.2S
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
 			intrin_id = ARM64_INTRIN_VCVTQ_U32_F32;  // FCVTZU Vd.4S,Vn.4S
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
 			intrin_id = ARM64_INTRIN_VCVTQ_U64_F64;  // FCVTZU Vd.2D,Vn.2D
+		else
+			break; // Should be unreachable.
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_FCVTZU_ASIMDSHF_C:
 		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
 			intrin_id = ARM64_INTRIN_VCVT_N_U32_F32;  // FCVTZU Vd.2S,Vn.2S,#n
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
 			intrin_id = ARM64_INTRIN_VCVTQ_N_U32_F32;  // FCVTZU Vd.4S,Vn.4S,#n
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
 			intrin_id = ARM64_INTRIN_VCVTQ_N_U64_F64;  // FCVTZU Vd.2D,Vn.2D,#n
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
 			intrin_id = ARM64_INTRIN_VCVT_N_U16_F16;  // FCVTZU Vd.4H,Vn.4H,#n
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
+		else if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
 			intrin_id = ARM64_INTRIN_VCVTQ_N_U16_F16;  // FCVTZU Vd.8H,Vn.8H,#n
+		else
+			break; // Should be unreachable
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_FCVTZU_ASIMDMISCFP16_R:
+		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
+			intrin_id = ARM64_INTRIN_VCVT_U16_F16;  // FCVTZU Vd.4H,Vn.4H
+		else if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
+			intrin_id = ARM64_INTRIN_VCVTQ_U16_F16;  // FCVTZU Vd.8H,Vn.8H
+		else
+			break; // Should be unreachable
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
