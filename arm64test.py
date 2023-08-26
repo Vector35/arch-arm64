@@ -1067,7 +1067,9 @@ tests_fcvt = [
 	# fcvtzs x15, d0
 	(b'\x0F\x00\x78\x9E', 'LLIL_INTRINSIC([x15],vcvtd_s64_f64,[LLIL_REG.q(d0)])'),
 	# fcvtzs x9, d1
-	(b'\x29\x00\x78\x9E', 'LLIL_INTRINSIC([x9],vcvtd_s64_f64,[LLIL_REG.q(d1)])')
+	(b'\x29\x00\x78\x9E', 'LLIL_INTRINSIC([x9],vcvtd_s64_f64,[LLIL_REG.q(d1)])'),
+	# fcvtzu x10, d0
+	(b'\x0A\x00\x79\x9E', 'LLIL_INTRINSIC([x10],vcvtd_u64_f64,[LLIL_REG.q(d0)])')
 ]
 
 tests_fccmp_fccmpe = [
