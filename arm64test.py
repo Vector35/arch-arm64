@@ -1062,6 +1062,12 @@ tests_fcvt = [
 	(b'\x2F\x42\xE2\x1E', 'LLIL_SET_REG.d(s15,LLIL_FLOAT_CONV.d(LLIL_REG.w(h17)))'),
 	# fcvt s5, h14
 	(b'\xC5\x41\xE2\x1E', 'LLIL_SET_REG.d(s5,LLIL_FLOAT_CONV.d(LLIL_REG.w(h14)))'),
+	# fcvtzs x8, d0
+	(b'\x08\x00\x78\x9E', 'LLIL_INTRINSIC([x8],vcvtd_s64_f64,[LLIL_REG.q(d0)])'),
+	# fcvtzs x15, d0
+	(b'\x0F\x00\x78\x9E', 'LLIL_INTRINSIC([x15],vcvtd_s64_f64,[LLIL_REG.q(d0)])'),
+	# fcvtzs x9, d1
+	(b'\x29\x00\x78\x9E', 'LLIL_INTRINSIC([x9],vcvtd_s64_f64,[LLIL_REG.q(d1)])')
 ]
 
 tests_fccmp_fccmpe = [
