@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 // from api
 #include "il.h" /* for ARM64_INTRIN_NORMAL_END, ExtractRegister() */
@@ -3918,9 +3919,9 @@ enum NeonIntrinsic : uint32_t
 	ARM64_INTRIN_VBFMLALBQ_LANEQ_F32,
 	ARM64_INTRIN_VBFMLALTQ_LANE_F32,
 	ARM64_INTRIN_VBFMLALTQ_LANEQ_F32,
+	ARM64_INTRIN_NEON_END
 };
 
-vector<uint32_t> NeonGetAllIntrinsics();
 string NeonGetIntrinsicName(uint32_t intrinsic);
 vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic);
 vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic);

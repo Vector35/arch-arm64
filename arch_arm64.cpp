@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <inttypes.h>
 #include <map>
+#include <array>
 #include <stdio.h>
 #include <string.h>
 
@@ -1006,25 +1007,29 @@ class Arm64Architecture : public Architecture
 	}
 
 
-	virtual vector<uint32_t> GetAllIntrinsics() override
+	virtual std::vector<uint32_t> GetAllIntrinsics() override
 	{
-		vector<uint32_t> result = NeonGetAllIntrinsics();
+		// Save ourselve some time on allocations.
+		constexpr size_t intrinsic_number = ARM64_INTRIN_NORMAL_END;
+		// Hihghest intrinsic number currently is ARM64_INTRIN_NEON_END.
+		// If new extensions are added please update this code.
+		std::vector<uint32_t> result{ARM64_INTRIN_NEON_END};
 
-		vector<uint32_t> tmp = {
-			ARM64_INTRIN_AUTDA, ARM64_INTRIN_AUTDB, ARM64_INTRIN_AUTIA, ARM64_INTRIN_AUTIB,
-		    ARM64_INTRIN_DC, ARM64_INTRIN_DMB, ARM64_INTRIN_DSB, ARM64_INTRIN_ESB,
-		    ARM64_INTRIN_HINT_BTI, ARM64_INTRIN_HINT_CSDB, ARM64_INTRIN_HINT_DGH, ARM64_INTRIN_HINT_TSB,
-		    ARM64_INTRIN_ISB, ARM64_INTRIN_MRS, ARM64_INTRIN_MSR, ARM64_INTRIN_PACDA,
-		    ARM64_INTRIN_PACDB, ARM64_INTRIN_PACGA, ARM64_INTRIN_PACIA, ARM64_INTRIN_PACIB,
-		    ARM64_INTRIN_PRFM, ARM64_INTRIN_PSBCSYNC,
-		    ARM64_INTRIN_SEV, ARM64_INTRIN_SEVL, ARM64_INTRIN_WFE, ARM64_INTRIN_WFI, ARM64_INTRIN_YIELD,
-		    ARM64_INTRIN_XPACD, ARM64_INTRIN_XPACI, ARM64_INTRIN_ERET,
-		    ARM64_INTRIN_CLZ, ARM64_INTRIN_CLREX, ARM64_INTRIN_REV, ARM64_INTRIN_RBIT,
-		    ARM64_INTRIN_AESD, ARM64_INTRIN_AESE, ARM64_INTRIN_LDXR, ARM64_INTRIN_LDXRB, ARM64_INTRIN_LDXRH,
-			ARM64_INTRIN_LDAXR, ARM64_INTRIN_LDAXRB, ARM64_INTRIN_LDAXRH, ARM64_INTRIN_STXR,
-			ARM64_INTRIN_STXRB, ARM64_INTRIN_STXRH, ARM64_INTRIN_STLXR, ARM64_INTRIN_STLXRB, ARM64_INTRIN_STLXRH};
+		// Double check someone didn't insert a new intrinsic at the beginning of our enum since we rely
+		// on it to fill the next array.
+		static_assert(Arm64Intrinsic::ARM64_INTRIN_AUTDA == 0,
+			"Invalid first Arm64Intrinsic value. Please add your intrinsic further in the enum.");
+		
+		// Normal intrinsics.
+		for (uint32_t id = Arm64Intrinsic::ARM64_INTRIN_AUTDA; id < Arm64Intrinsic::ARM64_INTRIN_NORMAL_END; id++) {
+			result.push_back(id);
+		}
 
-		result.insert(result.end(), tmp.begin(), tmp.end());
+		// Finish populating our container with neon specific intrinsic IDs
+		for (uint32_t id = NeonIntrinsic::ARM64_INTRIN_VADD_S8; id < NeonIntrinsic::ARM64_INTRIN_NEON_END; id++) {
+			result.push_back(id);
+		}
+
 		return result;
 	}
 
