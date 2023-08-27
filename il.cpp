@@ -1838,6 +1838,14 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_MOV:
 	{
+		// Small hack... it doesn't seem the lifter ever see the ENC_DUP_ASISDONE_ONLY,
+		// but instead ENC_MOV_DUP_ASISDONE_ONLY
+		if (instr.encoding == ENC_MOV_DUP_ASISDONE_ONLY &&
+			instr.operands[1].laneUsed)
+			// Specific use case. e.g: [mov/dup] h16, v19.h[7].
+			// We let the Neon intrinsic lifter take care of this case.
+			break;
+
 		Register regs[16];
 		int n = unpack_vector(operand1, regs);
 

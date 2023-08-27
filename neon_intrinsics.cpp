@@ -14688,155 +14688,19 @@ bool NeonGetLowLevelILForInstruction(
 	case ENC_DUP_ASIMDINS_DR_R:
 		// This instrinsic is already handled in GetLowLevelIlForInstruction, in il.cpp
 		break; // Should be unreachable
-	case ENC_DUP_ASISDONE_ONLY:
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_S8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_S8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_S16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_S16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_S32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_S32;  // DUP Vd.4S,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_S64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_S64;  // DUP Vd.2D,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_U8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_U8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_U16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_U16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_U32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_U32;  // DUP Vd.4S,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_U64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_U64;  // DUP Vd.2D,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_P64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_P64;  // DUP Vd.2D,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_F32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_F32;  // DUP Vd.4S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_P8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_P8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_P16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_P16;  // DUP Vd.8H,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANE_F64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_F64;  // DUP Vd.2D,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S32;  // DUP Vd.4S,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_S64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S64;  // DUP Vd.2D,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_U8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_U16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_U32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U32;  // DUP Vd.4S,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_U64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_U64;  // DUP Vd.2D,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_P64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P64;  // DUP Vd.2D,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_F32;  // DUP Vd.2S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4SINGLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F32;  // DUP Vd.4S,Vn.S[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8BYTES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_P8;  // DUP Vd.8B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P8;  // DUP Vd.16B,Vn.B[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_P16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_P16;  // DUP Vd.8H,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUP_LANEQ_F64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_2DOUBLES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F64;  // DUP Vd.2D,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_S8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_S16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_S32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_S64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_U8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_U16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_U32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_U64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANE_F32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANE_F64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANE_P8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_P16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_S8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_S16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_S32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_S64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_U8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_U16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_U32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_U64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPS_LANEQ_F32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPD_LANEQ_F64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPB_LANEQ_P8; // DUP Bd,Vn.B[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_P16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F64; // DUP Dd,Vn.D[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGET_LANE_F16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F32; // DUP Sd,Vn.S[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_F64; // DUP Dd,Vn.D[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_F16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_F16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_F16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_F16;  // DUP Vd.8H,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_F16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_F16; // DUP Hd,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANE_BF16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANE_BF16;  // DUP Vd.8H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_4HALVES)
-			intrin_id = ARM64_INTRIN_VDUP_LANEQ_BF16;  // DUP Vd.4H,Vn.H[lane]
-		if (instr.operands[1].arrSpec == ARRSPEC_8HALVES)
-			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_BF16;  // DUP Vd.8H,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGET_LANE_BF16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VGETQ_LANE_BF16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANE_BF16; // DUP Hd,Vn.H[lane]
-		// if(None) intrin_id = ARM64_INTRIN_VDUPH_LANEQ_BF16; // DUP Hd,Vn.H[lane]
+	case ENC_MOV_DUP_ASISDONE_ONLY: // The lifter use this instead of ENC_DUP_ASISDONE_ONLY
+		// NOTE(ek0): The decoder only returns the base arrSpec. Not sure if intended,
+		// so in the meantime we'll lift to the LANEQ version of the intrinsic.
+		if (instr.operands[1].arrSpec == ARRSPEC_1BYTE)
+			intrin_id = ARM64_INTRIN_VDUPB_LANEQ_S8; // DUP Bd, Vn.B[lane]
+		else if (instr.operands[1].arrSpec == ARRSPEC_1HALF)
+			intrin_id = ARM64_INTRIN_VDUPH_LANEQ_S16;  // DUP Hd,Vn.H[lane]
+		else if (instr.operands[1].arrSpec == ARRSPEC_1SINGLE)
+			intrin_id = ARM64_INTRIN_VDUPS_LANEQ_S32;  // DUP Sd,Vn.S[lane]
+		else if (instr.operands[1].arrSpec == ARRSPEC_1DOUBLE)
+			intrin_id = ARM64_INTRIN_VDUPD_LANEQ_S64;  // DUP Dd,Vn.D[lane]
+		else
+			break; // Should be unreachable
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_lane(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
