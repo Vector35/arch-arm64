@@ -2372,7 +2372,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_DUP:
 	{
 		if (instr.encoding != ENC_DUP_ASIMDINS_DR_R)
-			ABORT_LIFT;
+			break; // Abort lifting and let the neon intrinsic lifter take over.
 		Register regs[16];
 		int regs_n = unpack_vector(operand1, regs);
 		if (regs_n <= 0)

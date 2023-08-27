@@ -16262,6 +16262,28 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_lane(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_DUP_ASIMDINS_DV_V:
+		// Lifting DUP <Vd>.<T>,<Vn>.<Ts>[<index>]
+		if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
+			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S8;
+		else if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
+			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S8;
+		else if (instr.operands[0].arrSpec == ARRSPEC_4HALVES)
+			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S16;
+		else if (instr.operands[0].arrSpec == ARRSPEC_8HALVES)
+			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S16;
+		else if (instr.operands[0].arrSpec == ARRSPEC_2SINGLES)
+			intrin_id = ARM64_INTRIN_VDUP_LANEQ_S32;
+		else if (instr.operands[0].arrSpec == ARRSPEC_4SINGLES)
+			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S32;
+		else if (instr.operands[0].arrSpec == ARRSPEC_2DOUBLES)
+			intrin_id = ARM64_INTRIN_VDUPQ_LANEQ_S64;
+		else
+			break; // Should be unreachable
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_lane(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
 	case ENC_EOR3_VVV16_CRYPTO4:
 		if (instr.operands[1].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VEOR3Q_U8;  // EOR3 Vd.16B,Vn.16B,Vm.16B,Va.16B
