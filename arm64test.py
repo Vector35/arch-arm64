@@ -583,6 +583,20 @@ tests_dup = [
 						 ' LLIL_SET_REG.w(v27.h[5],LLIL_LOW_PART.w(LLIL_REG.d(w3)));' + \
 						 ' LLIL_SET_REG.w(v27.h[6],LLIL_LOW_PART.w(LLIL_REG.d(w3)));' + \
 						 ' LLIL_SET_REG.w(v27.h[7],LLIL_LOW_PART.w(LLIL_REG.d(w3)))'),
+	# dup v1.16b, v0.b[1]
+	(b'\x01\x04\x03\x4E', 'LLIL_INTRINSIC([v1],vdupq_laneq_s8,[LLIL_REG.o(v0),LLIL_CONST.b(0x1)])'),
+	# dup V3.8B, V23.B[2]
+	(b'\xE3\x06\x05\x0E', 'LLIL_INTRINSIC([v3],vdup_laneq_s8,[LLIL_REG.o(v23),LLIL_CONST.b(0x2)])'),
+	# dup v5.4s, v3.s[3]
+	(b'\x65\x04\x1C\x4E', 'LLIL_INTRINSIC([v5],vdupq_laneq_s32,[LLIL_REG.o(v3),LLIL_CONST.b(0x3)])'),
+	# dup V30.2S, V18.S[0]
+	(b'\x5E\x06\x04\x0E', 'LLIL_INTRINSIC([v30],vdup_laneq_s32,[LLIL_REG.o(v18),LLIL_CONST.b(0x0)])'),
+	# dup v16.2d, v16.d[0]
+	(b'\x10\x06\x08\x4E', 'LLIL_INTRINSIC([v16],vdupq_laneq_s64,[LLIL_REG.o(v16),LLIL_CONST.b(0x0)])'),
+	# dup V24.4H, V6.H[3]
+	(b'\xD8\x04\x0E\x0E', 'LLIL_INTRINSIC([v24],vdup_laneq_s16,[LLIL_REG.o(v6),LLIL_CONST.b(0x3)])'),
+	# dup v24.8h, v6.h[3]
+	(b'\xd8\x04\x0e\x4e', 'LLIL_INTRINSIC([v24],vdupq_laneq_s16,[LLIL_REG.o(v6),LLIL_CONST.b(0x3)])')
 ]
 
 tests_stlr = [
