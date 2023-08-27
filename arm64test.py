@@ -591,7 +591,15 @@ tests_dup = [
 	# dup V24.4H, V6.H[3]
 	(b'\xD8\x04\x0E\x0E', 'LLIL_INTRINSIC([v24],vdup_laneq_s16,[LLIL_REG.o(v6),LLIL_CONST.b(0x3)])'),
 	# dup v24.8h, v6.h[3]
-	(b'\xd8\x04\x0e\x4e', 'LLIL_INTRINSIC([v24],vdupq_laneq_s16,[LLIL_REG.o(v6),LLIL_CONST.b(0x3)])')
+	(b'\xd8\x04\x0e\x4e', 'LLIL_INTRINSIC([v24],vdupq_laneq_s16,[LLIL_REG.o(v6),LLIL_CONST.b(0x3)])'),
+	# dup s6, v8.s[0]
+	(b'\x06\x05\x04\x5E', 'LLIL_INTRINSIC([s6],vdups_laneq_s32,[LLIL_REG.o(v8),LLIL_CONST.b(0x0)])'),
+	# dup b1, v4.b[9]
+	(b'\x81\x04\x13\x5E', 'LLIL_INTRINSIC([b1],vdupb_laneq_s8,[LLIL_REG.o(v4),LLIL_CONST.b(0x9)])'),
+	# dup h24, v13.h[0]
+	(b'\xB8\x05\x02\x5E', 'LLIL_INTRINSIC([h24],vduph_laneq_s16,[LLIL_REG.o(v13),LLIL_CONST.b(0x0)])'),
+	# dup d4, v13.d[0]
+	(b'\xA4\x05\x08\x5E', 'LLIL_INTRINSIC([d4],vdupd_laneq_s64,[LLIL_REG.o(v13),LLIL_CONST.b(0x0)])')
 ]
 
 tests_stlr = [
