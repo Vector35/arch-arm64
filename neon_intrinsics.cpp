@@ -18215,6 +18215,26 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_LD2_ASISDLSE_R2:
+		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
+			intrin_id = ARM64_INTRIN_VLD2Q_S8;
+		else if (instr.operands[0].arrSpec == ARRSPEC_8BYTES)
+			intrin_id = ARM64_INTRIN_VLD2_S8;
+		else if (instr.operands[0].arrSpec == ARRSPEC_4HALVES)
+			intrin_id = ARM64_INTRIN_VLD2_S16;
+		else if (instr.operands[0].arrSpec == ARRSPEC_8HALVES)
+			intrin_id = ARM64_INTRIN_VLD2Q_S16;
+		else if (instr.operands[0].arrSpec == ARRSPEC_2SINGLES)
+			intrin_id = ARM64_INTRIN_VLD2_S32;
+		else if (instr.operands[0].arrSpec == ARRSPEC_4SINGLES)
+			intrin_id = ARM64_INTRIN_VLD2Q_S32;
+		else if (instr.operands[0].arrSpec == ARRSPEC_2DOUBLES)
+			intrin_id = ARM64_INTRIN_VLD2Q_S64;
+		else
+			break; // Should be unreachable.
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
 	case ENC_MLA_ASIMDELEM_R:
 		if (instr.operands[0].arrSpec == ARRSPEC_4HALVES)
 			intrin_id = ARM64_INTRIN_VMLA_LANE_S16;  // MLA Vd.4H,Vn.4H,Vm.H[lane]

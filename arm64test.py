@@ -1633,6 +1633,23 @@ tests_ld1 = [
 						 ' LLIL_SET_REG.q(x23,LLIL_ADD.q(LLIL_REG.q(x23),LLIL_REG.q(x23)))'),
 ]
 
+tests_ld2 = [
+	# LD2             {V2.8H-V3.8H}, [X13]
+	(b'\xA2\x85\x40\x4C', 'LLIL_INTRINSIC([v2],vld2q_s16,[LLIL_REG.q(x13)])'),
+	# LD2             {V6.4H-V7.4H}, [X27]
+	(b'\x66\x87\x40\x0C', 'LLIL_INTRINSIC([v6],vld2_s16,[LLIL_REG.q(x27)])'),
+	# LD2             {V7.2S-V8.2S}, [X9]
+	(b'\x27\x89\x40\x0C', 'LLIL_INTRINSIC([v7],vld2_s32,[LLIL_REG.q(x9)])'),
+	# LD2             {V2.4S-V3.4S}, [X24]
+	(b'\x02\x8B\x40\x4C', 'LLIL_INTRINSIC([v2],vld2q_s32,[LLIL_REG.q(x24)])'),
+	# LD2             {V27.8B-V28.8B}, [X7]
+	(b'\xFB\x80\x40\x0C', 'LLIL_INTRINSIC([v27],vld2_s8,[LLIL_REG.q(x7)])'),
+	# LD2             {V8.16B-V9.16B}, [X18]
+	(b'\x48\x82\x40\x4C', 'LLIL_INTRINSIC([v8],vld2q_s8,[LLIL_REG.q(x18)])'),
+	# LD2             {V26.2D-V27.2D}, [X0]
+	(b'\x1A\x8C\x40\x4C', 'LLIL_INTRINSIC([v26],vld2q_s64,[LLIL_REG.q(x0)])')
+]
+
 tests_st1 = [
 	# st1 {v3.2s}, [x27]
 	(b'\x63\x7B\x00\x0C', 'LLIL_STORE.q(LLIL_REG.q(x27),LLIL_REG.q(v3.d[0]))'),
@@ -1829,6 +1846,7 @@ test_cases = \
 	tests_sha + \
 	tests_rev + \
 	tests_ld1 + \
+	tests_ld2 + \
 	tests_st1 + \
 	[
 	# some vectors loads/stores that do not fill the entire register
