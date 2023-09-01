@@ -185,6 +185,15 @@ tests_ucvtf = [
 	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w5)])'),
 	# ucvtf d26, w16                                                   UCVTF_D32_float2int
 	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,[LLIL_REG.d(w16)])'),
+	# 32-bit GPR to 64-bit FP + #<fbits>
+	# ucvtf d18, w3, #0x1f
+    (b'\x72\x84\x43\x1E', 'LLIL_INTRINSIC([d18],vcvtd_n_f64_u32,[LLIL_REG.d(w3),LLIL_CONST(31)])'),
+    # ucvtf d25, w5, #0x1c
+    (b'\xB9\x90\x43\x1E', 'LLIL_INTRINSIC([d25],vcvtd_n_f64_u32,[LLIL_REG.d(w5),LLIL_CONST(28)])'),
+    # ucvtf d22, w9, #0x2
+    (b'\x36\xf9\x43\x1e', 'LLIL_INTRINSIC([d22],vcvtd_n_f64_u32,[LLIL_REG.d(w9),LLIL_CONST(2)])'),
+    # ucvtf d12, w28, #0x3
+    (b'\x8c\xf7\x43\x1e', 'LLIL_INTRINSIC([d12],vcvtd_n_f64_u32,[LLIL_REG.d(w28),LLIL_CONST(3)])'),
 	# 32-bit GPR to 32-bit FP
 	# ucvtf s29, w24                                                   UCVTF_S32_float2int
 	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,[LLIL_REG.d(w24)])'),
