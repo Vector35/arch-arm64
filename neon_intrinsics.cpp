@@ -9906,6 +9906,7 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 	case ARM64_INTRIN_VCVTD_N_F64_U32:
 	case ARM64_INTRIN_VCVTH_N_F16_U32:
 		return {NameAndType(Type::IntegerType(4, false)), NameAndType(Type::IntegerType(1, false))};
+	case ARM64_INTRIN_VCVTH_N_F16_U64:
 	case ARM64_INTRIN_VCVTD_N_F64_U64:
 		return {NameAndType(Type::IntegerType(8, false)), NameAndType(Type::IntegerType(1, false))};
 	case ARM64_INTRIN_VQDMULHS_LANEQ_S32:
@@ -10264,7 +10265,6 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 	case ARM64_INTRIN_VCVT_N_F64_U64:
 	case ARM64_INTRIN_VCVTD_N_F64_S64:
 	case ARM64_INTRIN_VCVTH_N_F16_S64:
-	case ARM64_INTRIN_VCVTH_N_F16_U64:
 	case ARM64_INTRIN_VDUP_LANE_P16:
 	case ARM64_INTRIN_VDUP_LANE_P64:
 	case ARM64_INTRIN_VDUP_LANE_P8:
@@ -11176,7 +11176,6 @@ vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 	case ARM64_INTRIN_VCVTH_N_F16_S32:
 	case ARM64_INTRIN_VCVTH_N_F16_S64:
 	case ARM64_INTRIN_VCVTH_N_F16_U16:
-	case ARM64_INTRIN_VCVTH_N_F16_U64:
 	case ARM64_INTRIN_VDIVH_F16:
 	case ARM64_INTRIN_VDUPH_LANE_BF16:
 	case ARM64_INTRIN_VDUPH_LANE_F16:
@@ -11225,6 +11224,7 @@ vector<Confidence<Ref<Type>>> NeonGetIntrinsicOutputs(uint32_t intrinsic)
 	case ARM64_INTRIN_VRSQRTSH_F16:
 	case ARM64_INTRIN_VSQRTH_F16:
 	case ARM64_INTRIN_VSUBH_F16:
+	case ARM64_INTRIN_VCVTH_N_F16_U64:
 		return {Type::FloatType(2)};
 	case ARM64_INTRIN_VABDS_F32:
 	case ARM64_INTRIN_VADDV_F32:
@@ -15627,6 +15627,12 @@ bool NeonGetLowLevelILForInstruction(
 		break;
 	case ENC_UCVTF_H32_FLOAT2FIX:
 		intrin_id = ARM64_INTRIN_VCVTH_N_F16_U32; // UCVTF <Hd>, <Wn>, #<fbits>
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_UCVTF_H64_FLOAT2FIX: // UCVTF <Hd>, <Xn>, #<fbits>
+		intrin_id = ARM64_INTRIN_VCVTH_N_F16_U64;
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_imm(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
