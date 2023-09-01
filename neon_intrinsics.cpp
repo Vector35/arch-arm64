@@ -14137,13 +14137,13 @@ bool NeonGetLowLevelILForInstruction(
 		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VBSLQ_S8;  // BSL Vd.16B,Vn.16B,Vm.16B
 		// As per bsl & bit documentation:
-		// 
+		//
 		// "Bitwise Select. This instruction sets each bit in the destination SIMD and FP register
 		// to the corresponding bit from the first source SIMD and FP register when the original
 		// destination bit was 1, otherwise from the second source SIMD and FP register."
 		//
 		// and as per bit documentation:
-		// 
+		//
 		// "Bitwise Insert if True. This instruction inserts each bit from the first source SIMD
 		// and FP register into the SIMD and FP destination register if the corresponding bit of
 		// the second source SIMD and FP register is 1, otherwise leaves the bit in the destination
@@ -14163,13 +14163,13 @@ bool NeonGetLowLevelILForInstruction(
 		if (instr.operands[0].arrSpec == ARRSPEC_16BYTES)
 			intrin_id = ARM64_INTRIN_VBSLQ_S8;  // BIF Vd.16B,Vn.16B,Vm.16B
 		// As per BSL documentation:
-		// 
+		//
 		// "Bitwise Select. This instruction sets each bit in the destination SIMD and FP register
 		// to the corresponding bit from the first source SIMD and FP register when the original
 		// destination bit was 1, otherwise from the second source SIMD and FP register."
 		//
 		// and as per bif documentation:
-		// 
+		//
 		// "Bitwise Insert if False. This instruction inserts each bit from the first source SIMD
 		// and FP register into the destination SIMD and FP register if the corresponding bit of the
 		// second source SIMD and FP register is 0, otherwise leaves the bit in the destination
@@ -15658,7 +15658,7 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_imm(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
-		break;		
+		break;
 	case ENC_FCVTZU_ASIMDMISC_R:
 		// Lift instruction such as fcvtzu v23.4s, v22.4s and fcvtzu v9.2d, v18.2d
 		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
@@ -19652,6 +19652,12 @@ bool NeonGetLowLevelILForInstruction(
 		else
 			break;
 		add_input_reg(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_UCVTF_ASISDSHF_C:
+		intrin_id = ARM64_INTRIN_VCVT_N_F64_U64;  // UCVTF Hd,Hn,#imm
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
 	case ENC_UCVTF_ASISDMISCFP16_R:

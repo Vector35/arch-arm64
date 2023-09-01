@@ -1203,12 +1203,16 @@ enum NeonIntrinsic : uint32_t
 	ARM64_INTRIN_VCVTQ_N_S64_F64,
 	ARM64_INTRIN_VCVT_N_U64_F64,
 
-	ARM64_INTRIN_VCVTD_N_F64_U32, // VConVerT to Double precision, has imm N, to f64 from u32 eg: ucvtf <Dd>, <Wn>, #<fbits>
-	ARM64_INTRIN_VCVTD_N_F64_U64, // VConVerT to Double precision, has imm N, to f64 from u64 eg: ucvtf <Dd>, <Xn>, #<fbits>
 	ARM64_INTRIN_VCVTH_N_F16_U32, // VConVerT to   Half precision, has imm N, to f16 from u32 eg: ucvtf <Hd>, <Wn>, #<fbits>
 	ARM64_INTRIN_VCVTH_N_F16_U64, // VConVerT to   Half precision, has imm N, to f16 from u64 eg: ucvtf <Hd>, <Xn>, #<fbits>
 	ARM64_INTRIN_VCVTS_N_F32_U32, // VConVerT to Single precision, has imm N, to f32 from u32 eg: ucvtf <Sd>, <Wn>, #<fbits>
 	ARM64_INTRIN_VCVTS_N_F32_U64, // VConVerT to Single precision, has imm N, to f32 from u64 eg: ucvtf <Sd>, <Xn>, #<fbits>
+	ARM64_INTRIN_VCVTD_N_F64_U32, // VConVerT to Double precision, has imm N, to f64 from u32 eg: ucvtf <Dd>, <Wn>, #<fbits>
+	ARM64_INTRIN_VCVTD_N_F64_U64, // VConVerT to Double precision, has imm N, to f64 from u64 eg: ucvtf <Dd>, <Xn>, #<fbits>
+
+	ARM64_INTRIN_VCVT_N_F64_U64, // float64x1_t vcvt_n_f64_u64(uint64x1_t a, const int n)
+
+	ARM64_INTRIN_VCVTD_N_F64_F64, //
 	ARM64_INTRIN_VCVTQ_N_U64_F64,
 	ARM64_INTRIN_VCVTD_N_S64_F64,
 	ARM64_INTRIN_VCVTD_N_U64_F64,
@@ -1234,7 +1238,6 @@ enum NeonIntrinsic : uint32_t
 	ARM64_INTRIN_VCVTS_N_F32_S32,
 	ARM64_INTRIN_VCVT_N_F64_S64,
 	ARM64_INTRIN_VCVTQ_N_F64_S64,
-	ARM64_INTRIN_VCVT_N_F64_U64,
 	ARM64_INTRIN_VCVTQ_N_F64_U64,
 	ARM64_INTRIN_VCVTD_N_F64_S64,
 	ARM64_INTRIN_VCVT_F16_F32,

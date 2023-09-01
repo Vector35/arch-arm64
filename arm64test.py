@@ -253,6 +253,9 @@ tests_ucvtf2 = [
 	# UCVTF_S64_float2int 1001111000100011000000xxxxxxxxxx
 	# ucvtf s29, x5
 	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,[LLIL_REG.q(x5)])'),
+	# UCVTF_asisdshf_C 011111110xxxxxxx111001xxxxxxxxxx
+	# ucvtf d20, d1, #0x2a
+	(b'\x34\xE4\x56\x7F', 'LLIL_INTRINSIC([d20],vcvt_n_f64_u64,[LLIL_REG.q(d1),LLIL_CONST(42)])'),
 
 ]
 
