@@ -247,6 +247,13 @@ tests_ucvtf2 = [
 	# UCVTF_S32_float2int 0001111000100011000000xxxxxxxxxx
 	# ucvtf s29, w24
 	(b'\x1D\x03\x23\x1E', 'LLIL_INTRINSIC([s29],vcvts_f32_u32,[LLIL_REG.d(w24)])'),
+	# UCVTF_S64_float2fix 1001111000000011xxxxxxxxxxxxxxxx
+	# ucvtf s2, x27, #0xf
+	(b'\x62\xC7\x03\x9E', 'LLIL_INTRINSIC([s2],vcvts_n_f32_u64,[LLIL_REG.q(x27),LLIL_CONST(15)])'),
+	# UCVTF_S64_float2int 1001111000100011000000xxxxxxxxxx
+	# ucvtf s29, x5
+	(b'\xBD\x00\x23\x9E', 'LLIL_INTRINSIC([s29],vcvth_f16_u16,[LLIL_REG.q(x5)])'),
+
 ]
 
 tests_scvtf = [

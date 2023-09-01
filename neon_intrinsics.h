@@ -1208,6 +1208,7 @@ enum NeonIntrinsic : uint32_t
 	ARM64_INTRIN_VCVTH_N_F16_U32, // VConVerT to   Half precision, has imm N, to f16 from u32 eg: ucvtf <Hd>, <Wn>, #<fbits>
 	ARM64_INTRIN_VCVTH_N_F16_U64, // VConVerT to   Half precision, has imm N, to f16 from u64 eg: ucvtf <Hd>, <Xn>, #<fbits>
 	ARM64_INTRIN_VCVTS_N_F32_U32, // VConVerT to Single precision, has imm N, to f32 from u32 eg: ucvtf <Sd>, <Wn>, #<fbits>
+	ARM64_INTRIN_VCVTS_N_F32_U64, // VConVerT to Single precision, has imm N, to f32 from u64 eg: ucvtf <Sd>, <Xn>, #<fbits>
 	ARM64_INTRIN_VCVTQ_N_U64_F64,
 	ARM64_INTRIN_VCVTD_N_S64_F64,
 	ARM64_INTRIN_VCVTD_N_U64_F64,
