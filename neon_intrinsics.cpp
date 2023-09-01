@@ -9905,6 +9905,7 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 	case ARM64_INTRIN___CRC32CB:
 	case ARM64_INTRIN_VCVTD_N_F64_U32:
 	case ARM64_INTRIN_VCVTH_N_F16_U32:
+	case ARM64_INTRIN_VCVTS_N_F32_U32:
 		return {NameAndType(Type::IntegerType(4, false)), NameAndType(Type::IntegerType(1, false))};
 	case ARM64_INTRIN_VCVTH_N_F16_U64:
 	case ARM64_INTRIN_VCVTD_N_F64_U64:
@@ -9935,7 +9936,6 @@ vector<NameAndType> NeonGetIntrinsicInputs(uint32_t intrinsic)
 	case ARM64_INTRIN___CRC32W:
 	case ARM64_INTRIN_VCVTH_N_F16_S32:
 	case ARM64_INTRIN_VCVTS_N_F32_S32:
-	case ARM64_INTRIN_VCVTS_N_F32_U32:
 	case ARM64_INTRIN_VQADDS_S32:
 	case ARM64_INTRIN_VQADDS_U32:
 	case ARM64_INTRIN_VQDMULHS_S32:
@@ -15639,6 +15639,12 @@ bool NeonGetLowLevelILForInstruction(
 		break;
 	case ENC_FCVTZU_64D_FLOAT2FIX:
 		intrin_id = ARM64_INTRIN_VCVTD_N_U64_F64;  // FCVTZU Xd, Dn, #n
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_UCVTF_S32_FLOAT2FIX:
+		intrin_id = ARM64_INTRIN_VCVTS_N_F32_U32;  // ucvtf <Sd>, <Wn>, #<fbits>
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_input_imm(inputs, il, instr.operands[2]);
 		add_output_reg(outputs, il, instr.operands[0]);
