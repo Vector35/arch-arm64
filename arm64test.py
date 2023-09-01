@@ -228,7 +228,14 @@ tests_ucvtf2 = [
 	(b'\x53\x77\x43\x9E', 'LLIL_INTRINSIC([d19],vcvtd_n_f64_u64,[LLIL_REG.q(x26),LLIL_CONST(35)])'),
     # UCVTF_D64_float2int 1001111001100011000000xxxxxxxxxx
 	# ucvtf d30, x19
-	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,[LLIL_REG.q(x19)])')]
+	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,[LLIL_REG.q(x19)])'),
+    # UCVTF_H32_float2fix 00011110110000111xxxxxxxxxxxxxxx
+	# ucvtf h3, w29, #0x13
+	(b'\xA3\xB7\xC3\x1E', 'LLIL_INTRINSIC([h3],vcvth_n_f16_u32,[LLIL_REG.d(w29),LLIL_CONST(19)])'),
+    # UCVTF_H32_float2int 0001111011100011000000xxxxxxxxxx
+	# ucvtf h5, w12
+	(b'\x85\x01\xE3\x1E', 'LLIL_INTRINSIC([h5],vcvth_f16_u32,[LLIL_REG.d(w12)])'),
+]
 
 tests_scvtf = [
 	# scvtf d1, x15                                                    SCVTF_D64_float2int
