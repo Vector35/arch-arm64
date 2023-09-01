@@ -185,6 +185,8 @@ tests_ucvtf = [
 	(b'\xB3\x00\x63\x1E', 'LLIL_INTRINSIC([d19],vcvt_f64_u32,[LLIL_REG.d(w5)])'),
 	# ucvtf d26, w16                                                   UCVTF_D32_float2int
 	(b'\x1A\x02\x63\x1E', 'LLIL_INTRINSIC([d26],vcvt_f64_u32,[LLIL_REG.d(w16)])'),
+	# ucvtf d0, w7
+	(b'\xE0\x00\x63\x1e', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,[LLIL_REG.d(w7)])'),
 	# 32-bit GPR to 64-bit FP + #<fbits>
 	# ucvtf d18, w3, #0x1f
     (b'\x72\x84\x43\x1E', 'LLIL_INTRINSIC([d18],vcvtd_n_f64_u32,[LLIL_REG.d(w3),LLIL_CONST(31)])'),
@@ -213,6 +215,20 @@ tests_ucvtf = [
 	# ucvtf h26, w8                                                    UCVTF_H32_float2int
 	(b'\x1A\x01\xE3\x1E', 'LLIL_INTRINSIC([h26],vcvth_f16_u32,[LLIL_REG.d(w8)])'),
 ]
+
+tests_ucvtf2 = [
+    # UCVTF_D32_float2fix 00011110010000111xxxxxxxxxxxxxxx
+	# ucvtf d18, w3, #0x1f
+	(b'\x72\x84\x43\x1E', 'LLIL_INTRINSIC([d18],vcvtd_n_f64_u32,[LLIL_REG.d(w3),LLIL_CONST(31)])'),
+    # UCVTF_D32_float2int 0001111001100011000000xxxxxxxxxx
+	# ucvtf d0, w7
+	(b'\xE0\x00\x63\x1E', 'LLIL_INTRINSIC([d0],vcvt_f64_u32,[LLIL_REG.d(w7)])'),
+    # UCVTF_D64_float2fix 1001111001000011xxxxxxxxxxxxxxxx
+	# ucvtf d19, x26, #0x23
+	(b'\x53\x77\x43\x9E', 'LLIL_INTRINSIC([d19],vcvtd_n_f64_u64,[LLIL_REG.q(x26),LLIL_CONST(35)])'),
+    # UCVTF_D64_float2int 1001111001100011000000xxxxxxxxxx
+	# ucvtf d30, x19
+	(b'\x7E\x02\x63\x9E', 'LLIL_INTRINSIC([d30],vcvt_f64_u64,[LLIL_REG.q(x19)])')]
 
 tests_scvtf = [
 	# scvtf d1, x15                                                    SCVTF_D64_float2int
@@ -1889,6 +1905,7 @@ test_cases = \
 	tests_mvni + \
 	tests_2791 + \
 	tests_ucvtf + \
+	tests_ucvtf2 + \
 	tests_scvtf + \
 	tests_ret + \
 	tests_svc_hvc_smc + \
