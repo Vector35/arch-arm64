@@ -19685,6 +19685,17 @@ bool NeonGetLowLevelILForInstruction(
 		add_input_reg(inputs, il, instr.operands[1]);
 		add_output_reg(outputs, il, instr.operands[0]);
 		break;
+	case ENC_UCVTF_ASIMDSHF_C:
+		intrin_id = ARM64_INTRIN_VCVT_N_F32_U32;
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_input_imm(inputs, il, instr.operands[2]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
+	case ENC_UCVTF_ASIMDMISC_R:
+		intrin_id = ARM64_INTRIN_VCVT_F32_U32;
+		add_input_reg(inputs, il, instr.operands[1]);
+		add_output_reg(outputs, il, instr.operands[0]);
+		break;
 	case ENC_UCVTF_ASIMDMISCFP16_R:
 		if (instr.operands[1].arrSpec == ARRSPEC_2SINGLES)
 			intrin_id = ARM64_INTRIN_VCVT_F32_U32;  // UCVTF Vd.2S,Vn.2S

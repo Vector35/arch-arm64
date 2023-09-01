@@ -256,7 +256,21 @@ tests_ucvtf2 = [
 	# UCVTF_asisdshf_C 011111110xxxxxxx111001xxxxxxxxxx
 	# ucvtf d20, d1, #0x2a
 	(b'\x34\xE4\x56\x7F', 'LLIL_INTRINSIC([d20],vcvt_n_f64_u64,[LLIL_REG.q(d1),LLIL_CONST(42)])'),
-
+	# UCVTF_asimdshf_C 0x1011110xxxxxxx1110xxxxxxxxxxxx
+	# ucvtf v15.2s, v14.2s, #0x19
+	(b'\xCF\xE5\x27\x2F', 'LLIL_INTRINSIC([v15],vcvt_n_f32_u32,[LLIL_REG.o(v14),LLIL_CONST(25)])'),
+	# UCVTF_asimdmisc_R 0x1011100x100001110110xxxxxxxxxx
+	# ucvtf v11.2d, v11.2d
+	(b'\x6B\xD9\x61\x6E', 'LLIL_INTRINSIC([v11],vcvt_f32_u32,[LLIL_REG.o(v11)])'),
+	# UCVTF_asimdmiscfp16_R 0x1011100111100111011xxxxxxxxxxx
+	# ucvtf v31.4h, v29.4h
+	(b'\xBF\xDB\x79\x2E', 'LLIL_INTRINSIC([v31],vcvt_n_f16_u16,[LLIL_REG.o(v29)])'),
+	# UCVTF_asisdmisc_R 011111100x100001110110xxxxxxxxxx
+	# ucvtf s16, s7
+	(b'\xF0\xD8\x21\x7E', 'LLIL_INTRINSIC([s16],vcvts_f32_u32,[LLIL_REG.d(s7)])'),
+	# UCVTF_asisdmiscfp16_R 0111111001111001110110xxxxxxxxxx
+	# ucvtf h30, h0
+	(b'\x1E\xD8\x79\x7E', 'LLIL_INTRINSIC([h30],vcvth_f16_u16,[LLIL_REG.w(h0)])')
 ]
 
 tests_scvtf = [
