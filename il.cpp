@@ -1965,6 +1965,7 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Nop());
 		break;
 
+#ifdef LIFT_PAC_AS_INTRINSIC
 	case ARM64_AUTDA:
 	case ARM64_AUTDB:
 	case ARM64_AUTIA:
@@ -2029,6 +2030,42 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Intrinsic({RegisterOrFlag::Register(REG_X30)},
 		    operation_to_intrinsic(instr.operation), {il.Register(8, REG_X30), il.Register(8, REG_SP)}));
 		break;
+#else
+	case ARM64_AUTDA:
+	case ARM64_AUTDB:
+	case ARM64_AUTIA:
+	case ARM64_AUTIB:
+	case ARM64_PACDA:
+	case ARM64_PACDB:
+	case ARM64_PACIA:
+	case ARM64_PACIB:
+	case ARM64_PACGA:
+	case ARM64_AUTIA1716:
+	case ARM64_AUTIB1716:
+	case ARM64_PACIA1716:
+	case ARM64_PACIB1716:
+	case ARM64_AUTDZA:
+	case ARM64_AUTDZB:
+	case ARM64_AUTIZA:
+	case ARM64_AUTIZB:
+	case ARM64_PACDZA:
+	case ARM64_PACDZB:
+	case ARM64_PACIZA:
+	case ARM64_PACIZB:
+	case ARM64_XPACI:
+	case ARM64_XPACD:
+	case ARM64_AUTIAZ:
+	case ARM64_AUTIBZ:
+	case ARM64_PACIAZ:
+	case ARM64_PACIBZ:
+	case ARM64_XPACLRI:
+	case ARM64_AUTIASP:
+	case ARM64_AUTIBSP:
+	case ARM64_PACIASP:
+	case ARM64_PACIBSP:
+		il.AddInstruction(il.Nop());
+		break;
+#endif
 	case ARM64_PRFUM:
 	case ARM64_PRFM:
 		// TODO use the PRFM types when we have a better option than defining 18 different intrinsics to

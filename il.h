@@ -6,6 +6,12 @@
 #include "disassembler/encodings_fmt.h"
 #include "disassembler/operations.h"
 
+/* Do we lift pointer authentication instructions as intrinsics?
+   If no, the below define should be preceeded with "//"
+   If yes, the below define should start with "#define" and intrinsics are used.
+   This is read by il.cpp and arm64test.py */
+//#define LIFT_PAC_AS_INTRINSIC 1
+
 #define IL_FLAG_N 31
 #define IL_FLAG_Z 30
 #define IL_FLAG_C 29
