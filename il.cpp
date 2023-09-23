@@ -2446,7 +2446,7 @@ bool GetLowLevelILForInstruction(
 		il.AddInstruction(il.Trap(IMM_O(operand1)));
 		return false;
 	case ARM64_UDF:
-		il.AddInstruction(il.Undefined());
+		il.AddInstruction(il.Trap(IMM_O(operand1)));
 		return false;
 	case ARM64_YIELD:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_YIELD, {}));

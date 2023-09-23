@@ -6,6 +6,13 @@ import pathlib
 path_here = pathlib.Path(__file__).parent.absolute()
 path_il_h = os.path.join(path_here, 'il.h')
 
+tests_udf = [
+    # udf #0
+    (b'\x00\x00\x00\x00', 'LLIL_TRAP(0)'),
+    # udf #1
+    (b'\x01\x00\x00\x00', 'LLIL_TRAP(1)'),
+]
+
 # These instructions potentially use PAC, but we always lift them as if PAC is disabled.
 tests_pac = [
     # BRANCHES
@@ -2217,6 +2224,7 @@ tests_st1 = [
 ]
 
 test_cases = \
+    tests_udf + \
     tests_pac + \
     tests_load_acquire_store_release + \
     tests_movk + \
