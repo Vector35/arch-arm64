@@ -6,6 +6,8 @@ import pathlib
 path_here = pathlib.Path(__file__).parent.absolute()
 path_il_h = os.path.join(path_here, 'il.h')
 
+ATTR_PTR_AUTH = 16 # enum BNILInstructionAttribute.SrcInstructionUsesPointerAuth from api/binaryninjacore.h
+
 tests_udf = [
     # udf #0
     (b'\x00\x00\x00\x00', 'LLIL_TRAP(0)'),
@@ -19,23 +21,23 @@ tests_pac = [
     # blr x12 (example of encoding: BLR_64_branch_reg)
     (b'\x80\x01\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x12))'),
     # blraaz x7 (example of encoding: BLRAAZ_64_branch_reg)
-    (b'\xFF\x08\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x7))'),
+    (b'\xFF\x08\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x7))', ATTR_PTR_AUTH),
     # blraa xzr, sp (example of encoding: BLRAA_64P_branch_reg)
-    (b'\xFF\x0B\x3F\xD7', 'LLIL_CALL(LLIL_CONST.q(0x0))'),
+    (b'\xFF\x0B\x3F\xD7', 'LLIL_CALL(LLIL_CONST.q(0x0))', ATTR_PTR_AUTH),
     # blrabz x13 (example of encoding: BLRABZ_64_branch_reg)
-    (b'\xBF\x0D\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x13))'),
+    (b'\xBF\x0D\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x13))', ATTR_PTR_AUTH),
     # blrab x4, sp (example of encoding: BLRAB_64P_branch_reg)
-    (b'\x9F\x0C\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x4))'),
+    (b'\x9F\x0C\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x4))', ATTR_PTR_AUTH),
     # br x21 (example of encoding: BR_64_branch_reg)
     (b'\xA0\x02\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x21))'),
     # braaz x7 (example of encoding: BRAAZ_64_branch_reg)
-    (b'\xFF\x08\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x7))'),
+    (b'\xFF\x08\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x7))', ATTR_PTR_AUTH),
     # braa x25, x5 (example of encoding: BRAA_64P_branch_reg)
-    (b'\x25\x0B\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x25))'),
+    (b'\x25\x0B\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x25))', ATTR_PTR_AUTH),
     # brabz x6 (example of encoding: BRABZ_64_branch_reg)
-    (b'\xDF\x0C\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x6))'),
+    (b'\xDF\x0C\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x6))', ATTR_PTR_AUTH),
     # brab x23, x17 (example of encoding: BRAB_64P_branch_reg)
-    (b'\xF1\x0E\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x23))'),
+    (b'\xF1\x0E\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x23))', ATTR_PTR_AUTH),
 
     # EXCEPTION RETURN
     # eret (example of encoding: ERET_64E_branch_reg)
@@ -47,13 +49,13 @@ tests_pac = [
 
     # LOAD REGISTER WITH AUTHENTICATION (key A or B)
     # ldraa x7, [x30, #-0x6b0] (example of encoding: LDRAA_64_ldst_pac)
-    (b'\xC7\xA7\x72\xF8', 'LLIL_SET_REG.q(x7,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x30),LLIL_CONST.q(0xFFFFFFFFFFFFF950))))'),
+    (b'\xC7\xA7\x72\xF8', 'LLIL_SET_REG.q(x7,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x30),LLIL_CONST.q(0xFFFFFFFFFFFFF950))))', ATTR_PTR_AUTH),
     # ldraa x7, [sp, #-0xf20]! (example of encoding: LDRAA_64W_ldst_pac)
-    (b'\xE7\xCF\x61\xF8', 'LLIL_SET_REG.q(sp,LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0xFFFFFFFFFFFFF0E0))); LLIL_SET_REG.q(x7,LLIL_LOAD.q(LLIL_REG.q(sp)))'),
+    (b'\xE7\xCF\x61\xF8', 'LLIL_SET_REG.q(sp,LLIL_ADD.q(LLIL_REG.q(sp),LLIL_CONST.q(0xFFFFFFFFFFFFF0E0))); LLIL_SET_REG.q(x7,LLIL_LOAD.q(LLIL_REG.q(sp)))', ATTR_PTR_AUTH),
     # ldrab x27, [x17, #0x8d0] (example of encoding: LDRAB_64_ldst_pac)
-    (b'\x3B\xA6\xB1\xF8', 'LLIL_SET_REG.q(x27,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_CONST.q(0x8D0))))'),
+    (b'\x3B\xA6\xB1\xF8', 'LLIL_SET_REG.q(x27,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x17),LLIL_CONST.q(0x8D0))))', ATTR_PTR_AUTH),
     # ldrab x20, [x1, #0xac8]! (example of encoding: LDRAB_64W_ldst_pac)
-    (b'\x34\x9C\xB5\xF8', 'LLIL_SET_REG.q(x1,LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xAC8))); LLIL_SET_REG.q(x20,LLIL_LOAD.q(LLIL_REG.q(x1)))'),
+    (b'\x34\x9C\xB5\xF8', 'LLIL_SET_REG.q(x1,LLIL_ADD.q(LLIL_REG.q(x1),LLIL_CONST.q(0xAC8))); LLIL_SET_REG.q(x20,LLIL_LOAD.q(LLIL_REG.q(x1)))', ATTR_PTR_AUTH),
 
     # RETURN
     # ret x27 (example of encoding: RET_64R_branch_reg)
@@ -61,56 +63,56 @@ tests_pac = [
 
     # RETURN FROM SUBROUTINE, WITH POINTER AUTHENTICATION
     # retaa (example of encoding: RETAA_64E_branch_reg)
-    (b'\xFF\x0B\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))'),
+    (b'\xFF\x0B\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))', ATTR_PTR_AUTH),
     # retab (example of encoding: RETAB_64E_branch_reg)
-    (b'\xFF\x0F\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))'),
+    (b'\xFF\x0F\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))', ATTR_PTR_AUTH),
 
     # mixed instructions from old tests
     # BLRAA_64P_branch_reg 1101011100111111000010xxxxxxxxxx
-    (b'\x14\x0B\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x24))'), # blraa x24, x20
-    (b'\xFD\x0A\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x23))'), # blraa x23, x29
+    (b'\x14\x0B\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x24))', ATTR_PTR_AUTH), # blraa x24, x20
+    (b'\xFD\x0A\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x23))', ATTR_PTR_AUTH), # blraa x23, x29
     # BLRAAZ_64_branch_reg 1101011000111111000010xxxxx11111
-    (b'\xDF\x09\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x14))'), # blraaz x14
-    (b'\xDF\x08\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x6))'), # blraaz x6
+    (b'\xDF\x09\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x14))', ATTR_PTR_AUTH), # blraaz x14
+    (b'\xDF\x08\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x6))', ATTR_PTR_AUTH), # blraaz x6
     # BLRAB_64P_branch_reg 1101011100111111000011xxxxxxxxxx
-    (b'\xBA\x0C\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x5))'), # blrab x5, x26
-    (b'\xC2\x0E\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x22))'), # blrab x22, x2
+    (b'\xBA\x0C\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x5))', ATTR_PTR_AUTH), # blrab x5, x26
+    (b'\xC2\x0E\x3F\xD7', 'LLIL_CALL(LLIL_REG.q(x22))', ATTR_PTR_AUTH), # blrab x22, x2
     # BLRABZ_64_branch_reg 1101011000111111000011xxxxx11111
-    (b'\x3F\x0E\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x17))'), # blrabz x17
-    (b'\x3F\x0F\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x25))'), # blrabz x25
+    (b'\x3F\x0E\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x17))', ATTR_PTR_AUTH), # blrabz x17
+    (b'\x3F\x0F\x3F\xD6', 'LLIL_CALL(LLIL_REG.q(x25))', ATTR_PTR_AUTH), # blrabz x25
     # BRAAZ_64_branch_reg 1101011000011111000010xxxxx11111
-    (b'\x5F\x08\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x2))'), # braaz x2
-    (b'\x5F\x0A\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x18))'), # braaz x18
+    (b'\x5F\x08\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x2))', ATTR_PTR_AUTH), # braaz x2
+    (b'\x5F\x0A\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x18))', ATTR_PTR_AUTH), # braaz x18
     # BRAA_64P_branch_reg 1101011100011111000010xxxxxxxxxx
-    (b'\x81\x08\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x4))'), # braa x4, x1
-    (b'\x4C\x09\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x10))'), # braa x10, x12
+    (b'\x81\x08\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x4))', ATTR_PTR_AUTH), # braa x4, x1
+    (b'\x4C\x09\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x10))', ATTR_PTR_AUTH), # braa x10, x12
     # BRABZ_64_branch_reg 1101011000011111000011xxxxx11111
-    (b'\x3F\x0C\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x1))'), # brabz x1
-    (b'\xBF\x0E\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x21))'), # brabz x21
+    (b'\x3F\x0C\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x1))', ATTR_PTR_AUTH), # brabz x1
+    (b'\xBF\x0E\x1F\xD6', 'LLIL_JUMP(LLIL_REG.q(x21))', ATTR_PTR_AUTH), # brabz x21
     # BRAB_64P_branch_reg 1101011100011111000011xxxxxxxxxx
-    (b'\x39\x0F\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x25))'), # brab x25, x25
-    (b'\xA3\x0E\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x21))'), # brab x21, x3
+    (b'\x39\x0F\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x25))', ATTR_PTR_AUTH), # brab x25, x25
+    (b'\xA3\x0E\x1F\xD7', 'LLIL_JUMP(LLIL_REG.q(x21))', ATTR_PTR_AUTH), # brab x21, x3
     # LDRAA_64W_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
     (b'\xAE\x1D\x25\xF8', 'LLIL_SET_REG.q(x13,LLIL_ADD.q(LLIL_REG.q(x13),LLIL_CONST.q(0x288)));' + \
-                        ' LLIL_SET_REG.q(x14,LLIL_LOAD.q(LLIL_REG.q(x13)))'), # ldraa x14, [x13, #648]!
+                        ' LLIL_SET_REG.q(x14,LLIL_LOAD.q(LLIL_REG.q(x13)))', ATTR_PTR_AUTH), # ldraa x14, [x13, #648]!
     (b'\x63\x6E\x62\xF8', 'LLIL_SET_REG.q(x19,LLIL_ADD.q(LLIL_REG.q(x19),LLIL_CONST.q(0xFFFFFFFFFFFFF130)));' + \
-                        ' LLIL_SET_REG.q(x3,LLIL_LOAD.q(LLIL_REG.q(x19)))'), # ldraa x3, [x19, #-3792]!
+                        ' LLIL_SET_REG.q(x3,LLIL_LOAD.q(LLIL_REG.q(x19)))', ATTR_PTR_AUTH), # ldraa x3, [x19, #-3792]!
     # LDRAA_64_ldst_pac 111110000x1xxxxxxxxxxxxxxxxxxxxx
-    (b'\x90\x15\x62\xF8', 'LLIL_SET_REG.q(x16,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xFFFFFFFFFFFFF108))))'), # ldraa x16, [x12, #-3832]
-    (b'\x52\x26\x73\xF8', 'LLIL_SET_REG.q(x18,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x18),LLIL_CONST.q(0xFFFFFFFFFFFFF990))))'), # ldraa x18, [x18, #-1648]
+    (b'\x90\x15\x62\xF8', 'LLIL_SET_REG.q(x16,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xFFFFFFFFFFFFF108))))', ATTR_PTR_AUTH), # ldraa x16, [x12, #-3832]
+    (b'\x52\x26\x73\xF8', 'LLIL_SET_REG.q(x18,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x18),LLIL_CONST.q(0xFFFFFFFFFFFFF990))))', ATTR_PTR_AUTH), # ldraa x18, [x18, #-1648]
     # LDRAB_64W_ldst_pac 111110001x1xxxxxxxxx11xxxxxxxxxx
     (b'\x68\xDE\xB8\xF8', 'LLIL_SET_REG.q(x19,LLIL_ADD.q(LLIL_REG.q(x19),LLIL_CONST.q(0xC68)));' + \
-                        ' LLIL_SET_REG.q(x8,LLIL_LOAD.q(LLIL_REG.q(x19)))'), # ldrab x8, [x19, #3176]!
+                        ' LLIL_SET_REG.q(x8,LLIL_LOAD.q(LLIL_REG.q(x19)))', ATTR_PTR_AUTH), # ldrab x8, [x19, #3176]!
     (b'\x8D\x0D\xFF\xF8', 'LLIL_SET_REG.q(x12,LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xFFFFFFFFFFFFFF80)));' + \
-                        ' LLIL_SET_REG.q(x13,LLIL_LOAD.q(LLIL_REG.q(x12)))'), # ldrab x13, [x12, #-o]!
+                        ' LLIL_SET_REG.q(x13,LLIL_LOAD.q(LLIL_REG.q(x12)))', ATTR_PTR_AUTH), # ldrab x13, [x12, #-o]!
     # LDRAB_64_ldst_pac 111110001x1xxxxxxxxxxxxxxxxxxxxx
-    (b'\x94\xF5\xA1\xF8', 'LLIL_SET_REG.q(x20,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xF8))))'), # ldrab x20, [x12, #248]
-    (b'\x2B\x35\xAA\xF8', 'LLIL_SET_REG.q(x11,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_CONST.q(0x518))))'), # ldrab x11, [x9, #1304]
+    (b'\x94\xF5\xA1\xF8', 'LLIL_SET_REG.q(x20,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x12),LLIL_CONST.q(0xF8))))', ATTR_PTR_AUTH), # ldrab x20, [x12, #248]
+    (b'\x2B\x35\xAA\xF8', 'LLIL_SET_REG.q(x11,LLIL_LOAD.q(LLIL_ADD.q(LLIL_REG.q(x9),LLIL_CONST.q(0x518))))', ATTR_PTR_AUTH), # ldrab x11, [x9, #1304]
     (b'\x28\x1b\x02\x90', 'LLIL_SET_REG.q(x8,LLIL_CONST.q(0x4364000))'), # ldrsw   x8, 0x100008000
     # RETAA_64E_branch_reg 11010110010111110000101111111111
-    (b'\xFF\x0B\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))'), # retaa
+    (b'\xFF\x0B\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))', ATTR_PTR_AUTH), # retaa
     # RETAB_64E_branch_reg 11010110010111110000111111111111
-    (b'\xFF\x0F\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))'), # retab
+    (b'\xFF\x0F\x5F\xD6', 'LLIL_RET(LLIL_REG.q(x30))', ATTR_PTR_AUTH), # retab
 ]
 
 # pac tests depend on whether the architecture is configured to lift them as
@@ -230,57 +232,57 @@ else:
     tests_pac.extend([
     # In all these cases, we leave the target untouched.
     # Authenticate instructions normally modify the target, removing the code if authentication succeeds.
-    (b'\x56\x1A\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xE1\x3B\xC1\xDA', 'LLIL_NOP()'),
-    (b'\x73\x1C\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xE1\x3F\xC1\xDA', 'LLIL_NOP()'),
-    (b'\x3A\x11\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xFE\x33\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xB2\x16\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xF1\x37\xC1\xDA', 'LLIL_NOP()'),
+    (b'\x56\x1A\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xE1\x3B\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\x73\x1C\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xE1\x3F\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\x3A\x11\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xFE\x33\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xB2\x16\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xF1\x37\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
     # Sign instructions normally modify the target, adding a code.
-    (b'\xA9\x0A\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xE5\x2B\xC1\xDA', 'LLIL_NOP()'),
-    (b'\x6E\x0C\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xE1\x2F\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xE1\x33\xCC\x9A', 'LLIL_NOP()'),
-    (b'\xC6\x01\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xF5\x23\xC1\xDA', 'LLIL_NOP()'),
-    (b'\x9D\x04\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xEE\x27\xC1\xDA', 'LLIL_NOP()'),
+    (b'\xA9\x0A\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xE5\x2B\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\x6E\x0C\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xE1\x2F\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xE1\x33\xCC\x9A', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xC6\x01\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xF5\x23\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\x9D\x04\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xEE\x27\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
     # Strip instructions normally modify the target, removing the code without authentication.
-    (b'\xFF\x47\xC1\xDA', 'LLIL_NOP()'),
-    (b'\xF9\x43\xC1\xDA', 'LLIL_NOP()'),
+    (b'\xFF\x47\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
+    (b'\xF9\x43\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH),
     # mixed instructions from old tests
-    (b'\xAC\x0B\xC1\xDA', 'LLIL_NOP()'), # pacda x12, x29
-    (b'\xD2\x09\xC1\xDA', 'LLIL_NOP()'), # pacda x18, x14
-    (b'\xF9\x0E\xC1\xDA', 'LLIL_NOP()'), # pacdb x25, x23
-    (b'\xBA\x0C\xC1\xDA', 'LLIL_NOP()'), # pacdb x26, x5
-    (b'\xE7\x2B\xC1\xDA', 'LLIL_NOP()'), # pacdza x7
-    (b'\xF7\x2B\xC1\xDA', 'LLIL_NOP()'), # pacdza x23
-    (b'\xE6\x2F\xC1\xDA', 'LLIL_NOP()'), # pacdzb x6
-    (b'\xE0\x2F\xC1\xDA', 'LLIL_NOP()'), # pacdzb x0
-    (b'\x22\x30\xCD\x9A', 'LLIL_NOP()'), # pacga x2, x1, x13
-    (b'\x99\x32\xD3\x9A', 'LLIL_NOP()'), # pacga x25, x20, x19
-    (b'\x1F\x21\x03\xD5', 'LLIL_NOP()'), # pacia1716
-    (b'\x1F\x23\x03\xD5', 'LLIL_NOP()'), # paciaz
-    (b'\x4A\x02\xC1\xDA', 'LLIL_NOP()'), # pacia x10, x18
-    (b'\xAA\x00\xC1\xDA', 'LLIL_NOP()'), # pacia x10, x5
-    (b'\x5F\x21\x03\xD5', 'LLIL_NOP()'), # pacib1716
-    (b'\x3F\x23\x03\xD5', 'LLIL_NOP()'), # paciasp
-    (b'\x7F\x23\x03\xD5', 'LLIL_NOP()'), # pacibsp
-    (b'\x5F\x23\x03\xD5', 'LLIL_NOP()'), # pacibz
-    (b'\x84\x06\xC1\xDA', 'LLIL_NOP()'), # pacib x4, x20
-    (b'\x61\x06\xC1\xDA', 'LLIL_NOP()'), # pacib x1, x19
-    (b'\xE3\x23\xC1\xDA', 'LLIL_NOP()'), # paciza x3
-    (b'\xFE\x23\xC1\xDA', 'LLIL_NOP()'), # paciza x30
-    (b'\xE3\x27\xC1\xDA', 'LLIL_NOP()'), # pacizb x3
-    (b'\xE7\x27\xC1\xDA', 'LLIL_NOP()'), # pacizb x7
-    (b'\xF8\x47\xC1\xDA', 'LLIL_NOP()'), # xpacd x24
-    (b'\xED\x47\xC1\xDA', 'LLIL_NOP()'), # xpacd x13
-    (b'\xE2\x43\xC1\xDA', 'LLIL_NOP()'), # xpaci x2
-    (b'\xE7\x43\xC1\xDA', 'LLIL_NOP()'), # xpaci x7
-    (b'\xFF\x20\x03\xD5', 'LLIL_NOP()'), # xpaclri
+    (b'\xAC\x0B\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacda x12, x29
+    (b'\xD2\x09\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacda x18, x14
+    (b'\xF9\x0E\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdb x25, x23
+    (b'\xBA\x0C\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdb x26, x5
+    (b'\xE7\x2B\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdza x7
+    (b'\xF7\x2B\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdza x23
+    (b'\xE6\x2F\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdzb x6
+    (b'\xE0\x2F\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacdzb x0
+    (b'\x22\x30\xCD\x9A', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacga x2, x1, x13
+    (b'\x99\x32\xD3\x9A', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacga x25, x20, x19
+    (b'\x1F\x21\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacia1716
+    (b'\x1F\x23\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # paciaz
+    (b'\x4A\x02\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacia x10, x18
+    (b'\xAA\x00\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacia x10, x5
+    (b'\x5F\x21\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacib1716
+    (b'\x3F\x23\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # paciasp
+    (b'\x7F\x23\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacibsp
+    (b'\x5F\x23\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacibz
+    (b'\x84\x06\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacib x4, x20
+    (b'\x61\x06\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacib x1, x19
+    (b'\xE3\x23\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # paciza x3
+    (b'\xFE\x23\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # paciza x30
+    (b'\xE3\x27\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacizb x3
+    (b'\xE7\x27\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # pacizb x7
+    (b'\xF8\x47\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # xpacd x24
+    (b'\xED\x47\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # xpacd x13
+    (b'\xE2\x43\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # xpaci x2
+    (b'\xE7\x43\xC1\xDA', 'LLIL_NOP()', ATTR_PTR_AUTH), # xpaci x7
+    (b'\xFF\x20\x03\xD5', 'LLIL_NOP()', ATTR_PTR_AUTH), # xpaclri
     ])
 
 tests_load_acquire_store_release = [
@@ -2879,7 +2881,7 @@ def il2str(il):
         return str(il)
 
 # TODO: make this less hacky
-def instr_to_il(data):
+def lift(data):
     EPILOG = b'\xa0\xd5\x9b\xd2' + b'\xc0\x03\x5f\xd6' # mov x0, 0xDEAD; return
 
     platform = binaryninja.Platform['linux-aarch64']
@@ -2888,21 +2890,23 @@ def instr_to_il(data):
     bv.add_function(0, plat=platform)
     assert len(bv.functions) == 1
 
-    result = []
+    tokens = []
+    attributes = set()
     #for block in bv.functions[0].low_level_il:
     for block in bv.functions[0].lifted_il:
         for il in block:
-            result.append(il2str(il))
-    result = '; '.join(result)
+            attributes = attributes.union(il.attributes)
+            tokens.append(il2str(il))
+    il_str = '; '.join(tokens)
 
     try:
-        i = result.rindex('; LLIL_SET_REG.q(x0,LLIL_CONST.q(0xDEAD))')
-        result = result[0:i]
+        i = il_str.rindex('; LLIL_SET_REG.q(x0,LLIL_CONST.q(0xDEAD))')
+        il_str = il_str[0:i]
     except:
         # ValueError: substring not found
         pass
 
-    return result
+    return il_str, attributes
 
 def il_str_to_tree(ilstr):
     result = ''
@@ -2922,28 +2926,40 @@ def il_str_to_tree(ilstr):
             result += c
     return result
 
-def test_all():
-    for (test_i, (data, expected)) in enumerate(test_cases):
-        actual = instr_to_il(data)
-        if actual != expected:
-            print('MISMATCH AT TEST %d!' % test_i)
-            print('\t   input: %s' % data.hex())
-            print('\texpected: %s' % expected)
-            print('\t  actual: %s' % actual)
-            print('\t    tree:')
-            print(il_str_to_tree(actual))
+def test_all_lifts():
+    for (test_i, test_info) in enumerate(test_cases):
+        data, expected_lift = test_info[0], test_info[1]
+        il_attrs = test_info[2] if len(test_info) == 3 else None
 
+        actual_lift, actual_attrs = lift(data)
+        if actual_lift != expected_lift:
+            print('LIFT MISMATCH AT TEST %d!' % test_i)
+            print('\t   input: %s' % data.hex())
+            print('\texpected: %s' % expected_lift)
+            print('\t  actual: %s' % actual_lift)
+            print('\t    tree:')
+            print(il_str_to_tree(actual_lift))
             return False
+
+        # if IL attributes given, verify those too
+        if len(test_info) == 3:
+            expected_attr = test_info[2]
+            if not expected_attr in actual_attrs:
+                print('ATTR MISMATCH AT TEST %d!' % test_i)
+                print('\t   input: %s' % data.hex())
+                print('\texpected: 0x%X' % expected_attr)
+                print('\t  actual: ' + str(actual_attrs))
+                return False
 
     return True
 
 if __name__ == '__main__':
-    if test_all():
+    if test_all_lifts():
         print('success!')
         sys.exit(0)
     else:
         sys.exit(-1)
 
 if __name__ == 'arm64test':
-    if test_all():
+    if test_all_lifts():
         print('success!')

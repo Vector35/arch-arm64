@@ -1096,6 +1096,14 @@ static void ConditionalJump(Architecture* arch, LowLevelILFunction& il, size_t c
 }
 
 
+static void ApplyAttributeToLastInstruction(LowLevelILFunction& il, uint32_t attributes)
+{
+	size_t instrId = il.GetInstructionCount()-1;
+	ExprId expr = il.GetIndexForInstruction(instrId);
+	il.SetExprAttributes(expr, attributes);
+}
+
+
 enum Arm64Intrinsic operation_to_intrinsic(int operation)
 {
 	switch (operation)
@@ -1152,6 +1160,8 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 bool GetLowLevelILForInstruction(
     Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize)
 {
+	bool SetPacAttr;
+
 	InstructionOperand& operand1 = instr.operands[0];
 	InstructionOperand& operand2 = instr.operands[1];
 	InstructionOperand& operand3 = instr.operands[2];
@@ -1249,12 +1259,15 @@ bool GetLowLevelILForInstruction(
 	case ARM64_BL:
 		il.AddInstruction(il.Call(il.ConstPointer(addrSize, IMM_O(operand1))));
 		break;
-	case ARM64_BLR:
 	case ARM64_BLRAA:
 	case ARM64_BLRAAZ:
 	case ARM64_BLRAB:
 	case ARM64_BLRABZ:
+		SetPacAttr = true;
+	case ARM64_BLR:
 		il.AddInstruction(il.Call(ILREG_O(operand1)));
+		if (SetPacAttr)
+			ApplyAttributeToLastInstruction(il, SrcInstructionUsesPointerAuth);
 		break;
 	case ARM64_BFC:
 		il.AddInstruction(ILSETREG_O(
@@ -1283,12 +1296,15 @@ bool GetLowLevelILForInstruction(
 		                il.Const(REGSZ_O(operand1), ONES(IMM_O(operand4)) << IMM_O(operand3))),
 		            il.Const(1, IMM_O(operand3))))));
 		break;
-	case ARM64_BR:
 	case ARM64_BRAA:
 	case ARM64_BRAAZ:
 	case ARM64_BRAB:
 	case ARM64_BRABZ:
+		SetPacAttr = true;
+	case ARM64_BR:
 		il.AddInstruction(il.Jump(ILREG_O(operand1)));
+		if (SetPacAttr)
+			ApplyAttributeToLastInstruction(il, SrcInstructionUsesPointerAuth);
 		return false;
 	case ARM64_BIC:
 	case ARM64_BICS:
@@ -1735,11 +1751,14 @@ bool GetLowLevelILForInstruction(
 	case ARM64_LDPSW:
 		LoadStoreOperandPairSize(il, true, 4, instr.operands[0], instr.operands[1], instr.operands[2]);
 		break;
-	case ARM64_LDR:
-	case ARM64_LDUR:
 	case ARM64_LDRAA:
 	case ARM64_LDRAB:
+		SetPacAttr = true;
+	case ARM64_LDR:
+	case ARM64_LDUR:
 		LoadStoreOperand(il, true, instr.operands[0], instr.operands[1], 0);
+		if (SetPacAttr)
+			ApplyAttributeToLastInstruction(il, SrcInstructionUsesPointerAuth);
 		break;
 	case ARM64_LDRB:
 	case ARM64_LDURB:
@@ -2064,6 +2083,7 @@ bool GetLowLevelILForInstruction(
 	case ARM64_PACIASP:
 	case ARM64_PACIBSP:
 		il.AddInstruction(il.Nop());
+		ApplyAttributeToLastInstruction(il, SrcInstructionUsesPointerAuth);
 		break;
 #endif
 	case ARM64_PRFUM:
@@ -2089,14 +2109,17 @@ bool GetLowLevelILForInstruction(
 	case ARM64_PSB:
 		il.AddInstruction(il.Intrinsic({}, ARM64_INTRIN_PSBCSYNC, {}));
 		break;
-	case ARM64_RET:
 	case ARM64_RETAA:
 	case ARM64_RETAB:
+		SetPacAttr = true;
+	case ARM64_RET:
 	{
 		ExprId reg = (operand1.operandClass == REG) ? ILREG_O(operand1) : il.Register(8, REG_X30);
 		il.AddInstruction(il.Return(reg));
-		break;
+		if (SetPacAttr)
+			ApplyAttributeToLastInstruction(il, SrcInstructionUsesPointerAuth);
 	}
+	break;
 	case ARM64_REVB:  // SVE only
 	case ARM64_REVH:
 	case ARM64_REVW:
