@@ -1160,7 +1160,7 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 bool GetLowLevelILForInstruction(
     Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize)
 {
-	bool SetPacAttr;
+	bool SetPacAttr = false;
 
 	InstructionOperand& operand1 = instr.operands[0];
 	InstructionOperand& operand2 = instr.operands[1];
