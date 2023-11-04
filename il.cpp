@@ -1980,6 +1980,12 @@ bool GetLowLevelILForInstruction(
 		    operand1, il.Neg(REGSZ_O(operand1), ReadILOperand(il, instr.operands[1], REGSZ_O(operand1)),
 		                  SETFLAGS)));
 		break;
+	case ARM64_NGC:
+	case ARM64_NGCS:
+		il.AddInstruction(ILSETREG_O(operand1, il.SubBorrow(REGSZ_O(operand1), il.Const(REGSZ_O(operand1), 0),
+		                                           ReadILOperand(il, operand2, REGSZ_O(operand1)),
+		                                           il.Not(0, il.Flag(IL_FLAG_C)), SETFLAGS)));
+		break;
 	case ARM64_NOP:
 		il.AddInstruction(il.Nop());
 		break;
