@@ -1167,6 +1167,10 @@ bool GetLowLevelILForInstruction(
 	InstructionOperand& operand3 = instr.operands[2];
 	InstructionOperand& operand4 = instr.operands[3];
 
+	if (addr % 4 != 0) {
+		return false;
+	}
+
 	int n_instrs_before = il.GetInstructionCount();
 
 	// printf("%s() operation:%d encoding:%d\n", __func__, instr.operation, instr.encoding);
