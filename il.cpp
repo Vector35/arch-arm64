@@ -1158,7 +1158,7 @@ enum Arm64Intrinsic operation_to_intrinsic(int operation)
 
 
 bool GetLowLevelILForInstruction(
-    Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize)
+    Architecture* arch, uint64_t addr, LowLevelILFunction& il, Instruction& instr, size_t addrSize, bool requireAlignment)
 {
 	bool SetPacAttr = false;
 
@@ -1167,7 +1167,7 @@ bool GetLowLevelILForInstruction(
 	InstructionOperand& operand3 = instr.operands[2];
 	InstructionOperand& operand4 = instr.operands[3];
 
-	if (addr % 4 != 0) {
+	if (requireAlignment && (addr % 4 != 0)) {
 		return false;
 	}
 

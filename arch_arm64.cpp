@@ -265,6 +265,7 @@ class Arm64Architecture : public Architecture
 {
  protected:
 	size_t m_bits;
+	bool m_onlyDisassembleOnAlignedAddresses;
 
 	virtual bool Disassemble(const uint8_t* data, uint64_t addr, size_t maxLen, Instruction& result)
 	{
@@ -272,7 +273,7 @@ class Arm64Architecture : public Architecture
 		(void)maxLen;
 		memset(&result, 0, sizeof(result));
 
-		if (addr % 4 != 0)
+		if (m_onlyDisassembleOnAlignedAddresses && (addr % 4 != 0))
 			return false;
 
 		if (aarch64_decompose(*(uint32_t*)data, &result, addr) != 0)
@@ -700,7 +701,11 @@ class Arm64Architecture : public Architecture
 
 
  public:
-	Arm64Architecture() : Architecture("aarch64"), m_bits(64) {}
+	Arm64Architecture() : Architecture("aarch64"), m_bits(64)
+	{
+		Ref<Settings> settings = Settings::Instance();
+		m_onlyDisassembleOnAlignedAddresses = settings->Get<bool>("arch.aarch64.disassembly.align_required") ? 1 : 0;
+	}
 
 	bool CanAssemble() override { return true; }
 
@@ -1223,7 +1228,7 @@ class Arm64Architecture : public Architecture
 		}
 
 		len = 4;
-		return GetLowLevelILForInstruction(this, addr, il, instr, GetAddressSize());
+		return GetLowLevelILForInstruction(this, addr, il, instr, GetAddressSize(), m_onlyDisassembleOnAlignedAddresses);
 	}
 
 
@@ -3478,6 +3483,20 @@ public:
 };
 
 
+static void InitAarch64Settings()
+{
+	Ref<Settings> settings = Settings::Instance();
+
+	settings->RegisterSetting("arch.aarch64.disassembly.align_required",
+			R"({
+			"title" : "AARCH64 Alignment Requirement",
+			"type" : "boolean",
+			"default" : true,
+			"description" : "Require instructions be on 4-byte aligned addresses to be disassembled."
+			})");
+}
+
+
 extern "C"
 {
 	BN_DECLARE_CORE_ABI_VERSION
@@ -3497,6 +3516,8 @@ extern "C"
 	BINARYNINJAPLUGIN bool CorePluginInit()
 #endif
 	{
+		InitAarch64Settings();
+
 		Architecture* arm64 = new Arm64Architecture();
 
 		Architecture::Register(arm64);
