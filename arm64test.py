@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 
 import os
+import re
+import sys
 import pathlib
+
+import binaryninja
+from binaryninja import binaryview
+from binaryninja import lowlevelil
+from binaryninja.enums import LowLevelILOperation, ILInstructionAttribute
 
 path_here = pathlib.Path(__file__).parent.absolute()
 path_il_h = os.path.join(path_here, 'il.h')
 
-ATTR_PTR_AUTH = 16 # enum BNILInstructionAttribute.SrcInstructionUsesPointerAuth from api/binaryninjacore.h
+ATTR_PTR_AUTH = ILInstructionAttribute(8) # enum BNILInstructionAttribute.SrcInstructionUsesPointerAuth from api/binaryninjacore.h
 
 tests_udf = [
     # udf #0
@@ -2855,13 +2862,6 @@ test_cases = \
     (b'\x1F\x20\x03\xD5', 'LLIL_NOP()'), # nop, gets optimized from function
 ]
 
-import re
-import sys
-import binaryninja
-from binaryninja import binaryview
-from binaryninja import lowlevelil
-from binaryninja.enums import LowLevelILOperation
-
 def il2str(il):
     sz_lookup = {1:'.b', 2:'.w', 4:'.d', 8:'.q', 16:'.o'}
     if isinstance(il, lowlevelil.LowLevelILInstruction):
@@ -2928,7 +2928,10 @@ def il_str_to_tree(ilstr):
     return result
 
 def test_all_lifts():
-    for (test_i, test_info) in enumerate(test_cases):
+    for test_i, test_info in enumerate(test_cases):
+        if (test_i+1) % 25 == 0:
+            print(f'on test {test_i+1}/{len(test_cases)}')
+
         data, expected_lift = test_info[0], test_info[1]
         il_attrs = test_info[2] if len(test_info) == 3 else None
 
