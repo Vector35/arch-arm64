@@ -271,6 +271,10 @@ class Arm64Architecture : public Architecture
 		(void)addr;
 		(void)maxLen;
 		memset(&result, 0, sizeof(result));
+
+		if (addr % 4 != 0)
+			return false;
+
 		if (aarch64_decompose(*(uint32_t*)data, &result, addr) != 0)
 			return false;
 		return true;
