@@ -704,7 +704,7 @@ class Arm64Architecture : public Architecture
 	Arm64Architecture() : Architecture("aarch64"), m_bits(64)
 	{
 		Ref<Settings> settings = Settings::Instance();
-		m_onlyDisassembleOnAlignedAddresses = settings->Get<bool>("arch.aarch64.disassembly.align_required") ? 1 : 0;
+		m_onlyDisassembleOnAlignedAddresses = settings->Get<bool>("arch.aarch64.disassembly.alignRequired") ? 1 : 0;
 	}
 
 	bool CanAssemble() override { return true; }
@@ -3487,7 +3487,7 @@ static void InitAarch64Settings()
 {
 	Ref<Settings> settings = Settings::Instance();
 
-	settings->RegisterSetting("arch.aarch64.disassembly.align_required",
+	settings->RegisterSetting("arch.aarch64.disassembly.alignRequired",
 			R"({
 			"title" : "AARCH64 Alignment Requirement",
 			"type" : "boolean",
