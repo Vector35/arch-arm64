@@ -1329,28 +1329,40 @@ bool GetLowLevelILForInstruction(
 	case ARM64_CASA:
 	case ARM64_CASAL:
 	case ARM64_CASL:
+		il.AddInstruction(il.SetRegister(REGSZ_O(operand1), LLIL_TEMP(0), il.Load(REGSZ_O(operand1), ILREG_O(operand3))));
+
 		GenIfElse(il,
-		    il.CompareEqual(
-		        REGSZ_O(operand1), ILREG_O(operand1), il.Load(REGSZ_O(operand1), ILREG_O(operand3))),
-		    il.Store(REGSZ_O(operand1), ILREG_O(operand3), ILREG_O(operand2)), 0);
+			il.CompareEqual(REGSZ_O(operand1), ILREG_O(operand1), il.Register(REGSZ_O(operand1), LLIL_TEMP(0))),
+			il.Store(REGSZ_O(operand1), ILREG_O(operand3), ILREG_O(operand2)),
+			0);
+
+		il.AddInstruction(ILSETREG_O(operand1, il.Register(REGSZ_O(operand1), LLIL_TEMP(0))));
 		break;
 	case ARM64_CASAH:  // these compare-and-swaps are 16 bit
 	case ARM64_CASALH:
 	case ARM64_CASH:
 	case ARM64_CASLH:
+		il.AddInstruction(il.SetRegister(2, LLIL_TEMP(0), il.Load(2, ILREG_O(operand3))));
+
 		GenIfElse(il,
-		    il.CompareEqual(REGSZ_O(operand1), ExtractRegister(il, operand1, 0, 2, false, 2),
-		        il.Load(2, ILREG_O(operand3))),
-		    il.Store(2, ILREG_O(operand3), ExtractRegister(il, operand2, 0, 2, false, 2)), 0);
+			il.CompareEqual(REGSZ_O(operand1), ExtractRegister(il, operand1, 0, 2, false, 2), LLIL_TEMP(0)),
+			il.Store(2, ILREG_O(operand3), ExtractRegister(il, operand2, 0, 2, false, 2)),
+			0);
+
+		il.AddInstruction(ILSETREG_O(operand1, il.Register(2, LLIL_TEMP(0))));
 		break;
 	case ARM64_CASAB:  // these compare-and-swaps are 8 bit
 	case ARM64_CASALB:
 	case ARM64_CASB:
 	case ARM64_CASLB:
+		il.AddInstruction(il.SetRegister(1, LLIL_TEMP(0), il.Load(1, ILREG_O(operand3))));
+
 		GenIfElse(il,
-		    il.CompareEqual(REGSZ_O(operand1), ExtractRegister(il, operand1, 0, 1, false, 1),
-		        il.Load(1, ILREG_O(operand3))),
-		    il.Store(1, ILREG_O(operand3), ExtractRegister(il, operand2, 0, 1, false, 1)), 0);
+			il.CompareEqual(REGSZ_O(operand1), ExtractRegister(il, operand1, 0, 1, false, 1), LLIL_TEMP(0)),
+			il.Store(1, ILREG_O(operand3), ExtractRegister(il, operand2, 0, 1, false, 1)),
+			0);
+
+		il.AddInstruction(ILSETREG_O(operand1, il.Register(1, LLIL_TEMP(0))));
 		break;
 	case ARM64_CBNZ:
 		ConditionalJump(arch, il,
