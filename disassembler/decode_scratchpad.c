@@ -572,7 +572,12 @@ ArrangementSpec arr_spec_method0(uint32_t imm5, uint32_t Q)
 
 ArrangementSpec arr_spec_method1(unsigned key)
 {
-	// if((key & 0b01111) == 0b00000) return ARRSPEC_NONE;	// x0000 RESERVED
+	// 00000 RESERVED
+	// xxxx1 B
+	// xxx10 H
+	// xx100 S
+	// x1000 D
+	// 10000 Q
 	if ((key & 0b00001) == 0b00001)
 		return _1B;  // xxxx1 B
 	if ((key & 0b00011) == 0b00010)
@@ -3335,7 +3340,7 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	}
 	case ENC_DUP_P_P_PI_:
 	{
-		ArrangementSpec arr_spec = table16_r_b_h_s_d[ctx->esize];
+		ArrangementSpec arr_spec = arr_spec_method1((ctx->tszh << 3) | ctx->tszl);
 		// DUP <Pd>.<T>, <Pg>/Z, <Pn>.<T>[<Wm>{, #<imm>}]
 		ADD_OPERAND_PRED_REG_T(ctx->d, arr_spec);
 		ADD_OPERAND_PRED_REG_QUAL(ctx->g, 'z');
