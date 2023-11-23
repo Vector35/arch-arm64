@@ -10579,8 +10579,8 @@ int decode_scratchpad(context* ctx, Instruction* instr)
 	case ENC_UQSHRNB_Z_ZI_:
 	case ENC_UQSHRNT_Z_ZI_:
 	{
-		ArrangementSpec T = table_d_b_h_s[ctx->tsize];
-		ArrangementSpec Tb = table_b_h_s_d[ctx->tsize];
+		ArrangementSpec T = table_r_b_h_h_s_s_s_s[(ctx->tszh << 2) | ctx->tszl];
+		ArrangementSpec Tb = table_r_h_s_s_d_d_d_d[(ctx->tszh << 2) | ctx->tszl];
 		// <Zd>.<T>,<Zn>.<Tb>, #<const>
 		ADD_OPERAND_ZREG_T(ctx->d, T)
 		ADD_OPERAND_ZREG_T(ctx->n, Tb)
