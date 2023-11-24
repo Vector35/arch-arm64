@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "decode.h"
 #include "format.h"
@@ -250,10 +252,33 @@ int disassemble(uint64_t address, uint32_t insword, char* result)
 	return 0;
 }
 
+double subtract_timespecs(struct timespec t1, struct timespec t0)
+{
+	double delta = 0;
+
+	delta += (double)(t1.tv_nsec - t0.tv_nsec) / 1000000000.0;
+	if (delta < 0)
+	{
+		t1.tv_sec -= 1;
+		delta += 1;
+	}
+
+	delta += (double)t1.tv_sec - t0.tv_sec;
+
+	return delta;
+}
+
 /* main */
 int main(int ac, char** av)
 {
+	srand(0xCAFE);
+
+	Instruction instr;
+	uint32_t insword;
 	char instxt[1024] = {'\0'};
+
+	double delta;
+	struct timespec t0, t1;
 
 	if (ac <= 1)
 	{
@@ -262,23 +287,35 @@ int main(int ac, char** av)
 		return -1;
 	}
 
-	if (!strcmp(av[1], "speed"))
+	if (!strcmp(av[1], "decode-speed"))
 	{
-		srand(0xCAFE);
-		for (int i = 0; i < 10000000; i++)
+		verbose = false;
+
+		clock_gettime(CLOCK_MONOTONIC, &t0);
+
+		for (int64_t num_decoded=0; true; num_decoded += 1)
 		{
-			uint32_t insword = (rand() << 16) ^ rand();
-			disassemble(0, insword, instxt);
-			// printf("%08X: %s\n", 0, instxt);
+			insword = (rand() << 16) ^ rand();
+			aarch64_decompose(insword, &instr, 0);
+			if ((num_decoded & 0xFFFFFF) == 0)
+			{
+				clock_gettime(CLOCK_MONOTONIC, &t1);
+				delta = subtract_timespecs(t1, t0);
+				printf("%lld instructions in %fs, or %.0f instructions/s\n",
+					num_decoded, delta, num_decoded/delta);
+			}
 		}
 		return 0;
 	}
+
+	// There's no disassemble speed test yet because randomly generated instruction words often do
+	// not decode.
 
 	if (!strcmp(av[1], "strain") || !strcmp(av[1], "strainer") || !strcmp(av[1], "stress") ||
 	    !strcmp(av[1], "stresser"))
 	{
 		verbose = 0;
-		for (uint32_t insword = 0; insword != 0xFFFFFFFF; insword++)
+		for (insword = 0; insword != 0xFFFFFFFF; insword++)
 		{
 			disassemble(0, insword, instxt);
 
@@ -287,22 +324,29 @@ int main(int ac, char** av)
 		}
 	}
 
-	if (!strcmp(av[1], "test"))
+	if (!strcmp(av[1], "random"))
 	{
-		srand(0xCAFE);
+		bool silent = ac > 2 && !strcmp(av[2], "silent");
+		verbose = 0;
 		while (1)
 		{
-			Instruction instr;
-			memset(&instr, 0, sizeof(instr));
-			uint32_t insword = (rand() << 16) ^ rand();
-			aarch64_decompose(insword, &instr, 0);
-			printf("%08X: %d\n", insword, instr.encoding);
+			insword = (rand() << 16) ^ rand();
+			if (disassemble(0, insword, instxt) == 0)
+			{
+				if (!silent)
+					printf("%08X: %s\n", insword, instxt);
+			}
+			else
+			{
+				if (!silent)
+					printf("%08X: (error)\n", insword);
+			}
 		}
 	}
 
 	else
 	{
-		uint32_t insword = strtoul(av[1], NULL, 16);
+		insword = strtoul(av[1], NULL, 16);
 		if (disassemble(0, insword, instxt) == 0)
 			printf("%08X: %s\n", insword, instxt);
 	}
