@@ -1018,9 +1018,7 @@ class Arm64Architecture : public Architecture
 
 	virtual std::vector<uint32_t> GetAllIntrinsics() override
 	{
-		// Save ourselve some time on allocations.
-		constexpr size_t intrinsic_number = ARM64_INTRIN_NORMAL_END;
-		// Hihghest intrinsic number currently is ARM64_INTRIN_NEON_END.
+		// Highest intrinsic number currently is ARM64_INTRIN_NEON_END.
 		// If new extensions are added please update this code.
 		std::vector<uint32_t> result{ARM64_INTRIN_NEON_END};
 

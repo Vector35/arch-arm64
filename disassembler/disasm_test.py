@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # run disassembly tests in test_cases.txt
 # ensure you built gofer.so (see Makefile-local)
